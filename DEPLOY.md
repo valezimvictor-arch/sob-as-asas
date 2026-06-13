@@ -1,0 +1,86 @@
+# Deploy — Sob as Asas (Vercel)
+
+> Projeto **separado** do Tacada. Outro projeto Vercel, outras env vars. Zero contato.
+
+## Pré-requisitos
+- Projeto Supabase criado e `schema.sql` rodado (ver [SUPABASE_SETUP.md](SUPABASE_SETUP.md)). ✅
+- `config.js` preenchido com URL + anon. ✅
+- Domínio (opcional p/ agora): `sobasasas.com.br`.
+
+## 1. Subir o código pro GitHub
+```bash
+cd "sob-as-asas"
+git init
+git add .
+git commit -m "Sob as Asas — MVP inicial"
+# crie um repo novo (privado) e:
+git remote add origin git@github.com:SEU_USUARIO/sob-as-asas.git
+git push -u origin main
+```
+> O `.gitignore` já protege `.env`, `node_modules/`, `www/`. **Confirme que o `.env` NÃO foi commitado** (`git status` não deve listá-lo).
+
+## 2. Criar o projeto na Vercel
+1. https://vercel.com → **Add New… → Project** → importe o repo `sob-as-asas`.
+2. **Nome:** `sob-as-asas` (diferente do `pitaco`!).
+3. Framework Preset: **Other**. Build/Output já vêm do `vercel.json`.
+
+## 3. Variáveis de ambiente (Vercel → Settings → Environment Variables)
+Adicione (use o [.env.example](.env.example) como lista). Mínimo pra o login + perfil funcionarem:
+| Variável | Valor |
+|---|---|
+| `SUPABASE_URL` | sua URL do Supabase |
+| `SUPABASE_SERVICE_KEY` | **service_role** (a rotacionada!) |
+| `APP_URL` | a URL do projeto Vercel (ex.: `https://sob-as-asas.vercel.app`) |
+| `ADMIN_KEY` | uma senha forte (acesso ao `/admin`) |
+
+Depois, p/ assinatura/push: `STRIPE_*`, `VAPID_*`, `RESEND_API_KEY`.
+
+## 4. Configurar o Auth no Supabase (essencial p/ o link mágico)
+Supabase → **Authentication → URL Configuration**:
+- **Site URL:** a URL da Vercel (ex.: `https://sob-as-asas.vercel.app`).
+- **Redirect URLs:** adicione a URL da Vercel e, se for testar local, `http://localhost:8910`.
+- Confirme **Email provider** habilitado (Authentication → Providers → Email).
+
+## 5. Deploy e teste
+1. **Deploy** na Vercel.
+2. Abra a URL, faça o onboarding, toque em **Entrar no santuário** → digite seu e-mail → receba o link mágico → toque → você volta logado e o perfil é salvo em `public.users`.
+3. Confira em Supabase → Table Editor → `users` se o registro apareceu (com `anjo_n`/`anjo_nome`).
+4. Teste o `/admin` com a `ADMIN_KEY`.
+
+## 6. Domínio (Registro.br → Vercel)
+
+Domínio registrado: **sobasasas.com.br** (com `www`).
+
+**Decida o canônico.** Recomendo o apex `sobasasas.com.br` como principal e `www` redirecionando pra ele (a Vercel faz o redirect automático). Tanto faz, mas escolha um.
+
+### a) Adicionar na Vercel
+Vercel → Project `sob-as-asas` → **Settings → Domains → Add**:
+- adicione `sobasasas.com.br` e `www.sobasasas.com.br` (marque o apex como principal).
+- A Vercel mostra os registros DNS a configurar.
+
+### b) Configurar o DNS no Registro.br
+Painel do Registro.br → seu domínio → **Editar Zona / DNS** (DNS do Registro.br). Adicione:
+| Tipo | Nome/Host | Valor |
+|---|---|---|
+| **A** | `@` (apex / sobasasas.com.br) | `76.76.21.21` |
+| **CNAME** | `www` | `cname.vercel-dns.com` |
+
+> Apex não aceita CNAME — por isso o apex usa registro **A**. Esses são os valores padrão da Vercel.
+> (Alternativa: apontar os *nameservers* do Registro.br pra `ns1.vercel-dns.com` / `ns2.vercel-dns.com` e deixar a Vercel gerenciar tudo — mais simples, porém muda o DNS inteiro.)
+
+### c) Aguardar
+- Propagação do DNS: minutos a algumas horas.
+- **SSL (https):** a Vercel emite o certificado sozinha assim que o DNS resolve. Não precisa fazer nada.
+
+### d) Atualizar variáveis e Auth (após o domínio resolver)
+- Vercel → env var `APP_URL` = `https://sobasasas.com.br`.
+- Supabase → Authentication → URL Configuration (ver §4): Site URL = `https://sobasasas.com.br`; Redirect URLs inclua `https://sobasasas.com.br` e `https://www.sobasasas.com.br`.
+
+## 7. (Depois) App nas lojas
+`npm run sync:ios` / `npm run sync:android` empacotam com Capacitor apontando pra esta URL.
+
+## Checklist de isolamento do Tacada
+- [ ] Repo Git próprio (`sob-as-asas`)
+- [ ] Projeto Vercel próprio (nome diferente de `pitaco`)
+- [ ] Env vars próprias (Supabase novo, não o do Tacada)
+- [ ] `.env` não commitado

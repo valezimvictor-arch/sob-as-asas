@@ -1,0 +1,9 @@
+node_modules/
+www/
+.env
+.env.local
+.DS_Store
+ios/
+android/
+.vercel
+*.log

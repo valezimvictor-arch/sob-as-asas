@@ -1,0 +1,52 @@
+{
+  "appId": "com.sobasasas.app",
+  "appName": "Sob as Asas",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https",
+    "allowNavigation": [
+      "sobasasas.com.br",
+      "fonts.googleapis.com",
+      "fonts.gstatic.com",
+      "cdn.tailwindcss.com"
+    ]
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2200,
+      "launchAutoHide": true,
+      "backgroundColor": "#FBFAF7",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "iosSpinnerStyle": "small",
+      "spinnerColor": "#BA7517"
+    },
+    "StatusBar": {
+      "style": "LIGHT",
+      "backgroundColor": "#FBFAF7",
+      "overlaysWebView": false
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    },
+    "Haptics": {
+      "enabled": true
+    }
+  },
+  "ios": {
+    "scheme": "SobAsAsas",
+    "contentInset": "always",
+    "allowsLinkPreview": false,
+    "scrollEnabled": false,
+    "backgroundColor": "#FBFAF7"
+  },
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false,
+    "backgroundColor": "#FBFAF7",
+    "initialFocus": true
+  }
+}

@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+<title>Sob as Asas — Anjos da Guarda</title>
+<meta name="theme-color" content="#FBFAF7" />
+<link rel="manifest" href="/manifest.json" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="/config.js?v=1"></script>
+<style>
+  :root{
+    --branco:#FBFAF7; --branco-puro:#FFFFFF;
+    --ouro:#BA7517; --ouro-claro:#EF9F27; --ouro-suave:#F3E6CC; --ouro-bg:#FAF3E4;
+    --celeste:#378ADD; --celeste-bg:#EAF2FB;
+    --tinta:#2C2C2A; --tinta-suave:#6B6A63; --linha:rgba(186,117,23,0.14);
+  }
+  *{ -webkit-tap-highlight-color:transparent; box-sizing:border-box; }
+  html,body{ margin:0; height:100%; background:var(--branco); color:var(--tinta);
+    font-family:'Inter',system-ui,sans-serif; overscroll-behavior:none; }
+  .serif{ font-family:'Marcellus',serif; letter-spacing:.01em; }
+  .serif-soft{ font-family:'Cormorant Garamond',serif; }
+  .screen{ position:fixed; inset:0; display:flex; flex-direction:column;
+    opacity:0; visibility:hidden; pointer-events:none; transform:translateY(6px);
+    transition:opacity .7s ease, transform .7s ease, visibility 0s linear .7s; overflow-y:auto; }
+  .screen.active{ opacity:1; visibility:visible; pointer-events:auto; transform:none;
+    transition:opacity .7s ease, transform .7s ease, visibility 0s; }
+  .pad{ padding:max(env(safe-area-inset-top),24px) 26px max(env(safe-area-inset-bottom),24px); }
+
+  /* halo de luz que respira */
+  .halo{ position:absolute; left:50%; transform:translateX(-50%);
+    width:300px; height:300px; border-radius:50%; pointer-events:none;
+    background:radial-gradient(circle, rgba(239,159,39,.30) 0%, rgba(239,159,39,.10) 42%, rgba(239,159,39,0) 70%);
+    animation:respira 5.5s ease-in-out infinite; }
+  @keyframes respira{ 0%,100%{ opacity:.55; transform:translateX(-50%) scale(.96);} 50%{ opacity:1; transform:translateX(-50%) scale(1.06);} }
+
+  /* partículas de luz subindo */
+  .luzes{ position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+  .luz{ position:absolute; bottom:-10px; width:5px; height:5px; border-radius:50%;
+    background:var(--ouro-claro); opacity:0; filter:blur(.3px);
+    animation:sobe linear infinite; }
+  @keyframes sobe{ 0%{ transform:translateY(0) scale(.6); opacity:0;} 12%{opacity:.8;} 100%{ transform:translateY(-105vh) scale(1); opacity:0;} }
+
+  .btn-ouro{ background:linear-gradient(180deg,#F6C868,#D89A2C); color:#5A3A06;
+    border:none; border-radius:16px; padding:16px; font-weight:600; font-size:16px;
+    width:100%; box-shadow:0 6px 22px rgba(186,117,23,.28); transition:transform .15s, box-shadow .2s; }
+  .btn-ouro:active{ transform:scale(.975); box-shadow:0 3px 12px rgba(186,117,23,.22); }
+  .btn-ghost{ background:transparent; border:1px solid var(--linha); color:var(--ouro);
+    border-radius:16px; padding:15px; font-weight:500; width:100%; }
+  .campo{ width:100%; background:var(--branco-puro); border:1px solid var(--linha);
+    border-radius:14px; padding:14px 16px; font-size:16px; color:var(--tinta); outline:none;
+    transition:border-color .2s, box-shadow .2s; }
+  .campo:focus{ border-color:var(--ouro-claro); box-shadow:0 0 0 4px rgba(239,159,39,.12); }
+  .label{ font-size:12px; letter-spacing:.06em; color:var(--tinta-suave); text-transform:uppercase; }
+  .card{ background:var(--branco-puro); border:1px solid var(--linha); border-radius:20px; }
+
+  .reveal-anjo{ opacity:0; transform:scale(.8); transition:opacity 1.4s ease, transform 1.4s cubic-bezier(.2,.8,.2,1); }
+  .reveal-anjo.on{ opacity:1; transform:scale(1); }
+  .reveal-fade{ opacity:0; transform:translateY(10px); transition:opacity 1s ease .5s, transform 1s ease .5s; }
+  .reveal-fade.on{ opacity:1; transform:none; }
+
+  .nav{ position:sticky; bottom:0; display:flex; justify-content:space-around;
+    padding:12px 8px max(env(safe-area-inset-bottom),12px); background:rgba(251,250,247,.92);
+    backdrop-filter:blur(10px); border-top:1px solid var(--linha); }
+  .nav button{ background:none; border:none; display:flex; flex-direction:column; align-items:center;
+    gap:3px; color:var(--tinta-suave); font-size:11px; flex:1; }
+  .nav button.sel{ color:var(--ouro); }
+  .nav svg{ width:24px; height:24px; }
+  .fade-in{ animation:fadeIn .6s ease both; }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
+  .hide{ display:none !important; }
+</style>
+</head>
+<body>
+
+<!-- ░░ 1. BOAS-VINDAS ░░ -->
+<section id="s-welcome" class="screen active">
+  <div class="luzes" id="welcome-luzes"></div>
+  <div class="halo" style="top:-70px"></div>
+  <div class="pad" style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; position:relative;">
+    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" style="margin-bottom:8px">
+      <path d="M32 12c-6 10-16 14-24 14 10 4 18 14 24 26 6-12 14-22 24-26-8 0-18-4-24-14z" fill="#EFB44A" opacity=".9"/>
+      <path d="M32 20c-3 6-9 9-15 10 6 2 11 8 15 16 4-8 9-14 15-16-6-1-12-4-15-10z" fill="#FBFAF7"/>
+    </svg>
+    <h1 class="serif" style="font-size:40px; margin:8px 0 0; color:var(--tinta)">Sob as Asas</h1>
+    <p class="serif-soft" style="font-size:21px; color:var(--ouro); margin:6px 0 0">Descubra quem cuida de você</p>
+    <p style="font-size:15px; color:var(--tinta-suave); line-height:1.6; margin:18px 0 0; max-width:280px">
+      Sua prática diária com os anjos da guarda, ao lado de Monica Buonfiglio.
+    </p>
+    <div style="width:100%; max-width:320px; margin-top:40px">
+      <button class="btn-ouro" onclick="goCadastro()">Revelar meu anjo da guarda</button>
+      <button class="btn-ghost" style="margin-top:12px" onclick="entrarSantuario()">Já tenho conta</button>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ 2. CADASTRO ░░ -->
+<section id="s-cadastro" class="screen">
+  <div class="halo" style="top:-110px; width:220px; height:220px"></div>
+  <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column">
+    <button onclick="show('s-welcome')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+    <div style="margin-top:14px">
+      <h2 class="serif" style="font-size:28px; margin:0">Quem é você</h2>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:8px 0 0">Para encontrarmos seu anjo regente.</p>
+    </div>
+    <div style="margin-top:30px; display:flex; flex-direction:column; gap:20px">
+      <div>
+        <span class="label">Seu nome</span>
+        <input id="in-nome" class="campo" style="margin-top:8px" placeholder="Como o anjo te chama" />
+      </div>
+      <div>
+        <span class="label">Data de nascimento</span>
+        <div style="display:flex; gap:10px; margin-top:8px">
+          <input id="in-dia" class="campo" inputmode="numeric" maxlength="2" placeholder="Dia" style="text-align:center; flex:1; min-width:0" />
+          <input id="in-mes" class="campo" inputmode="numeric" maxlength="2" placeholder="Mês" style="text-align:center; flex:1; min-width:0" />
+          <input id="in-ano" class="campo" inputmode="numeric" maxlength="4" placeholder="Ano" style="text-align:center; flex:1.4; min-width:0" />
+        </div>
+      </div>
+      <div>
+        <span class="label">Hora do nascimento — opcional</span>
+        <input id="in-hora" class="campo" style="margin-top:8px" placeholder="Afina o cálculo (HH:MM)" />
+      </div>
+      <p id="cad-erro" style="color:#C0392B; font-size:13px; min-height:16px; margin:0"></p>
+    </div>
+    <div style="margin-top:auto; padding-top:24px">
+      <button class="btn-ouro" onclick="revelar()">✦ Revelar meu anjo da guarda</button>
+      <p style="text-align:center; font-size:11px; color:var(--tinta-suave); margin:14px 0 0; line-height:1.6">
+        7 dias por nossa conta, depois R$ 24,90/mês.<br/>Cancele quando quiser.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ 3. REVELAÇÃO DO ANJO ░░ -->
+<section id="s-reveal" class="screen" style="background:var(--ouro-bg)">
+  <div class="luzes" id="reveal-luzes"></div>
+  <div class="halo" id="reveal-halo" style="top:60px; width:360px; height:360px"></div>
+  <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center">
+    <p class="reveal-fade serif-soft" id="rv-intro" style="font-size:19px; color:var(--ouro)">O seu anjo da guarda é…</p>
+    <div class="reveal-anjo" id="rv-anjo" style="margin:18px 0">
+      <div style="font-size:13px; letter-spacing:.18em; color:var(--ouro); text-transform:uppercase" id="rv-num">Anjo 55</div>
+      <h1 class="serif" id="rv-nome" style="font-size:48px; margin:6px 0 0; color:var(--tinta)">Mebahiah</h1>
+      <div class="serif-soft" id="rv-coro" style="font-size:18px; color:var(--ouro); margin-top:4px">Coro dos Principados</div>
+    </div>
+    <p class="reveal-fade serif-soft" id="rv-attr" style="font-size:20px; color:var(--tinta); max-width:300px; line-height:1.5">Consolo e lucidez</p>
+    <p class="reveal-fade" id="rv-faixa" style="font-size:13px; color:var(--tinta-suave); margin-top:10px"></p>
+    <div class="reveal-fade" style="width:100%; max-width:320px; margin-top:40px">
+      <button class="btn-ouro" onclick="entrarSantuario()">Entrar no santuário</button>
+      <button class="btn-ghost" style="margin-top:12px" onclick="shareAnjo()">Compartilhar meu anjo</button>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ LOGIN (link mágico) ░░ -->
+<section id="s-login" class="screen">
+  <div class="halo" style="top:-90px; width:240px; height:240px"></div>
+  <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; justify-content:center">
+    <div id="login-form">
+      <h2 class="serif" style="font-size:28px; margin:0; text-align:center">Salve seu santuário</h2>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:10px 0 0; text-align:center; line-height:1.6">Enviamos um link mágico pro seu e-mail.<br/>Sem senha — é só tocar e voltar.</p>
+      <div style="margin-top:26px">
+        <span class="label">Seu e-mail</span>
+        <input id="in-email" class="campo" type="email" inputmode="email" placeholder="voce@email.com" style="margin-top:8px" />
+        <p id="login-msg" style="color:#C0392B; font-size:13px; min-height:16px; margin:8px 0 0"></p>
+        <button class="btn-ouro" style="margin-top:8px" onclick="enviarMagicLink()">Receber meu link mágico</button>
+        <button class="btn-ghost" style="margin-top:12px" onclick="show('s-home')">Entrar sem conta por agora</button>
+      </div>
+    </div>
+    <div id="login-enviado" style="display:none; text-align:center">
+      <div style="font-size:34px">📩</div>
+      <h2 class="serif" style="font-size:26px; margin:10px 0 0">Link enviado ✨</h2>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:10px 0 0; line-height:1.6">Abra seu e-mail e toque no link<br/>pra entrar sob as asas.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ 4. HOME ░░ -->
+<section id="s-home" class="screen">
+  <div style="flex:1; overflow-y:auto" class="pad">
+    <!-- view: início -->
+    <div data-view="inicio">
+      <div style="display:flex; align-items:center; justify-content:space-between">
+        <div>
+          <p style="color:var(--tinta-suave); font-size:14px; margin:0" id="home-saud">Boa noite</p>
+          <h2 class="serif" style="font-size:24px; margin:2px 0 0">Seu anjo hoje é <span id="home-anjo" style="color:var(--ouro)">Mebahiah</span></h2>
+        </div>
+        <div style="text-align:center; background:var(--ouro-bg); border-radius:14px; padding:6px 12px" onclick="toast('7 dias sob as asas 🪽')">
+          <div id="home-streak" style="font-size:18px; font-weight:600; color:#854F0B; line-height:1.1">7</div>
+          <div style="font-size:10px; color:var(--ouro)">dias</div>
+        </div>
+      </div>
+
+      <!-- mensagem da Monica -->
+      <div class="card fade-in" style="margin-top:22px; padding:18px; background:var(--ouro-bg); border-color:transparent" onclick="openPlayer({titulo:'Mensagem da Monica',fmt:'Vídeo · esta semana',art:'🎬',dur:'4:00'})">
+        <div style="display:flex; align-items:center; gap:12px">
+          <div style="width:42px;height:42px;border-radius:50%;background:#F6C868;display:flex;align-items:center;justify-content:center;color:#5A3A06;font-weight:600">MB</div>
+          <div style="flex:1">
+            <p style="margin:0; font-weight:600; color:#5A3A06">Mensagem da Monica</p>
+            <p style="margin:0; font-size:12px; color:var(--ouro)">Esta semana · 4 min</p>
+          </div>
+          <span style="font-size:26px; color:var(--ouro)">▶</span>
+        </div>
+        <p class="serif-soft" style="margin:14px 0 0; font-size:17px; color:#5A3A06; line-height:1.4">"Deixe que a proteção te encontre no silêncio do seu dia…"</p>
+      </div>
+
+      <!-- salmo do dia -->
+      <div class="card" style="margin-top:14px; padding:16px; display:flex; align-items:center; gap:14px" onclick="openPlayer({titulo:'Salmo 91 — da proteção',fmt:'Áudio · na voz da Monica',art:'📜',dur:'2:00'})">
+        <div style="width:46px;height:46px;border-radius:12px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center;font-size:22px">📜</div>
+        <div style="flex:1">
+          <p style="margin:0; font-weight:600">Salmo de hoje</p>
+          <p style="margin:0; font-size:12px; color:var(--tinta-suave)">Salmo 91 · áudio + texto · 2 min</p>
+        </div>
+        <span style="font-size:22px; color:var(--ouro)">▶</span>
+      </div>
+
+      <!-- ritual -->
+      <p class="label" style="margin:26px 0 10px; display:block">Ritual de hoje</p>
+      <div style="display:flex; gap:12px">
+        <div class="card" style="flex:1; padding:16px; text-align:center" onclick="toast('Ritual da manhã ✓')">
+          <div style="font-size:24px">🌅</div>
+          <p style="margin:8px 0 0; font-size:13px; color:var(--tinta-suave)">Proteção</p>
+          <p style="margin:0; font-weight:600; font-size:14px">Manhã ✓</p>
+        </div>
+        <div class="card" style="flex:1; padding:16px; text-align:center" onclick="toast('Abrindo ritual da noite…')">
+          <div style="font-size:24px">🌙</div>
+          <p style="margin:8px 0 0; font-size:13px; color:var(--tinta-suave)">Gratidão</p>
+          <p style="margin:0; font-weight:600; font-size:14px; color:var(--ouro)">Noite</p>
+        </div>
+      </div>
+
+      <!-- livro de pedidos -->
+      <div class="card" style="margin-top:14px; padding:16px; display:flex; align-items:center; gap:12px" onclick="nav('pedidos')">
+        <div style="width:38px;height:38px;border-radius:10px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center;color:var(--celeste)">📖</div>
+        <div style="flex:1">
+          <p style="margin:0; font-weight:600">Livro de pedidos</p>
+          <p style="margin:0; font-size:12px; color:var(--tinta-suave)">3 pedidos · 1 realizado</p>
+        </div>
+        <span style="color:var(--tinta-suave)">›</span>
+      </div>
+
+      <!-- milagre do mês -->
+      <div class="card" style="margin-top:14px; padding:16px; display:flex; align-items:center; gap:12px; background:var(--celeste-bg); border-color:transparent" onclick="show('s-milagre')">
+        <div style="font-size:22px">✨</div>
+        <div style="flex:1">
+          <p style="margin:0; font-weight:600; color:#1E5A99">O Milagre do mês</p>
+          <p style="margin:0; font-size:12px; color:var(--celeste)">Conheça a história de junho</p>
+        </div>
+        <span style="color:var(--celeste)">›</span>
+      </div>
+
+      <p class="label" style="display:block; margin:26px 0 10px">Práticas</p>
+
+      <!-- diário de gratidão -->
+      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="openGratidao()">
+        <div style="width:38px;height:38px;border-radius:10px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center">🙏</div>
+        <div style="flex:1">
+          <p style="margin:0; font-weight:600">Diário de gratidão</p>
+          <p style="margin:0; font-size:12px; color:var(--tinta-suave)">Termine o dia agradecendo</p>
+        </div>
+        <span style="color:var(--tinta-suave)">›</span>
+      </div>
+
+      <!-- correio angelical -->
+      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="openCorreio()">
+        <div style="width:38px;height:38px;border-radius:10px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center">💌</div>
+        <div style="flex:1">
+          <p style="margin:0; font-weight:600">Correio Angelical</p>
+          <p style="margin:0; font-size:12px; color:var(--tinta-suave)">Escreva uma carta ao seu anjo</p>
+        </div>
+        <span style="color:var(--tinta-suave)">›</span>
+      </div>
+
+      <!-- magia branca -->
+      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px" onclick="openMagia()">
+        <div style="width:38px;height:38px;border-radius:10px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center">🕯️</div>
+        <div style="flex:1">
+          <p style="margin:0; font-weight:600">Magia Branca</p>
+          <p style="margin:0; font-size:12px; color:var(--tinta-suave)">O pantáculo do seu pedido</p>
+        </div>
+        <span style="color:var(--tinta-suave)">›</span>
+      </div>
+    </div>
+
+    <!-- view: pedidos -->
+    <div data-view="pedidos" class="hide">
+      <h2 class="serif" style="font-size:26px; margin:0">Livro de pedidos</h2>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 18px">Escreva sua intenção. Seu anjo escuta.</p>
+      <textarea class="campo" id="novo-pedido" rows="3" placeholder="Hoje eu peço…"></textarea>
+      <label style="display:flex; align-items:center; gap:8px; margin:12px 0; font-size:13px; color:var(--tinta-suave)">
+        <input type="checkbox" id="cand-milagre" /> Quero compartilhar com a Monica (candidato ao Milagre do mês)
+      </label>
+      <button class="btn-ouro" onclick="addPedido()">Registrar pedido</button>
+      <div id="lista-pedidos" style="margin-top:22px; display:flex; flex-direction:column; gap:10px"></div>
+    </div>
+
+    <!-- view: biblioteca -->
+    <div data-view="biblioteca" class="hide">
+      <h2 class="serif" style="font-size:26px; margin:0">Biblioteca da Monica</h2>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 4px">Áudios, vídeos e salmos na voz dela.</p>
+      <div id="lista-bib"></div>
+    </div>
+  </div>
+
+  <!-- bottom nav -->
+  <div class="nav">
+    <button class="sel" data-nav="inicio" onclick="nav('inicio')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-8 9 8M5 9.5V21h14V9.5"/></svg>Início</button>
+    <button data-nav="biblioteca" onclick="nav('biblioteca')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5v15l8-3 8 3V5l-8 3-8-3z"/></svg>Biblioteca</button>
+    <button data-nav="pedidos" onclick="nav('pedidos')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 4h11l3 3v13H5z"/><path d="M9 10h7M9 14h5"/></svg>Pedidos</button>
+    <button data-nav="comunidade" onclick="toast('Comunidade chega na v1.1 🕊️')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5M15 20c0-2 2-3.5 4-3"/></svg>Comunidade</button>
+  </div>
+</section>
+
+<!-- ░░ PLAYER DE MÍDIA ░░ -->
+<section id="s-player" class="screen">
+  <div class="halo" style="top:-60px; width:280px; height:280px"></div>
+  <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column">
+    <button onclick="closePlayer()" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start">↓ recolher</button>
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center">
+      <div id="pl-art" style="width:200px;height:200px;border-radius:28px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:76px">📜</div>
+      <p id="pl-fmt" style="margin:24px 0 0; font-size:12px; letter-spacing:.14em; color:var(--ouro); text-transform:uppercase">Áudio · na voz da Monica</p>
+      <h2 class="serif" id="pl-titulo" style="font-size:26px; margin:8px 24px 0">Salmo 91</h2>
+      <div style="width:100%; max-width:300px; margin-top:28px">
+        <div style="height:4px; background:var(--ouro-suave); border-radius:4px; overflow:hidden">
+          <div id="pl-bar" style="height:100%; width:0%; background:var(--ouro); transition:width .25s linear"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12px; color:var(--tinta-suave)">
+          <span id="pl-cur">0:00</span><span id="pl-dur">2:00</span>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:32px; margin-top:30px">
+        <button onclick="plSeek(-15)" style="background:none;border:none;font-size:26px;color:var(--tinta-suave)">⟲</button>
+        <button id="pl-toggle" onclick="plToggle()" style="width:74px;height:74px;border-radius:50%;border:none;background:linear-gradient(180deg,#F6C868,#D89A2C);color:#5A3A06;font-size:30px;box-shadow:0 6px 22px rgba(186,117,23,.3)">▶</button>
+        <button onclick="plSeek(15)" style="background:none;border:none;font-size:26px;color:var(--tinta-suave)">⟳</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ MILAGRE DO MÊS ░░ -->
+<section id="s-milagre" class="screen" style="background:var(--celeste-bg)">
+  <div class="pad" style="flex:1; display:flex; flex-direction:column">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:#1E5A99;font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+    <div style="text-align:center; margin-top:10px">
+      <div style="font-size:28px">✨</div>
+      <p style="font-size:12px; letter-spacing:.14em; color:var(--celeste); text-transform:uppercase; margin:6px 0 0">O Milagre do mês</p>
+      <h1 class="serif" style="font-size:30px; margin:6px 0 0; color:#1E5A99">A história de junho</h1>
+    </div>
+    <!-- vídeo da Monica -->
+    <div class="card" style="margin-top:22px; padding:0; overflow:hidden; border-color:transparent" onclick="openPlayer({titulo:'O Milagre de junho',fmt:'Vídeo · com a Monica',art:'🎬',dur:'5:00'})">
+      <div style="height:170px; background:#1E5A99; display:flex; align-items:center; justify-content:center; position:relative">
+        <span style="width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;font-size:24px;color:#1E5A99">▶</span>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px; padding:18px">
+      <p class="serif-soft" style="font-size:19px; color:var(--tinta); line-height:1.5; margin:0">"Dona Aparecida pediu para rever a filha que não via há 8 anos. Este mês, sob as asas, esse reencontro aconteceu."</p>
+      <p style="margin:14px 0 0; font-size:13px; color:var(--tinta-suave)">Selecionado com carinho pela Monica entre os pedidos da comunidade. O próximo pode ser o seu — registre no Livro de pedidos.</p>
+    </div>
+    <button class="btn-ghost" style="margin-top:16px" onclick="nav('pedidos'); show('s-home')">Compartilhar meu pedido</button>
+  </div>
+</section>
+
+<!-- ░░ DIÁRIO DE GRATIDÃO ░░ -->
+<section id="s-gratidao" class="screen">
+  <div class="halo" style="top:-110px; width:220px; height:220px"></div>
+  <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; overflow-y:auto">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+    <h2 class="serif" style="font-size:26px; margin:10px 0 0">Diário de gratidão</h2>
+    <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 16px">A gratidão abre as portas do céu. Pelo que você é grato hoje?</p>
+    <textarea class="campo" id="nova-gratidao" rows="3" placeholder="Hoje sou grata por…"></textarea>
+    <button class="btn-ouro" style="margin-top:12px" onclick="addGratidao()">Registrar gratidão</button>
+    <p class="label" style="display:block; margin:24px 0 10px">Suas gratidões</p>
+    <div id="lista-gratidao" style="display:flex; flex-direction:column; gap:10px; padding-bottom:24px"></div>
+  </div>
+</section>
+
+<!-- ░░ CORREIO ANGELICAL ░░ -->
+<section id="s-correio" class="screen">
+  <div class="halo" style="top:-110px; width:220px; height:220px"></div>
+  <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; overflow-y:auto">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+
+    <!-- estado: escrevendo -->
+    <div id="correio-escrita">
+      <h2 class="serif" style="font-size:26px; margin:8px 0 0">Correio Angelical</h2>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 0; line-height:1.6">Escreva agradecimentos ao seu anjo, no presente — como se já fossem realidade. ✨</p>
+
+      <div class="card" style="margin-top:16px; padding:14px 16px; background:var(--ouro-bg); border-color:transparent">
+        <p style="margin:0; font-size:13px; color:#854F0B">Para: <span id="co-anjo" class="serif" style="color:#5A3A06">seu anjo</span></p>
+        <p style="margin:4px 0 0; font-size:13px; color:#854F0B">De: <span id="co-nome" style="color:#5A3A06">você</span></p>
+      </div>
+
+      <p class="label" style="display:block; margin:18px 0 10px">Seus agradecimentos</p>
+      <div id="correio-lista" style="display:flex; flex-direction:column; gap:10px"></div>
+      <button class="btn-ghost" style="margin-top:12px" onclick="addAgradecimento()">+ adicionar agradecimento</button>
+      <p id="co-aviso" style="font-size:12px; color:#C0392B; min-height:16px; margin:10px 0 0"></p>
+
+      <div class="card" style="margin-top:14px; padding:14px 16px">
+        <p class="serif-soft" style="margin:0; font-size:16px; color:var(--tinta); line-height:1.5">"Bendito é o meu desejo, porque ele é realizado para o bem de todos os envolvidos. <strong style="color:var(--ouro)">Amém.</strong>"</p>
+        <p style="margin:8px 0 0; font-size:11px; color:var(--tinta-suave)">Fecho automático da sua carta, como ensina a Monica.</p>
+      </div>
+
+      <button class="btn-ouro" style="margin-top:16px" onclick="selarCarta()">Selar minha carta</button>
+    </div>
+
+    <!-- estado: selada (ritual) -->
+    <div id="correio-selada" style="display:none">
+      <div style="text-align:center; margin-top:10px">
+        <div style="font-size:32px">💌</div>
+        <h2 class="serif" style="font-size:26px; margin:8px 0 0">Sua carta está selada</h2>
+      </div>
+      <div class="card" style="margin-top:18px; padding:16px 18px">
+        <p style="margin:0 0 10px; font-weight:600">O ritual, passo a passo:</p>
+        <ol style="margin:0; padding-left:18px; font-size:14px; line-height:1.8; color:var(--tinta)">
+          <li>Copie sua carta à mão e coloque num envelope endereçado ao seu anjo (em letra de forma maiúscula).</li>
+          <li>Guarde o envelope dentro da Bíblia, no <strong>Salmo 90 / 91</strong>.</li>
+          <li>Deixe por <strong>7 dias</strong>.</li>
+          <li>Depois, queime na chama de uma <strong>vela branca</strong> oferecida ao seu anjo, para ativar o pedido.</li>
+          <li>Guarde uma cópia num livro e releia em um ano — verá quantos pedidos se realizaram. 🕊️</li>
+        </ol>
+      </div>
+      <button class="btn-ghost" style="margin-top:14px" onclick="compartilharCarta()">Compartilhar minha carta</button>
+      <button class="btn-ouro" style="margin-top:10px" onclick="show('s-home')">Voltar ao santuário</button>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ MAGIA BRANCA ░░ -->
+<section id="s-magia" class="screen" style="background:var(--celeste-bg)">
+  <div class="pad" style="flex:1; display:flex; flex-direction:column; overflow-y:auto">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:#1E5A99;font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+    <div style="text-align:center">
+      <h2 class="serif" style="font-size:26px; margin:6px 0 0; color:#1E5A99">Magia Branca</h2>
+      <p style="color:#3a6ea5; font-size:14px; margin:6px 0 0">O pantáculo do seu pedido</p>
+    </div>
+
+    <!-- pantáculo -->
+    <div style="display:flex; justify-content:center; margin-top:14px">
+      <svg viewBox="0 0 320 300" width="290" style="max-width:100%">
+        <circle cx="160" cy="150" r="138" fill="#fff" stroke="#BA7517" stroke-width="2"/>
+        <circle cx="118" cy="158" r="74" fill="none" stroke="#BA7517" stroke-width="2.5"/>
+        <circle cx="202" cy="158" r="74" fill="none" stroke="#BA7517" stroke-width="2.5"/>
+        <line x1="22" y1="158" x2="298" y2="158" stroke="#5A3A06" stroke-width="3"/>
+        <polygon points="22,158 34,151 34,165" fill="#5A3A06"/>
+        <rect x="286" y="150" width="9" height="16" rx="2" fill="#5A3A06"/>
+        <text x="95" y="163" font-family="Marcellus,serif" font-size="15" fill="#BA7517">OB</text>
+        <text x="186" y="163" font-family="Marcellus,serif" font-size="15" fill="#BA7517">OD</text>
+        <text id="pant-principe" x="160" y="70" text-anchor="middle" font-size="11" fill="#1E5A99">Príncipe</text>
+        <text id="pant-anjo"     x="160" y="88" text-anchor="middle" font-size="11" fill="#1E5A99">Anjo</text>
+        <text id="pant-nome"     x="160" y="106" text-anchor="middle" font-family="Marcellus,serif" font-size="13" fill="#5A3A06">Seu nome</text>
+        <text id="pant-pedido"   x="160" y="232" text-anchor="middle" font-size="11" fill="#5A3A06">seu pedido</text>
+      </svg>
+    </div>
+
+    <div style="margin-top:6px">
+      <span class="label">Seu pedido (curto — não ultrapasse o círculo)</span>
+      <input id="magia-pedido" class="campo" maxlength="48" style="margin-top:8px" placeholder="Ex.: paz e prosperidade no meu lar" oninput="atualizarPantaculo()" />
+    </div>
+
+    <div class="card" style="margin-top:14px; padding:16px 18px">
+      <p style="margin:0 0 10px; font-weight:600">Como realizar:</p>
+      <ol style="margin:0; padding-left:18px; font-size:14px; line-height:1.8; color:var(--tinta)">
+        <li>Desenhe ou imprima o pantáculo e preencha à mão: o Príncipe, o seu Anjo, o seu nome e o pedido.</li>
+        <li>O pedido <strong>não pode ultrapassar o círculo</strong>.</li>
+        <li>Acenda uma vela branca, concentre-se no pedido e agradeça.</li>
+      </ol>
+    </div>
+    <button class="btn-ouro" style="margin-top:16px" onclick="toast('Que assim seja 🕊️'); show('s-home')">Concluir a magia</button>
+  </div>
+</section>
+
+<!-- paywall -->
+<div id="paywall" style="position:fixed; inset:0; z-index:60; display:none; background:rgba(44,44,42,.55)">
+  <div style="position:absolute; left:0; right:0; bottom:0; background:var(--branco); border-radius:26px 26px 0 0; padding:26px 24px max(env(safe-area-inset-bottom),24px)">
+    <div style="text-align:center">
+      <div style="font-size:30px">🪽</div>
+      <h3 class="serif" style="font-size:24px; margin:8px 0 0">Continue sob as asas</h3>
+      <p id="paywall-ctx" style="color:var(--tinta-suave); font-size:14px; margin:8px 0 0; line-height:1.5">Desbloqueie toda a biblioteca da Monica.</p>
+    </div>
+    <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px">
+      <div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px; border:2px solid var(--ouro-claro)">
+        <div style="flex:1"><p style="margin:0; font-weight:600">Anual</p><p style="margin:0; font-size:12px; color:var(--tinta-suave)">R$ 199/ano · R$ 16,58/mês</p></div>
+        <span style="font-size:11px; background:var(--ouro-bg); color:#854F0B; padding:3px 9px; border-radius:8px">−33%</span>
+      </div>
+      <div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px">
+        <div style="flex:1"><p style="margin:0; font-weight:600">Mensal</p><p style="margin:0; font-size:12px; color:var(--tinta-suave)">R$ 24,90/mês</p></div>
+      </div>
+    </div>
+    <button class="btn-ouro" style="margin-top:16px" onclick="toast('Indo para o checkout Stripe…'); closePaywall()">Começar 7 dias grátis</button>
+    <button onclick="closePaywall()" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;width:100%;margin-top:12px">Agora não</button>
+    <p style="text-align:center; font-size:11px; color:var(--tinta-suave); margin:10px 0 0">A candidatura ao Milagre do mês é sempre gratuita.</p>
+  </div>
+</div>
+
+<!-- toast -->
+<div id="toast" style="position:fixed; left:50%; bottom:88px; transform:translateX(-50%) translateY(20px); background:var(--tinta); color:#fff; padding:11px 18px; border-radius:14px; font-size:14px; opacity:0; transition:.3s; pointer-events:none; z-index:50"></div>
+
+<script>
+// ── dados dos 72 anjos (tabela oficial da Monica Buonfiglio; espelha api/_lib/anjos.js) ──
+// [n, nome, atributo, [[dia,mes] x5]]  — cada anjo rege 5 dias do ano.
+const ANJOS = [
+[1,'Vehuiah','Vontade e força de iniciar',[[1,6],[13,8],[20,3],[25,10],[6,1]]],[2,'Jeliel','Amor e fidelidade',[[2,6],[14,8],[21,3],[26,10],[7,1]]],[3,'Sitael','Construção e proteção',[[3,6],[15,8],[22,3],[27,10],[8,1]]],[4,'Elemiah','Viagens interiores e paz',[[4,6],[16,8],[23,3],[28,10],[9,1]]],[5,'Mahasiah','Retidão e harmonia',[[5,6],[17,8],[24,3],[29,10],[10,1]]],[6,'Lelahel','Luz, cura e talento',[[6,6],[18,8],[25,3],[30,10],[11,1]]],[7,'Achaiah','Paciência e descoberta',[[7,6],[19,8],[26,3],[31,10],[12,1]]],[8,'Cahethel','Bênção e gratidão',[[8,6],[20,8],[27,3],[1,11],[13,1]]],[9,'Haziel','Misericórdia e perdão',[[9,6],[21,8],[28,3],[2,11],[14,1]]],[10,'Aladiah','Graça e regeneração',[[10,6],[22,8],[29,3],[3,11],[15,1]]],[11,'Laoviah','Vitória e renome',[[11,6],[23,8],[30,3],[4,11],[16,1]]],[12,'Hahaiah','Refúgio e abrigo',[[12,6],[24,8],[31,3],[5,11],[17,1]]],[13,'Yesalel','Reconciliação',[[13,6],[25,8],[1,4],[6,11],[18,1]]],[14,'Mebahel','Verdade e justiça',[[14,6],[26,8],[2,4],[7,11],[19,1]]],[15,'Hariel','Pureza e clareza',[[15,6],[27,8],[3,4],[8,11],[20,1]]],[16,'Hacamiah','Lealdade e proteção',[[16,6],[28,8],[4,4],[9,11],[21,1]]],[17,'Lahuviah','Revelação e intuição',[[17,6],[29,8],[5,4],[10,11],[22,1]]],[18,'Caliel','Justiça e verdade',[[18,6],[30,8],[6,4],[11,11],[23,1]]],[19,'Leuviah','Memória e inteligência',[[19,6],[31,8],[7,4],[12,11],[24,1]]],[20,'Pahaliah','Vocação e fé',[[20,6],[1,9],[8,4],[13,11],[25,1]]],[21,'Nelchael','Conhecimento e estudo',[[21,6],[2,9],[9,4],[14,11],[26,1]]],[22,'Yeiaiel','Renome e fortuna',[[22,6],[3,9],[10,4],[15,11],[27,1]]],[23,'Melahel','Cura e coragem',[[23,6],[4,9],[11,4],[16,11],[28,1]]],[24,'Haheuiah','Proteção e abrigo',[[24,6],[5,9],[12,4],[17,11],[29,1]]],[25,'NithHaiah','Sabedoria e magia',[[25,6],[6,9],[13,4],[18,11],[30,1]]],[26,'Haaiah','Ordem e política',[[26,6],[7,9],[14,4],[19,11],[31,1]]],[27,'Lerathel','Difusão da luz',[[27,6],[8,9],[15,4],[20,11],[1,2]]],[28,'Seheiah','Saúde e longevidade',[[28,6],[9,9],[16,4],[21,11],[2,2]]],[29,'Reyel','Libertação e fé',[[29,6],[10,9],[17,4],[22,11],[3,2]]],[30,'Omael','Paciência e fertilidade',[[30,6],[11,9],[18,4],[23,11],[4,2]]],[31,'Lecabel','Talento e prosperidade',[[1,7],[12,9],[19,4],[24,11],[5,2]]],[32,'Vassahiah','Clemência e justiça',[[2,7],[13,9],[20,4],[25,11],[6,2]]],[33,'Yehuiah','Discernimento',[[3,7],[14,9],[21,4],[26,11],[7,2]]],[34,'Lehahiah','Obediência e sorte',[[4,7],[15,9],[22,4],[27,11],[8,2]]],[35,'Chavahiah','Harmonia familiar',[[5,7],[16,9],[23,4],[28,11],[9,2]]],[36,'Menadel','Trabalho e vocação',[[6,7],[17,9],[24,4],[29,11],[10,2]]],[37,'Aniel','Coragem e rompimento',[[7,7],[18,9],[25,4],[30,11],[11,2]]],[38,'Haamiah','Ritual e proteção',[[8,7],[19,9],[26,4],[1,12],[12,2]]],[39,'Rehael','Cura e filiação',[[9,7],[20,9],[27,4],[2,12],[13,2]]],[40,'Yeiazel','Consolo e libertação',[[10,7],[21,9],[28,4],[3,12],[14,2]]],[41,'Hahael','Missão e fé',[[11,7],[22,9],[29,4],[4,12],[15,2]]],[42,'Micael','Ordem e providência',[[12,7],[23,9],[30,4],[5,12],[16,2]]],[43,'Veuliah','Prosperidade e paz',[[13,7],[24,9],[1,5],[6,12],[17,2]]],[44,'Yelaiah','Coragem e proteção',[[14,7],[25,9],[2,5],[7,12],[18,2]]],[45,'Sehaliah','Motivação e vida',[[15,7],[26,9],[3,5],[8,12],[19,2]]],[46,'Ariel','Percepção e descoberta',[[16,7],[27,9],[4,5],[9,12],[20,2]]],[47,'Assaliah','Contemplação e verdade',[[17,7],[28,9],[5,5],[10,12],[21,2]]],[48,'Michael','Fertilidade e amizade',[[18,7],[29,9],[6,5],[11,12],[22,2]]],[49,'Vehuel','Grandeza e elevação',[[19,7],[30,9],[7,5],[12,12],[23,2]]],[50,'Daniel','Eloquência e clemência',[[20,7],[1,10],[8,5],[13,12],[24,2]]],[51,'Hahassiah','Medicina universal',[[21,7],[2,10],[9,5],[14,12],[25,2]]],[52,'Ymamiah','Resistência e liberdade',[[22,7],[3,10],[10,5],[15,12],[26,2]]],[53,'Nanael','Comunicação espiritual',[[23,7],[4,10],[11,5],[16,12],[27,2]]],[54,'Nithael','Juventude e graça',[[24,7],[5,10],[12,5],[17,12],[28,2],[29,2]]],[55,'Mebahiah','Consolo e lucidez',[[25,7],[6,10],[13,5],[18,12],[1,3]]],[56,'Poiel','Fortuna e renome',[[26,7],[7,10],[14,5],[19,12],[2,3]]],[57,'Nemamiah','Discernimento e prosperidade',[[27,7],[8,10],[15,5],[20,12],[3,3]]],[58,'Yeialel','Força mental e cura',[[28,7],[9,10],[16,5],[21,12],[4,3]]],[59,'Harahel','Riqueza e conhecimento',[[29,7],[10,10],[17,5],[22,12],[5,3]]],[60,'Mitsrael','Reparação e fidelidade',[[30,7],[11,10],[18,5],[23,12],[6,3]]],[61,'Umabel','Amizade e afinidade',[[31,7],[12,10],[19,5],[24,12],[7,3]]],[62,'Iah-Hel','Sabedoria e quietude',[[1,8],[13,10],[20,5],[25,12],[8,3]]],[63,'Anauel','Proteção e unidade',[[2,8],[14,10],[21,5],[26,12],[9,3]]],[64,'Mehiel','Inspiração e proteção',[[3,8],[15,10],[22,5],[27,12],[10,3]]],[65,'Damabiah','Fonte e abundância',[[4,8],[16,10],[23,5],[28,12],[11,3]]],[66,'Manakel','Bondade e sono',[[5,8],[17,10],[24,5],[29,12],[12,3]]],[67,'Eyael','Consolo e elevação',[[6,8],[18,10],[25,5],[30,12],[13,3]]],[68,'Habuiah','Cura e fertilidade',[[7,8],[19,10],[26,5],[31,12],[14,3]]],[69,'Rochel','Restituição e justiça',[[8,8],[20,10],[27,5],[1,1],[15,3]]],[70,'Yabamiah','Regeneração e alquimia',[[9,8],[21,10],[28,5],[2,1],[16,3]]],[71,'Haiaiel','Coragem e proteção',[[10,8],[22,10],[29,5],[3,1],[17,3]]],[72,'Mumiah','Renascimento e conclusão',[[11,8],[23,10],[30,5],[4,1],[18,3]]]
+];
+const MESES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const COROS=['Serafins','Querubins','Tronos','Dominações','Potências','Virtudes','Principados','Arcanjos','Anjos'];
+function coroDe(n){ return COROS[Math.floor((n-1)/8)]; }
+const INDICE={};
+ANJOS.forEach(function(a){ a[3].forEach(function(dm){ INDICE[dm[1]*100+dm[0]]={n:a[0],nome:a[1],atributo:a[2],coro:coroDe(a[0]),datas:a[3]}; }); });
+function diaAnterior(m,d){ d-=1; if(d>=1) return [m,d]; m-=1; if(m<1)m=12; var fim=[31,29,31,30,31,30,31,31,30,31,30,31][m-1]; return [m,fim]; }
+function anjoRegente(m,d){ for(var i=0;i<5;i++){ var hit=INDICE[m*100+d]; if(hit) return hit; var p=diaAnterior(m,d); m=p[0]; d=p[1]; } return INDICE[1118]; }
+
+// ── navegação entre telas ──
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id); el.classList.add('active'); el.scrollTop=0;
+  if(id==='s-home') initHome();
+  buzz();
+}
+function goCadastro(){ show('s-cadastro'); setTimeout(()=>document.getElementById('in-nome').focus(),400); }
+
+// ── revelação do anjo ──
+function revelar(){
+  const nome=document.getElementById('in-nome').value.trim();
+  const d=+document.getElementById('in-dia').value, m=+document.getElementById('in-mes').value, y=+document.getElementById('in-ano').value;
+  const erro=document.getElementById('cad-erro');
+  if(!nome){ erro.textContent='Como o anjo deve te chamar?'; return; }
+  if(!(d>=1&&d<=31)||!(m>=1&&m<=12)||!(y>=1900&&y<=2025)){ erro.textContent='Confira sua data de nascimento.'; return; }
+  erro.textContent='';
+  window._nome=nome.split(' ')[0];
+
+  const anjo=anjoRegente(m,d);
+  document.getElementById('rv-num').textContent='Anjo '+anjo.n;
+  document.getElementById('rv-nome').textContent=anjo.nome;
+  document.getElementById('rv-coro').textContent='Coro dos '+anjo.coro;
+  document.getElementById('rv-attr').textContent=anjo.atributo;
+  document.getElementById('rv-faixa').textContent='Reina nos dias: '+anjo.datas.map(function(dm){return dm[0]+' '+MESES[dm[1]-1];}).join(' · ');
+  window._anjo=anjo.nome;
+  window._perfil={ nome:window._nome, nascimento:(y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0')), anjo_n:anjo.n, anjo_nome:anjo.nome };
+  try{ localStorage.setItem('saa_pending', JSON.stringify(window._perfil)); }catch(e){}
+
+  show('s-reveal');
+  // dispara animações em sequência
+  document.querySelectorAll('#s-reveal .reveal-anjo, #s-reveal .reveal-fade').forEach(e=>e.classList.remove('on'));
+  setTimeout(()=>document.getElementById('rv-intro').classList.add('on'),300);
+  setTimeout(()=>{ document.getElementById('rv-anjo').classList.add('on'); buzz(); chime(); },1100);
+  setTimeout(()=>document.querySelectorAll('#rv-attr,#rv-faixa,#s-reveal .reveal-fade').forEach(e=>e.classList.add('on')),2000);
+}
+
+// ── home ──
+let homeReady=false;
+function initHome(){
+  if(window._nome){
+    const h=new Date().getHours();
+    document.getElementById('home-saud').textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+', '+window._nome;
+  }
+  if(window._anjo) document.getElementById('home-anjo').textContent=window._anjo;
+  if(homeReady) return; homeReady=true;
+  renderPedidos(); renderBib(); carregarBiblioteca();
+}
+function nav(view){
+  document.querySelectorAll('#s-home [data-view]').forEach(v=>v.classList.toggle('hide', v.dataset.view!==view));
+  document.querySelectorAll('.nav [data-nav]').forEach(b=>b.classList.toggle('sel', b.dataset.nav===view));
+  document.querySelector('#s-home .pad').scrollTop=0; buzz();
+}
+
+// ── pedidos (mock local) ──
+let PEDIDOS=[{t:'Saúde para minha mãe',s:'realizado'},{t:'Paz no meu trabalho',s:'aberto'},{t:'Proteção na viagem',s:'aberto'}];
+function renderPedidos(){
+  const el=document.getElementById('lista-pedidos'); el.innerHTML='';
+  PEDIDOS.forEach(p=>{
+    const ok=p.s==='realizado';
+    el.insertAdjacentHTML('beforeend',`<div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px">
+      <span style="font-size:18px">${ok?'🌟':'🕯️'}</span>
+      <div style="flex:1"><p style="margin:0; font-size:15px">${p.t}</p>
+      <p style="margin:0; font-size:12px; color:${ok?'var(--ouro)':'var(--tinta-suave)'}">${ok?'Realizado — graças dadas':'Em oração'}</p></div></div>`);
+  });
+}
+function addPedido(){
+  const ta=document.getElementById('novo-pedido'); const t=ta.value.trim();
+  if(!t){ toast('Escreva sua intenção primeiro'); return; }
+  PEDIDOS.unshift({t,s:'aberto'}); ta.value=''; document.getElementById('cand-milagre').checked=false;
+  renderPedidos(); buzz(); toast('Pedido registrado 🕊️');
+}
+
+// ── biblioteca: conteúdo da Monica por coleção (demo; substituído pelo Supabase em carregarBiblioteca) ──
+let BIB=[
+  {colecao:'Mensagem da semana', itens:[
+    {t:'Mensagem da Monica — esta semana', m:'4 min', ic:'🎬', fmt:'Vídeo', premium:false},
+    {t:'Como falar com seu anjo', m:'8 min', ic:'🎬', fmt:'Vídeo', premium:true},
+  ]},
+  {colecao:'Salmo Diário', itens:[
+    {t:'Salmo 91 — da proteção', m:'2 min', ic:'📜', fmt:'Áudio', premium:false},
+    {t:'Salmo 23 — o Senhor é meu pastor', m:'2 min', ic:'📜', fmt:'Áudio', premium:true},
+    {t:'Salmo 121 — meu socorro vem do alto', m:'2 min', ic:'📜', fmt:'Áudio', premium:true},
+  ]},
+  {colecao:'Os 72 Anjos', itens:[
+    {t:'Os 72 nomes e suas forças', m:'12 episódios', ic:'📿', fmt:'Série', premium:true},
+    {t:'Seu anjo regente em profundidade', m:'9 min', ic:'🪽', fmt:'Áudio', premium:true},
+  ]},
+  {colecao:'Para dormir', itens:[
+    {t:'Oração da noite', m:'4 min', ic:'🌙', fmt:'Áudio', premium:false},
+    {t:'Meditação guiada para dormir', m:'12 min', ic:'🌙', fmt:'Áudio', premium:true},
+  ]},
+  {colecao:'Prosperidade', itens:[
+    {t:'Anjo da prosperidade', m:'6 min', ic:'💫', fmt:'Áudio', premium:true},
+  ]},
+];
+function fmtBadge(f){return `<span style="font-size:10px; letter-spacing:.04em; background:var(--ouro-bg); color:#854F0B; padding:2px 7px; border-radius:8px">${f}</span>`;}
+function renderBib(){
+  const el=document.getElementById('lista-bib'); if(!el) return; el.innerHTML='';
+  BIB.forEach(grp=>{
+    el.insertAdjacentHTML('beforeend',`<p class="label" style="display:block; margin:14px 0 10px">${grp.colecao}</p>`);
+    grp.itens.forEach(b=>{
+      const locked=b.premium && (window._plano==='free' || !window._plano);
+      const safe=b.t.replace(/'/g,'');
+      const click=locked?`openPaywall('${safe}')`:`openPlayer({titulo:'${safe}',fmt:'${b.fmt} · na voz da Monica',art:'${b.ic}',dur:'${b.m}'})`;
+      el.insertAdjacentHTML('beforeend',`<div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:14px; margin-bottom:10px; ${locked?'opacity:.9':''}" onclick="${click}">
+        <div style="width:46px;height:46px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:22px">${b.ic}</div>
+        <div style="flex:1; min-width:0"><p style="margin:0; font-weight:500">${b.t}</p>
+        <p style="margin:3px 0 0; font-size:12px; color:var(--tinta-suave)">${b.m} &nbsp; ${fmtBadge(b.fmt)}</p></div>
+        <span style="color:${locked?'var(--tinta-suave)':'var(--ouro)'}; font-size:20px">${locked?'🔒':'▶'}</span></div>`);
+    });
+  });
+}
+function openPaywall(ctx){
+  if(ctx) document.getElementById('paywall-ctx').textContent='“'+ctx+'” faz parte do plano. Desbloqueie toda a biblioteca da Monica.';
+  document.getElementById('paywall').style.display='block'; buzz();
+}
+function closePaywall(){ document.getElementById('paywall').style.display='none'; }
+
+// ── biblioteca a partir do Supabase (cai pro demo se vazio/sem conexão) ──
+const COLECAO_LABEL={mensagem_semana:'Mensagem da semana', salmo_diario:'Salmo Diário', '72_anjos':'Os 72 Anjos', para_dormir:'Para dormir', prosperidade:'Prosperidade', protecao:'Proteção'};
+const FMT_LABEL={audio:'Áudio', video:'Vídeo', salmo:'Áudio', texto:'Texto'};
+const ICON_COL={mensagem_semana:'🎬', salmo_diario:'📜', '72_anjos':'📿', para_dormir:'🌙', prosperidade:'💫', protecao:'🕊️'};
+function durLabel(seg){ if(!seg) return ''; return Math.round(seg/60)+' min'; }
+const ORDEM_COLECAO=['mensagem_semana','salmo_diario','72_anjos','protecao','prosperidade','para_dormir'];
+async function carregarBiblioteca(){
+  if(!window.saaAuth) return;  // modo demo
+  try{
+    // NÃO ordenar por 'colecao' no banco (PostgREST retorna vazio nesse caso);
+    // ordenamos as coleções no cliente, abaixo.
+    var res=await window.saaAuth.client.from('conteudos').select('titulo,formato,colecao,duracao_seg,premium').eq('publicado',true).order('data_pub',{ascending:false});
+    if(res.error || !res.data || !res.data.length) return;  // mantém o demo
+    var grupos={};
+    res.data.forEach(function(c){ (grupos[c.colecao]=grupos[c.colecao]||[]).push({ t:c.titulo, m:durLabel(c.duracao_seg), ic:(ICON_COL[c.colecao]||'🪽'), fmt:(FMT_LABEL[c.formato]||'Áudio'), premium:c.premium }); });
+    var chaves=Object.keys(grupos).sort(function(a,b){ var ia=ORDEM_COLECAO.indexOf(a), ib=ORDEM_COLECAO.indexOf(b); return (ia<0?99:ia)-(ib<0?99:ib); });
+    BIB = chaves.map(function(k){ return { colecao:(COLECAO_LABEL[k]||k), itens:grupos[k] }; });
+    renderBib();
+    console.log('[Sob as Asas] Biblioteca carregada do Supabase ('+res.data.length+' itens).');
+  }catch(e){}
+}
+
+// ── player de mídia ──
+let plState={playing:false, cur:0, dur:120, timer:null};
+function parseDur(s){ s=String(s||''); if(/^\d+:\d+$/.test(s)){var p=s.split(':');return (+p[0])*60+(+p[1]);} var m=s.match(/(\d+)\s*min/); if(m) return (+m[1])*60; return 120; }
+function fmtTime(t){ var m=Math.floor(t/60), x=Math.floor(t%60); return m+':'+(x<10?'0':'')+x; }
+function openPlayer(o){
+  o=o||{};
+  var cur=[...document.querySelectorAll('.screen')].find(s=>s.classList.contains('active'));
+  window._prevScreen = cur ? cur.id : 's-home';
+  document.getElementById('pl-art').textContent=o.art||'🪽';
+  document.getElementById('pl-fmt').textContent=o.fmt||'Áudio · na voz da Monica';
+  document.getElementById('pl-titulo').textContent=o.titulo||'';
+  plState.dur=parseDur(o.dur||'2:00'); plState.cur=0; plState.playing=false;
+  document.getElementById('pl-dur').textContent=fmtTime(plState.dur);
+  document.getElementById('pl-cur').textContent='0:00';
+  document.getElementById('pl-bar').style.width='0%';
+  document.getElementById('pl-toggle').textContent='▶';
+  if(plState.timer){clearInterval(plState.timer); plState.timer=null;}
+  show('s-player');
+  setTimeout(plToggle, 450);
+}
+function plToggle(){
+  plState.playing=!plState.playing;
+  document.getElementById('pl-toggle').textContent=plState.playing?'❚❚':'▶';
+  buzz();
+  if(plState.playing){
+    plState.timer=setInterval(function(){
+      plState.cur=Math.min(plState.dur, plState.cur+1);
+      document.getElementById('pl-cur').textContent=fmtTime(plState.cur);
+      document.getElementById('pl-bar').style.width=(plState.cur/plState.dur*100)+'%';
+      if(plState.cur>=plState.dur){ clearInterval(plState.timer); plState.timer=null; plState.playing=false; document.getElementById('pl-toggle').textContent='▶'; }
+    },1000);
+  } else if(plState.timer){ clearInterval(plState.timer); plState.timer=null; }
+}
+function plSeek(d){ plState.cur=Math.max(0,Math.min(plState.dur,plState.cur+d)); document.getElementById('pl-cur').textContent=fmtTime(plState.cur); document.getElementById('pl-bar').style.width=(plState.cur/plState.dur*100)+'%'; buzz(); }
+function closePlayer(){ if(plState.timer){clearInterval(plState.timer); plState.timer=null;} plState.playing=false; show(window._prevScreen||'s-home'); }
+
+// ── diário de gratidão (demo local; espelha public.gratidao) ──
+function esc(s){ return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+let GRAT=[{t:'Pela saúde da minha família', d:'Ontem'},{t:'Por um dia de paz no trabalho', d:'2 dias atrás'}];
+function openGratidao(){ renderGrat(); show('s-gratidao'); setTimeout(function(){var i=document.getElementById('nova-gratidao'); if(i) i.focus();},450); }
+function renderGrat(){
+  var el=document.getElementById('lista-gratidao'); el.innerHTML='';
+  if(!GRAT.length){ el.innerHTML='<p style="color:var(--tinta-suave);font-size:14px">Seu diário começa hoje 🙏</p>'; return; }
+  GRAT.forEach(function(g){ el.insertAdjacentHTML('beforeend','<div class="card" style="padding:14px 16px"><p class="serif-soft" style="margin:0;font-size:17px;color:var(--tinta);line-height:1.4">'+esc(g.t)+'</p><p style="margin:6px 0 0;font-size:12px;color:var(--tinta-suave)">'+esc(g.d)+'</p></div>'); });
+}
+function addGratidao(){
+  var ta=document.getElementById('nova-gratidao'); var t=ta.value.trim();
+  if(!t){ toast('Escreva sua gratidão primeiro'); return; }
+  GRAT.unshift({t:t, d:'Hoje'}); ta.value=''; renderGrat(); buzz(); toast('Gratidão registrada 🙏');
+}
+
+// ── Correio Angelical (modelo da Monica) ──
+const PRINCIPE_CORO={'Serafins':'Metatron','Querubins':'Raziel','Tronos':'Tsaphkiel','Dominações':'Zadkiel','Potências':'Camael','Virtudes':'Rafael','Principados':'Haniel','Arcanjos':'Miguel','Anjos':'Gabriel'};
+const PALAVRAS_EVITAR=['não','nao','jamais','dívida','divida','sonho'];
+function openCorreio(){
+  document.getElementById('co-anjo').textContent=window._anjo||'seu anjo';
+  document.getElementById('co-nome').textContent=window._nome||'você';
+  document.getElementById('correio-escrita').style.display='block';
+  document.getElementById('correio-selada').style.display='none';
+  document.getElementById('co-aviso').textContent='';
+  var lista=document.getElementById('correio-lista'); lista.innerHTML='';
+  for(var i=0;i<3;i++) addAgradecimento();
+  show('s-correio');
+}
+function addAgradecimento(){
+  var lista=document.getElementById('correio-lista');
+  if(lista.children.length>=10){ toast('Dez agradecimentos é o ideal ✨'); return; }
+  var inp=document.createElement('input');
+  inp.className='campo'; inp.placeholder='Obrigado por…'; inp.setAttribute('oninput','checarCarta()');
+  lista.appendChild(inp);
+}
+function checarCarta(){
+  var texto=[].map.call(document.querySelectorAll('#correio-lista input'),function(i){return i.value.toLowerCase();}).join(' ');
+  var achou=PALAVRAS_EVITAR.filter(function(p){ return new RegExp('\\b'+p+'\\b','i').test(texto); });
+  document.getElementById('co-aviso').textContent = achou.length ? ('Evite palavras como: '+achou.join(', ')+' — escreva sempre no presente.') : '';
+}
+function selarCarta(){
+  var inputs=[].map.call(document.querySelectorAll('#correio-lista input'),function(i){return i.value.trim();}).filter(Boolean);
+  if(!inputs.length){ document.getElementById('co-aviso').textContent='Escreva ao menos um agradecimento.'; return; }
+  window._carta=inputs;
+  document.getElementById('correio-escrita').style.display='none';
+  document.getElementById('correio-selada').style.display='block';
+  document.querySelector('#s-correio .pad').scrollTop=0; buzz();
+}
+function compartilharCarta(){
+  var txt='Minha carta ao anjo '+(window._anjo||'')+':\n'+(window._carta||[]).map(function(t){return '• '+t;}).join('\n')+'\n\n"Bendito é o meu desejo, porque ele é realizado para o bem de todos os envolvidos. Amém."';
+  if(navigator.share){ navigator.share({title:'Correio Angelical',text:txt}).catch(function(){}); }
+  else { try{navigator.clipboard.writeText(txt);}catch(e){} toast('Carta copiada ✨'); }
+}
+
+// ── Magia Branca (pantáculo) ──
+function openMagia(){
+  var coro = (window._perfil && window._perfil.anjo_n) ? coroDe(window._perfil.anjo_n) : null;
+  document.getElementById('pant-principe').textContent = 'Príncipe: '+(coro && PRINCIPE_CORO[coro] ? PRINCIPE_CORO[coro] : '—');
+  document.getElementById('pant-anjo').textContent = 'Anjo: '+(window._anjo||'—');
+  document.getElementById('pant-nome').textContent = window._nome||'Seu nome';
+  document.getElementById('magia-pedido').value='';
+  document.getElementById('pant-pedido').textContent='seu pedido';
+  show('s-magia');
+}
+function atualizarPantaculo(){
+  var v=document.getElementById('magia-pedido').value.trim();
+  document.getElementById('pant-pedido').textContent = v || 'seu pedido';
+}
+
+// ── compartilhar meu anjo (alça de crescimento via audiência da Monica) ──
+function shareAnjo(){
+  var txt='Descobri que meu anjo da guarda é '+(window._anjo||'')+' 🕊️ — no app Sob as Asas, da Monica Buonfiglio. Descubra o seu:';
+  if(navigator.share){ navigator.share({title:'Sob as Asas', text:txt, url:location.origin}).catch(function(){}); }
+  else { try{ navigator.clipboard.writeText(txt+' '+location.origin); }catch(e){} toast('Link copiado ✨'); }
+  buzz();
+}
+
+// ── login por link mágico ──
+function resetLoginUI(){ document.getElementById('login-form').style.display='block'; document.getElementById('login-enviado').style.display='none'; document.getElementById('login-msg').textContent=''; }
+function entrarSantuario(){
+  if(window.saaAuth){ resetLoginUI(); show('s-login'); setTimeout(function(){var i=document.getElementById('in-email'); if(i) i.focus();},450); }
+  else { show('s-home'); }  // modo demo
+}
+async function enviarMagicLink(){
+  var email=(document.getElementById('in-email').value||'').trim();
+  var msg=document.getElementById('login-msg');
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ msg.textContent='Digite um e-mail válido.'; return; }
+  msg.textContent=''; buzz();
+  if(!window.saaAuth){ document.getElementById('login-form').style.display='none'; document.getElementById('login-enviado').style.display='block'; return; }
+  try{
+    var r=await window.saaAuth.enviarLink(email);
+    if(r && r.error){ msg.textContent='Não consegui enviar: '+r.error.message; return; }
+    document.getElementById('login-form').style.display='none';
+    document.getElementById('login-enviado').style.display='block';
+  }catch(e){ msg.textContent='Erro ao enviar o link. Tente de novo.'; }
+}
+// chamado quando o usuário volta autenticado (clicou no link mágico)
+function aoLogar(session){
+  if(!session || !session.user) return;
+  var pend=null; try{ pend=JSON.parse(localStorage.getItem('saa_pending')||'null'); }catch(e){}
+  if(pend){
+    window._nome=pend.nome; window._anjo=pend.anjo_nome;
+    if(window.saaAuth) window.saaAuth.salvarPerfil({ userId:session.user.id, nome:pend.nome, nascimento:pend.nascimento, ritual_horario:'morning' }).catch(function(){});
+  }
+  show('s-home');
+}
+
+// ── Supabase (opcional — ativa só quando config.js estiver preenchido) ──
+window.saaAuth = null;
+(function(){
+  var c = window.SAA_CONFIG || {};
+  if(!c.url || !c.anon) return;  // sem chaves → modo demo, app funciona igual
+  var s=document.createElement('script');
+  s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+  s.onload=function(){
+    var sb = window.supabase.createClient(c.url, c.anon);
+    window.saaAuth = {
+      client: sb,
+      enviarLink: function(email){ return sb.auth.signInWithOtp({ email:email, options:{ emailRedirectTo: location.origin } }); },
+      usuario: async function(){ var r=await sb.auth.getUser(); return r && r.data ? r.data.user : null; },
+      salvarPerfil: function(p){ return fetch('/api/save-perfil',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)}); }
+    };
+    console.log('[Sob as Asas] Supabase conectado ✓');
+    // volta do link mágico → entra autenticado e salva o perfil pendente
+    sb.auth.getSession().then(function(res){ if(res && res.data && res.data.session) aoLogar(res.data.session); }).catch(function(){});
+    sb.auth.onAuthStateChange(function(_e, session){ if(session && session.user) aoLogar(session); });
+    carregarBiblioteca();  // popula a biblioteca a partir do banco, se houver conteúdo
+  };
+  s.onerror=function(){ console.warn('[Sob as Asas] supabase-js não carregou; seguindo em modo demo.'); };
+  document.head.appendChild(s);
+})();
+
+// ── partículas de luz ──
+function spawnLuzes(containerId,n){
+  const c=document.getElementById(containerId); if(!c) return;
+  for(let i=0;i<n;i++){ const s=document.createElement('div'); s.className='luz';
+    s.style.left=(Math.random()*100)+'%';
+    s.style.animationDuration=(7+Math.random()*8)+'s';
+    s.style.animationDelay=(Math.random()*8)+'s';
+    s.style.opacity=String(.4+Math.random()*.5);
+    const sz=(3+Math.random()*4); s.style.width=s.style.height=sz+'px';
+    c.appendChild(s); }
+}
+
+// ── feedbacks ──
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg;
+  t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)';
+  clearTimeout(window._tt); window._tt=setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(20px)'; },2200); }
+function buzz(){ try{ if(window.Capacitor?.Plugins?.Haptics) window.Capacitor.Plugins.Haptics.impact({style:'LIGHT'}); else if(navigator.vibrate) navigator.vibrate(8); }catch(e){} }
+function chime(){ try{ const a=new (window.AudioContext||window.webkitAudioContext)(); const o=a.createOscillator(), g=a.createGain();
+  o.type='sine'; o.frequency.setValueAtTime(880,a.currentTime); o.frequency.exponentialRampToValueAtTime(1320,a.currentTime+.5);
+  g.gain.setValueAtTime(0.0001,a.currentTime); g.gain.exponentialRampToValueAtTime(.08,a.currentTime+.05); g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+1.2);
+  o.connect(g); g.connect(a.destination); o.start(); o.stop(a.currentTime+1.3); }catch(e){} }
+
+// init
+spawnLuzes('welcome-luzes',14); spawnLuzes('reveal-luzes',22);
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js').catch(()=>{}); }
+</script>
+</body>
+</html>

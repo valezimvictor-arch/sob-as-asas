@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sob as Asas — Curadoria do Milagre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{ --branco:#FBFAF7; --puro:#fff; --ouro:#BA7517; --ouro-bg:#FAF3E4; --celeste:#378ADD; --celeste-bg:#EAF2FB; --tinta:#2C2C2A; --suave:#6B6A63; --linha:rgba(186,117,23,.16); }
+  *{box-sizing:border-box}
+  body{ margin:0; background:var(--branco); color:var(--tinta); font-family:'Inter',system-ui,sans-serif; }
+  .serif{ font-family:'Marcellus',serif; }
+  .wrap{ max-width:760px; margin:0 auto; padding:28px 20px 60px; }
+  header{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand .dot{ width:34px;height:34px;border-radius:50%;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;color:var(--ouro);font-size:18px; }
+  h1{ font-size:22px; margin:0; font-weight:500; }
+  .sub{ color:var(--suave); font-size:13px; margin:2px 0 0; }
+  .nota{ background:var(--celeste-bg); border-radius:14px; padding:12px 16px; font-size:13px; color:#1E5A99; margin:20px 0; line-height:1.5; }
+  .keybar{ display:flex; gap:8px; margin:16px 0; }
+  input,textarea,button{ font:inherit; }
+  input[type=password],textarea{ width:100%; background:var(--puro); border:1px solid var(--linha); border-radius:12px; padding:12px 14px; outline:none; color:var(--tinta); }
+  input:focus,textarea:focus{ border-color:var(--ouro); }
+  .btn{ background:linear-gradient(180deg,#F6C868,#D89A2C); color:#5A3A06; border:none; border-radius:12px; padding:12px 18px; font-weight:600; cursor:pointer; white-space:nowrap; }
+  .btn:active{ transform:scale(.98); }
+  .btn-sec{ background:transparent; border:1px solid var(--linha); color:var(--ouro); border-radius:12px; padding:10px 16px; font-weight:500; cursor:pointer; }
+  .card{ background:var(--puro); border:1px solid var(--linha); border-radius:16px; padding:18px; margin-bottom:14px; }
+  .card .meta{ display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .avatar{ width:34px;height:34px;border-radius:50%;background:var(--ouro-bg);color:#854F0B;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px; }
+  .nome{ font-weight:500; } .data{ color:var(--suave); font-size:12px; }
+  .texto{ font-size:15px; line-height:1.6; margin:0 0 14px; }
+  .actions{ display:flex; gap:8px; flex-wrap:wrap; }
+  .tag{ font-size:11px; padding:3px 9px; border-radius:8px; background:var(--ouro-bg); color:#854F0B; }
+  .tag.cur{ background:var(--celeste-bg); color:#1E5A99; }
+  .hide{ display:none; }
+  .vazio{ color:var(--suave); text-align:center; padding:40px 0; }
+  .esc{ margin-top:10px; }
+  .demo{ font-size:11px; color:var(--suave); text-align:center; margin-top:8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="dot">🪽</div>
+      <div><h1 class="serif">Curadoria do Milagre</h1><p class="sub">Sob as Asas — escolha editorial, com carinho</p></div>
+    </div>
+    <button class="btn-sec" onclick="carregar()">↻ Atualizar</button>
+  </header>
+
+  <div class="nota">
+    ⚖️ A escolha é <strong>humana e editorial</strong>. Aqui você lê os pedidos de quem <strong>consentiu</strong> em compartilhar e escolhe uma história para realizar. Não há sorteio, ranking nem aleatoriedade — e não depende de quanto a pessoa pagou.
+  </div>
+
+  <div id="auth" class="keybar">
+    <input type="password" id="adminkey" placeholder="Chave de admin (ADMIN_KEY)" />
+    <button class="btn" onclick="salvarChave()">Entrar</button>
+  </div>
+
+  <div id="lista"></div>
+</div>
+
+<script>
+let KEY = sessionStorage.getItem('saa_admin_key') || '';
+function salvarChave(){ KEY = document.getElementById('adminkey').value.trim(); if(KEY){ sessionStorage.setItem('saa_admin_key', KEY); carregar(); } }
+
+function esc(s){ return String(s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function iniciais(n){ return (n||'?').split(' ').map(p=>p[0]).slice(0,2).join('').toUpperCase(); }
+
+// dados de demonstração (preview sem backend)
+const DEMO = [
+  { id:'d1', users:{nome:'Aparecida Souza'}, texto:'Gostaria de rever minha filha, que não vejo há 8 anos. Sinto que meu anjo pode abrir esse caminho.', criado_em:'2026-06-02', status:'aberto' },
+  { id:'d2', users:{nome:'Marcos Lima'}, texto:'Peço forças para minha mãe na recuperação da cirurgia, e um pouco de paz pra nossa família.', criado_em:'2026-06-04', status:'em_curadoria' },
+  { id:'d3', users:{nome:'Joana Ribeiro'}, texto:'Sonho em fazer o enxoval do meu primeiro filho, mas o orçamento está apertado este ano.', criado_em:'2026-06-07', status:'aberto' },
+];
+
+async function carregar(){
+  const lista = document.getElementById('lista');
+  if(!KEY){ document.getElementById('auth').classList.remove('hide'); lista.innerHTML=''; return; }
+  document.getElementById('auth').classList.add('hide');
+  lista.innerHTML = '<p class="vazio">Carregando candidatos…</p>';
+  let candidatos = null, demo = false;
+  try{
+    const r = await fetch('/api/admin-milagre?action=candidatos', { headers:{ 'x-admin-key': KEY } });
+    if(r.ok){ const j = await r.json(); candidatos = j.candidatos || []; }
+  }catch(e){}
+  if(candidatos === null){ candidatos = DEMO; demo = true; }  // fallback p/ preview
+  render(candidatos, demo);
+}
+
+function render(cands, demo){
+  const lista = document.getElementById('lista');
+  if(!cands.length){ lista.innerHTML='<p class="vazio">Nenhum candidato neste ciclo. 🕊️</p>'; return; }
+  lista.innerHTML = cands.map(function(c){
+    const nome = (c.users && c.users.nome) || 'Anônimo';
+    const tag = c.status==='em_curadoria' ? '<span class="tag cur">em curadoria</span>' : '<span class="tag">novo</span>';
+    return '<div class="card" id="card-'+c.id+'">'
+      + '<div class="meta"><div class="avatar">'+iniciais(nome)+'</div>'
+      + '<div style="flex:1"><div class="nome">'+esc(nome)+'</div><div class="data">'+esc(c.criado_em)+'</div></div>'+tag+'</div>'
+      + '<p class="texto">"'+esc(c.texto)+'"</p>'
+      + '<div class="actions"><button class="btn" onclick="escolher(\''+c.id+'\')">✦ Escolher como Milagre do mês</button></div>'
+      + '<div id="esc-'+c.id+'" class="esc hide"></div>'
+      + '</div>';
+  }).join('') + (demo ? '<p class="demo">Mostrando dados de demonstração (backend não conectado).</p>' : '');
+}
+
+function escolher(id){
+  const box = document.getElementById('esc-'+id);
+  box.classList.remove('hide');
+  box.innerHTML = '<textarea id="hist-'+id+'" rows="3" placeholder="Escreva a história que será contada no app…"></textarea>'
+    + '<div class="actions" style="margin-top:8px"><button class="btn" onclick="confirmar(\''+id+'\')">Confirmar escolha</button>'
+    + '<button class="btn-sec" onclick="document.getElementById(\'esc-'+id+'\').classList.add(\'hide\')">Cancelar</button></div>';
+  document.getElementById('hist-'+id).focus();
+}
+
+async function confirmar(id){
+  const historia = document.getElementById('hist-'+id).value.trim();
+  try{
+    const r = await fetch('/api/admin-milagre', { method:'POST', headers:{'Content-Type':'application/json','x-admin-key':KEY},
+      body: JSON.stringify({ action:'escolher', pedidoId:id, historia }) });
+    if(!r.ok) throw 0;
+  }catch(e){ /* preview/demo: segue */ }
+  const card = document.getElementById('card-'+id);
+  card.style.borderColor = 'var(--celeste)';
+  card.querySelector('.actions').innerHTML = '<span class="tag cur">✓ Escolhido como Milagre do mês</span>';
+  document.getElementById('esc-'+id).classList.add('hide');
+}
+
+carregar();
+</script>
+</body>
+</html>

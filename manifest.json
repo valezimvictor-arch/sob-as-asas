@@ -1,0 +1,23 @@
+{
+  "name": "Sob as Asas — Anjos da Guarda",
+  "short_name": "Sob as Asas",
+  "description": "Sua prática diária com os anjos da guarda, por Monica Buonfiglio. Descubra seu anjo regente, receba rituais e mensagens, e viva sob as asas.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FBFAF7",
+  "theme_color": "#BA7517",
+  "icons": [
+    { "src": "/asa-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["lifestyle", "health", "education"],
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "shortcuts": [
+    { "name": "Ritual de hoje", "short_name": "Ritual", "description": "Sua prática do dia", "url": "/?action=ritual" },
+    { "name": "Livro de pedidos", "short_name": "Pedidos", "description": "Seus pedidos ao anjo", "url": "/?action=pedidos" }
+  ]
+}

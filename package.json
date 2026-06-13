@@ -1,0 +1,33 @@
+{
+  "name": "sob-as-asas",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sob as Asas — Anjos da Guarda, por Monica Buonfiglio. App de prática espiritual diária. 2º app da LVSV.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "sync:ios": "npm run build && npx cap sync ios",
+    "sync:android": "npm run build && npx cap sync android",
+    "open:ios": "npx cap open ios",
+    "open:android": "npx cap open android",
+    "setup:android": "npx bubblewrap init --manifest https://sobasasas.com.br/manifest.json",
+    "build:android": "npx bubblewrap build"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.1.0",
+    "@capacitor/app": "^6.0.0",
+    "@capacitor/core": "^6.1.0",
+    "@capacitor/haptics": "^6.0.0",
+    "@capacitor/ios": "^6.1.0",
+    "@capacitor/push-notifications": "^6.0.0",
+    "@capacitor/splash-screen": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0",
+    "@supabase/supabase-js": "^2.43.0",
+    "stripe": "^16.0.0",
+    "web-push": "^3.6.7"
+  },
+  "devDependencies": {
+    "@bubblewrap/cli": "^1.21.0",
+    "@capacitor/cli": "^6.1.0"
+  }
+}

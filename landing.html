@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sob as Asas — Anjos da Guarda, por Monica Buonfiglio</title>
+<meta name="description" content="A sua prática diária com os anjos da guarda, ao lado de Monica Buonfiglio. Descubra seu anjo regente. Em breve." />
+<meta property="og:title" content="Sob as Asas — Anjos da Guarda" />
+<meta property="og:description" content="Sua prática diária com os anjos da guarda, por Monica Buonfiglio. Entre na lista de espera." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Cormorant+Garamond:wght@500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="/config.js?v=1"></script>
+<style>
+  :root{ --branco:#FBFAF7; --puro:#fff; --ouro:#BA7517; --ouro-claro:#EF9F27; --ouro-bg:#FAF3E4; --celeste:#378ADD; --tinta:#2C2C2A; --suave:#6B6A63; --linha:rgba(186,117,23,.16); }
+  *{box-sizing:border-box}
+  body{ margin:0; background:var(--branco); color:var(--tinta); font-family:'Inter',system-ui,sans-serif; text-align:center; }
+  .serif{ font-family:'Marcellus',serif; } .serif-soft{ font-family:'Cormorant Garamond',serif; }
+  .halo{ position:absolute; top:-120px; left:50%; transform:translateX(-50%); width:420px; height:420px; border-radius:50%;
+    background:radial-gradient(circle, rgba(239,159,39,.22) 0%, rgba(239,159,39,.07) 45%, rgba(239,159,39,0) 70%); pointer-events:none; }
+  .wrap{ position:relative; max-width:540px; margin:0 auto; padding:64px 24px 60px; }
+  .feather{ font-size:40px; color:var(--ouro-claro); }
+  h1{ font-size:clamp(38px,9vw,60px); margin:14px 0 0; font-weight:400; line-height:1.05; }
+  .tag{ font-family:'Cormorant Garamond',serif; font-size:23px; color:var(--ouro); margin:10px 0 0; }
+  .lead{ font-size:17px; color:var(--suave); line-height:1.7; margin:22px auto 0; max-width:420px; }
+  .form{ margin:34px auto 0; max-width:420px; display:flex; gap:8px; }
+  input{ flex:1; min-width:0; font:inherit; background:var(--puro); border:1px solid var(--linha); border-radius:14px; padding:15px 16px; outline:none; color:var(--tinta); }
+  input:focus{ border-color:var(--ouro-claro); box-shadow:0 0 0 4px rgba(239,159,39,.12); }
+  button{ font:inherit; font-weight:600; border:none; border-radius:14px; padding:0 22px; cursor:pointer;
+    background:linear-gradient(180deg,#F6C868,#D89A2C); color:#5A3A06; white-space:nowrap; }
+  button:active{ transform:scale(.98); }
+  .msg{ min-height:20px; font-size:14px; margin:12px 0 0; color:var(--ouro); }
+  .selo{ margin-top:40px; font-size:13px; color:var(--suave); line-height:1.7; }
+  .pilares{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:40px; }
+  .pilar{ background:var(--puro); border:1px solid var(--linha); border-radius:16px; padding:18px 16px; width:150px; }
+  .pilar .ic{ font-size:24px; } .pilar p{ margin:8px 0 0; font-size:13px; color:var(--suave); }
+  .pilar .t{ font-weight:500; color:var(--tinta); font-size:14px; }
+  .rodape{ margin-top:48px; font-size:12px; color:var(--suave); }
+  a{ color:var(--ouro); }
+  @media(max-width:460px){ .form{ flex-direction:column; } button{ padding:14px; } }
+</style>
+</head>
+<body>
+<div class="halo"></div>
+<div class="wrap">
+  <div class="feather">✦</div>
+  <h1 class="serif">Sob as Asas</h1>
+  <p class="tag">Descubra quem cuida de você</p>
+  <p class="lead">A sua prática diária com os anjos da guarda, ao lado de <strong style="font-weight:500;color:var(--tinta)">Monica Buonfiglio</strong>. Descubra seu anjo regente, receba rituais e mensagens, e viva sob as asas.</p>
+
+  <form class="form" onsubmit="entrar(event)">
+    <input id="email" type="email" inputmode="email" placeholder="Seu melhor e-mail" required />
+    <button type="submit">Quero ser avisado</button>
+  </form>
+  <p class="msg" id="msg">Entre na lista de espera do lançamento. 🕊️</p>
+
+  <div class="pilares">
+    <div class="pilar"><div class="ic">🪽</div><div class="t">Seu anjo regente</div><p>Descubra entre os 72 anjos</p></div>
+    <div class="pilar"><div class="ic">📜</div><div class="t">Salmo Diário</div><p>Na voz da Monica</p></div>
+    <div class="pilar"><div class="ic">✨</div><div class="t">O Milagre do mês</div><p>Um pedido realizado</p></div>
+  </div>
+
+  <p class="selo">Monica Buonfiglio — autora de <em>Anjos Cabalísticos</em>, a maior referência de anjos do Brasil.</p>
+  <p class="rodape">© Sob as Asas · uma realização LVSV · <a href="/regulamento-milagre">Regulamento do Milagre</a></p>
+</div>
+
+<script>
+function entrar(e){
+  e.preventDefault();
+  var email=document.getElementById('email').value.trim();
+  var msg=document.getElementById('msg');
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ msg.style.color='#C0392B'; msg.textContent='Digite um e-mail válido.'; return; }
+  msg.style.color='var(--ouro)';
+  var cfg=window.SAA_CONFIG||{};
+  function sucesso(){ document.querySelector('.form').style.display='none'; msg.textContent='Pronto! Você será avisado do lançamento. ✨'; }
+  if(cfg.url && cfg.anon){
+    fetch(cfg.url+'/rest/v1/leads', { method:'POST',
+      headers:{ 'Content-Type':'application/json', 'apikey':cfg.anon, 'Authorization':'Bearer '+cfg.anon, 'Prefer':'resolution=ignore-duplicates' },
+      body: JSON.stringify({ email:email, origem:'landing' }) })
+    .then(function(r){ sucesso(); }).catch(function(){ sucesso(); });
+  } else { sucesso(); }
+}
+</script>
+</body>
+</html>
