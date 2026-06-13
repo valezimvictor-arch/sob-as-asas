@@ -543,6 +543,7 @@ function revelar(){
   window._anjo=anjo.nome;
   window._perfil={ nome:window._nome, nascimento:(y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0')), anjo_n:anjo.n, anjo_nome:anjo.nome };
   try{ localStorage.setItem('saa_pending', JSON.stringify(window._perfil)); }catch(e){}
+  if(window._userId) persistirPerfil(window._userId);  // já logado → grava o perfil na hora
 
   show('s-reveal');
   // dispara animações em sequência
@@ -772,6 +773,7 @@ function shareAnjo(){
 // ── login por link mágico ──
 function resetLoginUI(){ document.getElementById('login-form').style.display='block'; document.getElementById('login-enviado').style.display='none'; document.getElementById('login-msg').textContent=''; }
 function entrarSantuario(){
+  if(window._userId){ show('s-home'); return; }  // já logado → entra direto
   if(window.saaAuth){ resetLoginUI(); show('s-login'); setTimeout(function(){var i=document.getElementById('in-email'); if(i) i.focus();},450); }
   else { show('s-home'); }  // modo demo
 }
@@ -789,14 +791,25 @@ async function enviarMagicLink(){
   }catch(e){ msg.textContent='Erro ao enviar o link. Tente de novo.'; }
 }
 // chamado quando o usuário volta autenticado (clicou no link mágico)
+function persistirPerfil(userId){
+  if(!window.saaAuth || !window._perfil || !userId) return;
+  window.saaAuth.salvarPerfil({ userId:userId, nome:window._perfil.nome, nascimento:window._perfil.nascimento, ritual_horario:'morning' })
+    .then(function(){ try{ localStorage.removeItem('saa_pending'); }catch(e){} })
+    .catch(function(){});
+}
 function aoLogar(session){
   if(!session || !session.user) return;
+  window._userId = session.user.id;
   var pend=null; try{ pend=JSON.parse(localStorage.getItem('saa_pending')||'null'); }catch(e){}
   if(pend){
-    window._nome=pend.nome; window._anjo=pend.anjo_nome;
-    if(window.saaAuth) window.saaAuth.salvarPerfil({ userId:session.user.id, nome:pend.nome, nascimento:pend.nascimento, ritual_horario:'morning' }).catch(function(){});
+    window._nome=pend.nome; window._anjo=pend.anjo_nome; window._perfil=pend;
+    persistirPerfil(session.user.id);
+    show('s-home');
+  } else {
+    // logado, mas sem perfil (ex.: abriu o link em outro navegador) →
+    // descobre o anjo agora; ao revelar, grava com o userId. Robusto.
+    show('s-cadastro');
   }
-  show('s-home');
 }
 
 // ── Supabase (opcional — ativa só quando config.js estiver preenchido) ──
