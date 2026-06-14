@@ -306,16 +306,6 @@
         <span style="color:var(--tinta-suave)">›</span>
       </div>
 
-      <!-- magia branca -->
-      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="openMagia()">
-        <div style="width:38px;height:38px;border-radius:10px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center">✷</div>
-        <div style="flex:1">
-          <p style="margin:0; font-weight:600">Magia Branca</p>
-          <p style="margin:0; font-size:12px; color:var(--tinta-suave)">O pantáculo do seu pedido</p>
-        </div>
-        <span style="color:var(--tinta-suave)">›</span>
-      </div>
-
       <!-- magia dos anjos (vela do dia) -->
       <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px" onclick="openVela()">
         <div style="width:38px;height:38px;border-radius:10px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center">🕯️</div>
@@ -560,6 +550,36 @@
   </div>
 </section>
 
+<!-- ░░ VELA AVULSA (acalmar — sem ser a Magia dos Anjos) ░░ -->
+<section id="s-velinha" class="screen">
+  <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; overflow-y:auto">
+    <button onclick="show(window._prevSocorro?'s-socorro':'s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+    <div style="text-align:center; margin-top:6px">
+      <p class="serif-soft" style="font-size:16px; color:var(--ouro); margin:0">Acenda uma vela</p>
+      <h2 class="serif" style="font-size:24px; margin:4px 0 0">Respire e se acalme</h2>
+    </div>
+
+    <div style="position:relative; height:240px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; margin-top:8px">
+      <div id="vp-glow" style="position:absolute; top:6px; left:50%; transform:translateX(-50%); width:190px; height:190px; border-radius:50%; background:radial-gradient(circle, rgba(239,159,39,.38) 0%, rgba(239,159,39,0) 70%); opacity:0; transition:opacity 1s ease;"></div>
+      <div style="position:relative; display:flex; flex-direction:column; align-items:center">
+        <div id="vp-chama" class="chama"></div>
+        <div style="width:5px;height:7px;background:#3a2a16;border-radius:2px;margin-bottom:-2px;z-index:1"></div>
+        <div style="width:62px;height:150px;border-radius:12px 12px 8px 8px;background:linear-gradient(180deg,#FCF4E0,#EAD8B0);box-shadow:inset -7px 0 12px rgba(0,0,0,.06)"></div>
+      </div>
+    </div>
+
+    <div id="vp-form">
+      <button class="btn-ouro" style="margin-top:6px" onclick="acenderVelinha()">🕯️ Acender</button>
+      <p style="text-align:center; font-size:11px; color:var(--tinta-suave); margin:12px 0 0; line-height:1.6">Uma vela acesa em silêncio, só pra você se sentir melhor. Sem registro, sem ritual.</p>
+    </div>
+    <div id="vp-msg" style="display:none; text-align:center; margin-top:6px">
+      <p class="serif-soft" style="font-size:18px; color:var(--ouro); margin:8px 0 0; line-height:1.4">Sua vela está acesa. 🕊️</p>
+      <p style="font-size:13px; color:var(--tinta-suave); margin:8px 0 0; line-height:1.6">Respire fundo. Deixe a chama te acompanhar.</p>
+      <button class="btn-ghost" style="margin-top:14px" onclick="show('s-home')">Voltar ao santuário</button>
+    </div>
+  </div>
+</section>
+
 <!-- ░░ MAGIA DOS ANJOS — VELA DO DIA ░░ -->
 <section id="s-vela" class="screen">
   <style>
@@ -663,21 +683,27 @@
     <!-- experiências destacadas -->
     <p class="label" style="display:block; margin:4px 0 10px">Experiências com a Monica</p>
 
-    <div class="card" style="padding:0; margin-bottom:10px; border:none; overflow:hidden; cursor:pointer; background:var(--branco-puro)" onclick="interesseExperiencia('israel')">
-      <div style="height:84px; background:linear-gradient(135deg,#EFD79A 0%,#F6C868 35%,#D89A2C 100%); position:relative; display:flex; align-items:center; justify-content:flex-start; padding:0 18px">
-        <span class="serif" style="color:#5A3A06; font-size:22px; letter-spacing:.02em">Israel · Terra Santa</span>
-        <span style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,.88); color:#5A3A06; font-size:10px; letter-spacing:.08em; padding:4px 10px; border-radius:999px; font-weight:600">VIAGEM</span>
+    <div class="card" style="padding:0; margin-bottom:10px; border:none; overflow:hidden; cursor:pointer; background:var(--branco-puro)" onclick="abrirFormExperiencia('israel')">
+      <div style="height:150px; position:relative; background-image:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.55) 100%), url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Jerusalem-2013-Aerial-Temple_Mount_03.jpg/1024px-Jerusalem-2013-Aerial-Temple_Mount_03.jpg'); background-size:cover; background-position:center 35%">
+        <span style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,.92); color:#5A3A06; font-size:10px; letter-spacing:.08em; padding:4px 10px; border-radius:999px; font-weight:600">VIAGEM</span>
+        <div style="position:absolute; left:18px; bottom:14px; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,.4)">
+          <p class="serif" style="margin:0; font-size:22px; letter-spacing:.02em">Israel · Terra Santa</p>
+          <p style="margin:3px 0 0; font-size:12px; opacity:.92">Uma jornada com a Monica</p>
+        </div>
       </div>
       <div style="padding:14px 16px">
-        <p style="margin:0; font-size:13px; color:var(--tinta-suave); line-height:1.55">Uma jornada espiritual em Terra Santa, ao lado da Monica. Deixe seu interesse e entraremos em contato.</p>
+        <p style="margin:0; font-size:13px; color:var(--tinta-suave); line-height:1.55">Quer viajar com a Monica e ter uma experiência única em Terra Santa? Deixe seus dados — entraremos em contato.</p>
         <p id="status-israel" style="margin:10px 0 0; font-size:13px; color:var(--ouro); font-weight:600">Tenho interesse →</p>
       </div>
     </div>
 
-    <div class="card" style="padding:0; margin-bottom:14px; border:none; overflow:hidden; cursor:pointer; background:var(--branco-puro)" onclick="interesseExperiencia('saomiguel')">
-      <div style="height:84px; background:linear-gradient(135deg,#C9D9F0 0%,#9FC3EE 40%,#378ADD 100%); position:relative; display:flex; align-items:center; justify-content:flex-start; padding:0 18px">
-        <span class="serif" style="color:#0C447C; font-size:22px; letter-spacing:.02em">Caminhos de São Miguel</span>
-        <span style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,.88); color:#1E5A99; font-size:10px; letter-spacing:.08em; padding:4px 10px; border-radius:999px; font-weight:600">PEREGRINAÇÃO</span>
+    <div class="card" style="padding:0; margin-bottom:14px; border:none; overflow:hidden; cursor:pointer; background:var(--branco-puro)" onclick="abrirFormExperiencia('saomiguel')">
+      <div style="height:150px; position:relative; background-image:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.55) 100%), url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Mont_St_Michel_3%2C_Brittany%2C_France_-_July_2011.jpg/1024px-Mont_St_Michel_3%2C_Brittany%2C_France_-_July_2011.jpg'); background-size:cover; background-position:center">
+        <span style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,.92); color:#1E5A99; font-size:10px; letter-spacing:.08em; padding:4px 10px; border-radius:999px; font-weight:600">PEREGRINAÇÃO</span>
+        <div style="position:absolute; left:18px; bottom:14px; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,.4)">
+          <p class="serif" style="margin:0; font-size:22px; letter-spacing:.02em">Caminhos de São Miguel</p>
+          <p style="margin:3px 0 0; font-size:12px; opacity:.92">Os caminhos para o paraíso</p>
+        </div>
       </div>
       <div style="padding:14px 16px">
         <p style="margin:0; font-size:13px; color:var(--tinta-suave); line-height:1.55">As rotas medievais de peregrinação ao Monte Saint-Michel — sob a proteção do príncipe dos anjos.</p>
@@ -745,11 +771,31 @@
     <p id="socorro-msg" class="serif" style="font-size:25px; color:var(--tinta); line-height:1.45; margin:18px 0 0; max-width:330px"></p>
     <div style="width:100%; max-width:320px; margin-top:36px; display:flex; flex-direction:column; gap:10px">
       <button class="btn-ghost" onclick="novaMensagemAnjo()">Outra mensagem</button>
-      <button class="btn-ghost" onclick="openVela()">🕯️ Acender uma vela</button>
+      <button class="btn-ghost" onclick="openVelinha()">🕯️ Acender uma vela</button>
       <button class="btn-ouro" onclick="show('s-home')">Estou em paz 🙏</button>
     </div>
   </div>
 </section>
+
+<!-- modal: interesse em experiência (Israel / São Miguel) -->
+<div id="modal-exp" style="position:fixed; inset:0; z-index:60; display:none; background:rgba(44,44,42,.55)">
+  <div style="position:absolute; left:0; right:0; bottom:0; background:var(--branco); border-radius:26px 26px 0 0; padding:24px 22px max(env(safe-area-inset-bottom),24px)">
+    <div style="text-align:center; margin-bottom:18px">
+      <div id="me-icon" style="font-size:28px"></div>
+      <h3 id="me-titulo" class="serif" style="font-size:22px; margin:6px 0 0"></h3>
+      <p id="me-sub" style="font-size:13px; color:var(--tinta-suave); margin:6px 18px 0; line-height:1.5"></p>
+    </div>
+    <span class="label">Seu nome</span>
+    <input id="me-nome" class="campo" style="margin-top:6px" placeholder="Como você se chama" />
+    <span class="label" style="display:block; margin-top:12px">Seu e-mail</span>
+    <input id="me-email" class="campo" type="email" inputmode="email" style="margin-top:6px" placeholder="voce@email.com" />
+    <span class="label" style="display:block; margin-top:12px">Seu telefone / WhatsApp</span>
+    <input id="me-tel" class="campo" inputmode="tel" style="margin-top:6px" placeholder="(11) 90000-0000" />
+    <p id="me-msg" style="color:#C0392B; font-size:12px; min-height:14px; margin:8px 0 0"></p>
+    <button class="btn-ouro" style="margin-top:8px" onclick="enviarFormExperiencia()">Tenho interesse 🕊️</button>
+    <button onclick="fecharFormExperiencia()" style="background:none; border:none; color:var(--tinta-suave); font-size:14px; width:100%; margin-top:10px">Fechar</button>
+  </div>
+</div>
 
 <!-- paywall -->
 <div id="paywall" style="position:fixed; inset:0; z-index:60; display:none; background:rgba(44,44,42,.55)">
@@ -1371,34 +1417,48 @@ function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg
   clearTimeout(window._tt); window._tt=setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(20px)'; },2200); }
 function buzz(){ try{ if(window.Capacitor?.Plugins?.Haptics) window.Capacitor.Plugins.Haptics.impact({style:'LIGHT'}); else if(navigator.vibrate) navigator.vibrate(8); }catch(e){} }
 function chime(){ try{
+  // Pad de coro celestial: graves suaves em camadas, ataque longo (sem "tlim"
+  // de sino), reverb de catedral. Sensação de "luz que se abre", não de aviso.
   var a=new (window.AudioContext||window.webkitAudioContext)(); var now=a.currentTime;
-  // reverb suave (sensação de catedral/celestial)
-  var conv=a.createConvolver(); var len=a.sampleRate*2.2; var imp=a.createBuffer(2,len,a.sampleRate);
-  for(var ch=0; ch<2; ch++){ var d=imp.getChannelData(ch); for(var i=0;i<len;i++){ d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6); } }
+  // Reverb longo (~3.4s) — cauda de catedral
+  var conv=a.createConvolver(); var len=Math.floor(a.sampleRate*3.4); var imp=a.createBuffer(2,len,a.sampleRate);
+  for(var ch=0; ch<2; ch++){ var d=imp.getChannelData(ch); for(var i=0;i<len;i++){ d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.2)*0.55; } }
   conv.buffer=imp;
-  var master=a.createGain(); master.gain.value=0.9; master.connect(a.destination);
-  var wet=a.createGain(); wet.gain.value=0.55; conv.connect(wet); wet.connect(a.destination);
-  // arpejo de acorde maior ascendente — harpa/coro angelical (Dó maior + oitava)
-  var notas=[523.25, 659.25, 783.99, 1046.50];
-  notas.forEach(function(f,idx){
-    var t=now + idx*0.13;
-    var o=a.createOscillator(), g=a.createGain();
-    o.type='sine'; o.frequency.value=f; o.detune.value=(idx%2?5:-5);
-    g.gain.setValueAtTime(0.0001,t);
-    g.gain.exponentialRampToValueAtTime(0.22, t+0.07);
-    g.gain.exponentialRampToValueAtTime(0.0001, t+2.6);
-    o.connect(g); g.connect(master); g.connect(conv);
-    o.start(t); o.stop(t+2.8);
+  // Filtro suave (corta os agudos, deixa "veludoso")
+  var lp=a.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=1800; lp.Q.value=0.3;
+  var master=a.createGain(); master.gain.value=0.85;
+  lp.connect(master); master.connect(a.destination);
+  var wet=a.createGain(); wet.gain.value=0.7; conv.connect(wet); wet.connect(a.destination);
+  // Acorde Lá menor 7 (sereno, não festivo) em duas oitavas, graves predominando
+  var notas=[
+    {f:220.00, vol:0.16},  // Lá 3 (grave — corpo)
+    {f:261.63, vol:0.13},  // Dó 4
+    {f:329.63, vol:0.11},  // Mi 4
+    {f:440.00, vol:0.09},  // Lá 4 (oitava)
+  ];
+  notas.forEach(function(n,idx){
+    var t=now + idx*0.18;  // entrada bem suave, escalonada
+    // Cada nota é uma camada de 2 osciladores levemente desafinados (efeito coro)
+    [0,1].forEach(function(layer){
+      var o=a.createOscillator(), g=a.createGain();
+      o.type='triangle'; o.frequency.value=n.f; o.detune.value=layer? +6 : -6;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(n.vol*0.5, t+0.9);   // ataque longo (sem clique)
+      g.gain.linearRampToValueAtTime(n.vol*0.6, t+1.6);   // sustenta
+      g.gain.exponentialRampToValueAtTime(0.0001, t+3.6); // sumindo devagar
+      o.connect(g); g.connect(lp); g.connect(conv);
+      o.start(t); o.stop(t+3.8);
+    });
   });
-  // brilho agudo (shimmer) que paira no fim
-  var s=a.createOscillator(), sg=a.createGain();
-  s.type='triangle'; s.frequency.value=2093;
-  sg.gain.setValueAtTime(0.0001, now+0.25);
-  sg.gain.exponentialRampToValueAtTime(0.05, now+0.5);
-  sg.gain.exponentialRampToValueAtTime(0.0001, now+2.6);
-  s.connect(sg); sg.connect(conv);
-  s.start(now+0.25); s.stop(now+2.7);
-  setTimeout(function(){ try{a.close();}catch(e){} }, 3600);
+  // Halo agudo MUITO sutil (não é shimmer/sino — só um "brilho" longe ao fundo)
+  var halo=a.createOscillator(), hg=a.createGain();
+  halo.type='sine'; halo.frequency.value=880;
+  hg.gain.setValueAtTime(0.0001, now+0.4);
+  hg.gain.linearRampToValueAtTime(0.018, now+1.4);
+  hg.gain.exponentialRampToValueAtTime(0.0001, now+3.6);
+  halo.connect(hg); hg.connect(conv);
+  halo.start(now+0.4); halo.stop(now+3.8);
+  setTimeout(function(){ try{a.close();}catch(e){} }, 4500);
 }catch(e){} }
 
 // init
@@ -1618,14 +1678,57 @@ var LOJA=[
 ];
 function openLoja(){ renderLoja(); show('s-loja'); }
 function abrirProduto(p){ if(p.url){ try{ window.open(p.url,'_blank'); }catch(e){ location.href=p.url; } } else { toast('Esgotado por enquanto 🕊️'); } }
-async function interesseExperiencia(tipo){
-  var rotulos={ israel:'a viagem para Israel', saomiguel:'os Caminhos de São Miguel' };
-  var email=window._email||'';
-  if(!email){ var p=prompt('Deixe seu e-mail para receber detalhes sobre '+(rotulos[tipo]||'a experiência')+':'); if(!p) return; email=p.trim(); }
-  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ toast('E-mail inválido'); return; }
-  try{ if(window.saaAuth){ await window.saaAuth.client.from('leads').insert({ email:email, origem:'exp_'+tipo }); } }catch(e){}
-  var el=document.getElementById('status-'+tipo); if(el){ el.textContent='✓ Interesse registrado — em breve entraremos em contato'; }
-  buzz(); toast('Interesse registrado 🕊️');
+var ME_CONFIG={
+  israel:    { icon:'✡️', titulo:'Israel · Terra Santa',   sub:'Deixe seus dados e nossa equipe entrará em contato com os detalhes da viagem com a Monica.' },
+  saomiguel: { icon:'🗡️', titulo:'Caminhos de São Miguel', sub:'Deixe seus dados — entraremos em contato com os detalhes da peregrinação.' },
+};
+function abrirFormExperiencia(tipo){
+  var c=ME_CONFIG[tipo]||ME_CONFIG.israel;
+  window._expTipo=tipo;
+  document.getElementById('me-icon').textContent=c.icon;
+  document.getElementById('me-titulo').textContent=c.titulo;
+  document.getElementById('me-sub').textContent=c.sub;
+  document.getElementById('me-nome').value=window._nome||'';
+  document.getElementById('me-email').value=window._email||'';
+  document.getElementById('me-tel').value='';
+  document.getElementById('me-msg').textContent='';
+  document.getElementById('modal-exp').style.display='block'; buzz();
+}
+function fecharFormExperiencia(){ document.getElementById('modal-exp').style.display='none'; }
+
+// ── Vela avulsa (simples, sem ritual nem registro) ──
+function openVelinha(){
+  window._prevSocorro = [...document.querySelectorAll('.screen.active')].some(s=>s.id==='s-socorro');
+  document.getElementById('vp-chama').style.opacity='0';
+  document.getElementById('vp-glow').style.opacity='0';
+  document.getElementById('vp-form').style.display='block';
+  document.getElementById('vp-msg').style.display='none';
+  show('s-velinha');
+}
+function acenderVelinha(){
+  document.getElementById('vp-chama').style.opacity='1';
+  document.getElementById('vp-glow').style.opacity='1';
+  document.getElementById('vp-form').style.display='none';
+  document.getElementById('vp-msg').style.display='block';
+  buzz(); chime();
+}
+async function enviarFormExperiencia(){
+  var nome=document.getElementById('me-nome').value.trim();
+  var email=document.getElementById('me-email').value.trim();
+  var tel=document.getElementById('me-tel').value.trim();
+  var msg=document.getElementById('me-msg');
+  if(!nome){ msg.textContent='Informe seu nome.'; return; }
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ msg.textContent='E-mail inválido.'; return; }
+  if(tel.replace(/\D/g,'').length<10){ msg.textContent='Informe um telefone com DDD.'; return; }
+  msg.textContent='';
+  var tipo=window._expTipo||'israel';
+  var payload = nome+' · '+tel+(window._userId?(' · user:'+window._userId):'');
+  try{
+    if(window.saaAuth){ await window.saaAuth.client.from('leads').insert({ email:email, origem:'exp_'+tipo+' | '+payload }); }
+  }catch(e){}
+  fecharFormExperiencia();
+  var el=document.getElementById('status-'+tipo); if(el) el.textContent='✓ Interesse registrado — em breve entraremos em contato';
+  buzz(); toast('Recebemos seu interesse — em breve falamos com você 🕊️');
 }
 function renderLoja(){
   var el=document.getElementById('lista-loja');
