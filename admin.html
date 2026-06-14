@@ -45,6 +45,9 @@
   .li:last-child{ border-bottom:none; }
   .demo{ font-size:11px; color:var(--suave); text-align:center; margin-top:8px; }
   .keybar{ display:flex; gap:8px; margin:16px 0; }
+  #metricas{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
+  .metric{ background:var(--puro); border:1px solid var(--linha); border-radius:14px; padding:14px 16px; }
+  .ml{ font-size:12px; color:var(--suave); } .mv{ font-size:24px; font-weight:600; color:var(--tinta); margin:4px 0 2px; } .mh{ font-size:11px; color:var(--suave); }
 </style>
 </head>
 <body>
@@ -64,12 +67,19 @@
 
   <div id="painel" class="hide">
     <div class="tabs">
-      <button class="tab on" id="tab-conteudo" onclick="aba('conteudo')">📜 Conteúdos</button>
+      <button class="tab on" id="tab-painel" onclick="aba('painel')">📊 Painel</button>
+      <button class="tab" id="tab-conteudo" onclick="aba('conteudo')">📜 Conteúdos</button>
       <button class="tab" id="tab-milagre" onclick="aba('milagre')">✨ Milagre</button>
     </div>
 
+    <!-- ░░ PAINEL ░░ -->
+    <div id="sec-painel">
+      <div class="nota">Controle da plataforma: usuários, receita e engajamento.</div>
+      <div id="metricas"></div>
+    </div>
+
     <!-- ░░ CONTEÚDOS ░░ -->
-    <div id="sec-conteudo">
+    <div id="sec-conteudo" class="hide">
       <div class="nota">Suba o <strong>salmo do dia</strong> (vídeo ou áudio), mensagens e séries. Use a <strong>data</strong> para agendar — conteúdo com data futura só aparece no app no dia certo.</div>
       <div class="card">
         <div class="row">
@@ -126,12 +136,28 @@ var sb = null;
 
 function salvarChave(){ KEY=document.getElementById('adminkey').value.trim(); if(KEY){ sessionStorage.setItem('saa_admin_key',KEY); entrar(); } }
 function entrar(){ document.getElementById('auth').classList.add('hide'); document.getElementById('painel').classList.remove('hide'); recarregar(); }
-function recarregar(){ carregarConteudos(); carregarMilagre(); }
+function recarregar(){ carregarMetricas(); carregarConteudos(); carregarMilagre(); }
 function aba(qual){
-  document.getElementById('sec-conteudo').classList.toggle('hide', qual!=='conteudo');
-  document.getElementById('sec-milagre').classList.toggle('hide', qual!=='milagre');
-  document.getElementById('tab-conteudo').classList.toggle('on', qual==='conteudo');
-  document.getElementById('tab-milagre').classList.toggle('on', qual==='milagre');
+  ['painel','conteudo','milagre'].forEach(function(q){
+    document.getElementById('sec-'+q).classList.toggle('hide', q!==qual);
+    document.getElementById('tab-'+q).classList.toggle('on', q===qual);
+  });
+}
+var DEMO_MET={usuarios:128,novos7d:23,assinantes:41,trials:12,mrr:1020,arr:12240,pedidos:67,candidatos:9,conteudos:11,gratidoes:54};
+async function carregarMetricas(){
+  var el=document.getElementById('metricas'); el.innerHTML='<p class="vazio">Carregando…</p>';
+  var m=null, demo=false;
+  try{ var r=await fetch('/api/admin-metrics',{headers:{'x-admin-key':KEY}}); if(r.ok){ var j=await r.json(); m=j.metricas; } }catch(e){}
+  if(!m){ m=DEMO_MET; demo=true; }
+  function brl(n){ return 'R$ '+Number(n||0).toLocaleString('pt-BR'); }
+  var cards=[
+    ['Usuários', m.usuarios, 'total'], ['Novos (7d)', m.novos7d, 'últimos 7 dias'],
+    ['Assinantes', m.assinantes, 'ativos'], ['Em trial', m.trials, '7 dias grátis'],
+    ['MRR', brl(m.mrr), 'receita/mês'], ['ARR', brl(m.arr), 'receita/ano'],
+    ['Pedidos', m.pedidos, 'no livro'], ['Candidatos', m.candidatos, 'ao Milagre'],
+    ['Conteúdos', m.conteudos, 'publicados/agendados'], ['Gratidões', m.gratidoes, 'registradas'],
+  ];
+  el.innerHTML = cards.map(function(c){ return '<div class="metric"><div class="ml">'+c[0]+'</div><div class="mv">'+c[1]+'</div><div class="mh">'+c[2]+'</div></div>'; }).join('') + (demo?'<p class="demo" style="grid-column:1/-1">Dados de demonstração (backend não conectado).</p>':'');
 }
 function esc(s){ return String(s||'').replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
 function iniciais(n){ return (n||'?').split(' ').map(function(p){return p[0];}).slice(0,2).join('').toUpperCase(); }
