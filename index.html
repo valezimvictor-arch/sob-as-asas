@@ -270,11 +270,21 @@
       </div>
 
       <!-- magia branca -->
-      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px" onclick="openMagia()">
-        <div style="width:38px;height:38px;border-radius:10px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center">🕯️</div>
+      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="openMagia()">
+        <div style="width:38px;height:38px;border-radius:10px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center">✷</div>
         <div style="flex:1">
           <p style="margin:0; font-weight:600">Magia Branca</p>
           <p style="margin:0; font-size:12px; color:var(--tinta-suave)">O pantáculo do seu pedido</p>
+        </div>
+        <span style="color:var(--tinta-suave)">›</span>
+      </div>
+
+      <!-- magia dos anjos (vela do dia) -->
+      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px" onclick="openVela()">
+        <div style="width:38px;height:38px;border-radius:10px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center">🕯️</div>
+        <div style="flex:1">
+          <p style="margin:0; font-weight:600">Magia dos Anjos</p>
+          <p style="margin:0; font-size:12px; color:var(--tinta-suave)">Acenda a vela do dia e faça um pedido</p>
         </div>
         <span style="color:var(--tinta-suave)">›</span>
       </div>
@@ -471,6 +481,46 @@
   </div>
 </section>
 
+<!-- ░░ MAGIA DOS ANJOS — VELA DO DIA ░░ -->
+<section id="s-vela" class="screen">
+  <style>
+    .chama{ width:20px; height:38px; border-radius:50% 50% 50% 50% / 68% 68% 32% 32%;
+      background:linear-gradient(180deg,#FFF6C0,#EF9F27 58%,#D85A30);
+      box-shadow:0 0 22px rgba(239,159,39,.85); transform-origin:bottom center;
+      opacity:0; transition:opacity .8s ease; animation:tremular 1.5s ease-in-out infinite; }
+    @keyframes tremular{ 0%,100%{ transform:rotate(-2deg) scaleY(1) scaleX(1);} 50%{ transform:rotate(2deg) scaleY(1.1) scaleX(.94);} }
+  </style>
+  <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; overflow-y:auto">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+    <div style="text-align:center">
+      <h2 class="serif" style="font-size:26px; margin:6px 0 0">Magia dos Anjos</h2>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 0">Acenda sua vela, faça seu pedido ao seu anjo.</p>
+    </div>
+
+    <div style="position:relative; height:230px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; margin-top:8px">
+      <div id="vela-glow" style="position:absolute; top:6px; left:50%; transform:translateX(-50%); width:190px; height:190px; border-radius:50%; background:radial-gradient(circle, rgba(239,159,39,.38) 0%, rgba(239,159,39,0) 70%); opacity:0; transition:opacity 1s ease;"></div>
+      <div style="position:relative; display:flex; flex-direction:column; align-items:center">
+        <div id="vela-chama" class="chama"></div>
+        <div style="width:5px;height:7px;background:#3a2a16;border-radius:2px;margin-bottom:-2px;z-index:1"></div>
+        <div style="width:62px;height:150px;border-radius:12px 12px 8px 8px;background:linear-gradient(180deg,#FCF4E0,#EAD8B0);box-shadow:inset -7px 0 12px rgba(0,0,0,.06)"></div>
+      </div>
+    </div>
+
+    <div id="vela-form" style="margin-top:6px">
+      <span class="label">Seu pedido de hoje</span>
+      <textarea id="vela-pedido" class="campo" rows="2" style="margin-top:8px" placeholder="Hoje eu peço ao meu anjo…"></textarea>
+      <button id="vela-acender" class="btn-ouro" style="margin-top:12px" onclick="acenderVela()">🕯️ Acender minha vela</button>
+    </div>
+
+    <div id="vela-acesa-msg" style="display:none; text-align:center; margin-top:14px">
+      <p class="serif-soft" style="font-size:19px; color:var(--ouro); margin:0">Sua vela está acesa. 🕊️</p>
+      <p id="vela-pedido-eco" class="serif-soft" style="font-size:17px; color:var(--tinta); margin:8px 0 0; line-height:1.4"></p>
+      <p style="font-size:13px; color:var(--tinta-suave); margin:12px 0 0; line-height:1.6">Respire fundo, concentre-se no pedido e agradeça.<br/>Deixe a chama acesa enquanto fica em oração.</p>
+      <button class="btn-ghost" style="margin-top:16px" onclick="show('s-home')">Voltar ao santuário</button>
+    </div>
+  </div>
+</section>
+
 <!-- paywall -->
 <div id="paywall" style="position:fixed; inset:0; z-index:60; display:none; background:rgba(44,44,42,.55)">
   <div style="position:absolute; left:0; right:0; bottom:0; background:var(--branco); border-radius:26px 26px 0 0; padding:26px 24px max(env(safe-area-inset-bottom),24px)">
@@ -508,8 +558,8 @@ const COROS=['Serafins','Querubins','Tronos','Dominações','Potências','Virtud
 function coroDe(n){ return COROS[Math.floor((n-1)/8)]; }
 const INDICE={};
 ANJOS.forEach(function(a){ a[3].forEach(function(dm){ INDICE[dm[1]*100+dm[0]]={n:a[0],nome:a[1],atributo:a[2],coro:coroDe(a[0]),datas:a[3]}; }); });
-function diaAnterior(m,d){ d-=1; if(d>=1) return [m,d]; m-=1; if(m<1)m=12; var fim=[31,29,31,30,31,30,31,31,30,31,30,31][m-1]; return [m,fim]; }
-function anjoRegente(m,d){ for(var i=0;i<5;i++){ var hit=INDICE[m*100+d]; if(hit) return hit; var p=diaAnterior(m,d); m=p[0]; d=p[1]; } return INDICE[1118]; }
+var ANJOS_HUMANIDADE={ n:0, nome:'Anjos da Humanidade', atributo:'Uma data rara e sagrada — você tem um papel fundamental.', coro:null, humanidade:true, datas:[[31,5],[12,8],[24,10],[5,1],[19,3]] };
+function anjoRegente(m,d){ return INDICE[m*100+d] || ANJOS_HUMANIDADE; }
 
 // ── navegação entre telas ──
 function show(id){
@@ -531,11 +581,22 @@ function revelar(){
   window._nome=nome.split(' ')[0];
 
   const anjo=anjoRegente(m,d);
-  document.getElementById('rv-num').textContent='Anjo '+anjo.n;
-  document.getElementById('rv-nome').textContent=anjo.nome;
-  document.getElementById('rv-coro').textContent='Coro dos '+anjo.coro;
-  document.getElementById('rv-attr').textContent=anjo.atributo;
-  document.getElementById('rv-faixa').textContent='Reina nos dias: '+anjo.datas.map(function(dm){return dm[0]+' '+MESES[dm[1]-1];}).join(' · ');
+  const dias=anjo.datas.map(function(dm){return dm[0]+' '+MESES[dm[1]-1];}).join(' · ');
+  if(anjo.humanidade){
+    document.getElementById('rv-intro').textContent='Você nasceu sob os…';
+    document.getElementById('rv-num').textContent='ANJOS DA HUMANIDADE';
+    document.getElementById('rv-nome').textContent='Filho da Humanidade';
+    document.getElementById('rv-coro').textContent='Uma data rara e sagrada';
+    document.getElementById('rv-attr').textContent='Você nasceu numa data muito especial e tem um papel fundamental. Não há um único anjo regente — você escolhe, entre os 72, aquele que mais ressoa com você.';
+    document.getElementById('rv-faixa').textContent='Datas dos Anjos da Humanidade: '+dias;
+  } else {
+    document.getElementById('rv-intro').textContent='O seu anjo da guarda é…';
+    document.getElementById('rv-num').textContent='Anjo '+anjo.n;
+    document.getElementById('rv-nome').textContent=anjo.nome;
+    document.getElementById('rv-coro').textContent='Coro dos '+anjo.coro;
+    document.getElementById('rv-attr').textContent=anjo.atributo;
+    document.getElementById('rv-faixa').textContent='Reina nos dias: '+dias;
+  }
   window._anjo=anjo.nome;
   window._perfil={ nome:window._nome, nascimento:(y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0')), anjo_n:anjo.n, anjo_nome:anjo.nome };
   try{ localStorage.setItem('saa_pending', JSON.stringify(window._perfil)); }catch(e){}
@@ -550,6 +611,19 @@ function revelar(){
 }
 
 // ── home ──
+// streak "dias sob as asas" (local; conta presença diária)
+function registrarPresenca(){
+  try{
+    var hoje=new Date().toISOString().slice(0,10);
+    var last=localStorage.getItem('saa_streak_last');
+    var n=parseInt(localStorage.getItem('saa_streak_n')||'0',10);
+    if(last===hoje) return n;
+    var ontem=new Date(Date.now()-86400000).toISOString().slice(0,10);
+    n=(last===ontem)? n+1 : 1;
+    localStorage.setItem('saa_streak_last',hoje); localStorage.setItem('saa_streak_n',String(n));
+    return n;
+  }catch(e){ return parseInt((localStorage.getItem&&localStorage.getItem('saa_streak_n'))||'1',10)||1; }
+}
 let homeReady=false;
 function initHome(){
   if(window._nome){
@@ -557,6 +631,7 @@ function initHome(){
     document.getElementById('home-saud').textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+', '+window._nome;
   }
   if(window._anjo) document.getElementById('home-anjo').textContent=window._anjo;
+  var st=registrarPresenca(); var se=document.getElementById('home-streak'); if(se) se.textContent=st;
   if(homeReady) return; homeReady=true;
   renderPedidos(); renderBib(); carregarBiblioteca();
 }
@@ -756,6 +831,33 @@ function openMagia(){
 function atualizarPantaculo(){
   var v=document.getElementById('magia-pedido').value.trim();
   document.getElementById('pant-pedido').textContent = v || 'seu pedido';
+}
+
+// ── Magia dos Anjos — vela do dia ──
+function openVela(){
+  document.getElementById('vela-pedido').value='';
+  document.getElementById('vela-chama').style.opacity='0';
+  document.getElementById('vela-glow').style.opacity='0';
+  document.getElementById('vela-form').style.display='block';
+  document.getElementById('vela-acesa-msg').style.display='none';
+  show('s-vela');
+}
+function acenderVela(){
+  document.getElementById('vela-chama').style.opacity='1';
+  document.getElementById('vela-glow').style.opacity='1';
+  document.getElementById('vela-form').style.display='none';
+  var ped=document.getElementById('vela-pedido').value.trim();
+  document.getElementById('vela-pedido-eco').textContent = ped ? ('“'+esc(ped)+'”') : '';
+  document.getElementById('vela-acesa-msg').style.display='block';
+  buzz(); chime();
+  registrarPresenca();
+  try{
+    var hoje=new Date().toISOString().slice(0,10);
+    if(localStorage.getItem('saa_vela_last')!==hoje){
+      var vn=parseInt(localStorage.getItem('saa_vela_n')||'0',10)+1;
+      localStorage.setItem('saa_vela_last',hoje); localStorage.setItem('saa_vela_n',String(vn));
+    }
+  }catch(e){}
 }
 
 // ── compartilhar meu anjo (alça de crescimento via audiência da Monica) ──

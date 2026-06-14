@@ -96,16 +96,21 @@ for (const [n, nome, atributo, datas] of ANJOS) {
   for (const [d, m] of datas) INDICE[m * 100 + d] = { n, nome, atributo, coro: coroDe(n), datas };
 }
 
-function diaAnterior(m, d) {
-  d -= 1;
-  if (d >= 1) return [m, d];
-  m -= 1; if (m < 1) m = 12;
-  const fim = [31,29,31,30,31,30,31,31,30,31,30,31][m - 1];
-  return [m, fim];
-}
+// Datas de transição (não regidas por um único anjo) → "Anjos da Humanidade":
+// pessoas nascidas nesses dias têm um papel especial e escolhem o anjo que
+// mais ressoa com elas (doutrina da Monica).
+export const ANJOS_HUMANIDADE = {
+  n: 0,
+  nome: 'Anjos da Humanidade',
+  atributo: 'Uma data rara e sagrada — você tem um papel fundamental.',
+  coro: null,
+  humanidade: true,
+  datas: [[31,5],[12,8],[24,10],[5,1],[19,3]],
+};
 
 /**
- * Retorna o anjo regente para a data de nascimento.
+ * Retorna o anjo regente para a data de nascimento, ou ANJOS_HUMANIDADE
+ * quando a data é um dia de transição.
  * @param {string|{mes,dia}} isoDate  'YYYY-MM-DD' ou {mes,dia}
  */
 export function anjoRegente(isoDate) {
@@ -115,13 +120,5 @@ export function anjoRegente(isoDate) {
     mes = m; dia = d;
   } else { mes = isoDate.mes; dia = isoDate.dia; }
   if (!mes || !dia) throw new Error('Data inválida para cálculo do anjo regente');
-
-  // Dias de transição (não listados) caem no anjo do dia anterior (Mumiah).
-  let m = mes, d = dia;
-  for (let i = 0; i < 5; i++) {
-    const hit = INDICE[m * 100 + d];
-    if (hit) return hit;
-    [m, d] = diaAnterior(m, d);
-  }
-  return INDICE[1118]; // fallback: Mumiah (18/3)
+  return INDICE[mes * 100 + dia] || ANJOS_HUMANIDADE;
 }
