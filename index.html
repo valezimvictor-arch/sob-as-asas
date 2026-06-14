@@ -55,7 +55,11 @@
     transition:border-color .2s, box-shadow .2s; }
   .campo:focus{ border-color:var(--ouro-claro); box-shadow:0 0 0 4px rgba(239,159,39,.12); }
   .label{ font-size:12px; letter-spacing:.06em; color:var(--tinta-suave); text-transform:uppercase; }
-  .card{ background:var(--branco-puro); border:1px solid var(--linha); border-radius:20px; }
+  .card{ background:var(--branco-puro); border:1px solid var(--linha); border-radius:20px; transition:transform .15s ease, box-shadow .2s ease; }
+  .card:active{ transform:scale(.985); box-shadow:0 6px 22px rgba(186,117,23,.10); }
+  ::-webkit-scrollbar{ display:none } *{ scrollbar-width:none }
+  .pad>div.fade-in,.pad>.card.fade-in{ animation:fadeIn .55s ease both; }
+  @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
 
   .reveal-anjo{ opacity:0; transform:scale(.8); transition:opacity 1.4s ease, transform 1.4s cubic-bezier(.2,.8,.2,1); }
   .reveal-anjo.on{ opacity:1; transform:scale(1); }
@@ -76,8 +80,22 @@
 </head>
 <body>
 
+<!-- ░░ 0. SPLASH (abertura) ░░ -->
+<section id="s-splash" class="screen active" style="background:linear-gradient(180deg,#FFF6E0 0%, #FBFAF7 60%)">
+  <div class="luzes" id="splash-luzes"></div>
+  <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center">
+    <div class="splash-halo" style="position:absolute; width:340px; height:340px; border-radius:50%;
+      background:radial-gradient(circle, rgba(239,159,39,.34) 0%, rgba(239,159,39,.10) 45%, rgba(239,159,39,0) 70%); animation:respira 4s ease-in-out infinite"></div>
+    <div id="splash-mark" style="opacity:0; transform:scale(.92); transition:opacity 1.1s ease, transform 1.1s cubic-bezier(.2,.8,.2,1); position:relative">
+      <img src="/asa-icon.svg?v=2" alt="Sob as Asas" width="96" height="96" style="filter:drop-shadow(0 4px 14px rgba(186,117,23,.25))"/>
+      <h1 class="serif" style="font-size:38px; margin:14px 0 0; color:var(--tinta)">Sob as Asas</h1>
+      <p class="serif-soft" style="font-size:18px; color:var(--ouro); margin:4px 0 0">Anjos da Guarda</p>
+    </div>
+  </div>
+</section>
+
 <!-- ░░ 1. BOAS-VINDAS ░░ -->
-<section id="s-welcome" class="screen active">
+<section id="s-welcome" class="screen">
   <div class="luzes" id="welcome-luzes"></div>
   <div class="halo" style="top:-70px"></div>
   <div class="pad" style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; position:relative;">
@@ -189,9 +207,6 @@
         </div>
       </div>
 
-      <!-- preciso do meu anjo (apoio instantâneo) -->
-      <button onclick="precisoAnjo()" style="width:100%; margin-top:18px; background:linear-gradient(180deg,#F6E6C0,#EFD79A); border:none; border-radius:16px; padding:15px; font:inherit; font-size:15px; font-weight:600; color:#5A3A06; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 16px rgba(186,117,23,.18)">🕊️ Preciso do meu anjo agora</button>
-
       <!-- mensagem da Monica -->
       <div class="card fade-in" style="margin-top:22px; padding:18px; background:var(--ouro-bg); border-color:transparent" onclick="abrirMensagemSemana()">
         <div style="display:flex; align-items:center; gap:12px">
@@ -217,18 +232,26 @@
 
       <!-- ritual -->
       <p class="label" style="margin:26px 0 10px; display:block">Ritual de hoje</p>
-      <div style="display:flex; gap:12px">
-        <div class="card" style="flex:1; padding:16px; text-align:center" onclick="toast('Ritual da manhã ✓')">
-          <div style="font-size:24px">🌅</div>
-          <p style="margin:8px 0 0; font-size:13px; color:var(--tinta-suave)">Proteção</p>
-          <p style="margin:0; font-weight:600; font-size:14px">Manhã ✓</p>
+      <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none">
+        <div class="card" style="flex:0 0 130px; padding:14px; text-align:center" onclick="abrirRitual('manha')">
+          <div style="font-size:22px">🌅</div>
+          <p style="margin:6px 0 0; font-size:12px; color:var(--tinta-suave)">Manhã</p>
+          <p style="margin:0; font-weight:600; font-size:13px">Proteção</p>
         </div>
-        <div class="card" style="flex:1; padding:16px; text-align:center" onclick="toast('Abrindo ritual da noite…')">
-          <div style="font-size:24px">🌙</div>
-          <p style="margin:8px 0 0; font-size:13px; color:var(--tinta-suave)">Gratidão</p>
-          <p style="margin:0; font-weight:600; font-size:14px; color:var(--ouro)">Noite</p>
+        <div class="card" style="flex:0 0 130px; padding:14px; text-align:center" onclick="precisoAnjo()">
+          <div style="font-size:22px">🌤️</div>
+          <p style="margin:6px 0 0; font-size:12px; color:var(--tinta-suave)">Tarde</p>
+          <p style="margin:0; font-weight:600; font-size:13px">Reflexão</p>
+        </div>
+        <div class="card" style="flex:0 0 130px; padding:14px; text-align:center" onclick="openGratidao()">
+          <div style="font-size:22px">🌙</div>
+          <p style="margin:6px 0 0; font-size:12px; color:var(--tinta-suave)">Noite</p>
+          <p style="margin:0; font-weight:600; font-size:13px; color:var(--ouro)">Gratidão</p>
         </div>
       </div>
+
+      <!-- preciso do meu anjo (apoio instantâneo, abaixo do ritual) -->
+      <button onclick="precisoAnjo()" style="width:100%; margin-top:14px; background:linear-gradient(180deg,#F6E6C0,#EFD79A); border:none; border-radius:16px; padding:14px; font:inherit; font-size:15px; font-weight:600; color:#5A3A06; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 16px rgba(186,117,23,.18)">🕊️ Preciso do meu anjo agora</button>
 
       <!-- livro de pedidos -->
       <div class="card" style="margin-top:14px; padding:16px; display:flex; align-items:center; gap:12px" onclick="nav('pedidos')">
@@ -478,7 +501,8 @@
           <li>Guarde uma cópia num livro e releia em um ano — verá quantos pedidos se realizaram. 🕊️</li>
         </ol>
       </div>
-      <button class="btn-ghost" style="margin-top:14px" onclick="compartilharCarta()">Compartilhar minha carta</button>
+      <button class="btn-ouro" style="margin-top:14px" onclick="imprimirCarta()">📄 Imprimir / salvar em PDF</button>
+      <button class="btn-ghost" style="margin-top:10px" onclick="compartilharCarta()">Compartilhar minha carta</button>
       <button class="btn-ouro" style="margin-top:10px" onclick="show('s-home')">Voltar ao santuário</button>
     </div>
   </div>
@@ -620,6 +644,19 @@
     <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
     <h2 class="serif" style="font-size:26px; margin:6px 0 0">Loja da Monica</h2>
     <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 14px">Presentes e materiais para sua jornada espiritual.</p>
+
+    <!-- experiência destacada: viagem a Israel -->
+    <div class="card" style="padding:0; margin-bottom:14px; border:none; overflow:hidden; cursor:pointer" onclick="interesseIsrael()">
+      <div style="height:130px; background:linear-gradient(135deg,#EFD79A 0%,#F6C868 35%,#D89A2C 100%); position:relative; display:flex; align-items:center; justify-content:center">
+        <div style="font-size:52px; filter:drop-shadow(0 2px 8px rgba(0,0,0,.15))">✡️</div>
+        <span style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,.85); color:#5A3A06; font-size:10px; letter-spacing:.08em; padding:4px 10px; border-radius:999px; font-weight:600">EXPERIÊNCIA</span>
+      </div>
+      <div style="padding:16px">
+        <p class="serif" style="margin:0; font-size:19px">Viaje com a Monica para Israel</p>
+        <p style="margin:6px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.5">Uma experiência única em Terra Santa, ao lado da Monica Buonfiglio. Deixe seu interesse — entraremos em contato.</p>
+        <p id="israel-status" style="margin:10px 0 0; font-size:12px; color:var(--ouro); font-weight:500">Tenho interesse →</p>
+      </div>
+    </div>
 
     <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px; background:var(--ouro-bg); border-color:transparent" onclick="toast('Presentear assinatura — em breve 🎁')">
       <div style="font-size:24px">🎁</div>
@@ -991,6 +1028,32 @@ function selarCarta(){
   document.getElementById('correio-selada').style.display='block';
   document.querySelector('#s-correio .pad').scrollTop=0; buzz();
 }
+function imprimirCarta(){
+  var nome=esc(window._nome||'');
+  var anjo=esc(window._anjo||'seu anjo da guarda');
+  var itens=(window._carta||[]).map(function(t){ return '<li>'+esc(t)+'</li>'; }).join('');
+  var hoje=new Date().toLocaleDateString('pt-BR');
+  var html='<!doctype html><html><head><meta charset="utf-8"><title>Correio Angelical — '+nome+'</title>'
+    +'<style>@page{margin:22mm} body{font-family:Georgia,serif;color:#2c2c2a;line-height:1.7;max-width:680px;margin:0 auto;padding:24px}'
+    +'h1{font-family:"Marcellus","Times New Roman",serif;font-size:30px;font-weight:400;text-align:center;margin:0 0 6px}'
+    +'.sub{text-align:center;color:#6b6a63;font-size:13px;margin:0 0 28px}'
+    +'.cabecalho{font-size:15px;margin:18px 0 10px}'
+    +'ol{font-size:15px;padding-left:20px} ol li{margin:8px 0}'
+    +'.fecho{margin-top:28px;font-style:italic;font-size:15px}'
+    +'.amem{display:block;text-align:center;font-family:"Marcellus",serif;font-size:20px;color:#BA7517;margin-top:14px}'
+    +'.rodape{margin-top:36px;font-size:11px;color:#6b6a63;text-align:center}</style></head><body>'
+    +'<h1>Correio Angelical</h1><p class="sub">Carta a '+anjo+' · '+hoje+'</p>'
+    +'<p class="cabecalho">Querido(a) <b>'+anjo+'</b>,</p>'
+    +'<p>Eu, '+nome+', com fé e gratidão, agradeço por:</p>'
+    +'<ol>'+itens+'</ol>'
+    +'<p class="fecho">Bendito é o meu desejo, porque ele é realizado para o bem de todos os envolvidos.</p>'
+    +'<span class="amem">Amém.</span>'
+    +'<p class="rodape">Coloque esta carta dentro da Bíblia, no Salmo 90/91, por 7 dias. Depois queime na chama de uma vela branca oferecida ao seu anjo.<br/>— Sob as Asas · Monica Buonfiglio</p>'
+    +'</body></html>';
+  var w=window.open('','_blank'); if(!w){ toast('Permita pop-ups para gerar o PDF'); return; }
+  w.document.open(); w.document.write(html); w.document.close();
+  setTimeout(function(){ try{ w.focus(); w.print(); }catch(e){} },300);
+}
 function compartilharCarta(){
   var txt='Minha carta ao anjo '+(window._anjo||'')+':\n'+(window._carta||[]).map(function(t){return '• '+t;}).join('\n')+'\n\n"Bendito é o meu desejo, porque ele é realizado para o bem de todos os envolvidos. Amém."';
   if(navigator.share){ navigator.share({title:'Correio Angelical',text:txt}).catch(function(){}); }
@@ -1023,8 +1086,12 @@ function mbEstado(){
 function renderMbDots(diaAtual){
   var el=document.getElementById('mb-dots'); el.innerHTML='';
   for(var i=1;i<=7;i++){
-    var feito=i<diaAtual, atual=i===diaAtual, cor=MB_VELAS[i-1].hex;
-    el.insertAdjacentHTML('beforeend','<div style="width:14px;height:14px;border-radius:50%;background:'+(feito?cor:'transparent')+';border:2px solid '+((feito||atual)?cor:'var(--linha)')+'"></div>');
+    var feito=i<diaAtual, atual=i===diaAtual, v=MB_VELAS[i-1];
+    // mostra a cor sempre (com brilho diferente conforme o estado)
+    var bg=v.hex;
+    var ring=feito?'#BA7517':(atual?'#BA7517':'rgba(0,0,0,.08)');
+    var op=feito?'1':(atual?'1':'.45');
+    el.insertAdjacentHTML('beforeend','<div title="Dia '+i+' — '+v.cor+'" style="width:16px;height:16px;border-radius:50%;background:'+bg+';opacity:'+op+';border:2px solid '+ring+';box-shadow:'+(atual?'0 0 0 4px rgba(186,117,23,.15)':'none')+'"></div>');
   }
 }
 function desenharVelaMb(dia, acesa){
@@ -1268,6 +1335,19 @@ var MSGS_ANJO=[
 function novaMensagemAnjo(){ document.getElementById('socorro-msg').textContent = MSGS_ANJO[Math.floor(Math.random()*MSGS_ANJO.length)]; buzz(); }
 function precisoAnjo(){ novaMensagemAnjo(); show('s-socorro'); chime(); }
 
+// ── Ritual rápido (oração de proteção curta — manhã) ──
+function abrirRitual(periodo){
+  var msgs={ manha:[
+    'Anjo do Senhor, meu zeloso guardador, ilumine, guarde, rege e governe este meu dia.',
+    'Que toda a luz do céu desça sobre o meu caminho hoje. Estou sob suas asas.',
+    'Que cada palavra, cada passo e cada encontro de hoje seja abençoado.'
+  ]};
+  var arr=msgs[periodo]||msgs.manha; var m=arr[Math.floor(Math.random()*arr.length)];
+  document.getElementById('socorro-msg').textContent=m;
+  document.querySelector('#s-socorro p.serif-soft').textContent='Sua oração de proteção';
+  show('s-socorro'); chime(); registrarPresenca();
+}
+
 // ── Meu Anjo (detalhe) ──
 function openMeuAnjo(){
   var n = window._perfil && typeof window._perfil.anjo_n!=='undefined' ? window._perfil.anjo_n : null;
@@ -1423,6 +1503,16 @@ var LOJA=[
 ];
 function openLoja(){ renderLoja(); show('s-loja'); }
 function abrirProduto(p){ if(p.url){ try{ window.open(p.url,'_blank'); }catch(e){ location.href=p.url; } } else { toast('Esgotado por enquanto 🕊️'); } }
+async function interesseIsrael(){
+  var email=window._email||'';
+  if(!email){ var p=prompt('Deixe seu e-mail para receber detalhes da viagem com a Monica:'); if(!p) return; email=p.trim(); }
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ toast('E-mail inválido'); return; }
+  try{
+    if(window.saaAuth){ await window.saaAuth.client.from('leads').insert({ email:email, origem:'israel' }); }
+  }catch(e){}
+  var el=document.getElementById('israel-status'); if(el){ el.textContent='✓ Interesse registrado — em breve entraremos em contato'; el.style.color='var(--ouro)'; }
+  buzz(); toast('Interesse registrado 🕊️');
+}
 function renderLoja(){
   var el=document.getElementById('lista-loja');
   el.innerHTML=LOJA.map(function(p,i){
@@ -1432,7 +1522,18 @@ function renderLoja(){
   }).join('');
 }
 
-spawnLuzes('welcome-luzes',14); spawnLuzes('reveal-luzes',22);
+spawnLuzes('welcome-luzes',14); spawnLuzes('reveal-luzes',22); spawnLuzes('splash-luzes',18);
+
+// Splash → Welcome (microanimação suave)
+(function(){
+  var sp=document.getElementById('splash-mark');
+  setTimeout(function(){ if(sp){ sp.style.opacity='1'; sp.style.transform='scale(1)'; } }, 120);
+  setTimeout(function(){
+    // Se já entrou em outra tela (ex.: deep link), não força splash
+    var ativa=[...document.querySelectorAll('.screen.active')].map(s=>s.id);
+    if(ativa.length===1 && ativa[0]==='s-splash'){ show('s-welcome'); }
+  }, 2200);
+})();
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js').catch(()=>{}); }
 </script>
 </body>
