@@ -645,16 +645,28 @@
     <h2 class="serif" style="font-size:26px; margin:6px 0 0">Loja da Monica</h2>
     <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 14px">Presentes e materiais para sua jornada espiritual.</p>
 
-    <!-- experiência destacada: viagem a Israel -->
-    <div class="card" style="padding:0; margin-bottom:14px; border:none; overflow:hidden; cursor:pointer" onclick="interesseIsrael()">
-      <div style="height:130px; background:linear-gradient(135deg,#EFD79A 0%,#F6C868 35%,#D89A2C 100%); position:relative; display:flex; align-items:center; justify-content:center">
-        <div style="font-size:52px; filter:drop-shadow(0 2px 8px rgba(0,0,0,.15))">✡️</div>
-        <span style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,.85); color:#5A3A06; font-size:10px; letter-spacing:.08em; padding:4px 10px; border-radius:999px; font-weight:600">EXPERIÊNCIA</span>
+    <!-- experiências destacadas -->
+    <p class="label" style="display:block; margin:4px 0 10px">Experiências com a Monica</p>
+
+    <div class="card" style="padding:0; margin-bottom:10px; border:none; overflow:hidden; cursor:pointer; background:var(--branco-puro)" onclick="interesseExperiencia('israel')">
+      <div style="height:84px; background:linear-gradient(135deg,#EFD79A 0%,#F6C868 35%,#D89A2C 100%); position:relative; display:flex; align-items:center; justify-content:flex-start; padding:0 18px">
+        <span class="serif" style="color:#5A3A06; font-size:22px; letter-spacing:.02em">Israel · Terra Santa</span>
+        <span style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,.88); color:#5A3A06; font-size:10px; letter-spacing:.08em; padding:4px 10px; border-radius:999px; font-weight:600">VIAGEM</span>
       </div>
-      <div style="padding:16px">
-        <p class="serif" style="margin:0; font-size:19px">Viaje com a Monica para Israel</p>
-        <p style="margin:6px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.5">Uma experiência única em Terra Santa, ao lado da Monica Buonfiglio. Deixe seu interesse — entraremos em contato.</p>
-        <p id="israel-status" style="margin:10px 0 0; font-size:12px; color:var(--ouro); font-weight:500">Tenho interesse →</p>
+      <div style="padding:14px 16px">
+        <p style="margin:0; font-size:13px; color:var(--tinta-suave); line-height:1.55">Uma jornada espiritual em Terra Santa, ao lado da Monica. Deixe seu interesse e entraremos em contato.</p>
+        <p id="status-israel" style="margin:10px 0 0; font-size:13px; color:var(--ouro); font-weight:600">Tenho interesse →</p>
+      </div>
+    </div>
+
+    <div class="card" style="padding:0; margin-bottom:14px; border:none; overflow:hidden; cursor:pointer; background:var(--branco-puro)" onclick="interesseExperiencia('saomiguel')">
+      <div style="height:84px; background:linear-gradient(135deg,#C9D9F0 0%,#9FC3EE 40%,#378ADD 100%); position:relative; display:flex; align-items:center; justify-content:flex-start; padding:0 18px">
+        <span class="serif" style="color:#0C447C; font-size:22px; letter-spacing:.02em">Caminhos de São Miguel</span>
+        <span style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,.88); color:#1E5A99; font-size:10px; letter-spacing:.08em; padding:4px 10px; border-radius:999px; font-weight:600">PEREGRINAÇÃO</span>
+      </div>
+      <div style="padding:14px 16px">
+        <p style="margin:0; font-size:13px; color:var(--tinta-suave); line-height:1.55">As rotas medievais de peregrinação ao Monte Saint-Michel — sob a proteção do príncipe dos anjos.</p>
+        <p id="status-saomiguel" style="margin:10px 0 0; font-size:13px; color:var(--celeste); font-weight:600">Tenho interesse →</p>
       </div>
     </div>
 
@@ -1034,22 +1046,37 @@ function imprimirCarta(){
   var itens=(window._carta||[]).map(function(t){ return '<li>'+esc(t)+'</li>'; }).join('');
   var hoje=new Date().toLocaleDateString('pt-BR');
   var html='<!doctype html><html><head><meta charset="utf-8"><title>Correio Angelical — '+nome+'</title>'
-    +'<style>@page{margin:22mm} body{font-family:Georgia,serif;color:#2c2c2a;line-height:1.7;max-width:680px;margin:0 auto;padding:24px}'
+    +'<style>@page{margin:18mm} body{font-family:Georgia,serif;color:#2c2c2a;line-height:1.7;max-width:680px;margin:0 auto;padding:18px}'
     +'h1{font-family:"Marcellus","Times New Roman",serif;font-size:30px;font-weight:400;text-align:center;margin:0 0 6px}'
-    +'.sub{text-align:center;color:#6b6a63;font-size:13px;margin:0 0 28px}'
+    +'.sub{text-align:center;color:#6b6a63;font-size:13px;margin:0 0 18px}'
+    +'.guia{background:#FAF3E4;border:1px solid #EAD9A5;border-radius:14px;padding:14px 18px;margin:0 0 26px;font-size:13px;color:#5A3A06;page-break-inside:avoid}'
+    +'.guia b{color:#5A3A06}'
+    +'.guia ol{margin:8px 0 0;padding-left:20px} .guia li{margin:4px 0}'
     +'.cabecalho{font-size:15px;margin:18px 0 10px}'
-    +'ol{font-size:15px;padding-left:20px} ol li{margin:8px 0}'
+    +'ol.pedidos{font-size:15px;padding-left:20px} ol.pedidos li{margin:8px 0}'
     +'.fecho{margin-top:28px;font-style:italic;font-size:15px}'
     +'.amem{display:block;text-align:center;font-family:"Marcellus",serif;font-size:20px;color:#BA7517;margin-top:14px}'
-    +'.rodape{margin-top:36px;font-size:11px;color:#6b6a63;text-align:center}</style></head><body>'
+    +'.rodape{margin-top:36px;font-size:11px;color:#6b6a63;text-align:center}'
+    +'@media print{ .guia{background:#FAF3E4 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact} }'
+    +'</style></head><body>'
     +'<h1>Correio Angelical</h1><p class="sub">Carta a '+anjo+' · '+hoje+'</p>'
+    +'<div class="guia">'
+      +'<b>🕊️ Como concluir o ritual</b>'
+      +'<ol>'
+        +'<li>Imprima esta carta e leia em silêncio.</li>'
+        +'<li>Coloque-a dentro da sua Bíblia, no <b>Salmo 90/91</b>.</li>'
+        +'<li>Deixe por <b>7 dias</b>, em recolhimento.</li>'
+        +'<li>No 7º dia, <b>queime a carta</b> na chama de uma <b>vela branca</b> oferecida ao seu anjo da guarda — assim seu pedido será ativado.</li>'
+      +'</ol>'
+    +'</div>'
     +'<p class="cabecalho">Querido(a) <b>'+anjo+'</b>,</p>'
     +'<p>Eu, '+nome+', com fé e gratidão, agradeço por:</p>'
-    +'<ol>'+itens+'</ol>'
+    +'<ol class="pedidos">'+itens+'</ol>'
     +'<p class="fecho">Bendito é o meu desejo, porque ele é realizado para o bem de todos os envolvidos.</p>'
     +'<span class="amem">Amém.</span>'
-    +'<p class="rodape">Coloque esta carta dentro da Bíblia, no Salmo 90/91, por 7 dias. Depois queime na chama de uma vela branca oferecida ao seu anjo.<br/>— Sob as Asas · Monica Buonfiglio</p>'
+    +'<p class="rodape">— Sob as Asas · Monica Buonfiglio</p>'
     +'</body></html>';
+  toast('Lembre-se: deixe a carta na Bíblia (Salmo 90/91) por 7 dias e depois queime na vela branca 🕯️');
   var w=window.open('','_blank'); if(!w){ toast('Permita pop-ups para gerar o PDF'); return; }
   w.document.open(); w.document.write(html); w.document.close();
   setTimeout(function(){ try{ w.focus(); w.print(); }catch(e){} },300);
@@ -1503,14 +1530,13 @@ var LOJA=[
 ];
 function openLoja(){ renderLoja(); show('s-loja'); }
 function abrirProduto(p){ if(p.url){ try{ window.open(p.url,'_blank'); }catch(e){ location.href=p.url; } } else { toast('Esgotado por enquanto 🕊️'); } }
-async function interesseIsrael(){
+async function interesseExperiencia(tipo){
+  var rotulos={ israel:'a viagem para Israel', saomiguel:'os Caminhos de São Miguel' };
   var email=window._email||'';
-  if(!email){ var p=prompt('Deixe seu e-mail para receber detalhes da viagem com a Monica:'); if(!p) return; email=p.trim(); }
+  if(!email){ var p=prompt('Deixe seu e-mail para receber detalhes sobre '+(rotulos[tipo]||'a experiência')+':'); if(!p) return; email=p.trim(); }
   if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ toast('E-mail inválido'); return; }
-  try{
-    if(window.saaAuth){ await window.saaAuth.client.from('leads').insert({ email:email, origem:'israel' }); }
-  }catch(e){}
-  var el=document.getElementById('israel-status'); if(el){ el.textContent='✓ Interesse registrado — em breve entraremos em contato'; el.style.color='var(--ouro)'; }
+  try{ if(window.saaAuth){ await window.saaAuth.client.from('leads').insert({ email:email, origem:'exp_'+tipo }); } }catch(e){}
+  var el=document.getElementById('status-'+tipo); if(el){ el.textContent='✓ Interesse registrado — em breve entraremos em contato'; }
   buzz(); toast('Interesse registrado 🕊️');
 }
 function renderLoja(){
