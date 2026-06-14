@@ -208,20 +208,21 @@
         </div>
       </div>
 
-      <!-- mensagem da Monica -->
-      <div class="card fade-in" style="margin-top:22px; padding:18px; background:var(--ouro-bg); border-color:transparent" onclick="abrirMensagemSemana()">
-        <div style="display:flex; align-items:center; gap:12px">
-          <div style="width:42px;height:42px;border-radius:50%;background:#F6C868;display:flex;align-items:center;justify-content:center;color:#5A3A06;font-weight:600">MB</div>
-          <div style="flex:1">
-            <p style="margin:0; font-weight:600; color:#5A3A06">Mensagem da Monica</p>
-            <p id="home-msg-sub" style="margin:0; font-size:12px; color:var(--ouro)">Esta semana</p>
+      <!-- 1. MEU ANJO em destaque (logo abaixo do cabeçalho) -->
+      <div class="card fade-in" style="margin-top:20px; padding:18px; background:var(--ouro-bg); border-color:transparent; cursor:pointer" onclick="openMeuAnjo()">
+        <div style="display:flex; align-items:flex-start; gap:14px">
+          <div style="font-size:32px; line-height:1">🪽</div>
+          <div style="flex:1; min-width:0">
+            <p style="margin:0; font-size:11px; letter-spacing:.14em; color:var(--ouro); text-transform:uppercase">Seu anjo regente</p>
+            <p class="serif" id="home-anjo-card-nome" style="margin:2px 0 0; font-size:24px; color:var(--tinta)">—</p>
+            <p id="home-anjo-card-coro" style="margin:2px 0 0; font-size:13px; color:#854F0B">—</p>
+            <p id="home-anjo-card-dom" class="serif-soft" style="margin:8px 0 0; font-size:15px; color:#5A3A06; line-height:1.4">—</p>
           </div>
-          <span style="font-size:26px; color:var(--ouro)">▶</span>
+          <span style="color:var(--ouro); font-size:20px">›</span>
         </div>
-        <p id="home-msg-corpo" class="serif-soft" style="margin:14px 0 0; font-size:17px; color:#5A3A06; line-height:1.4">"Deixe que a proteção te encontre no silêncio do seu dia…"</p>
       </div>
 
-      <!-- salmo do dia -->
+      <!-- 2. SALMO DE HOJE -->
       <div class="card" style="margin-top:14px; padding:16px; display:flex; align-items:center; gap:14px" onclick="abrirSalmoHoje()">
         <div style="width:46px;height:46px;border-radius:12px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center;font-size:22px">📜</div>
         <div style="flex:1">
@@ -231,40 +232,23 @@
         <span style="font-size:22px; color:var(--ouro)">▶</span>
       </div>
 
-      <!-- ritual -->
-      <p class="label" style="margin:26px 0 10px; display:block">Ritual de hoje</p>
-      <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none">
-        <div class="card" style="flex:0 0 130px; padding:14px; text-align:center" onclick="abrirRitual('manha')">
-          <div style="font-size:22px">🌅</div>
-          <p style="margin:6px 0 0; font-size:12px; color:var(--tinta-suave)">Manhã</p>
-          <p style="margin:0; font-weight:600; font-size:13px">Proteção</p>
+      <!-- 3. MENSAGEM DA MONICA -->
+      <div class="card" style="margin-top:14px; padding:18px" onclick="abrirMensagemSemana()">
+        <div style="display:flex; align-items:center; gap:12px">
+          <div style="width:42px;height:42px;border-radius:50%;background:#F6C868;display:flex;align-items:center;justify-content:center;color:#5A3A06;font-weight:600">MB</div>
+          <div style="flex:1">
+            <p style="margin:0; font-weight:600">Mensagem da Monica</p>
+            <p id="home-msg-sub" style="margin:0; font-size:12px; color:var(--ouro)">Esta semana</p>
+          </div>
+          <span style="font-size:24px; color:var(--ouro)">▶</span>
         </div>
-        <div class="card" style="flex:0 0 130px; padding:14px; text-align:center" onclick="precisoAnjo()">
-          <div style="font-size:22px">🌤️</div>
-          <p style="margin:6px 0 0; font-size:12px; color:var(--tinta-suave)">Tarde</p>
-          <p style="margin:0; font-weight:600; font-size:13px">Reflexão</p>
-        </div>
-        <div class="card" style="flex:0 0 130px; padding:14px; text-align:center" onclick="openGratidao()">
-          <div style="font-size:22px">🌙</div>
-          <p style="margin:6px 0 0; font-size:12px; color:var(--tinta-suave)">Noite</p>
-          <p style="margin:0; font-weight:600; font-size:13px; color:var(--ouro)">Gratidão</p>
-        </div>
+        <p id="home-msg-corpo" class="serif-soft" style="margin:12px 0 0; font-size:16px; color:var(--tinta); line-height:1.4">"Deixe que a proteção te encontre no silêncio do seu dia…"</p>
       </div>
 
-      <!-- preciso do meu anjo (apoio instantâneo, abaixo do ritual) -->
-      <button onclick="precisoAnjo()" style="width:100%; margin-top:14px; background:linear-gradient(180deg,#F6E6C0,#EFD79A); border:none; border-radius:16px; padding:14px; font:inherit; font-size:15px; font-weight:600; color:#5A3A06; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 16px rgba(186,117,23,.18)">🕊️ Preciso do meu anjo agora</button>
+      <!-- 4. PRECISO DO MEU ANJO AGORA -->
+      <button onclick="precisoAnjo()" style="width:100%; margin-top:14px; background:linear-gradient(180deg,#F6E6C0,#EFD79A); border:none; border-radius:16px; padding:15px; font:inherit; font-size:15px; font-weight:600; color:#5A3A06; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 16px rgba(186,117,23,.18)">🕊️ Preciso do meu anjo agora</button>
 
-      <!-- livro de pedidos -->
-      <div class="card" style="margin-top:14px; padding:16px; display:flex; align-items:center; gap:12px" onclick="nav('pedidos')">
-        <div style="width:38px;height:38px;border-radius:10px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center;color:var(--celeste)">📖</div>
-        <div style="flex:1">
-          <p style="margin:0; font-weight:600">Livro de pedidos</p>
-          <p style="margin:0; font-size:12px; color:var(--tinta-suave)">3 pedidos · 1 realizado</p>
-        </div>
-        <span style="color:var(--tinta-suave)">›</span>
-      </div>
-
-      <!-- milagre do mês -->
+      <!-- 5. MILAGRE DO MÊS -->
       <div class="card" style="margin-top:14px; padding:16px; display:flex; align-items:center; gap:12px; background:var(--celeste-bg); border-color:transparent" onclick="show('s-milagre')">
         <div style="font-size:22px">✨</div>
         <div style="flex:1">
@@ -274,67 +258,92 @@
         <span style="color:var(--celeste)">›</span>
       </div>
 
-      <p class="label" style="display:block; margin:26px 0 10px">Práticas</p>
-
-      <!-- ativar lembretes diários (push) -->
-      <div id="home-lembretes" class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="ativarLembretes()">
-        <div style="width:38px;height:38px;border-radius:10px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center">🔔</div>
+      <!-- 6. LIVRO DE PEDIDOS -->
+      <div class="card" style="margin-top:10px; padding:16px; display:flex; align-items:center; gap:12px" onclick="nav('pedidos')">
+        <div style="width:38px;height:38px;border-radius:10px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center;color:var(--celeste)">📖</div>
         <div style="flex:1">
-          <p style="margin:0; font-weight:600">Lembretes diários</p>
-          <p style="margin:0; font-size:12px; color:var(--tinta-suave)">Seu anjo te chama na hora do ritual</p>
+          <p style="margin:0; font-weight:600">Livro de pedidos</p>
+          <p style="margin:0; font-size:12px; color:var(--tinta-suave)">Seus pedidos ao seu anjo</p>
         </div>
         <span style="color:var(--tinta-suave)">›</span>
       </div>
 
-      <!-- diário de gratidão -->
-      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="openGratidao()">
-        <div style="width:38px;height:38px;border-radius:10px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center">🙏</div>
+      <!-- 7. PRÁTICAS -->
+      <p class="label" style="display:block; margin:26px 0 4px">Práticas com seu anjo</p>
+      <p style="font-size:13px; color:var(--tinta-suave); margin:0 0 12px; line-height:1.5">Rituais e jornadas para fortalecer sua conexão. Toque em qualquer um para conhecer.</p>
+
+      <!-- magia dos anjos -->
+      <div class="card" style="padding:16px; display:flex; align-items:flex-start; gap:12px; margin-bottom:10px" onclick="abrirPratica('magia')">
+        <div style="width:42px;height:42px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🕯️</div>
         <div style="flex:1">
-          <p style="margin:0; font-weight:600">Diário de gratidão</p>
-          <p style="margin:0; font-size:12px; color:var(--tinta-suave)">Termine o dia agradecendo</p>
+          <p style="margin:0; font-weight:600">Magia dos Anjos</p>
+          <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">Acenda a vela do dia e faça seu pedido. Uma jornada de 7 dias, uma cor para cada intenção.</p>
+          <p id="home-vela-sub" style="margin:6px 0 0; font-size:11px; color:var(--ouro); font-weight:600; letter-spacing:.05em; text-transform:uppercase"></p>
         </div>
         <span style="color:var(--tinta-suave)">›</span>
       </div>
 
       <!-- correio angelical -->
-      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="openCorreio()">
-        <div style="width:38px;height:38px;border-radius:10px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center">💌</div>
+      <div class="card" style="padding:16px; display:flex; align-items:flex-start; gap:12px; margin-bottom:10px" onclick="abrirPratica('correio')">
+        <div style="width:42px;height:42px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">💌</div>
         <div style="flex:1">
           <p style="margin:0; font-weight:600">Correio Angelical</p>
-          <p style="margin:0; font-size:12px; color:var(--tinta-suave)">Escreva uma carta ao seu anjo</p>
+          <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">Escreva uma carta com 10 agradecimentos ao seu anjo, no presente. Imprima e siga o ritual.</p>
         </div>
         <span style="color:var(--tinta-suave)">›</span>
       </div>
 
-      <!-- magia dos anjos (vela do dia) -->
-      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px" onclick="openVela()">
-        <div style="width:38px;height:38px;border-radius:10px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center">🕯️</div>
+      <!-- novena dos anjos -->
+      <div class="card" style="padding:16px; display:flex; align-items:flex-start; gap:12px; margin-bottom:10px" onclick="abrirPratica('novena')">
+        <div style="width:42px;height:42px;border-radius:12px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🌟</div>
         <div style="flex:1">
-          <p style="margin:0; font-weight:600">Magia dos Anjos</p>
-          <p id="home-vela-sub" style="margin:0; font-size:12px; color:var(--tinta-suave)">Acenda a vela do dia e faça um pedido</p>
+          <p style="margin:0; font-weight:600">Novena dos Anjos</p>
+          <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">9 dias, um tema por dia: acolhimento, gratidão, perdão, coragem, cura, prosperidade…</p>
         </div>
         <span style="color:var(--tinta-suave)">›</span>
       </div>
 
-      <!-- jornada de 9 dias -->
-      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-top:10px" onclick="openJornada()">
-        <div style="width:38px;height:38px;border-radius:10px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center">🌟</div>
+      <!-- diário de gratidão -->
+      <div class="card" style="padding:16px; display:flex; align-items:flex-start; gap:12px; margin-bottom:10px" onclick="abrirPratica('gratidao')">
+        <div style="width:42px;height:42px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🙏</div>
         <div style="flex:1">
-          <p style="margin:0; font-weight:600">Jornada de 9 dias</p>
-          <p style="margin:0; font-size:12px; color:var(--tinta-suave)">Um passo por dia com seu anjo</p>
+          <p style="margin:0; font-weight:600">Diário de gratidão</p>
+          <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">Termine o dia agradecendo por três coisas. A gratidão abre as portas do céu.</p>
         </div>
         <span style="color:var(--tinta-suave)">›</span>
       </div>
 
-      <!-- meu anjo + loja -->
-      <div style="display:flex; gap:10px; margin-top:10px">
-        <div class="card" style="flex:1; padding:14px; text-align:center" onclick="openMeuAnjo()">
-          <div style="font-size:22px">🪽</div>
-          <p style="margin:6px 0 0; font-weight:600; font-size:14px">Meu Anjo</p>
+      <!-- lembretes (mantido) -->
+      <div id="home-lembretes" class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="ativarLembretes()">
+        <div style="width:42px;height:42px;border-radius:12px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🔔</div>
+        <div style="flex:1">
+          <p style="margin:0; font-weight:600">Lembretes diários</p>
+          <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">Seu anjo te chama na hora do ritual</p>
         </div>
-        <div class="card" style="flex:1; padding:14px; text-align:center" onclick="openLoja()">
-          <div style="font-size:22px">🛍️</div>
-          <p style="margin:6px 0 0; font-weight:600; font-size:14px">Loja</p>
+        <span style="color:var(--tinta-suave)">›</span>
+      </div>
+
+      <!-- 8. LOJA -->
+      <p class="label" style="display:block; margin:26px 0 10px">Loja da Monica</p>
+      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px" onclick="openLoja()">
+        <div style="width:42px;height:42px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:20px">🛍️</div>
+        <div style="flex:1">
+          <p style="margin:0; font-weight:600">Presentes e experiências</p>
+          <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave)">Curso de Angelologia · viagens · presentear</p>
+        </div>
+        <span style="color:var(--tinta-suave)">›</span>
+      </div>
+
+      <!-- 9. RODAPÉ -->
+      <div style="margin-top:32px; padding:18px 4px 8px; text-align:center; border-top:1px solid var(--linha)">
+        <p class="serif" style="margin:0; font-size:14px; color:var(--ouro)">Sob as Asas</p>
+        <p style="margin:4px 0 0; font-size:11px; color:var(--tinta-suave)">uma realização <b style="font-weight:600;color:var(--tinta-suave)">LVSV Ventures</b></p>
+        <div style="margin:12px 0 0; display:flex; gap:6px; justify-content:center; flex-wrap:wrap; font-size:11px; color:var(--tinta-suave)">
+          <a href="/termos" target="_blank" style="color:var(--tinta-suave); text-decoration:none">Termos de Uso</a>
+          <span>·</span>
+          <a href="/privacidade" target="_blank" style="color:var(--tinta-suave); text-decoration:none">Privacidade</a>
+          <span>·</span>
+          <a href="/regulamento-milagre" target="_blank" style="color:var(--tinta-suave); text-decoration:none">Regulamento do Milagre</a>
         </div>
       </div>
     </div>
@@ -649,7 +658,7 @@
   <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; overflow-y:auto">
     <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
     <div style="text-align:center">
-      <h2 class="serif" style="font-size:26px; margin:6px 0 0">Jornada com seu anjo</h2>
+      <h2 class="serif" style="font-size:26px; margin:6px 0 0">Novena dos Anjos</h2>
       <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 0">9 dias, um passo por dia</p>
     </div>
     <div id="jo-dots" style="display:flex; justify-content:center; gap:7px; margin:18px 0 6px; flex-wrap:wrap"></div>
@@ -663,11 +672,11 @@
       <span class="label" style="display:block; margin:16px 0 6px">Sua intenção de hoje (opcional)</span>
       <textarea id="jo-intencao" class="campo" rows="2" placeholder="Escreva, se quiser…"></textarea>
       <button class="btn-ouro" id="jo-concluir" style="margin-top:12px" onclick="concluirDiaJornada()">Concluir o dia</button>
-      <p style="text-align:center; font-size:11px; color:var(--tinta-suave); margin:12px 0 0; line-height:1.6">Um dia por dia, 9 dias seguidos. Se faltar um dia, a jornada recomeça.</p>
+      <p style="text-align:center; font-size:11px; color:var(--tinta-suave); margin:12px 0 0; line-height:1.6">Um dia por dia, 9 dias seguidos. Se faltar um dia, a novena recomeça.</p>
     </div>
     <div id="jo-msg" style="display:none; text-align:center">
       <p id="jo-msg-txt" class="serif-soft" style="font-size:18px; color:var(--ouro); margin:14px 0 0; line-height:1.4"></p>
-      <button id="jo-recomecar" class="btn-ouro" style="display:none; margin-top:16px" onclick="recomecarJornada()">Recomeçar a jornada</button>
+      <button id="jo-recomecar" class="btn-ouro" style="display:none; margin-top:16px" onclick="recomecarJornada()">Recomeçar a Novena</button>
       <button class="btn-ghost" style="margin-top:10px" onclick="show('s-home')">Voltar ao santuário</button>
     </div>
   </div>
@@ -776,6 +785,21 @@
     </div>
   </div>
 </section>
+
+<!-- modal: descrição da prática (Magia / Correio / Novena / Gratidão) -->
+<div id="modal-pratica" style="position:fixed; inset:0; z-index:60; display:none; background:rgba(44,44,42,.55)">
+  <div style="position:absolute; left:0; right:0; bottom:0; background:var(--branco); border-radius:26px 26px 0 0; padding:26px 24px max(env(safe-area-inset-bottom),24px); max-height:88vh; overflow-y:auto">
+    <div style="text-align:center">
+      <div id="pr-icon" style="font-size:34px"></div>
+      <h3 id="pr-titulo" class="serif" style="font-size:24px; margin:8px 0 0"></h3>
+      <p id="pr-sub" class="serif-soft" style="font-size:15px; color:var(--ouro); margin:4px 0 0"></p>
+    </div>
+    <p id="pr-desc" style="margin:18px 0 0; font-size:14px; color:var(--tinta); line-height:1.6; text-align:left"></p>
+    <p id="pr-velas" class="serif-soft" style="display:none; margin:14px 0 0; font-size:13px; color:var(--ouro); text-align:center; line-height:1.5"></p>
+    <button id="pr-btn" class="btn-ouro" style="margin-top:18px" onclick="entrarPratica()">Começar</button>
+    <button onclick="fecharPratica()" style="background:none; border:none; color:var(--tinta-suave); font-size:14px; width:100%; margin-top:12px">Fechar</button>
+  </div>
+</div>
 
 <!-- modal: interesse em experiência (Israel / São Miguel) -->
 <div id="modal-exp" style="position:fixed; inset:0; z-index:60; display:none; background:rgba(44,44,42,.55)">
@@ -908,9 +932,21 @@ function initHome(){
   }
   if(window._anjo) document.getElementById('home-anjo').textContent=window._anjo;
   var av=document.getElementById('home-avatar'); if(av && window._nome){ av.textContent=window._nome.trim().charAt(0).toUpperCase()||'•'; }
+  // Card de "Meu anjo" no topo da home
+  var n = window._perfil && window._perfil.anjo_n;
+  var cn=document.getElementById('home-anjo-card-nome'), cc=document.getElementById('home-anjo-card-coro'), cd=document.getElementById('home-anjo-card-dom');
+  if(cn){
+    if(n===0){ cn.textContent='Anjos da Humanidade'; cc&&(cc.textContent='Uma data rara e sagrada'); cd&&(cd.textContent='Você tem um papel fundamental. Escolha entre os 72 o anjo que mais ressoa.'); }
+    else if(n && ANJOS[n-1]){
+      var a=ANJOS[n-1];
+      cn.textContent=a[1];
+      cc&&(cc.textContent='Coro dos '+coroDe(a[0])+(typeof PRINCIPE_CORO!=='undefined' && PRINCIPE_CORO[coroDe(a[0])]?(' · '+PRINCIPE_CORO[coroDe(a[0])]):''));
+      cd&&(cd.textContent='“'+a[2]+'” — toque para conhecer mais sobre seu anjo.');
+    } else { cn.textContent='Descubra seu anjo →'; cc&&(cc.textContent=''); cd&&(cd.textContent='Toque para fazer o cálculo do seu anjo regente.'); }
+  }
   var st=registrarPresenca(); var se=document.getElementById('home-streak'); if(se) se.textContent=st;
   try{ if(st>=3 && window.saaAuth && !localStorage.getItem('saa_trial_offered') && !(window._plano && window._plano!=='free')){ localStorage.setItem('saa_trial_offered','1'); setTimeout(function(){ offerTrial(st); },1400); } }catch(e){}
-  try{ var vn=parseInt(localStorage.getItem('saa_vela_n')||'0',10); var vs=document.getElementById('home-vela-sub'); if(vs && vn>0) vs.textContent='🕯️ '+vn+(vn===1?' dia acendendo':' dias acendendo')+' a vela'; }catch(e){}
+  try{ var vn=parseInt(localStorage.getItem('saa_vela_n')||'0',10); var vs=document.getElementById('home-vela-sub'); if(vs){ vs.textContent = vn>0 ? ('🕯️ '+vn+(vn===1?' dia acendendo a vela':' dias acendendo a vela')) : ''; } }catch(e){}
   if(homeReady) return; homeReady=true;
   renderPedidos(); renderBib(); carregarBiblioteca(); carregarPedidos(); carregarHome();
 }
@@ -1480,6 +1516,55 @@ var MSGS_ANJO=[
 function novaMensagemAnjo(){ document.getElementById('socorro-msg').textContent = MSGS_ANJO[Math.floor(Math.random()*MSGS_ANJO.length)]; buzz(); }
 function precisoAnjo(){ novaMensagemAnjo(); show('s-socorro'); chime(); }
 
+// ── Modal explicativo das práticas ──
+var PRATICAS_INFO={
+  magia:{
+    icon:'🕯️', titulo:'Magia dos Anjos',
+    sub:'Uma jornada de 7 dias com seu anjo',
+    descricao:'A cada dia você acende uma vela de uma cor diferente — cada cor representa um pedido. Volte todos os dias por 7 dias seguidos. Se faltar um dia, a magia recomeça.',
+    velas:'Branca · Verde · Amarela · Azul · Rosa · Vermelha · Lilás',
+    botao:'Começar a Magia',
+    abrir:function(){ openVela(); }
+  },
+  correio:{
+    icon:'💌', titulo:'Correio Angelical',
+    sub:'Uma carta de gratidão ao seu anjo',
+    descricao:'Escreva uma carta com 10 agradecimentos ao seu anjo guardião — sempre no tempo presente, como se já fossem realidade. No fim, imprima a carta, deixe na sua Bíblia (Salmo 90/91) por 7 dias e queime na chama de uma vela branca.',
+    botao:'Escrever minha carta',
+    abrir:function(){ openCorreio(); }
+  },
+  novena:{
+    icon:'🌟', titulo:'Novena dos Anjos',
+    sub:'9 dias, um passo por dia',
+    descricao:'A novena tradicional dos anjos, com 9 dias de reflexão e prática — cada dia trabalha uma virtude: acolhimento, gratidão, perdão, coragem, cura, prosperidade, proteção, propósito e entrega. Personalizada para o seu anjo regente.',
+    botao:'Iniciar a Novena',
+    abrir:function(){ openJornada(); }
+  },
+  gratidao:{
+    icon:'🙏', titulo:'Diário de gratidão',
+    sub:'Termine o dia agradecendo',
+    descricao:'A gratidão é o caminho mais curto até os anjos. Antes de dormir, registre três coisas pelas quais você é grato hoje — grandes ou pequenas. Com o tempo, você verá o quanto há de luz na sua vida.',
+    botao:'Abrir meu diário',
+    abrir:function(){ openGratidao(); }
+  }
+};
+function abrirPratica(qual){
+  var p=PRATICAS_INFO[qual]; if(!p){ return; }
+  window._praticaAtual=qual;
+  document.getElementById('pr-icon').textContent=p.icon;
+  document.getElementById('pr-titulo').textContent=p.titulo;
+  document.getElementById('pr-sub').textContent=p.sub;
+  document.getElementById('pr-desc').textContent=p.descricao;
+  var velas=document.getElementById('pr-velas');
+  if(p.velas){ velas.textContent=p.velas; velas.style.display='block'; } else { velas.style.display='none'; }
+  document.getElementById('pr-btn').textContent=p.botao;
+  document.getElementById('modal-pratica').style.display='block'; buzz();
+}
+function fecharPratica(){ document.getElementById('modal-pratica').style.display='none'; }
+function entrarPratica(){
+  var p=PRATICAS_INFO[window._praticaAtual]; fecharPratica(); if(p && p.abrir) p.abrir();
+}
+
 // ── Ajustes ──
 function openAjustes(){
   document.getElementById('aj-nome').textContent = window._nome || 'Visitante';
@@ -1548,7 +1633,7 @@ function openMeuAnjo(){
   show('s-meuanjo');
 }
 
-// ── Jornada de 9 dias ──
+// ── Novena dos Anjos (9 dias) ──
 // Novena personalizada: o tema universal é o mesmo, mas a reflexão entrelaça
 // o NOME e o DOM do anjo regente da pessoa (ANJOS[n-1][1] e [2]).
 var JORNADA_TEMAS=[
@@ -1589,7 +1674,7 @@ function renderJoDots(diaAtual){
 function joMsg(txt,recomecar){ document.getElementById('jo-form').style.display='none'; document.getElementById('jo-msg').style.display='block'; document.getElementById('jo-msg-txt').textContent=txt; document.getElementById('jo-recomecar').style.display=recomecar?'block':'none'; }
 function openJornada(){
   var s=joEstado(); document.getElementById('jo-msg').style.display='none'; document.getElementById('jo-form').style.display='none';
-  if(s.completa){ renderJoDots(10); document.getElementById('jo-dia-label').textContent='Jornada concluída'; document.getElementById('jo-tema').textContent='9 dias com seu anjo 🕊️'; joMsg('Você completou os 9 dias! Que essa jornada continue florescendo em você.', true); show('s-jornada'); return; }
+  if(s.completa){ renderJoDots(10); document.getElementById('jo-dia-label').textContent='Novena concluída'; document.getElementById('jo-tema').textContent='9 dias com seu anjo 🕊️'; joMsg('Você completou a Novena dos Anjos! Que esses 9 dias floresçam em você.', true); show('s-jornada'); return; }
   if(s.feitoHoje){ var df=s.dia-1, vf=reflexaoDoDia(df); renderJoDots(s.dia); document.getElementById('jo-dia-label').textContent='Dia '+df+' concluído'; document.getElementById('jo-tema').textContent=vf.t; joMsg('Você já cumpriu o dia de hoje. 🕊️ Volte amanhã para o Dia '+s.dia+'.', false); show('s-jornada'); return; }
   var v=reflexaoDoDia(s.dia); renderJoDots(s.dia);
   document.getElementById('jo-dia-label').textContent='Dia '+s.dia+' de 9';
@@ -1605,7 +1690,7 @@ function concluirDiaJornada(){
   buzz(); chime(); registrarPresenca();
   try{ localStorage.setItem('saa_jor_last', s.hoje); localStorage.setItem('saa_jor_dia', String(s.dia+1)); }catch(e){}
   var prox=s.dia+1; renderJoDots(prox);
-  if(prox>9){ joMsg('Você completou os 9 dias com seu anjo! 🕊️', true); }
+  if(prox>9){ joMsg('Você completou a Novena dos Anjos! 🕊️', true); }
   else { joMsg('Dia '+s.dia+' cumprido. 🕊️ Volte amanhã para o Dia '+prox+' — não pule, ou a jornada recomeça.', false); }
 }
 function recomecarJornada(){ try{ localStorage.removeItem('saa_jor_last'); localStorage.setItem('saa_jor_dia','1'); }catch(e){} openJornada(); }
