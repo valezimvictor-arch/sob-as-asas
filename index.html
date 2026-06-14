@@ -196,14 +196,15 @@
   <div style="flex:1; overflow-y:auto" class="pad">
     <!-- view: início -->
     <div data-view="inicio">
-      <div style="display:flex; align-items:center; justify-content:space-between">
-        <div>
-          <p style="color:var(--tinta-suave); font-size:14px; margin:0" id="home-saud">Boa noite</p>
-          <h2 class="serif" style="font-size:24px; margin:2px 0 0">Seu anjo hoje é <span id="home-anjo" style="color:var(--ouro)">Mebahiah</span></h2>
+      <div style="display:flex; align-items:center; gap:12px">
+        <div id="home-avatar" style="width:46px;height:46px;border-radius:50%;background:linear-gradient(180deg,#F6E1B0,#E8B967);display:flex;align-items:center;justify-content:center;color:#5A3A06;font-family:'Marcellus',serif;font-size:18px;letter-spacing:.02em;flex-shrink:0;box-shadow:0 2px 10px rgba(186,117,23,.18)" onclick="openAjustes()">L</div>
+        <div style="flex:1; min-width:0">
+          <p style="color:var(--tinta-suave); font-size:13px; margin:0; letter-spacing:.02em" id="home-saud">Boa noite</p>
+          <p class="serif" style="font-size:19px; margin:2px 0 0; color:var(--tinta); line-height:1.25">Seu anjo é <span id="home-anjo" style="color:var(--ouro)">—</span></p>
         </div>
-        <div style="text-align:center; background:var(--ouro-bg); border-radius:14px; padding:6px 12px" onclick="toast('7 dias sob as asas 🪽')">
-          <div id="home-streak" style="font-size:18px; font-weight:600; color:#854F0B; line-height:1.1">7</div>
-          <div style="font-size:10px; color:var(--ouro)">dias</div>
+        <div style="text-align:center; background:var(--ouro-bg); border-radius:14px; padding:8px 12px; min-width:54px; cursor:pointer" onclick="toast(localStorage.getItem('saa_streak_n')+' dias sob as asas 🪽')">
+          <div id="home-streak" style="font-size:18px; font-weight:600; color:#854F0B; line-height:1; font-family:'Marcellus',serif">1</div>
+          <div style="font-size:10px; color:var(--ouro); letter-spacing:.06em; text-transform:uppercase; margin-top:2px">dias</div>
         </div>
       </div>
 
@@ -369,14 +370,24 @@
 
     <!-- view: comunidade -->
     <div data-view="comunidade" class="hide">
-      <h2 class="serif" style="font-size:26px; margin:0">Comunidade</h2>
-      <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 14px">Compartilhe uma intenção e ore pelos pedidos de outras pessoas. 🕊️</p>
-      <div class="card" style="padding:14px 16px">
-        <textarea id="com-texto" class="campo" rows="2" maxlength="180" placeholder="Compartilhe sua intenção com a comunidade…"></textarea>
-        <label style="display:flex; align-items:center; gap:8px; margin:10px 0; font-size:13px; color:var(--tinta-suave)"><input type="checkbox" id="com-anon" /> Compartilhar como anônimo</label>
-        <button class="btn-ouro" onclick="postarIntencao()">Compartilhar intenção</button>
+      <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:12px">
+        <div>
+          <h2 class="serif" style="font-size:26px; margin:0">Comunidade</h2>
+          <p style="color:var(--tinta-suave); font-size:13px; margin:6px 0 0; line-height:1.5">Compartilhe uma intenção. Acenda uma vela por outra pessoa. 🕊️</p>
+        </div>
+        <div style="text-align:center; background:var(--ouro-bg); border-radius:12px; padding:8px 12px">
+          <div id="com-total" class="serif" style="font-size:18px; color:#854F0B; line-height:1">—</div>
+          <div style="font-size:10px; color:var(--ouro); letter-spacing:.06em; text-transform:uppercase; margin-top:2px">intenções</div>
+        </div>
       </div>
-      <div id="lista-comunidade" style="margin-top:16px; display:flex; flex-direction:column; gap:10px"></div>
+      <div class="card fade-in" style="padding:14px 16px; margin-top:14px; background:var(--ouro-bg); border-color:transparent">
+        <textarea id="com-texto" class="campo" rows="2" maxlength="180" placeholder="Compartilhe sua intenção com a comunidade…" style="background:var(--branco-puro)"></textarea>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:10px">
+          <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#854F0B"><input type="checkbox" id="com-anon" /> Anônimo</label>
+          <button class="btn-ouro" style="width:auto; padding:10px 18px; font-size:14px" onclick="postarIntencao()">Compartilhar 🕊️</button>
+        </div>
+      </div>
+      <div id="lista-comunidade" style="margin-top:14px; display:flex; flex-direction:column; gap:10px"></div>
     </div>
   </div>
 
@@ -397,10 +408,14 @@
 <section id="s-player" class="screen">
   <div class="halo" style="top:-60px; width:280px; height:280px"></div>
   <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column">
-    <button onclick="closePlayer()" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start">↓ recolher</button>
+    <div style="display:flex; align-items:center; justify-content:space-between">
+      <button onclick="closePlayer()" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px">↓ recolher</button>
+      <span style="font-size:11px; letter-spacing:.16em; color:var(--ouro); text-transform:uppercase">Tocando agora</span>
+      <span style="width:20px"></span>
+    </div>
     <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center">
-      <div id="pl-art" style="width:200px;height:200px;border-radius:28px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:76px">📜</div>
-      <p id="pl-fmt" style="margin:24px 0 0; font-size:12px; letter-spacing:.14em; color:var(--ouro); text-transform:uppercase">Áudio · na voz da Monica</p>
+      <div id="pl-art" style="width:210px;height:210px;border-radius:32px;background:linear-gradient(160deg,#FAF3E4 0%,#F6E1B0 60%,#E8B967 100%);display:flex;align-items:center;justify-content:center;font-size:78px;box-shadow:0 18px 44px rgba(186,117,23,.22), inset 0 1px 0 rgba(255,255,255,.5)">📜</div>
+      <p id="pl-fmt" style="margin:26px 0 0; font-size:11px; letter-spacing:.16em; color:var(--ouro); text-transform:uppercase">Áudio · na voz da Monica</p>
       <h2 class="serif" id="pl-titulo" style="font-size:26px; margin:8px 24px 0">Salmo 91</h2>
       <div style="width:100%; max-width:300px; margin-top:28px">
         <div style="height:4px; background:var(--ouro-suave); border-radius:4px; overflow:hidden">
@@ -679,6 +694,48 @@
   </div>
 </section>
 
+<!-- ░░ AJUSTES ░░ -->
+<section id="s-ajustes" class="screen">
+  <div class="pad" style="flex:1; display:flex; flex-direction:column; overflow-y:auto">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+    <h2 class="serif" style="font-size:26px; margin:6px 0 18px">Ajustes</h2>
+
+    <p class="label" style="display:block; margin:6px 0 8px">Sua conta</p>
+    <div class="card" style="padding:4px 18px">
+      <div style="display:flex; align-items:center; gap:12px; padding:14px 0; border-bottom:1px solid var(--linha)">
+        <div id="aj-avatar" style="width:42px;height:42px;border-radius:50%;background:linear-gradient(180deg,#F6E1B0,#E8B967);display:flex;align-items:center;justify-content:center;color:#5A3A06;font-family:'Marcellus',serif;font-size:17px">•</div>
+        <div style="flex:1; min-width:0"><p id="aj-nome" style="margin:0;font-weight:600">—</p><p id="aj-email" style="margin:0;font-size:12px;color:var(--tinta-suave); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">—</p></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:14px 0; border-bottom:1px solid var(--linha)"><span style="color:var(--tinta-suave); font-size:14px">Meu anjo</span><b id="aj-anjo" style="font-weight:500">—</b></div>
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:14px 0"><span style="color:var(--tinta-suave); font-size:14px">Plano</span><b id="aj-plano" style="font-weight:500">Gratuito</b></div>
+    </div>
+
+    <p class="label" style="display:block; margin:22px 0 8px">Ritual diário</p>
+    <div class="card" style="padding:4px 18px">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 0; border-bottom:1px solid var(--linha)">
+        <div><p style="margin:0; font-weight:500">Horário do ritual</p><p style="margin:2px 0 0; font-size:12px; color:var(--tinta-suave)">Quando seu anjo vai te chamar</p></div>
+        <select id="aj-horario" style="font:inherit; border:1px solid var(--linha); border-radius:10px; padding:8px 10px; background:var(--branco-puro); color:var(--tinta)" onchange="salvarHorario()">
+          <option value="morning">Manhã</option><option value="evening">Noite</option><option value="both">Manhã e noite</option>
+        </select>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 0">
+        <div><p style="margin:0; font-weight:500">Lembretes push</p><p id="aj-push-sub" style="margin:2px 0 0; font-size:12px; color:var(--tinta-suave)">Ativar notificações</p></div>
+        <button id="aj-push-btn" class="btn-ghost" style="padding:8px 14px" onclick="ativarLembretes()">Ativar</button>
+      </div>
+    </div>
+
+    <p class="label" style="display:block; margin:22px 0 8px">Sobre</p>
+    <div class="card" style="padding:4px 18px">
+      <a href="/termos" target="_blank" style="display:block; padding:14px 0; border-bottom:1px solid var(--linha); color:var(--tinta); text-decoration:none">Termos de Uso</a>
+      <a href="/privacidade" target="_blank" style="display:block; padding:14px 0; border-bottom:1px solid var(--linha); color:var(--tinta); text-decoration:none">Política de Privacidade</a>
+      <a href="/regulamento-milagre" target="_blank" style="display:block; padding:14px 0; border-bottom:1px solid var(--linha); color:var(--tinta); text-decoration:none">Regulamento do Milagre</a>
+      <p style="margin:14px 0; font-size:12px; color:var(--tinta-suave)">Sob as Asas · uma realização LVSV Ventures · v0.2</p>
+    </div>
+
+    <button class="btn-ghost" style="margin-top:20px; color:#C0392B; border-color:rgba(192,57,43,.25)" onclick="sairConta()">Sair da conta</button>
+  </div>
+</section>
+
 <!-- ░░ PRECISO DO MEU ANJO (acolhimento instantâneo) ░░ -->
 <section id="s-socorro" class="screen" style="background:var(--ouro-bg)">
   <div class="halo" style="top:40px; width:320px; height:320px"></div>
@@ -804,6 +861,7 @@ function initHome(){
     document.getElementById('home-saud').textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+', '+window._nome;
   }
   if(window._anjo) document.getElementById('home-anjo').textContent=window._anjo;
+  var av=document.getElementById('home-avatar'); if(av && window._nome){ av.textContent=window._nome.trim().charAt(0).toUpperCase()||'•'; }
   var st=registrarPresenca(); var se=document.getElementById('home-streak'); if(se) se.textContent=st;
   try{ if(st>=3 && window.saaAuth && !localStorage.getItem('saa_trial_offered') && !(window._plano && window._plano!=='free')){ localStorage.setItem('saa_trial_offered','1'); setTimeout(function(){ offerTrial(st); },1400); } }catch(e){}
   try{ var vn=parseInt(localStorage.getItem('saa_vela_n')||'0',10); var vs=document.getElementById('home-vela-sub'); if(vs && vn>0) vs.textContent='🕯️ '+vn+(vn===1?' dia acendendo':' dias acendendo')+' a vela'; }catch(e){}
@@ -1362,6 +1420,35 @@ var MSGS_ANJO=[
 function novaMensagemAnjo(){ document.getElementById('socorro-msg').textContent = MSGS_ANJO[Math.floor(Math.random()*MSGS_ANJO.length)]; buzz(); }
 function precisoAnjo(){ novaMensagemAnjo(); show('s-socorro'); chime(); }
 
+// ── Ajustes ──
+function openAjustes(){
+  document.getElementById('aj-nome').textContent = window._nome || 'Visitante';
+  document.getElementById('aj-email').textContent = window._email || 'Sem conta';
+  document.getElementById('aj-avatar').textContent = (window._nome||'•').trim().charAt(0).toUpperCase();
+  document.getElementById('aj-anjo').textContent = window._anjo || '—';
+  var plano = (window._plano && window._plano!=='free') ? ({trial:'Em trial (7 dias)', mensal:'Mensal', anual:'Anual'}[window._plano]||window._plano) : 'Gratuito';
+  document.getElementById('aj-plano').textContent = plano;
+  try{ var h=localStorage.getItem('saa_ritual_horario')||'morning'; document.getElementById('aj-horario').value=h; }catch(e){}
+  var pushOn=false; try{ pushOn=localStorage.getItem('saa_push_on')==='1'; }catch(e){}
+  document.getElementById('aj-push-sub').textContent = pushOn?'Ativadas — seu anjo te chama todo dia':'Receber lembretes diários';
+  document.getElementById('aj-push-btn').textContent = pushOn?'Ativado ✓':'Ativar';
+  document.getElementById('aj-push-btn').disabled = pushOn;
+  show('s-ajustes');
+}
+async function salvarHorario(){
+  var h=document.getElementById('aj-horario').value;
+  try{ localStorage.setItem('saa_ritual_horario',h); }catch(e){}
+  if(window.saaAuth && window._userId){ try{ await window.saaAuth.client.from('users').update({ ritual_horario:h }).eq('id',window._userId); }catch(e){} }
+  toast('Horário do ritual atualizado 🕊️');
+}
+async function sairConta(){
+  if(!confirm('Tem certeza que deseja sair?')) return;
+  try{ if(window.saaAuth) await window.saaAuth.client.auth.signOut(); }catch(e){}
+  try{ ['saa_pending','saa_streak_n','saa_streak_last','saa_mb_last','saa_mb_dia','saa_mb_pedidos','saa_jor_last','saa_jor_dia','saa_trial_offered','saa_push_on'].forEach(function(k){ localStorage.removeItem(k); }); }catch(e){}
+  window._userId=null; window._email=''; window._nome=''; window._anjo=''; window._perfil=null;
+  location.href='/';
+}
+
 // ── Ritual rápido (oração de proteção curta — manhã) ──
 function abrirRitual(periodo){
   var msgs={ manha:[
@@ -1466,6 +1553,7 @@ async function carregarComunidade(){
 }
 function renderComunidade(){
   var el=document.getElementById('lista-comunidade'); if(!el) return; el.innerHTML='';
+  var tot=document.getElementById('com-total'); if(tot) tot.textContent=COM.length;
   if(!COM.length){ el.innerHTML='<p style="color:var(--tinta-suave);font-size:14px;text-align:center;padding:10px">Seja o primeiro a compartilhar 🕊️</p>'; return; }
   COM.forEach(function(c){
     var orou=!!COM_ORADOS[c.id];
