@@ -633,7 +633,7 @@ function initHome(){
   if(window._anjo) document.getElementById('home-anjo').textContent=window._anjo;
   var st=registrarPresenca(); var se=document.getElementById('home-streak'); if(se) se.textContent=st;
   if(homeReady) return; homeReady=true;
-  renderPedidos(); renderBib(); carregarBiblioteca();
+  renderPedidos(); renderBib(); carregarBiblioteca(); carregarPedidos();
 }
 function nav(view){
   document.querySelectorAll('#s-home [data-view]').forEach(v=>v.classList.toggle('hide', v.dataset.view!==view));
@@ -641,22 +641,40 @@ function nav(view){
   document.querySelector('#s-home .pad').scrollTop=0; buzz();
 }
 
-// ── pedidos (mock local) ──
+// ── pedidos (Supabase quando logado; demo local caso contrário) ──
 let PEDIDOS=[{t:'Saúde para minha mãe',s:'realizado'},{t:'Paz no meu trabalho',s:'aberto'},{t:'Proteção na viagem',s:'aberto'}];
 function renderPedidos(){
-  const el=document.getElementById('lista-pedidos'); el.innerHTML='';
+  const el=document.getElementById('lista-pedidos'); if(!el) return; el.innerHTML='';
   PEDIDOS.forEach(p=>{
     const ok=p.s==='realizado';
     el.insertAdjacentHTML('beforeend',`<div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px">
       <span style="font-size:18px">${ok?'🌟':'🕯️'}</span>
-      <div style="flex:1"><p style="margin:0; font-size:15px">${p.t}</p>
+      <div style="flex:1"><p style="margin:0; font-size:15px">${esc(p.t)}</p>
       <p style="margin:0; font-size:12px; color:${ok?'var(--ouro)':'var(--tinta-suave)'}">${ok?'Realizado — graças dadas':'Em oração'}</p></div></div>`);
   });
 }
-function addPedido(){
+async function carregarPedidos(){
+  if(!window.saaAuth || !window._userId) return; // demo
+  try{
+    var res=await window.saaAuth.client.from('pedidos').select('id,texto,status').order('criado_em',{ascending:false});
+    if(res.error || !res.data) return;
+    PEDIDOS = res.data.map(function(p){ return {t:p.texto, s:p.status, id:p.id}; });
+    renderPedidos();
+  }catch(e){}
+}
+async function addPedido(){
   const ta=document.getElementById('novo-pedido'); const t=ta.value.trim();
   if(!t){ toast('Escreva sua intenção primeiro'); return; }
-  PEDIDOS.unshift({t,s:'aberto'}); ta.value=''; document.getElementById('cand-milagre').checked=false;
+  const cand=document.getElementById('cand-milagre').checked;
+  if(window.saaAuth && window._userId){
+    try{
+      var res=await window.saaAuth.client.from('pedidos').insert({ user_id:window._userId, texto:t, candidato_milagre:cand }).select('id').single();
+      PEDIDOS.unshift({ t:t, s:'aberto', id:res.data&&res.data.id });
+    }catch(e){ PEDIDOS.unshift({t:t,s:'aberto'}); }
+  } else {
+    PEDIDOS.unshift({t:t,s:'aberto'});
+  }
+  ta.value=''; document.getElementById('cand-milagre').checked=false;
   renderPedidos(); buzz(); toast('Pedido registrado 🕊️');
 }
 
@@ -896,19 +914,27 @@ function persistirPerfil(userId){
     .then(function(){ try{ localStorage.removeItem('saa_pending'); }catch(e){} })
     .catch(function(){});
 }
-function aoLogar(session){
+async function aoLogar(session){
   if(!session || !session.user) return;
   window._userId = session.user.id;
   var pend=null; try{ pend=JSON.parse(localStorage.getItem('saa_pending')||'null'); }catch(e){}
   if(pend){
     window._nome=pend.nome; window._anjo=pend.anjo_nome; window._perfil=pend;
     persistirPerfil(session.user.id);
-    show('s-home');
-  } else {
-    // logado, mas sem perfil (ex.: abriu o link em outro navegador) →
-    // descobre o anjo agora; ao revelar, grava com o userId. Robusto.
-    show('s-cadastro');
+    show('s-home'); return;
   }
+  // sem perfil pendente → verifica se o usuário já tem perfil salvo (retorno)
+  try{
+    var res=await window.saaAuth.client.from('users').select('nome,anjo_n,anjo_nome,plano').eq('id',session.user.id).maybeSingle();
+    if(res && res.data && res.data.nome){
+      window._nome=res.data.nome; window._anjo=res.data.anjo_nome;
+      window._perfil={ nome:res.data.nome, anjo_n:res.data.anjo_n, anjo_nome:res.data.anjo_nome };
+      if(res.data.plano && res.data.plano!=='free') window._plano=res.data.plano;
+      show('s-home'); return;
+    }
+  }catch(e){}
+  // primeiro acesso de verdade (ex.: link aberto em outro navegador) → onboarding
+  show('s-cadastro');
 }
 
 // ── Supabase (opcional — ativa só quando config.js estiver preenchido) ──
