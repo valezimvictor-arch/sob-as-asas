@@ -190,24 +190,24 @@
       </div>
 
       <!-- mensagem da Monica -->
-      <div class="card fade-in" style="margin-top:22px; padding:18px; background:var(--ouro-bg); border-color:transparent" onclick="openPlayer({titulo:'Mensagem da Monica',fmt:'Vídeo · esta semana',art:'🎬',dur:'4:00'})">
+      <div class="card fade-in" style="margin-top:22px; padding:18px; background:var(--ouro-bg); border-color:transparent" onclick="abrirMensagemSemana()">
         <div style="display:flex; align-items:center; gap:12px">
           <div style="width:42px;height:42px;border-radius:50%;background:#F6C868;display:flex;align-items:center;justify-content:center;color:#5A3A06;font-weight:600">MB</div>
           <div style="flex:1">
             <p style="margin:0; font-weight:600; color:#5A3A06">Mensagem da Monica</p>
-            <p style="margin:0; font-size:12px; color:var(--ouro)">Esta semana · 4 min</p>
+            <p id="home-msg-sub" style="margin:0; font-size:12px; color:var(--ouro)">Esta semana</p>
           </div>
           <span style="font-size:26px; color:var(--ouro)">▶</span>
         </div>
-        <p class="serif-soft" style="margin:14px 0 0; font-size:17px; color:#5A3A06; line-height:1.4">"Deixe que a proteção te encontre no silêncio do seu dia…"</p>
+        <p id="home-msg-corpo" class="serif-soft" style="margin:14px 0 0; font-size:17px; color:#5A3A06; line-height:1.4">"Deixe que a proteção te encontre no silêncio do seu dia…"</p>
       </div>
 
       <!-- salmo do dia -->
-      <div class="card" style="margin-top:14px; padding:16px; display:flex; align-items:center; gap:14px" onclick="openPlayer({titulo:'Salmo 91 — da proteção',fmt:'Áudio · na voz da Monica',art:'📜',dur:'2:00'})">
+      <div class="card" style="margin-top:14px; padding:16px; display:flex; align-items:center; gap:14px" onclick="abrirSalmoHoje()">
         <div style="width:46px;height:46px;border-radius:12px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center;font-size:22px">📜</div>
         <div style="flex:1">
           <p style="margin:0; font-weight:600">Salmo de hoje</p>
-          <p style="margin:0; font-size:12px; color:var(--tinta-suave)">Salmo 91 · áudio + texto · 2 min</p>
+          <p id="home-salmo-sub" style="margin:0; font-size:12px; color:var(--tinta-suave)">na voz da Monica</p>
         </div>
         <span style="font-size:22px; color:var(--ouro)">▶</span>
       </div>
@@ -284,7 +284,7 @@
         <div style="width:38px;height:38px;border-radius:10px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center">🕯️</div>
         <div style="flex:1">
           <p style="margin:0; font-weight:600">Magia dos Anjos</p>
-          <p style="margin:0; font-size:12px; color:var(--tinta-suave)">Acenda a vela do dia e faça um pedido</p>
+          <p id="home-vela-sub" style="margin:0; font-size:12px; color:var(--tinta-suave)">Acenda a vela do dia e faça um pedido</p>
         </div>
         <span style="color:var(--tinta-suave)">›</span>
       </div>
@@ -625,8 +625,9 @@ function initHome(){
   }
   if(window._anjo) document.getElementById('home-anjo').textContent=window._anjo;
   var st=registrarPresenca(); var se=document.getElementById('home-streak'); if(se) se.textContent=st;
+  try{ var vn=parseInt(localStorage.getItem('saa_vela_n')||'0',10); var vs=document.getElementById('home-vela-sub'); if(vs && vn>0) vs.textContent='🕯️ '+vn+(vn===1?' dia acendendo':' dias acendendo')+' a vela'; }catch(e){}
   if(homeReady) return; homeReady=true;
-  renderPedidos(); renderBib(); carregarBiblioteca(); carregarPedidos();
+  renderPedidos(); renderBib(); carregarBiblioteca(); carregarPedidos(); carregarHome();
 }
 function nav(view){
   document.querySelectorAll('#s-home [data-view]').forEach(v=>v.classList.toggle('hide', v.dataset.view!==view));
@@ -779,17 +780,42 @@ function closePlayer(){ if(plState.timer){clearInterval(plState.timer); plState.
 // ── diário de gratidão (demo local; espelha public.gratidao) ──
 function esc(s){ return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
 let GRAT=[{t:'Pela saúde da minha família', d:'Ontem'},{t:'Por um dia de paz no trabalho', d:'2 dias atrás'}];
-function openGratidao(){ renderGrat(); show('s-gratidao'); setTimeout(function(){var i=document.getElementById('nova-gratidao'); if(i) i.focus();},450); }
+function openGratidao(){ renderGrat(); carregarGratidao(); show('s-gratidao'); setTimeout(function(){var i=document.getElementById('nova-gratidao'); if(i) i.focus();},450); }
 function renderGrat(){
-  var el=document.getElementById('lista-gratidao'); el.innerHTML='';
+  var el=document.getElementById('lista-gratidao'); if(!el) return; el.innerHTML='';
   if(!GRAT.length){ el.innerHTML='<p style="color:var(--tinta-suave);font-size:14px">Seu diário começa hoje 🙏</p>'; return; }
   GRAT.forEach(function(g){ el.insertAdjacentHTML('beforeend','<div class="card" style="padding:14px 16px"><p class="serif-soft" style="margin:0;font-size:17px;color:var(--tinta);line-height:1.4">'+esc(g.t)+'</p><p style="margin:6px 0 0;font-size:12px;color:var(--tinta-suave)">'+esc(g.d)+'</p></div>'); });
 }
-function addGratidao(){
+async function carregarGratidao(){
+  if(!window.saaAuth || !window._userId) return;
+  try{
+    var r=await window.saaAuth.client.from('gratidao').select('texto,data').order('data',{ascending:false}).limit(50);
+    if(r.error || !r.data) return;
+    GRAT = r.data.map(function(g){ return {t:g.texto, d:(g.data===new Date().toISOString().slice(0,10)?'Hoje':g.data)}; });
+    renderGrat();
+  }catch(e){}
+}
+async function addGratidao(){
   var ta=document.getElementById('nova-gratidao'); var t=ta.value.trim();
   if(!t){ toast('Escreva sua gratidão primeiro'); return; }
+  if(window.saaAuth && window._userId){ try{ await window.saaAuth.client.from('gratidao').insert({ user_id:window._userId, texto:t }); }catch(e){} }
   GRAT.unshift({t:t, d:'Hoje'}); ta.value=''; renderGrat(); buzz(); toast('Gratidão registrada 🙏');
 }
+// ── home dinâmica: salmo do dia + mensagem da semana (do Supabase) ──
+async function carregarHome(){
+  if(!window.saaAuth) return;
+  try{
+    var hoje=new Date().toISOString().slice(0,10);
+    var rs=await window.saaAuth.client.from('conteudos').select('titulo,formato,colecao,duracao_seg,media_url,corpo').eq('publicado',true).or('data_pub.is.null,data_pub.lte.'+hoje).order('data_pub',{ascending:false});
+    if(rs.error || !rs.data) return;
+    var salmo=rs.data.filter(function(c){return c.colecao==='salmo_diario';})[0];
+    var msg=rs.data.filter(function(c){return c.colecao==='mensagem_semana';})[0];
+    if(salmo){ window._salmoHoje=salmo; var s1=document.getElementById('home-salmo-sub'); if(s1) s1.textContent=salmo.titulo+(durLabel(salmo.duracao_seg)?(' · '+durLabel(salmo.duracao_seg)):''); }
+    if(msg){ window._msgSemana=msg; var m1=document.getElementById('home-msg-sub'); if(m1) m1.textContent=durLabel(msg.duracao_seg)||'esta semana'; if(msg.corpo){ var mc=document.getElementById('home-msg-corpo'); if(mc) mc.textContent='“'+msg.corpo+'”'; } }
+  }catch(e){}
+}
+function abrirSalmoHoje(){ var s=window._salmoHoje; openPlayer(s?{titulo:s.titulo,fmt:'Salmo · na voz da Monica',art:'📜',dur:durLabel(s.duracao_seg)||'',url:s.media_url}:{titulo:'Salmo de hoje',fmt:'na voz da Monica',art:'📜',dur:''}); }
+function abrirMensagemSemana(){ var m=window._msgSemana; openPlayer(m?{titulo:m.titulo,fmt:'Mensagem da Monica',art:'🎬',dur:durLabel(m.duracao_seg)||'',url:m.media_url}:{titulo:'Mensagem da Monica',fmt:'esta semana',art:'🎬',dur:''}); }
 
 // ── Correio Angelical (modelo da Monica) ──
 const PRINCIPE_CORO={'Serafins':'Metatron','Querubins':'Raziel','Tronos':'Tsaphkiel','Dominações':'Zadkiel','Potências':'Camael','Virtudes':'Rafael','Principados':'Haniel','Arcanjos':'Miguel','Anjos':'Gabriel'};
