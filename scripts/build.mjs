@@ -21,6 +21,8 @@ const files = [
   'admin.html',
   'landing.html',
   'regulamento-milagre.html',
+  'termos.html',
+  'privacidade.html',
   'manifest.json',
   'asa-icon.svg',
   'sw.js',

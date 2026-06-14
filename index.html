@@ -523,15 +523,15 @@
       <p id="paywall-ctx" style="color:var(--tinta-suave); font-size:14px; margin:8px 0 0; line-height:1.5">Desbloqueie toda a biblioteca da Monica.</p>
     </div>
     <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px">
-      <div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px; border:2px solid var(--ouro-claro)">
+      <div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px; border:2px solid var(--ouro-claro)" onclick="iniciarAssinatura('anual')">
         <div style="flex:1"><p style="margin:0; font-weight:600">Anual</p><p style="margin:0; font-size:12px; color:var(--tinta-suave)">R$ 199/ano · R$ 16,58/mês</p></div>
         <span style="font-size:11px; background:var(--ouro-bg); color:#854F0B; padding:3px 9px; border-radius:8px">−33%</span>
       </div>
-      <div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px">
+      <div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px" onclick="iniciarAssinatura('mensal')">
         <div style="flex:1"><p style="margin:0; font-weight:600">Mensal</p><p style="margin:0; font-size:12px; color:var(--tinta-suave)">R$ 24,90/mês</p></div>
       </div>
     </div>
-    <button class="btn-ouro" style="margin-top:16px" onclick="toast('Indo para o checkout Stripe…'); closePaywall()">Começar 7 dias grátis</button>
+    <button class="btn-ouro" style="margin-top:16px" onclick="iniciarAssinatura('anual')">Começar 7 dias grátis</button>
     <button onclick="closePaywall()" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;width:100%;margin-top:12px">Agora não</button>
     <p style="text-align:center; font-size:11px; color:var(--tinta-suave); margin:10px 0 0">A candidatura ao Milagre do mês é sempre gratuita.</p>
   </div>
@@ -717,6 +717,15 @@ function openPaywall(ctx){
   document.getElementById('paywall').style.display='block'; buzz();
 }
 function closePaywall(){ document.getElementById('paywall').style.display='none'; }
+async function iniciarAssinatura(plano){
+  if(!window.saaAuth || !window._userId){ closePaywall(); entrarSantuario(); return; } // precisa logar primeiro
+  toast('Abrindo o checkout seguro…');
+  try{
+    var r=await fetch('/api/create-checkout',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ userId:window._userId, plano:plano, email:window._email||'' }) });
+    var j=await r.json();
+    if(j && j.ok && j.url){ window.location.href=j.url; } else { toast('Não consegui abrir o checkout.'); }
+  }catch(e){ toast('Erro ao abrir o checkout.'); }
+}
 
 // ── biblioteca a partir do Supabase (cai pro demo se vazio/sem conexão) ──
 const COLECAO_LABEL={mensagem_semana:'Mensagem da semana', salmo_diario:'Salmo Diário', '72_anjos':'Os 72 Anjos', para_dormir:'Para dormir', prosperidade:'Prosperidade', protecao:'Proteção'};
@@ -1014,6 +1023,7 @@ function persistirPerfil(userId){
 async function aoLogar(session){
   if(!session || !session.user) return;
   window._userId = session.user.id;
+  window._email = session.user.email || '';
   var pend=null; try{ pend=JSON.parse(localStorage.getItem('saa_pending')||'null'); }catch(e){}
   if(pend){
     window._nome=pend.nome; window._anjo=pend.anjo_nome; window._perfil=pend;

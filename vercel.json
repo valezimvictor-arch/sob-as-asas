@@ -52,6 +52,7 @@
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/landing", "destination": "/landing.html" },
     { "source": "/termos", "destination": "/termos.html" },
+    { "source": "/privacidade", "destination": "/privacidade.html" },
     { "source": "/regulamento-milagre", "destination": "/regulamento-milagre.html" }
   ]
 }
