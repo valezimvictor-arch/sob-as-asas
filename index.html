@@ -1549,17 +1549,32 @@ function openMeuAnjo(){
 }
 
 // ── Jornada de 9 dias ──
-var JORNADA=[
-  {t:'Acolhimento', r:'Hoje, acolha-se. Peça ao seu anjo que envolva você em paz.'},
-  {t:'Gratidão',    r:'Agradeça por três coisas — grandes ou pequenas — que você tem hoje.'},
-  {t:'Perdão',      r:'Perdoe alguém, ou a si mesmo. Solte um peso aos pés do seu anjo.'},
-  {t:'Coragem',     r:'Peça coragem para um passo que você vem adiando.'},
-  {t:'Cura',        r:'Entregue ao seu anjo aquilo que precisa ser curado em você.'},
-  {t:'Prosperidade',r:'Abra-se para receber. Peça por abundância no que é justo.'},
-  {t:'Proteção',    r:'Peça proteção para você e para quem você ama.'},
-  {t:'Propósito',   r:'Pergunte ao seu anjo qual o próximo passo do seu propósito.'},
-  {t:'Entrega',     r:'Entregue tudo. Confie que você está sendo cuidado.'},
+// Novena personalizada: o tema universal é o mesmo, mas a reflexão entrelaça
+// o NOME e o DOM do anjo regente da pessoa (ANJOS[n-1][1] e [2]).
+var JORNADA_TEMAS=[
+  { t:'Acolhimento',  r:function(n,d){ return 'Hoje você se acolhe nas asas de '+n+'. Respire fundo e receba a energia de "'+d.toLowerCase()+'" que '+n+' carrega para você.'; } },
+  { t:'Gratidão',     r:function(n,d){ return 'Agradeça a '+n+' por três presenças em sua vida — grandes ou pequenas. A gratidão amplifica o dom de "'+d.toLowerCase()+'" em você.'; } },
+  { t:'Perdão',       r:function(n,d){ return 'Entregue a '+n+' o peso de uma mágoa, sua ou de outro. Permita que "'+d.toLowerCase()+'" lave o que ainda dói.'; } },
+  { t:'Coragem',      r:function(n,d){ return 'Peça a '+n+' coragem para um passo que você vem adiando. O dom de "'+d.toLowerCase()+'" abre o caminho à sua frente.'; } },
+  { t:'Cura',         r:function(n,d){ return 'Entregue a '+n+' o que precisa ser curado em você — corpo, alma ou laços. Deixe que "'+d.toLowerCase()+'" restaure o que parecia perdido.'; } },
+  { t:'Prosperidade', r:function(n,d){ return 'Abra-se para receber. Sob a luz de '+n+', peça abundância no que é justo — "'+d.toLowerCase()+'" é a porta da sua prosperidade.'; } },
+  { t:'Proteção',     r:function(n,d){ return 'Peça a '+n+' proteção para você e para quem você ama. As asas que carregam "'+d.toLowerCase()+'" também guardam os seus.'; } },
+  { t:'Propósito',    r:function(n,d){ return 'Pergunte a '+n+' qual o próximo passo do seu propósito. O dom de "'+d.toLowerCase()+'" aponta a direção que sua alma reconhece.'; } },
+  { t:'Entrega',      r:function(n,d){ return 'Entregue tudo a '+n+' — o que você sabe e o que você não sabe. Confie: você está sendo cuidado por "'+d.toLowerCase()+'".'; } },
 ];
+function reflexaoDoDia(dia){
+  var tema=JORNADA_TEMAS[dia-1]; if(!tema) return {t:'',r:''};
+  var nome = window._anjo || 'seu anjo';
+  var n = window._perfil && window._perfil.anjo_n;
+  var dom = (n && ANJOS[n-1] && ANJOS[n-1][2]) ? ANJOS[n-1][2] : 'proteção e amor';
+  if(window._perfil && window._perfil.anjo_n===0){
+    nome='os Anjos da Humanidade'; dom='um papel fundamental';
+  }
+  var txt = tema.r(nome,dom);
+  // pequenos ajustes de português pro caso plural
+  txt = txt.replace(/de os Anjos/g,'dos Anjos').replace(/a os Anjos/g,'aos Anjos').replace(/que os Anjos da Humanidade carrega/g,'que os Anjos da Humanidade carregam').replace(/As asas que carregam/g, n===0?'As asas dos Anjos da Humanidade carregam':'As asas que carregam');
+  return { t:tema.t, r:txt };
+}
 function joEstado(){
   var hoje=new Date().toISOString().slice(0,10), ontem=new Date(Date.now()-86400000).toISOString().slice(0,10);
   var last=localStorage.getItem('saa_jor_last'); var dia=parseInt(localStorage.getItem('saa_jor_dia')||'1',10); var recomecou=false;
@@ -1575,8 +1590,8 @@ function joMsg(txt,recomecar){ document.getElementById('jo-form').style.display=
 function openJornada(){
   var s=joEstado(); document.getElementById('jo-msg').style.display='none'; document.getElementById('jo-form').style.display='none';
   if(s.completa){ renderJoDots(10); document.getElementById('jo-dia-label').textContent='Jornada concluída'; document.getElementById('jo-tema').textContent='9 dias com seu anjo 🕊️'; joMsg('Você completou os 9 dias! Que essa jornada continue florescendo em você.', true); show('s-jornada'); return; }
-  if(s.feitoHoje){ var df=s.dia-1, vf=JORNADA[df-1]; renderJoDots(s.dia); document.getElementById('jo-dia-label').textContent='Dia '+df+' concluído'; document.getElementById('jo-tema').textContent=vf.t; joMsg('Você já cumpriu o dia de hoje. 🕊️ Volte amanhã para o Dia '+s.dia+'.', false); show('s-jornada'); return; }
-  var v=JORNADA[s.dia-1]; renderJoDots(s.dia);
+  if(s.feitoHoje){ var df=s.dia-1, vf=reflexaoDoDia(df); renderJoDots(s.dia); document.getElementById('jo-dia-label').textContent='Dia '+df+' concluído'; document.getElementById('jo-tema').textContent=vf.t; joMsg('Você já cumpriu o dia de hoje. 🕊️ Volte amanhã para o Dia '+s.dia+'.', false); show('s-jornada'); return; }
+  var v=reflexaoDoDia(s.dia); renderJoDots(s.dia);
   document.getElementById('jo-dia-label').textContent='Dia '+s.dia+' de 9';
   document.getElementById('jo-tema').textContent=v.t;
   document.getElementById('jo-reflexao').textContent=v.r;
