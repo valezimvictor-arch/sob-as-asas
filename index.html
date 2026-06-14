@@ -189,6 +189,9 @@
         </div>
       </div>
 
+      <!-- preciso do meu anjo (apoio instantâneo) -->
+      <button onclick="precisoAnjo()" style="width:100%; margin-top:18px; background:linear-gradient(180deg,#F6E6C0,#EFD79A); border:none; border-radius:16px; padding:15px; font:inherit; font-size:15px; font-weight:600; color:#5A3A06; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 16px rgba(186,117,23,.18)">🕊️ Preciso do meu anjo agora</button>
+
       <!-- mensagem da Monica -->
       <div class="card fade-in" style="margin-top:22px; padding:18px; background:var(--ouro-bg); border-color:transparent" onclick="abrirMensagemSemana()">
         <div style="display:flex; align-items:center; gap:12px">
@@ -287,6 +290,28 @@
           <p id="home-vela-sub" style="margin:0; font-size:12px; color:var(--tinta-suave)">Acenda a vela do dia e faça um pedido</p>
         </div>
         <span style="color:var(--tinta-suave)">›</span>
+      </div>
+
+      <!-- jornada de 9 dias -->
+      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-top:10px" onclick="openJornada()">
+        <div style="width:38px;height:38px;border-radius:10px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center">🌟</div>
+        <div style="flex:1">
+          <p style="margin:0; font-weight:600">Jornada de 9 dias</p>
+          <p style="margin:0; font-size:12px; color:var(--tinta-suave)">Um passo por dia com seu anjo</p>
+        </div>
+        <span style="color:var(--tinta-suave)">›</span>
+      </div>
+
+      <!-- meu anjo + loja -->
+      <div style="display:flex; gap:10px; margin-top:10px">
+        <div class="card" style="flex:1; padding:14px; text-align:center" onclick="openMeuAnjo()">
+          <div style="font-size:22px">🪽</div>
+          <p style="margin:6px 0 0; font-weight:600; font-size:14px">Meu Anjo</p>
+        </div>
+        <div class="card" style="flex:1; padding:14px; text-align:center" onclick="openLoja()">
+          <div style="font-size:22px">🛍️</div>
+          <p style="margin:6px 0 0; font-weight:600; font-size:14px">Loja</p>
+        </div>
       </div>
     </div>
 
@@ -510,6 +535,90 @@
       <p id="vela-pedido-eco" class="serif-soft" style="font-size:17px; color:var(--tinta); margin:8px 0 0; line-height:1.4"></p>
       <p style="font-size:13px; color:var(--tinta-suave); margin:12px 0 0; line-height:1.6">Respire fundo, concentre-se no pedido e agradeça.<br/>Deixe a chama acesa enquanto fica em oração.</p>
       <button class="btn-ghost" style="margin-top:16px" onclick="show('s-home')">Voltar ao santuário</button>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ MEU ANJO (detalhe) ░░ -->
+<section id="s-meuanjo" class="screen">
+  <div class="halo" style="top:-90px; width:240px; height:240px"></div>
+  <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; overflow-y:auto">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+    <div style="text-align:center; margin-top:6px">
+      <div style="font-size:34px">🪽</div>
+      <p id="ma-num" style="font-size:12px; letter-spacing:.18em; color:var(--ouro); text-transform:uppercase; margin:8px 0 0">Anjo</p>
+      <h2 id="ma-nome" class="serif" style="font-size:38px; margin:4px 0 0">—</h2>
+      <p id="ma-coro" class="serif-soft" style="font-size:17px; color:var(--ouro); margin:2px 0 0">—</p>
+    </div>
+    <div class="card" style="margin-top:20px; padding:4px 16px">
+      <div style="display:flex; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px solid var(--linha)"><span style="color:var(--tinta-suave); font-size:14px">Príncipe regente</span><b id="ma-principe" style="font-weight:500; text-align:right">—</b></div>
+      <div style="display:flex; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px solid var(--linha)"><span style="color:var(--tinta-suave); font-size:14px">Dom principal</span><b id="ma-dom" style="font-weight:500; text-align:right">—</b></div>
+      <div style="display:flex; justify-content:space-between; gap:12px; padding:12px 0"><span style="color:var(--tinta-suave); font-size:14px">Dias de regência</span><b id="ma-dias" style="font-weight:500; text-align:right; font-size:13px">—</b></div>
+    </div>
+    <div class="card" style="margin-top:14px; padding:16px">
+      <p style="margin:0; font-weight:600">Salmo e oração do seu anjo</p>
+      <p id="ma-salmo" style="margin:6px 0 0; font-size:14px; color:var(--tinta-suave); line-height:1.6">Conteúdo na voz da Monica — chegando em breve.</p>
+    </div>
+    <button class="btn-ghost" style="margin-top:16px" onclick="shareAnjo()">Compartilhar meu anjo</button>
+  </div>
+</section>
+
+<!-- ░░ JORNADA DE 9 DIAS ░░ -->
+<section id="s-jornada" class="screen">
+  <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; overflow-y:auto">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+    <div style="text-align:center">
+      <h2 class="serif" style="font-size:26px; margin:6px 0 0">Jornada com seu anjo</h2>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 0">9 dias, um passo por dia</p>
+    </div>
+    <div id="jo-dots" style="display:flex; justify-content:center; gap:7px; margin:18px 0 6px; flex-wrap:wrap"></div>
+    <p id="jo-dia-label" style="text-align:center; font-weight:600; margin:0"></p>
+    <p id="jo-tema" class="serif-soft" style="text-align:center; font-size:20px; color:var(--ouro); margin:4px 0 0"></p>
+
+    <div id="jo-form">
+      <div class="card" style="margin-top:16px; padding:18px">
+        <p id="jo-reflexao" class="serif-soft" style="margin:0; font-size:18px; color:var(--tinta); line-height:1.5"></p>
+      </div>
+      <span class="label" style="display:block; margin:16px 0 6px">Sua intenção de hoje (opcional)</span>
+      <textarea id="jo-intencao" class="campo" rows="2" placeholder="Escreva, se quiser…"></textarea>
+      <button class="btn-ouro" id="jo-concluir" style="margin-top:12px" onclick="concluirDiaJornada()">Concluir o dia</button>
+      <p style="text-align:center; font-size:11px; color:var(--tinta-suave); margin:12px 0 0; line-height:1.6">Um dia por dia, 9 dias seguidos. Se faltar um dia, a jornada recomeça.</p>
+    </div>
+    <div id="jo-msg" style="display:none; text-align:center">
+      <p id="jo-msg-txt" class="serif-soft" style="font-size:18px; color:var(--ouro); margin:14px 0 0; line-height:1.4"></p>
+      <button id="jo-recomecar" class="btn-ouro" style="display:none; margin-top:16px" onclick="recomecarJornada()">Recomeçar a jornada</button>
+      <button class="btn-ghost" style="margin-top:10px" onclick="show('s-home')">Voltar ao santuário</button>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ LOJA ░░ -->
+<section id="s-loja" class="screen">
+  <div class="pad" style="flex:1; display:flex; flex-direction:column; overflow-y:auto">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+    <h2 class="serif" style="font-size:26px; margin:6px 0 0">Loja da Monica</h2>
+    <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 14px">Presentes e materiais para sua jornada espiritual.</p>
+
+    <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px; background:var(--ouro-bg); border-color:transparent" onclick="toast('Presentear assinatura — em breve 🎁')">
+      <div style="font-size:24px">🎁</div>
+      <div style="flex:1"><p style="margin:0; font-weight:600; color:#5A3A06">Presentear o Sob as Asas</p><p style="margin:0; font-size:12px; color:#854F0B">Dê proteção a quem você ama</p></div>
+      <span style="font-size:11px; background:#F6C868; color:#5A3A06; padding:3px 9px; border-radius:8px">em breve</span>
+    </div>
+    <div id="lista-loja"></div>
+  </div>
+</section>
+
+<!-- ░░ PRECISO DO MEU ANJO (acolhimento instantâneo) ░░ -->
+<section id="s-socorro" class="screen" style="background:var(--ouro-bg)">
+  <div class="halo" style="top:40px; width:320px; height:320px"></div>
+  <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center">
+    <div style="font-size:40px">🕊️</div>
+    <p class="serif-soft" style="font-size:16px; color:var(--ouro); margin:10px 0 0">Seu anjo está com você</p>
+    <p id="socorro-msg" class="serif" style="font-size:25px; color:var(--tinta); line-height:1.45; margin:18px 0 0; max-width:330px"></p>
+    <div style="width:100%; max-width:320px; margin-top:36px; display:flex; flex-direction:column; gap:10px">
+      <button class="btn-ghost" onclick="novaMensagemAnjo()">Outra mensagem</button>
+      <button class="btn-ghost" onclick="openVela()">🕯️ Acender uma vela</button>
+      <button class="btn-ouro" onclick="show('s-home')">Estou em paz 🙏</button>
     </div>
   </div>
 </section>
@@ -1118,6 +1227,110 @@ function chime(){ try{
 }catch(e){} }
 
 // init
+// ── Preciso do meu anjo (acolhimento instantâneo) ──
+var MSGS_ANJO=[
+  'Respire fundo. Você não está só — seu anjo está ao seu lado neste exato instante.',
+  'Tudo passa. A luz que te guarda é maior do que qualquer tempestade.',
+  'Você é mais forte do que imagina, e nunca esteve desamparado.',
+  'Acalme o coração. Você está sob as asas: protegido e amado.',
+  'Confie. O que parece escuro agora está sendo cuidado por mãos invisíveis.',
+  'Você merece paz. Permita-se receber o cuidado do seu anjo agora.',
+  'Um passo de cada vez. Seu anjo caminha junto, mesmo no silêncio.',
+  'Solte o peso. Há amparo para você — hoje e sempre.',
+  'Coragem: a proteção que te acompanha nunca dorme.',
+  'Você é guardado com ternura. Respire e sinta-se acolhido.',
+  'No meio do caos, existe um cantinho de calma só seu. Seu anjo o guarda.',
+  'Você já superou dias difíceis antes. Não está sozinho nesse também.'
+];
+function novaMensagemAnjo(){ document.getElementById('socorro-msg').textContent = MSGS_ANJO[Math.floor(Math.random()*MSGS_ANJO.length)]; buzz(); }
+function precisoAnjo(){ novaMensagemAnjo(); show('s-socorro'); chime(); }
+
+// ── Meu Anjo (detalhe) ──
+function openMeuAnjo(){
+  var n = window._perfil && typeof window._perfil.anjo_n!=='undefined' ? window._perfil.anjo_n : null;
+  if(n===0){
+    document.getElementById('ma-num').textContent='ANJOS DA HUMANIDADE';
+    document.getElementById('ma-nome').textContent='Anjo da Humanidade';
+    document.getElementById('ma-coro').textContent='Uma data rara e sagrada';
+    document.getElementById('ma-principe').textContent='—';
+    document.getElementById('ma-dom').textContent='Papel fundamental';
+    document.getElementById('ma-dias').textContent='31 mai · 12 ago · 24 out · 5 jan · 19 mar';
+    document.getElementById('ma-salmo').textContent='Você escolhe, entre os 72, o anjo que mais ressoa com você.';
+    show('s-meuanjo'); return;
+  }
+  var a = n ? ANJOS[n-1] : null;
+  if(!a){ toast('Descubra seu anjo primeiro 🪽'); goCadastro(); return; }
+  var coro=coroDe(a[0]);
+  document.getElementById('ma-num').textContent='Anjo '+a[0];
+  document.getElementById('ma-nome').textContent=a[1];
+  document.getElementById('ma-coro').textContent='Coro dos '+coro;
+  document.getElementById('ma-principe').textContent=(typeof PRINCIPE_CORO!=='undefined' && PRINCIPE_CORO[coro])||'—';
+  document.getElementById('ma-dom').textContent=a[2];
+  document.getElementById('ma-dias').textContent=a[3].map(function(dm){return dm[0]+' '+MESES[dm[1]-1];}).join(' · ');
+  document.getElementById('ma-salmo').textContent='Conteúdo na voz da Monica — chegando em breve.';
+  show('s-meuanjo');
+}
+
+// ── Jornada de 9 dias ──
+var JORNADA=[
+  {t:'Acolhimento', r:'Hoje, acolha-se. Peça ao seu anjo que envolva você em paz.'},
+  {t:'Gratidão',    r:'Agradeça por três coisas — grandes ou pequenas — que você tem hoje.'},
+  {t:'Perdão',      r:'Perdoe alguém, ou a si mesmo. Solte um peso aos pés do seu anjo.'},
+  {t:'Coragem',     r:'Peça coragem para um passo que você vem adiando.'},
+  {t:'Cura',        r:'Entregue ao seu anjo aquilo que precisa ser curado em você.'},
+  {t:'Prosperidade',r:'Abra-se para receber. Peça por abundância no que é justo.'},
+  {t:'Proteção',    r:'Peça proteção para você e para quem você ama.'},
+  {t:'Propósito',   r:'Pergunte ao seu anjo qual o próximo passo do seu propósito.'},
+  {t:'Entrega',     r:'Entregue tudo. Confie que você está sendo cuidado.'},
+];
+function joEstado(){
+  var hoje=new Date().toISOString().slice(0,10), ontem=new Date(Date.now()-86400000).toISOString().slice(0,10);
+  var last=localStorage.getItem('saa_jor_last'); var dia=parseInt(localStorage.getItem('saa_jor_dia')||'1',10); var recomecou=false;
+  if(!last){ dia=1; } else if(last===hoje){} else if(last===ontem){} else { dia=1; recomecou=true; localStorage.setItem('saa_jor_dia','1'); localStorage.removeItem('saa_jor_last'); }
+  return { hoje:hoje, dia:dia, feitoHoje:(last===hoje), completa:(dia>9), recomecou:recomecou };
+}
+function renderJoDots(diaAtual){
+  var el=document.getElementById('jo-dots'); el.innerHTML='';
+  for(var i=1;i<=9;i++){ var feito=i<diaAtual, atual=i===diaAtual;
+    el.insertAdjacentHTML('beforeend','<div style="width:13px;height:13px;border-radius:50%;background:'+(feito?'var(--ouro-claro)':'transparent')+';border:2px solid '+((feito||atual)?'var(--ouro)':'var(--linha)')+'"></div>'); }
+}
+function joMsg(txt,recomecar){ document.getElementById('jo-form').style.display='none'; document.getElementById('jo-msg').style.display='block'; document.getElementById('jo-msg-txt').textContent=txt; document.getElementById('jo-recomecar').style.display=recomecar?'block':'none'; }
+function openJornada(){
+  var s=joEstado(); document.getElementById('jo-msg').style.display='none'; document.getElementById('jo-form').style.display='none';
+  if(s.completa){ renderJoDots(10); document.getElementById('jo-dia-label').textContent='Jornada concluída'; document.getElementById('jo-tema').textContent='9 dias com seu anjo 🕊️'; joMsg('Você completou os 9 dias! Que essa jornada continue florescendo em você.', true); show('s-jornada'); return; }
+  if(s.feitoHoje){ var df=s.dia-1, vf=JORNADA[df-1]; renderJoDots(s.dia); document.getElementById('jo-dia-label').textContent='Dia '+df+' concluído'; document.getElementById('jo-tema').textContent=vf.t; joMsg('Você já cumpriu o dia de hoje. 🕊️ Volte amanhã para o Dia '+s.dia+'.', false); show('s-jornada'); return; }
+  var v=JORNADA[s.dia-1]; renderJoDots(s.dia);
+  document.getElementById('jo-dia-label').textContent='Dia '+s.dia+' de 9';
+  document.getElementById('jo-tema').textContent=v.t;
+  document.getElementById('jo-reflexao').textContent=v.r;
+  document.getElementById('jo-intencao').value='';
+  document.getElementById('jo-form').style.display='block';
+  show('s-jornada');
+  if(s.recomecou) setTimeout(function(){ toast('Você perdeu um dia — a jornada recomeça do Dia 1 🕊️'); },400);
+}
+function concluirDiaJornada(){
+  var s=joEstado(); if(s.feitoHoje||s.completa) return;
+  buzz(); chime(); registrarPresenca();
+  try{ localStorage.setItem('saa_jor_last', s.hoje); localStorage.setItem('saa_jor_dia', String(s.dia+1)); }catch(e){}
+  var prox=s.dia+1; renderJoDots(prox);
+  if(prox>9){ joMsg('Você completou os 9 dias com seu anjo! 🕊️', true); }
+  else { joMsg('Dia '+s.dia+' cumprido. 🕊️ Volte amanhã para o Dia '+prox+' — não pule, ou a jornada recomeça.', false); }
+}
+function recomecarJornada(){ try{ localStorage.removeItem('saa_jor_last'); localStorage.setItem('saa_jor_dia','1'); }catch(e){} openJornada(); }
+
+// ── Loja (vitrine; pagamento via Stripe em breve) ──
+var LOJA=[
+  {t:'Anjos Cabalísticos', d:'E-book da Monica Buonfiglio', ic:'📖'},
+  {t:'Curso de Angelologia', d:'Aprofunde-se nos 72 anjos', ic:'🎓'},
+  {t:'Kit do Anjo', d:'Velas e cartas (material físico)', ic:'🕯️'},
+];
+function openLoja(){ renderLoja(); show('s-loja'); }
+function renderLoja(){
+  var el=document.getElementById('lista-loja'); el.innerHTML=LOJA.map(function(p){
+    return '<div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="toast(\'Em breve na Loja 🛍️\')"><div style="width:42px;height:42px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:22px">'+p.ic+'</div><div style="flex:1"><p style="margin:0;font-weight:600">'+p.t+'</p><p style="margin:0;font-size:12px;color:var(--tinta-suave)">'+p.d+'</p></div><span style="font-size:11px; background:var(--ouro-bg); color:#854F0B; padding:3px 9px; border-radius:8px">em breve</span></div>';
+  }).join('');
+}
+
 spawnLuzes('welcome-luzes',14); spawnLuzes('reveal-luzes',22);
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js').catch(()=>{}); }
 </script>
