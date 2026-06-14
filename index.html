@@ -717,7 +717,8 @@ async function carregarBiblioteca(){
   try{
     // NÃO ordenar por 'colecao' no banco (PostgREST retorna vazio nesse caso);
     // ordenamos as coleções no cliente, abaixo.
-    var res=await window.saaAuth.client.from('conteudos').select('titulo,formato,colecao,duracao_seg,premium').eq('publicado',true).order('data_pub',{ascending:false});
+    var _hoje=new Date().toISOString().slice(0,10);
+    var res=await window.saaAuth.client.from('conteudos').select('titulo,formato,colecao,duracao_seg,premium').eq('publicado',true).or('data_pub.is.null,data_pub.lte.'+_hoje).order('data_pub',{ascending:false});
     if(res.error || !res.data || !res.data.length) return;  // mantém o demo
     var grupos={};
     res.data.forEach(function(c){ (grupos[c.colecao]=grupos[c.colecao]||[]).push({ t:c.titulo, m:durLabel(c.duracao_seg), ic:(ICON_COL[c.colecao]||'🪽'), fmt:(FMT_LABEL[c.formato]||'Áudio'), premium:c.premium }); });
