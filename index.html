@@ -333,6 +333,18 @@
       <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 4px">Áudios, vídeos e salmos na voz dela.</p>
       <div id="lista-bib"></div>
     </div>
+
+    <!-- view: comunidade -->
+    <div data-view="comunidade" class="hide">
+      <h2 class="serif" style="font-size:26px; margin:0">Comunidade</h2>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 14px">Compartilhe uma intenção e ore pelos pedidos de outras pessoas. 🕊️</p>
+      <div class="card" style="padding:14px 16px">
+        <textarea id="com-texto" class="campo" rows="2" maxlength="180" placeholder="Compartilhe sua intenção com a comunidade…"></textarea>
+        <label style="display:flex; align-items:center; gap:8px; margin:10px 0; font-size:13px; color:var(--tinta-suave)"><input type="checkbox" id="com-anon" /> Compartilhar como anônimo</label>
+        <button class="btn-ouro" onclick="postarIntencao()">Compartilhar intenção</button>
+      </div>
+      <div id="lista-comunidade" style="margin-top:16px; display:flex; flex-direction:column; gap:10px"></div>
+    </div>
   </div>
 
   <!-- bottom nav -->
@@ -343,7 +355,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5v15l8-3 8 3V5l-8 3-8-3z"/></svg>Biblioteca</button>
     <button data-nav="pedidos" onclick="nav('pedidos')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 4h11l3 3v13H5z"/><path d="M9 10h7M9 14h5"/></svg>Pedidos</button>
-    <button data-nav="comunidade" onclick="toast('Comunidade chega na v1.1 🕊️')">
+    <button data-nav="comunidade" onclick="nav('comunidade'); carregarComunidade()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5M15 20c0-2 2-3.5 4-3"/></svg>Comunidade</button>
   </div>
 </section>
@@ -977,13 +989,13 @@ function compartilharCarta(){
 // ── Magia Branca — jornada de 7 dias (uma vela colorida por dia) ──
 // ⚠️ Cores/temas a confirmar com a Monica (doutrina dela).
 var MB_VELAS=[
-  {cor:'Branca',   tema:'Paz e bem-estar',          hex:'#FCF4E0'},
-  {cor:'Verde',    tema:'Saúde',                    hex:'#A9D18E'},
-  {cor:'Amarela',  tema:'Prosperidade e trabalho',  hex:'#F6D873'},
-  {cor:'Vermelha', tema:'Amor e força',             hex:'#E69086'},
-  {cor:'Azul',     tema:'Proteção e espiritualidade',hex:'#9FC3EE'},
-  {cor:'Rosa',     tema:'Amizade e harmonia',       hex:'#F2B6C6'},
-  {cor:'Roxa',     tema:'Transmutação e elevação',  hex:'#C9B3E6'},
+  {cor:'Branca',   tema:'Paz · ancoragem dos anjos', hex:'#FCF4E0'},
+  {cor:'Verde',    tema:'Saúde',                      hex:'#A9D18E'},
+  {cor:'Amarela',  tema:'Prosperidade',               hex:'#F6D873'},
+  {cor:'Azul',     tema:'Trabalho',                   hex:'#9FC3EE'},
+  {cor:'Rosa',     tema:'Amor',                       hex:'#F2B6C6'},
+  {cor:'Vermelha', tema:'Emergência',                 hex:'#E69086'},
+  {cor:'Lilás',    tema:'Transmutação',               hex:'#C9B3E6'},
 ];
 function mbHoje(){ return new Date().toISOString().slice(0,10); }
 function mbEstado(){
@@ -1318,16 +1330,70 @@ function concluirDiaJornada(){
 }
 function recomecarJornada(){ try{ localStorage.removeItem('saa_jor_last'); localStorage.setItem('saa_jor_dia','1'); }catch(e){} openJornada(); }
 
+// ── Comunidade (mural de intenções; "orar por") ──
+var DEMO_COM=[
+  {id:'x1', nome:'Joana', texto:'Peço forças para a recuperação da minha mãe. 🙏', oracoes:34},
+  {id:'x2', nome:'Anônimo', texto:'Que eu encontre paz e um novo trabalho este mês.', oracoes:18},
+  {id:'x3', nome:'Carlos', texto:'Gratidão — meu filho nasceu com saúde! Orem em ação de graças.', oracoes:57},
+];
+var COM=[]; var COM_ORADOS={};
+try{ COM_ORADOS=JSON.parse(localStorage.getItem('saa_com_orados')||'{}'); }catch(e){}
+async function carregarComunidade(){
+  var el=document.getElementById('lista-comunidade'); if(!el) return;
+  if(!COM.length) el.innerHTML='<p style="color:var(--tinta-suave);font-size:14px;text-align:center;padding:10px">Carregando…</p>';
+  var dados=null;
+  if(window.saaAuth){ try{ var r=await window.saaAuth.client.from('comunidade').select('id,nome,texto,oracoes').eq('oculto',false).order('criado_em',{ascending:false}).limit(50); if(!r.error && r.data) dados=r.data; }catch(e){} }
+  COM = (dados && dados.length) ? dados : DEMO_COM;
+  renderComunidade();
+}
+function renderComunidade(){
+  var el=document.getElementById('lista-comunidade'); if(!el) return; el.innerHTML='';
+  if(!COM.length){ el.innerHTML='<p style="color:var(--tinta-suave);font-size:14px;text-align:center;padding:10px">Seja o primeiro a compartilhar 🕊️</p>'; return; }
+  COM.forEach(function(c){
+    var orou=!!COM_ORADOS[c.id];
+    el.insertAdjacentHTML('beforeend','<div class="card" style="padding:14px 16px">'
+      +'<p class="serif-soft" style="margin:0;font-size:17px;color:var(--tinta);line-height:1.45">'+esc(c.texto)+'</p>'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;gap:8px">'
+      +'<span style="font-size:12px;color:var(--tinta-suave)">'+esc(c.nome||'Anônimo')+' · <a onclick="denunciar(\''+c.id+'\')" style="color:var(--tinta-suave);text-decoration:underline;cursor:pointer">denunciar</a></span>'
+      +'<button onclick="orarPor(\''+c.id+'\')" '+(orou?'disabled':'')+' style="font:inherit;font-size:13px;border:1px solid var(--linha);background:'+(orou?'var(--ouro-bg)':'transparent')+';color:var(--ouro);border-radius:999px;padding:6px 14px;white-space:nowrap">🕯️ '+(orou?'Você orou · ':'Orar · ')+(c.oracoes||0)+'</button>'
+      +'</div></div>');
+  });
+}
+async function orarPor(id){
+  if(COM_ORADOS[id]) return;
+  COM_ORADOS[id]=1; try{ localStorage.setItem('saa_com_orados', JSON.stringify(COM_ORADOS)); }catch(e){}
+  var item=COM.filter(function(c){return c.id===id;})[0]; if(item) item.oracoes=(item.oracoes||0)+1;
+  renderComunidade(); buzz(); toast('Você acendeu uma vela por essa intenção 🕯️');
+  if(window.saaAuth){ try{ await window.saaAuth.client.rpc('orar',{pid:id}); }catch(e){} }
+}
+async function postarIntencao(){
+  var ta=document.getElementById('com-texto'); var t=ta.value.trim();
+  if(!t){ toast('Escreva sua intenção primeiro'); return; }
+  var nome = document.getElementById('com-anon').checked ? 'Anônimo' : (window._nome || 'Anônimo');
+  if(window.saaAuth && window._userId){
+    try{ var r=await window.saaAuth.client.from('comunidade').insert({ user_id:window._userId, nome:nome, texto:t }).select('id,nome,texto,oracoes').single();
+      COM.unshift((!r.error && r.data) ? r.data : {id:'tmp'+Date.now(),nome:nome,texto:t,oracoes:0});
+    }catch(e){ COM.unshift({id:'tmp'+Date.now(),nome:nome,texto:t,oracoes:0}); }
+  } else { COM.unshift({id:'tmp'+Date.now(),nome:nome,texto:t,oracoes:0}); }
+  ta.value=''; document.getElementById('com-anon').checked=false;
+  renderComunidade(); buzz(); toast('Intenção compartilhada 🕊️');
+}
+function denunciar(id){ toast('Denúncia recebida. Obrigado por cuidar da comunidade. 🙏'); }
+
 // ── Loja (vitrine; pagamento via Stripe em breve) ──
 var LOJA=[
-  {t:'Anjos Cabalísticos', d:'E-book da Monica Buonfiglio', ic:'📖'},
-  {t:'Curso de Angelologia', d:'Aprofunde-se nos 72 anjos', ic:'🎓'},
-  {t:'Kit do Anjo', d:'Velas e cartas (material físico)', ic:'🕯️'},
+  {t:'Curso de Angelologia', d:'Aprofunde-se nos 72 anjos, com a Monica', ic:'🎓', url:'https://cursosmagiadosanjos.com.br/aluno/curso/vitrine.php?idE=298&idC=1527'},
+  {t:'Anjos Cabalísticos', d:'Livro da Monica Buonfiglio', ic:'📖', status:'Esgotado'},
+  {t:'A Magia dos Anjos Cabalísticos', d:'Livro da Monica Buonfiglio', ic:'📖', status:'Esgotado'},
 ];
 function openLoja(){ renderLoja(); show('s-loja'); }
+function abrirProduto(p){ if(p.url){ try{ window.open(p.url,'_blank'); }catch(e){ location.href=p.url; } } else { toast('Esgotado por enquanto 🕊️'); } }
 function renderLoja(){
-  var el=document.getElementById('lista-loja'); el.innerHTML=LOJA.map(function(p){
-    return '<div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="toast(\'Em breve na Loja 🛍️\')"><div style="width:42px;height:42px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:22px">'+p.ic+'</div><div style="flex:1"><p style="margin:0;font-weight:600">'+p.t+'</p><p style="margin:0;font-size:12px;color:var(--tinta-suave)">'+p.d+'</p></div><span style="font-size:11px; background:var(--ouro-bg); color:#854F0B; padding:3px 9px; border-radius:8px">em breve</span></div>';
+  var el=document.getElementById('lista-loja');
+  el.innerHTML=LOJA.map(function(p,i){
+    var badge = p.url ? '<span style="font-size:11px; background:#F6C868; color:#5A3A06; padding:3px 9px; border-radius:8px; white-space:nowrap">Ver curso ↗</span>'
+                      : '<span style="font-size:11px; background:#F1EFE8; color:#5F5E5A; padding:3px 9px; border-radius:8px">'+(p.status||'em breve')+'</span>';
+    return '<div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px; margin-bottom:10px; '+(p.url?'':'opacity:.92')+'" onclick="abrirProduto(LOJA['+i+'])"><div style="width:42px;height:42px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:22px">'+p.ic+'</div><div style="flex:1; min-width:0"><p style="margin:0;font-weight:600">'+p.t+'</p><p style="margin:0;font-size:12px;color:var(--tinta-suave)">'+p.d+'</p></div>'+badge+'</div>';
   }).join('');
 }
 

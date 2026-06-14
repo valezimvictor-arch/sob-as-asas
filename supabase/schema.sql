@@ -154,3 +154,29 @@ create policy "read_conteudos" on public.conteudos    for select using (publicad
 alter table public.milagres enable row level security;
 drop policy if exists "read_milagres" on public.milagres;
 create policy "read_milagres" on public.milagres for select using (publicado = true);
+
+-- ── COMUNIDADE (mural de intenções / orar por alguém) ─────────────────────
+create table if not exists public.comunidade (
+  id        uuid primary key default gen_random_uuid(),
+  user_id   uuid references public.users(id) on delete cascade,
+  nome      text,                 -- primeiro nome ou 'Anônimo'
+  texto     text not null,
+  oracoes   int default 0,
+  oculto    boolean default false, -- moderação
+  criado_em timestamptz default now()
+);
+create index if not exists idx_comunidade_data on public.comunidade(criado_em desc);
+
+alter table public.comunidade enable row level security;
+drop policy if exists "read_comunidade"   on public.comunidade;
+create policy "read_comunidade"   on public.comunidade for select using (oculto = false);
+drop policy if exists "insert_comunidade" on public.comunidade;
+create policy "insert_comunidade" on public.comunidade for insert with check (auth.uid() = user_id);
+
+-- "Orar por" incrementa com segurança (qualquer usuário logado), sem poder
+-- editar o texto de outra pessoa.
+create or replace function public.orar(pid uuid) returns void
+language sql security definer as $$
+  update public.comunidade set oracoes = oracoes + 1 where id = pid and oculto = false;
+$$;
+grant execute on function public.orar(uuid) to anon, authenticated;
