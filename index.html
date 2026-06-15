@@ -81,23 +81,18 @@
 <body>
 
 <!-- ░░ 0. SPLASH (abertura) ░░ -->
-<section id="s-splash" class="screen active" style="background:linear-gradient(180deg,#FFF6E0 0%, #FBFAF7 60%)">
-  <div class="luzes" id="splash-luzes"></div>
+<section id="s-splash" class="screen active" style="background:var(--branco)">
   <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center">
-    <div class="splash-halo" style="position:absolute; width:340px; height:340px; border-radius:50%;
-      background:radial-gradient(circle, rgba(239,159,39,.34) 0%, rgba(239,159,39,.10) 45%, rgba(239,159,39,0) 70%); animation:respira 4s ease-in-out infinite"></div>
-    <div id="splash-mark" style="opacity:0; transform:scale(.92); transition:opacity 1.1s ease, transform 1.1s cubic-bezier(.2,.8,.2,1); position:relative">
-      <img src="/asa-icon.svg?v=2" alt="Sob as Asas" width="96" height="96" style="filter:drop-shadow(0 4px 14px rgba(186,117,23,.25))"/>
-      <h1 class="serif" style="font-size:38px; margin:14px 0 0; color:var(--tinta)">Sob as Asas</h1>
-      <p class="serif-soft" style="font-size:18px; color:var(--ouro); margin:4px 0 0">Anjos da Guarda</p>
+    <div id="splash-mark" style="opacity:0; transition:opacity .6s ease">
+      <img src="/asa-icon.svg?v=2" alt="Sob as Asas" width="84" height="84" />
+      <h1 class="serif" style="font-size:34px; margin:14px 0 0; color:var(--tinta); font-weight:400">Sob as Asas</h1>
+      <p class="serif-soft" style="font-size:16px; color:var(--ouro); margin:4px 0 0">Anjos da Guarda</p>
     </div>
   </div>
 </section>
 
 <!-- ░░ 1. BOAS-VINDAS ░░ -->
 <section id="s-welcome" class="screen">
-  <div class="luzes" id="welcome-luzes"></div>
-  <div class="halo" style="top:-70px"></div>
   <div class="pad" style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; position:relative;">
     <svg width="64" height="64" viewBox="0 0 64 64" fill="none" style="margin-bottom:8px">
       <path d="M32 12c-6 10-16 14-24 14 10 4 18 14 24 26 6-12 14-22 24-26-8 0-18-4-24-14z" fill="#EFB44A" opacity=".9"/>
@@ -742,6 +737,10 @@
         <div style="flex:1; min-width:0"><p id="aj-nome" style="margin:0;font-weight:600">—</p><p id="aj-email" style="margin:0;font-size:12px;color:var(--tinta-suave); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">—</p></div>
       </div>
       <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:14px 0; border-bottom:1px solid var(--linha)"><span style="color:var(--tinta-suave); font-size:14px">Meu anjo</span><b id="aj-anjo" style="font-weight:500">—</b></div>
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:14px 0; border-bottom:1px solid var(--linha)">
+        <span style="color:var(--tinta-suave); font-size:14px">Data de nascimento</span>
+        <div style="display:flex; align-items:center; gap:10px"><b id="aj-nasc" style="font-weight:500">—</b><button class="btn-ghost" style="padding:4px 10px; font-size:12px" onclick="editarNascimento()">Editar</button></div>
+      </div>
       <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:14px 0"><span style="color:var(--tinta-suave); font-size:14px">Plano</span><b id="aj-plano" style="font-weight:500">Gratuito</b></div>
     </div>
 
@@ -1571,6 +1570,8 @@ function openAjustes(){
   document.getElementById('aj-email').textContent = window._email || 'Sem conta';
   document.getElementById('aj-avatar').textContent = (window._nome||'•').trim().charAt(0).toUpperCase();
   document.getElementById('aj-anjo').textContent = window._anjo || '—';
+  var n=document.getElementById('aj-nasc');
+  if(n){ var dn=(window._perfil&&window._perfil.nascimento)||''; if(dn){ var p=dn.split('-'); n.textContent = p[2]+'/'+p[1]+'/'+p[0]; } else n.textContent='—'; }
   var plano = (window._plano && window._plano!=='free') ? ({trial:'Em trial (7 dias)', mensal:'Mensal', anual:'Anual'}[window._plano]||window._plano) : 'Gratuito';
   document.getElementById('aj-plano').textContent = plano;
   try{ var h=localStorage.getItem('saa_ritual_horario')||'morning'; document.getElementById('aj-horario').value=h; }catch(e){}
@@ -1580,6 +1581,33 @@ function openAjustes(){
   document.getElementById('aj-push-btn').disabled = pushOn;
   show('s-ajustes');
 }
+async function editarNascimento(){
+  var atual=(window._perfil&&window._perfil.nascimento)||'';
+  var p=atual.split('-');
+  var def = atual ? (p[2]+'/'+p[1]+'/'+p[0]) : '';
+  var v = prompt('Sua data de nascimento (dd/mm/aaaa):', def);
+  if(!v) return;
+  v=v.trim();
+  var m = v.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+  if(!m){ toast('Use o formato dd/mm/aaaa'); return; }
+  var d=parseInt(m[1],10), mo=parseInt(m[2],10), y=parseInt(m[3],10);
+  if(y<100) y+=2000;
+  if(!(d>=1&&d<=31)||!(mo>=1&&mo<=12)||!(y>=1900&&y<=2030)){ toast('Data inválida'); return; }
+  var iso = y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+  var anjo = anjoRegente(mo,d);
+  // Atualiza tudo localmente
+  window._anjo = anjo.nome;
+  window._perfil = { nome: window._nome, nascimento: iso, anjo_n: anjo.n, anjo_nome: anjo.nome };
+  // Persiste se logado
+  if(window.saaAuth && window._userId){
+    try{ await window.saaAuth.client.from('users').update({ nascimento: iso, anjo_n: anjo.n, anjo_nome: anjo.nome }).eq('id', window._userId); }catch(e){}
+  }
+  toast('Anjo recalculado: '+(anjo.nome||'Anjos da Humanidade')+' 🪽');
+  buzz(); chime();
+  openAjustes(); // re-renderiza
+  homeReady=false; // força recarregar cards da home
+}
+
 async function salvarHorario(){
   var h=document.getElementById('aj-horario').value;
   try{ localStorage.setItem('saa_ritual_horario',h); }catch(e){}
@@ -1839,17 +1867,31 @@ function renderLoja(){
   }).join('');
 }
 
-spawnLuzes('welcome-luzes',14); spawnLuzes('reveal-luzes',22); spawnLuzes('splash-luzes',18);
+// Partículas só na revelação do anjo (welcome ficou estático)
+spawnLuzes('reveal-luzes',22);
 
-// Splash → Welcome (microanimação suave)
+// Splash → próxima tela
+// Se já existe sessão Supabase no storage local, vai direto pra home;
+// senão vai pro welcome.
 (function(){
   var sp=document.getElementById('splash-mark');
-  setTimeout(function(){ if(sp){ sp.style.opacity='1'; sp.style.transform='scale(1)'; } }, 120);
+  setTimeout(function(){ if(sp){ sp.style.opacity='1'; } }, 80);
+  function temSessaoStored(){
+    try{
+      var c=window.SAA_CONFIG||{}; if(!c.url) return false;
+      // chave padrão do supabase-js: sb-<ref>-auth-token
+      var ref=(c.url.match(/https?:\/\/([^.]+)\./)||[])[1];
+      if(!ref) return false;
+      var v=localStorage.getItem('sb-'+ref+'-auth-token');
+      return !!(v && v.length>20);
+    }catch(e){ return false; }
+  }
   setTimeout(function(){
-    // Se já entrou em outra tela (ex.: deep link), não força splash
-    var ativa=[...document.querySelectorAll('.screen.active')].map(s=>s.id);
-    if(ativa.length===1 && ativa[0]==='s-splash'){ show('s-welcome'); }
-  }, 2200);
+    var ativa=[...document.querySelectorAll('.screen.active')].map(function(s){return s.id;});
+    if(ativa.length===1 && ativa[0]==='s-splash'){
+      show( temSessaoStored() ? 's-home' : 's-welcome' );
+    }
+  }, 1100);
 })();
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js').catch(()=>{}); }
 </script>
