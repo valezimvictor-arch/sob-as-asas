@@ -5,7 +5,7 @@
  * Uso: node scripts/build.mjs
  */
 
-import { copyFileSync, mkdirSync, existsSync } from 'fs';
+import { copyFileSync, mkdirSync, existsSync, readdirSync, statSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -38,6 +38,21 @@ for (const f of files) {
     copied++;
   } else {
     console.warn(`  ⚠️  ${f} não encontrado — pulando`);
+  }
+}
+
+// Copia pasta data/ inteira (anjos-conteudo.json e futuros arquivos)
+const DATA_SRC = join(ROOT, 'data');
+if (existsSync(DATA_SRC)) {
+  const DATA_DST = join(WWW, 'data');
+  mkdirSync(DATA_DST, { recursive: true });
+  for (const f of readdirSync(DATA_SRC)) {
+    const s = join(DATA_SRC, f);
+    if (statSync(s).isFile()) {
+      copyFileSync(s, join(DATA_DST, f));
+      console.log(`  ✅ data/${f}`);
+      copied++;
+    }
   }
 }
 

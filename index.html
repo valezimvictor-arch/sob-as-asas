@@ -635,16 +635,53 @@
       <h2 id="ma-nome" class="serif" style="font-size:38px; margin:4px 0 0">—</h2>
       <p id="ma-coro" class="serif-soft" style="font-size:17px; color:var(--ouro); margin:2px 0 0">—</p>
     </div>
+
+    <!-- card 1: ficha factual -->
     <div class="card" style="margin-top:20px; padding:4px 16px">
       <div style="display:flex; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px solid var(--linha)"><span style="color:var(--tinta-suave); font-size:14px">Príncipe regente</span><b id="ma-principe" style="font-weight:500; text-align:right">—</b></div>
       <div style="display:flex; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px solid var(--linha)"><span style="color:var(--tinta-suave); font-size:14px">Dom principal</span><b id="ma-dom" style="font-weight:500; text-align:right">—</b></div>
+      <div id="ma-row-horario" style="display:flex; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px solid var(--linha)"><span style="color:var(--tinta-suave); font-size:14px">Horário de regência</span><b id="ma-horario" style="font-weight:500; text-align:right">—</b></div>
+      <div id="ma-row-sefira" style="display:flex; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px solid var(--linha)"><span style="color:var(--tinta-suave); font-size:14px">Sefirá · Elemento</span><b id="ma-sefira" style="font-weight:500; text-align:right">—</b></div>
       <div style="display:flex; justify-content:space-between; gap:12px; padding:12px 0"><span style="color:var(--tinta-suave); font-size:14px">Dias de regência</span><b id="ma-dias" style="font-weight:500; text-align:right; font-size:13px">—</b></div>
     </div>
-    <div class="card" style="margin-top:14px; padding:16px">
-      <p style="margin:0; font-weight:600">Salmo e oração do seu anjo</p>
-      <p id="ma-salmo" style="margin:6px 0 0; font-size:14px; color:var(--tinta-suave); line-height:1.6">Conteúdo na voz da Monica — chegando em breve.</p>
+
+    <!-- card 2: atributos -->
+    <div id="ma-card-atrib" class="card" style="margin-top:14px; padding:16px 18px">
+      <p style="margin:0; font-weight:600">Sobre seu anjo</p>
+      <p id="ma-atributos" class="serif-soft" style="margin:8px 0 0; font-size:16px; color:var(--tinta); line-height:1.55">—</p>
     </div>
-    <button class="btn-ghost" style="margin-top:16px" onclick="shareAnjo()">Compartilhar meu anjo</button>
+
+    <!-- card 3: dons secundários -->
+    <div id="ma-card-dons" class="card" style="margin-top:14px; padding:16px 18px">
+      <p style="margin:0; font-weight:600">Dons que ele traz</p>
+      <div id="ma-dons-list" style="margin:10px 0 0; display:flex; flex-wrap:wrap; gap:6px"></div>
+    </div>
+
+    <!-- card 4: quando invocar -->
+    <div id="ma-card-quando" class="card" style="margin-top:14px; padding:16px 18px">
+      <p style="margin:0; font-weight:600">Quando invocar</p>
+      <p id="ma-quando" style="margin:8px 0 0; font-size:14px; color:var(--tinta); line-height:1.6">—</p>
+    </div>
+
+    <!-- card 5: salmo -->
+    <div id="ma-card-salmo" class="card" style="margin-top:14px; padding:16px 18px; background:var(--ouro-bg); border-color:transparent">
+      <p style="margin:0; font-weight:600; color:#854F0B; font-size:13px; letter-spacing:.04em; text-transform:uppercase" id="ma-salmo-ref">Salmo</p>
+      <p id="ma-salmo-texto" class="serif-soft" style="margin:10px 0 0; font-size:17px; color:#5A3A06; line-height:1.55; font-style:italic">"—"</p>
+    </div>
+
+    <!-- card 6: invocação -->
+    <div id="ma-card-invoc" class="card" style="margin-top:14px; padding:18px 20px">
+      <p style="margin:0; font-weight:600">Invocação</p>
+      <p id="ma-invocacao" class="serif-soft" style="margin:12px 0 0; font-size:17px; color:var(--tinta); line-height:1.55">—</p>
+    </div>
+
+    <!-- card 7: afirmação -->
+    <div id="ma-card-afirm" class="card" style="margin-top:14px; padding:18px 20px; text-align:center; border:1px solid var(--ouro-claro)">
+      <p style="margin:0; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ouro)">Sua afirmação de hoje</p>
+      <p id="ma-afirmacao" class="serif" style="margin:10px 0 0; font-size:18px; color:var(--tinta); line-height:1.45">—</p>
+    </div>
+
+    <button class="btn-ghost" style="margin-top:16px; margin-bottom:8px" onclick="shareAnjo()">Compartilhar meu anjo</button>
   </div>
 </section>
 
@@ -1635,30 +1672,80 @@ function abrirRitual(periodo){
   show('s-socorro'); chime(); registrarPresenca();
 }
 
-// ── Meu Anjo (detalhe) ──
-function openMeuAnjo(){
+// ── Meu Anjo (detalhe) — carrega de /data/anjos-conteudo.json ──
+window._anjosRicos = null;
+async function carregarAnjosRicos(){
+  if(window._anjosRicos) return window._anjosRicos;
+  try{
+    var r = await fetch('/data/anjos-conteudo.json');
+    if(r.ok){ window._anjosRicos = await r.json(); }
+  }catch(e){}
+  return window._anjosRicos;
+}
+function _setMA(id, val, opt){
+  var el=document.getElementById(id); if(!el) return;
+  if(opt && opt.html) el.innerHTML = val; else el.textContent = val || '—';
+}
+function _hideRow(id){ var el=document.getElementById(id); if(el) el.style.display='none'; }
+function _showRow(id){ var el=document.getElementById(id); if(el) el.style.display=''; }
+function _hideCard(id){ var el=document.getElementById(id); if(el) el.style.display='none'; }
+function _showCard(id){ var el=document.getElementById(id); if(el) el.style.display=''; }
+
+async function openMeuAnjo(){
   var n = window._perfil && typeof window._perfil.anjo_n!=='undefined' ? window._perfil.anjo_n : null;
+
+  // Anjos da Humanidade (n=0)
   if(n===0){
-    document.getElementById('ma-num').textContent='ANJOS DA HUMANIDADE';
-    document.getElementById('ma-nome').textContent='Anjo da Humanidade';
-    document.getElementById('ma-coro').textContent='Uma data rara e sagrada';
-    document.getElementById('ma-principe').textContent='—';
-    document.getElementById('ma-dom').textContent='Papel fundamental';
-    document.getElementById('ma-dias').textContent='31 mai · 12 ago · 24 out · 5 jan · 19 mar';
-    document.getElementById('ma-salmo').textContent='Você escolhe, entre os 72, o anjo que mais ressoa com você.';
+    _setMA('ma-num','ANJOS DA HUMANIDADE');
+    _setMA('ma-nome','Anjo da Humanidade');
+    _setMA('ma-coro','Uma data rara e sagrada');
+    _setMA('ma-principe','—');
+    _setMA('ma-dom','Papel fundamental');
+    _hideRow('ma-row-horario'); _hideRow('ma-row-sefira');
+    _setMA('ma-dias','31 mai · 12 ago · 24 out · 5 jan · 19 mar');
+    _setMA('ma-atributos','Você nasceu numa data muito especial e tem um papel fundamental. Não há um único anjo regente — você escolhe, entre os 72, aquele que mais ressoa com você.');
+    _hideCard('ma-card-dons'); _hideCard('ma-card-quando'); _hideCard('ma-card-salmo'); _hideCard('ma-card-invoc'); _hideCard('ma-card-afirm');
     show('s-meuanjo'); return;
   }
-  var a = n ? ANJOS[n-1] : null;
-  if(!a){ toast('Descubra seu anjo primeiro 🪽'); goCadastro(); return; }
-  var coro=coroDe(a[0]);
-  document.getElementById('ma-num').textContent='Anjo '+a[0];
-  document.getElementById('ma-nome').textContent=a[1];
-  document.getElementById('ma-coro').textContent='Coro dos '+coro;
-  document.getElementById('ma-principe').textContent=(typeof PRINCIPE_CORO!=='undefined' && PRINCIPE_CORO[coro])||'—';
-  document.getElementById('ma-dom').textContent=a[2];
-  document.getElementById('ma-dias').textContent=a[3].map(function(dm){return dm[0]+' '+MESES[dm[1]-1];}).join(' · ');
-  document.getElementById('ma-salmo').textContent='Conteúdo na voz da Monica — chegando em breve.';
+
+  if(!n){ toast('Descubra seu anjo primeiro 🪽'); goCadastro(); return; }
+
+  // reseta cards
+  _showRow('ma-row-horario'); _showRow('ma-row-sefira');
+  _showCard('ma-card-dons'); _showCard('ma-card-quando'); _showCard('ma-card-salmo'); _showCard('ma-card-invoc'); _showCard('ma-card-afirm');
+
+  var a = ANJOS[n-1]; var coro=coroDe(a[0]);
+
+  // Cabeçalho (factual — sempre disponível mesmo sem JSON)
+  _setMA('ma-num','Anjo '+a[0]);
+  _setMA('ma-nome',a[1]);
+  _setMA('ma-coro','Coro dos '+coro);
+  _setMA('ma-principe',(typeof PRINCIPE_CORO!=='undefined' && PRINCIPE_CORO[coro])||'—');
+  _setMA('ma-dom',a[2]);
+  _setMA('ma-dias',a[3].map(function(dm){return dm[0]+' '+MESES[dm[1]-1];}).join(' · '));
+
   show('s-meuanjo');
+
+  // Carrega o conteúdo rico (assíncrono — substitui placeholders)
+  var dados = await carregarAnjosRicos();
+  if(!dados || !dados[String(n)]) return;
+  var r = dados[String(n)];
+  _setMA('ma-horario', r.horario || '—');
+  _setMA('ma-sefira', (r.sefira||'—')+' · '+(r.elemento||'—'));
+  _setMA('ma-atributos', r.atributos || '—');
+  // dons
+  var dons = document.getElementById('ma-dons-list');
+  if(dons){
+    var lista=[r.dom_principal].concat(r.dons_secundarios||[]).filter(Boolean);
+    dons.innerHTML = lista.map(function(d){
+      return '<span style="font-size:12px; background:var(--ouro-bg); color:#854F0B; padding:5px 12px; border-radius:999px; white-space:nowrap">'+esc(d)+'</span>';
+    }).join('');
+  }
+  _setMA('ma-quando', r.quando_invocar || '—');
+  _setMA('ma-salmo-ref', r.salmo_ref || 'Salmo');
+  _setMA('ma-salmo-texto', '“'+(r.salmo_texto||'')+'”');
+  _setMA('ma-invocacao', r.invocacao || '—');
+  _setMA('ma-afirmacao', r.afirmacao || '—');
 }
 
 // ── Novena dos Anjos (9 dias) ──
