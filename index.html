@@ -80,19 +80,10 @@
 </head>
 <body>
 
-<!-- ░░ 0. SPLASH (abertura) ░░ -->
-<section id="s-splash" class="screen active" style="background:var(--branco)">
-  <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center">
-    <div id="splash-mark" style="opacity:0; transition:opacity .6s ease">
-      <img src="/asa-icon.svg?v=2" alt="Sob as Asas" width="84" height="84" />
-      <h1 class="serif" style="font-size:34px; margin:14px 0 0; color:var(--tinta); font-weight:400">Sob as Asas</h1>
-      <p class="serif-soft" style="font-size:16px; color:var(--ouro); margin:4px 0 0">Anjos da Guarda</p>
-    </div>
-  </div>
-</section>
-
-<!-- ░░ 1. BOAS-VINDAS ░░ -->
-<section id="s-welcome" class="screen">
+<!-- ░░ BOAS-VINDAS (tela de abertura) ░░ -->
+<section id="s-welcome" class="screen active">
+  <div class="luzes" id="welcome-luzes"></div>
+  <div class="halo" style="top:-70px"></div>
   <div class="pad" style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; position:relative;">
     <svg width="64" height="64" viewBox="0 0 64 64" fill="none" style="margin-bottom:8px">
       <path d="M32 12c-6 10-16 14-24 14 10 4 18 14 24 26 6-12 14-22 24-26-8 0-18-4-24-14z" fill="#EFB44A" opacity=".9"/>
@@ -1954,30 +1945,22 @@ function renderLoja(){
 }
 
 // Partículas só na revelação do anjo (welcome ficou estático)
-spawnLuzes('reveal-luzes',22);
+// Partículas: welcome + revelação
+spawnLuzes('welcome-luzes',14); spawnLuzes('reveal-luzes',22);
 
-// Splash → próxima tela
-// Se já existe sessão Supabase no storage local, vai direto pra home;
-// senão vai pro welcome.
+// Se já existe sessão Supabase no storage local, redireciona direto pra home
+// (sem mostrar a tela de boas-vindas)
 (function(){
-  var sp=document.getElementById('splash-mark');
-  setTimeout(function(){ if(sp){ sp.style.opacity='1'; } }, 80);
   function temSessaoStored(){
     try{
       var c=window.SAA_CONFIG||{}; if(!c.url) return false;
-      // chave padrão do supabase-js: sb-<ref>-auth-token
       var ref=(c.url.match(/https?:\/\/([^.]+)\./)||[])[1];
       if(!ref) return false;
       var v=localStorage.getItem('sb-'+ref+'-auth-token');
       return !!(v && v.length>20);
     }catch(e){ return false; }
   }
-  setTimeout(function(){
-    var ativa=[...document.querySelectorAll('.screen.active')].map(function(s){return s.id;});
-    if(ativa.length===1 && ativa[0]==='s-splash'){
-      show( temSessaoStored() ? 's-home' : 's-welcome' );
-    }
-  }, 1100);
+  if(temSessaoStored()){ show('s-home'); }
 })();
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js').catch(()=>{}); }
 </script>
