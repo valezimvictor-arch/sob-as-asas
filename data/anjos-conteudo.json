@@ -4,18 +4,13 @@
     "fonte_salmos": "Almeida Revista e Corrigida (domínio público no Brasil). Versículo principal de cada anjo (1 versículo por ficha).",
     "invocacoes": "Textos originais escritos para o app Sob as Asas — propriedade da LVSV Ventures. Não são reprodução de obras autorais.",
     "horarios": "Cada anjo rege uma faixa de 20 minutos do dia (1440 min ÷ 72 = 20). Faixa do anjo n: [(n-1)×20 ... n×20] minutos após 00:00.",
-    "versao": "0.1 — fichas-modelo (Vehuiah, Iah-Hel, Mumiah)"
+    "versao": "0.2 — Serafins completos + Iah-Hel + Mumiah"
   },
 
   "1": {
-    "n": 1,
-    "nome": "Vehuiah",
-    "coro": "Serafins",
-    "principe": "Metatron",
+    "n": 1, "nome": "Vehuiah", "coro": "Serafins", "principe": "Metatron",
     "regencia_dias": ["20-21 mar", "1 jun", "13 ago", "25 out", "6 jan"],
-    "horario": "00:00 — 00:20",
-    "elemento": "Fogo",
-    "sefira": "Kether",
+    "horario": "00:00 — 00:20", "elemento": "Fogo", "sefira": "Kether",
     "salmo_ref": "Salmo 3, 3",
     "salmo_texto": "Mas tu, Senhor, és um escudo para mim, a minha glória, e o que exalta a minha cabeça.",
     "dom_principal": "Vontade e força para iniciar",
@@ -26,15 +21,108 @@
     "afirmacao": "Eu começo. Eu tenho força. Eu sou o primeiro passo do meu próprio renascer."
   },
 
+  "2": {
+    "n": 2, "nome": "Jeliel", "coro": "Serafins", "principe": "Metatron",
+    "regencia_dias": ["22 mar", "2 jun", "14 ago", "26 out", "7 jan"],
+    "horario": "00:20 — 00:40", "elemento": "Fogo", "sefira": "Kether",
+    "salmo_ref": "Salmo 22, 19",
+    "salmo_texto": "Mas tu, Senhor, não te alongues de mim; força minha, apressa-te em socorrer-me.",
+    "dom_principal": "Amor e fidelidade conjugal",
+    "dons_secundarios": ["Reconciliação", "Paz no lar", "Doçura", "Harmonia"],
+    "atributos": "Jeliel é o anjo do amor verdadeiro e da fidelidade entre quem se ama. Restabelece a paz em casamentos abalados, traz harmonia a relacionamentos e aquece corações que esfriaram.",
+    "quando_invocar": "Em conflitos amorosos, antes de uma conversa difícil com o parceiro, quando precisa reacender o amor ou pedir por um amor verdadeiro.",
+    "invocacao": "Jeliel, anjo do amor fiel, abençoe os laços que me importam. Que a paz retorne onde houver discórdia, e que o amor verdadeiro encontre morada no meu coração. Amém.",
+    "afirmacao": "Eu amo e sou amado. Em mim há harmonia. Em minha casa, paz."
+  },
+
+  "3": {
+    "n": 3, "nome": "Sitael", "coro": "Serafins", "principe": "Metatron",
+    "regencia_dias": ["23 mar", "3 jun", "15 ago", "27 out", "8 jan"],
+    "horario": "00:40 — 01:00", "elemento": "Fogo", "sefira": "Kether",
+    "salmo_ref": "Salmo 91, 2",
+    "salmo_texto": "Direi do Senhor: Ele é o meu Deus, o meu refúgio, a minha fortaleza, e nele confiarei.",
+    "dom_principal": "Construção e proteção",
+    "dons_secundarios": ["Estabilidade", "Defesa contra adversidades", "Nobreza de caráter", "Generosidade"],
+    "atributos": "Sitael é o anjo de quem constrói com solidez. Protege contra perigos e adversidades, dá força para sustentar o que se ergue, e desperta a generosidade que se torna obra duradoura.",
+    "quando_invocar": "Antes de uma viagem, em situações de perigo, ao iniciar uma obra ou um projeto que precisa durar.",
+    "invocacao": "Sitael, anjo escudo, levante muralhas invisíveis ao meu redor. Que eu construa com solidez o que vale a pena, e que sua proteção me acompanhe em cada caminho. Amém.",
+    "afirmacao": "Eu estou protegido. O que eu construo permanece. Sou forte e generoso."
+  },
+
+  "4": {
+    "n": 4, "nome": "Elemiah", "coro": "Serafins", "principe": "Metatron",
+    "regencia_dias": ["24 mar", "4 jun", "16 ago", "28 out", "9 jan"],
+    "horario": "01:00 — 01:20", "elemento": "Fogo", "sefira": "Kether",
+    "salmo_ref": "Salmo 6, 4",
+    "salmo_texto": "Volta-te, Senhor, livra a minha alma; salva-me por tua benignidade.",
+    "dom_principal": "Viagens interiores e paz",
+    "dons_secundarios": ["Sucesso em viagens", "Descobertas", "Vocação", "Clareza"],
+    "atributos": "Elemiah é o anjo das viagens — as físicas e as da alma. Conduz quem se perdeu de volta ao caminho, abre rotas favoráveis e protege os que partem em busca de algo.",
+    "quando_invocar": "Antes de viagens, em momentos de confusão interior, quando precisa descobrir seu próximo passo ou voltar ao seu centro.",
+    "invocacao": "Elemiah, anjo dos caminhos, ilumine cada estrada que eu percorrer — fora e dentro de mim. Que minhas partidas sejam abençoadas e meus retornos cheios de aprendizado. Amém.",
+    "afirmacao": "Eu caminho com paz. Cada partida é uma bênção, cada chegada um aprendizado."
+  },
+
+  "5": {
+    "n": 5, "nome": "Mahasiah", "coro": "Serafins", "principe": "Metatron",
+    "regencia_dias": ["25 mar", "5 jun", "17 ago", "29 out", "10 jan"],
+    "horario": "01:20 — 01:40", "elemento": "Fogo", "sefira": "Kether",
+    "salmo_ref": "Salmo 34, 4",
+    "salmo_texto": "Busquei ao Senhor, e ele me respondeu; livrou-me de todos os meus temores.",
+    "dom_principal": "Retidão e harmonia",
+    "dons_secundarios": ["Vida em paz com todos", "Aprendizado fácil", "Tolerância", "Justiça"],
+    "atributos": "Mahasiah é o anjo da retidão amável. Ajuda a viver em paz com todos, suaviza temperamentos difíceis, facilita o aprendizado e dá clareza para corrigir o que precisa ser corrigido.",
+    "quando_invocar": "Em conflitos com pessoas próximas, antes de estudar ou aprender algo difícil, quando precisa corrigir um erro ou pedir desculpas.",
+    "invocacao": "Mahasiah, anjo da retidão suave, ensine-me a viver em paz com todos. Que minha verdade seja firme e gentil, e que meu coração saiba pedir desculpa quando errar. Amém.",
+    "afirmacao": "Eu vivo em paz. Aprendo com leveza. Minha verdade é firme e gentil."
+  },
+
+  "6": {
+    "n": 6, "nome": "Lelahel", "coro": "Serafins", "principe": "Metatron",
+    "regencia_dias": ["26 mar", "6 jun", "18 ago", "30 out", "11 jan"],
+    "horario": "01:40 — 02:00", "elemento": "Fogo", "sefira": "Kether",
+    "salmo_ref": "Salmo 9, 11",
+    "salmo_texto": "Cantai louvores ao Senhor, que habita em Sião; anunciai entre os povos os seus feitos.",
+    "dom_principal": "Luz, cura e talento",
+    "dons_secundarios": ["Saúde", "Reconhecimento", "Arte", "Fama com humildade"],
+    "atributos": "Lelahel é o anjo da luz que cura e do talento que brilha. Restaura a saúde, ilumina o dom de cada um, e dá a graça de ser reconhecido sem perder a humildade.",
+    "quando_invocar": "Em pedidos de cura física, quando precisa expor seu talento publicamente, ou para iluminar o caminho de quem ama.",
+    "invocacao": "Lelahel, anjo da luz, derrame sobre mim a sua cura. Que meu corpo encontre saúde, meu dom encontre voz, e meu coração permaneça humilde diante da luz que me atravessa. Amém.",
+    "afirmacao": "Eu sou luz que cura. Meu dom é uma bênção. Brilho com humildade."
+  },
+
+  "7": {
+    "n": 7, "nome": "Achaiah", "coro": "Serafins", "principe": "Metatron",
+    "regencia_dias": ["27 mar", "7 jun", "19 ago", "31 out", "12 jan"],
+    "horario": "02:00 — 02:20", "elemento": "Fogo", "sefira": "Kether",
+    "salmo_ref": "Salmo 103, 8",
+    "salmo_texto": "Misericordioso e piedoso é o Senhor; longânimo e grande em benignidade.",
+    "dom_principal": "Paciência e descoberta",
+    "dons_secundarios": ["Sabedoria que vem do tempo", "Pesquisa", "Compreensão", "Solução de mistérios"],
+    "atributos": "Achaiah é o anjo da paciência iluminada. Ensina a esperar o que precisa amadurecer, ilumina pesquisas e estudos longos, e desvenda mistérios para quem se dispõe a olhar com calma.",
+    "quando_invocar": "Em momentos de impaciência, em pesquisas demoradas, quando precisa esperar uma resposta ou compreender algo que ainda escapa.",
+    "invocacao": "Achaiah, anjo da paciência, ensine-me a esperar com fé. Que minha pressa se dissolva, que minha pergunta encontre resposta no tempo certo, e que eu aprenda a confiar no que ainda não vejo. Amém.",
+    "afirmacao": "Eu espero com fé. Cada coisa em seu tempo. Minha paciência é sabedoria."
+  },
+
+  "8": {
+    "n": 8, "nome": "Cahethel", "coro": "Serafins", "principe": "Metatron",
+    "regencia_dias": ["28 mar", "8 jun", "20 ago", "1 nov", "13 jan"],
+    "horario": "02:20 — 02:40", "elemento": "Fogo", "sefira": "Kether",
+    "salmo_ref": "Salmo 95, 6",
+    "salmo_texto": "Oh! Vinde, adoremos e prostremo-nos; ajoelhemos diante do Senhor, que nos criou.",
+    "dom_principal": "Bênção e gratidão",
+    "dons_secundarios": ["Abundância dos frutos da terra", "Reconhecimento divino", "Devoção", "Prosperidade simples"],
+    "atributos": "Cahethel é o anjo da bênção que se colhe. Atrai a abundância dos frutos da terra para quem trabalha com gratidão, e ensina o coração a reconhecer as graças recebidas.",
+    "quando_invocar": "Em pedidos de prosperidade material honesta, antes de uma colheita ou fim de ciclo de trabalho, e em momentos de agradecimento profundo.",
+    "invocacao": "Cahethel, anjo da bênção, abençoe o trabalho das minhas mãos. Que a terra me dê seus frutos, que a gratidão habite meu coração, e que eu reconheça em cada dia uma graça recebida. Amém.",
+    "afirmacao": "Eu colho o que planto. Sou grato pela abundância. Cada dia é uma bênção."
+  },
+
   "62": {
-    "n": 62,
-    "nome": "Iah-Hel",
-    "coro": "Arcanjos",
-    "principe": "Miguel",
+    "n": 62, "nome": "Iah-Hel", "coro": "Arcanjos", "principe": "Miguel",
     "regencia_dias": ["20 mai", "1 ago", "13 out", "25 dez", "8 mar"],
-    "horario": "20:20 — 20:40",
-    "elemento": "Ar",
-    "sefira": "Yesod",
+    "horario": "20:20 — 20:40", "elemento": "Ar", "sefira": "Yesod",
     "salmo_ref": "Salmo 119, 159",
     "salmo_texto": "Considera quanto amo os teus preceitos; vivifica-me, ó Senhor, segundo a tua benignidade.",
     "dom_principal": "Sabedoria e quietude",
@@ -46,14 +134,9 @@
   },
 
   "72": {
-    "n": 72,
-    "nome": "Mumiah",
-    "coro": "Anjos",
-    "principe": "Gabriel",
+    "n": 72, "nome": "Mumiah", "coro": "Anjos", "principe": "Gabriel",
     "regencia_dias": ["18-19 mar", "11 ago", "23 out", "4 jan", "30 mai"],
-    "horario": "23:40 — 24:00",
-    "elemento": "Terra",
-    "sefira": "Malkuth",
+    "horario": "23:40 — 24:00", "elemento": "Terra", "sefira": "Malkuth",
     "salmo_ref": "Salmo 116, 7",
     "salmo_texto": "Volta, minha alma, para o teu repouso, pois o Senhor te fez bem.",
     "dom_principal": "Renascimento e conclusão",
