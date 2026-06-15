@@ -70,6 +70,7 @@
       <button class="tab on" id="tab-painel" onclick="aba('painel')">📊 Painel</button>
       <button class="tab" id="tab-conteudo" onclick="aba('conteudo')">📜 Conteúdos</button>
       <button class="tab" id="tab-milagre" onclick="aba('milagre')">✨ Milagre</button>
+      <button class="tab" id="tab-leads" onclick="aba('leads')">📩 Leads</button>
     </div>
 
     <!-- ░░ PAINEL ░░ -->
@@ -125,6 +126,19 @@
       <div class="nota">⚖️ A escolha é <strong>humana e editorial</strong>. Você lê os pedidos de quem <strong>consentiu</strong> em compartilhar e escolhe uma história para realizar. Sem sorteio, ranking ou aleatoriedade — e não depende de quanto a pessoa pagou.</div>
       <div id="lista-milagre"></div>
     </div>
+
+    <!-- ░░ LEADS ░░ -->
+    <div id="sec-leads" class="hide">
+      <div class="nota">📩 Pessoas que demonstraram interesse: viagens (Israel, Caminhos de São Miguel) e cadastros da landing. Os dados (nome / telefone) vêm no próprio campo origem quando foi via formulário do app.</div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin:0 0 12px">
+        <button class="btn-sec" onclick="filtroLeads('todos')" id="fl-todos">Todos</button>
+        <button class="btn-sec" onclick="filtroLeads('exp_israel')" id="fl-israel">Israel</button>
+        <button class="btn-sec" onclick="filtroLeads('exp_saomiguel')" id="fl-saomiguel">São Miguel</button>
+        <button class="btn-sec" onclick="filtroLeads('landing')" id="fl-landing">Landing</button>
+        <button class="btn-sec" onclick="exportarLeadsCSV()" style="margin-left:auto">⬇ Exportar CSV</button>
+      </div>
+      <div id="lista-leads"></div>
+    </div>
   </div>
 </div>
 
@@ -136,9 +150,9 @@ var sb = null;
 
 function salvarChave(){ KEY=document.getElementById('adminkey').value.trim(); if(KEY){ sessionStorage.setItem('saa_admin_key',KEY); entrar(); } }
 function entrar(){ document.getElementById('auth').classList.add('hide'); document.getElementById('painel').classList.remove('hide'); recarregar(); }
-function recarregar(){ carregarMetricas(); carregarConteudos(); carregarMilagre(); }
+function recarregar(){ carregarMetricas(); carregarConteudos(); carregarMilagre(); carregarLeads(); }
 function aba(qual){
-  ['painel','conteudo','milagre'].forEach(function(q){
+  ['painel','conteudo','milagre','leads'].forEach(function(q){
     document.getElementById('sec-'+q).classList.toggle('hide', q!==qual);
     document.getElementById('tab-'+q).classList.toggle('on', q===qual);
   });
@@ -247,6 +261,90 @@ async function confirmar(id){
   var card=document.getElementById('card-'+id); card.style.borderColor='var(--celeste)';
   card.querySelector('.actions').innerHTML='<span class="tag cur">✓ Escolhido como Milagre do mês</span>';
   document.getElementById('esc-'+id).classList.add('hide');
+}
+
+// ── LEADS (interessados em viagens, landing) ──
+var LEADS=[], LEADS_FILTRO='todos';
+var DEMO_LEADS=[
+  {id:'L1', email:'aparecida@example.com', origem:'exp_israel | Aparecida Souza · (11) 98765-4321', criado_em:'2026-07-12'},
+  {id:'L2', email:'marcos@example.com',    origem:'exp_saomiguel | Marcos Lima · (21) 99999-1111', criado_em:'2026-07-10'},
+  {id:'L3', email:'joana@example.com',     origem:'landing', criado_em:'2026-07-09'},
+  {id:'L4', email:'paulo@example.com',     origem:'exp_israel | Paulo · (31) 98000-7777', criado_em:'2026-07-08'},
+];
+function parseOrigem(o){
+  // formato típico: "exp_israel | Nome · (11) 9....." OU só "exp_israel" / "landing"
+  if(!o) return { tag:'landing', nome:'', tel:'' };
+  var tag = (o.split('|')[0]||'').trim();
+  var extra = (o.split('|')[1]||'').trim();
+  var nome='', tel='';
+  if(extra){
+    var p = extra.split('·');
+    nome = (p[0]||'').trim();
+    tel  = (p[1]||'').trim();
+  }
+  return { tag:tag, nome:nome, tel:tel };
+}
+function rotuloOrigem(tag){
+  if(tag==='exp_israel') return 'Israel';
+  if(tag==='exp_saomiguel') return 'Caminhos de São Miguel';
+  if(tag==='landing') return 'Landing';
+  return tag;
+}
+async function carregarLeads(){
+  var el=document.getElementById('lista-leads'); if(!el) return;
+  el.innerHTML='<p class="vazio">Carregando…</p>';
+  var dados=null, demo=false;
+  try{ var r=await fetch('/api/admin-leads',{headers:{'x-admin-key':KEY}}); if(r.ok){ var j=await r.json(); dados=j.leads||[]; } }catch(e){}
+  if(dados===null){ dados=DEMO_LEADS; demo=true; }
+  LEADS=dados;
+  marcarFiltro();
+  renderLeads(demo);
+}
+function filtroLeads(f){ LEADS_FILTRO=f; marcarFiltro(); renderLeads(false); }
+function marcarFiltro(){
+  ['todos','israel','saomiguel','landing'].forEach(function(k){
+    var bot=document.getElementById('fl-'+k); if(!bot) return;
+    var ativo = (LEADS_FILTRO==='todos' && k==='todos')
+              || (LEADS_FILTRO==='exp_israel' && k==='israel')
+              || (LEADS_FILTRO==='exp_saomiguel' && k==='saomiguel')
+              || (LEADS_FILTRO==='landing' && k==='landing');
+    bot.style.background = ativo ? 'var(--ouro-bg)' : 'transparent';
+    bot.style.color = ativo ? '#854F0B' : 'var(--ouro)';
+    bot.style.borderColor = ativo ? 'transparent' : 'var(--linha)';
+  });
+}
+function leadsFiltrados(){
+  if(LEADS_FILTRO==='todos') return LEADS;
+  return LEADS.filter(function(l){ return parseOrigem(l.origem).tag === LEADS_FILTRO; });
+}
+function renderLeads(demo){
+  var el=document.getElementById('lista-leads');
+  var lista=leadsFiltrados();
+  if(!lista.length){ el.innerHTML='<p class="vazio">Nenhum lead nessa categoria.</p>'; return; }
+  el.innerHTML = '<div class="card" style="padding:0">'
+    + '<div style="display:grid; grid-template-columns:1fr 1.4fr 1fr auto; gap:0; padding:12px 16px; border-bottom:1px solid var(--linha); font-size:11px; letter-spacing:.06em; color:var(--suave); text-transform:uppercase">'
+    +   '<div>Categoria</div><div>Nome · contato</div><div>E-mail</div><div>Quando</div>'
+    + '</div>'
+    + lista.map(function(l){
+        var p=parseOrigem(l.origem);
+        var quando = (l.criado_em||'').slice(0,10);
+        return '<div style="display:grid; grid-template-columns:1fr 1.4fr 1fr auto; gap:0; padding:12px 16px; border-bottom:1px solid var(--linha); font-size:13px; align-items:center">'
+          + '<div><span class="tag">'+esc(rotuloOrigem(p.tag))+'</span></div>'
+          + '<div>'+(p.nome?'<b style="font-weight:500">'+esc(p.nome)+'</b>':'<span style="color:var(--suave)">—</span>')+(p.tel?'<div style="font-size:12px;color:var(--suave)">'+esc(p.tel)+'</div>':'')+'</div>'
+          + '<div style="color:var(--suave); font-size:12px; word-break:break-all">'+esc(l.email)+'</div>'
+          + '<div style="color:var(--suave); font-size:12px; text-align:right">'+esc(quando)+'</div>'
+        + '</div>';
+      }).join('')
+    + '</div>'
+    + (demo?'<p class="demo">Dados de demonstração (backend não conectado).</p>':'');
+}
+function exportarLeadsCSV(){
+  var lista=leadsFiltrados(); if(!lista.length){ alert('Nenhum lead para exportar.'); return; }
+  var linhas=[['categoria','nome','telefone','email','data']];
+  lista.forEach(function(l){ var p=parseOrigem(l.origem); linhas.push([rotuloOrigem(p.tag), p.nome, p.tel, l.email, (l.criado_em||'').slice(0,10)]); });
+  var csv = linhas.map(function(r){ return r.map(function(c){ var s=String(c||''); return /[",\n;]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }).join(','); }).join('\n');
+  var blob=new Blob([csv],{type:'text/csv;charset=utf-8'}); var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download='sob-as-asas-leads.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
 }
 
 if(KEY) entrar();
