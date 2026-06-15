@@ -1,0 +1,66 @@
+{
+  "_meta": {
+    "fonte_factual": "Tradição cabalística dos 72 nomes (Shem HaMephorash). Ordem, nomes, coros, regências e salmos correspondem ao sistema tradicional ensinado por Monica Buonfiglio.",
+    "fonte_salmos": "Almeida Revista e Corrigida (domínio público no Brasil). Versículo principal de cada anjo (1 versículo por ficha).",
+    "invocacoes": "Textos originais escritos para o app Sob as Asas — propriedade da LVSV Ventures. Não são reprodução de obras autorais.",
+    "horarios": "Cada anjo rege uma faixa de 20 minutos do dia (1440 min ÷ 72 = 20). Faixa do anjo n: [(n-1)×20 ... n×20] minutos após 00:00.",
+    "versao": "0.1 — fichas-modelo (Vehuiah, Iah-Hel, Mumiah)"
+  },
+
+  "1": {
+    "n": 1,
+    "nome": "Vehuiah",
+    "coro": "Serafins",
+    "principe": "Metatron",
+    "regencia_dias": ["20-21 mar", "1 jun", "13 ago", "25 out", "6 jan"],
+    "horario": "00:00 — 00:20",
+    "elemento": "Fogo",
+    "sefira": "Kether",
+    "salmo_ref": "Salmo 3, 3",
+    "salmo_texto": "Mas tu, Senhor, és um escudo para mim, a minha glória, e o que exalta a minha cabeça.",
+    "dom_principal": "Vontade e força para iniciar",
+    "dons_secundarios": ["Coragem", "Entusiasmo", "Iniciativa", "Renovação"],
+    "atributos": "Vehuiah é o primeiro dos anjos — o anjo dos começos. É invocado por quem precisa de um empurrão para iniciar projetos, romper a inércia e abrir caminhos. Traz energia, vontade e clareza de propósito.",
+    "quando_invocar": "No início de qualquer empreendimento, quando você sente que precisa de força para começar algo novo, ou quando uma decisão importante precisa ser tomada.",
+    "invocacao": "Vehuiah, anjo do amanhecer, abra em mim a vontade que move montanhas. Que eu encontre coragem para começar o que precisa começar, força para sustentar o primeiro passo, e fé para confiar no caminho que se desenha. Amém.",
+    "afirmacao": "Eu começo. Eu tenho força. Eu sou o primeiro passo do meu próprio renascer."
+  },
+
+  "62": {
+    "n": 62,
+    "nome": "Iah-Hel",
+    "coro": "Arcanjos",
+    "principe": "Miguel",
+    "regencia_dias": ["20 mai", "1 ago", "13 out", "25 dez", "8 mar"],
+    "horario": "20:20 — 20:40",
+    "elemento": "Ar",
+    "sefira": "Yesod",
+    "salmo_ref": "Salmo 119, 159",
+    "salmo_texto": "Considera quanto amo os teus preceitos; vivifica-me, ó Senhor, segundo a tua benignidade.",
+    "dom_principal": "Sabedoria e quietude",
+    "dons_secundarios": ["Discernimento", "Vida interior", "Paz mental", "Filosofia"],
+    "atributos": "Iah-Hel é o anjo do recolhimento sábio. Convida à interioridade, ao silêncio que cura, à pausa fértil. Traz quietude para mentes inquietas e clareza para quem está confuso.",
+    "quando_invocar": "Em momentos de excesso de barulho mental, quando você precisa de uma decisão lúcida, antes de meditar, ou para encontrar paz no meio da agitação.",
+    "invocacao": "Iah-Hel, anjo da quietude, abrace em mim o silêncio que ensina. Que eu saiba parar, escutar o que vem de dentro, e encontrar na pausa o sentido que a pressa esconde. Amém.",
+    "afirmacao": "Em mim há silêncio. Em mim há sabedoria. Eu escuto o que importa."
+  },
+
+  "72": {
+    "n": 72,
+    "nome": "Mumiah",
+    "coro": "Anjos",
+    "principe": "Gabriel",
+    "regencia_dias": ["18-19 mar", "11 ago", "23 out", "4 jan", "30 mai"],
+    "horario": "23:40 — 24:00",
+    "elemento": "Terra",
+    "sefira": "Malkuth",
+    "salmo_ref": "Salmo 116, 7",
+    "salmo_texto": "Volta, minha alma, para o teu repouso, pois o Senhor te fez bem.",
+    "dom_principal": "Renascimento e conclusão",
+    "dons_secundarios": ["Encerramento", "Renovação cíclica", "Cura física", "Recomeço"],
+    "atributos": "Mumiah é o último dos 72 — o anjo que fecha um ciclo para que outro possa começar. Traz a graça de concluir o que precisa terminar, a coragem de soltar e a força do renascimento.",
+    "quando_invocar": "Ao encerrar um ciclo (relacionamento, trabalho, fase), quando precisa soltar algo que já cumpriu seu papel, ou em momentos de renovação profunda.",
+    "invocacao": "Mumiah, anjo do recomeço, ajuda-me a fechar com gratidão o que precisa terminar, a soltar com leveza o que já cumpriu seu tempo, e a abrir o coração para o novo que se aproxima. Amém.",
+    "afirmacao": "Eu encerro com gratidão. Eu solto com paz. Eu renasço a cada novo amanhecer."
+  }
+}
