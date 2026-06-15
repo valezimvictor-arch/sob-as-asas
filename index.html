@@ -105,14 +105,13 @@
     </p>
     <div style="width:100%; max-width:320px; margin-top:40px">
       <button class="btn-ouro" onclick="goCadastro()">Revelar meu anjo da guarda</button>
-      <button class="btn-ghost" style="margin-top:12px" onclick="entrarSantuario()">Já tenho conta</button>
+      <button class="btn-ghost" style="margin-top:12px" onclick="entrarSantuario()">Entrar com meu e-mail</button>
     </div>
   </div>
 </section>
 
 <!-- ░░ 2. CADASTRO ░░ -->
 <section id="s-cadastro" class="screen">
-  <div class="halo" style="top:-110px; width:220px; height:220px"></div>
   <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column">
     <button onclick="show('s-welcome')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
     <div style="margin-top:14px">
@@ -522,7 +521,7 @@
   <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; overflow-y:auto">
     <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
     <div style="text-align:center">
-      <h2 class="serif" style="font-size:26px; margin:6px 0 0">Magia Branca</h2>
+      <h2 class="serif" style="font-size:26px; margin:6px 0 0">Magia dos Anjos</h2>
       <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 0">7 dias, 7 velas — uma jornada de pedidos</p>
     </div>
 
@@ -1316,7 +1315,7 @@ function openMagia(){
     renderMbDots(8); desenharVelaMb(7,true);
     document.getElementById('mb-dia-label').textContent='Jornada concluída';
     document.getElementById('mb-tema').textContent='7 velas acesas 🕊️';
-    mbMsg('Você concluiu os 7 dias da Magia Branca! Que seus pedidos floresçam.', true);
+    mbMsg('Você concluiu os 7 dias da Magia dos Anjos! Que seus pedidos floresçam.', true);
     show('s-magia'); return;
   }
   if(s.feitoHoje){
@@ -1352,7 +1351,7 @@ function acenderMagia(){
   }catch(e){}
   var prox=s.dia+1;
   renderMbDots(prox);
-  if(prox>7){ mbMsg('Vela do Dia 7 acesa. Você concluiu a Magia Branca! 🕊️', true); }
+  if(prox>7){ mbMsg('Vela do Dia 7 acesa. Você concluiu a Magia dos Anjos! 🕊️', true); }
   else { mbMsg('Vela do Dia '+s.dia+' acesa. 🕯️ Volte amanhã para o Dia '+prox+' — não pule, ou a magia recomeça.', false); }
 }
 function recomecarMagia(){
@@ -1558,9 +1557,9 @@ var PRATICAS_INFO={
     icon:'🕯️', titulo:'Magia dos Anjos',
     sub:'Uma jornada de 7 dias com seu anjo',
     descricao:'A cada dia você acende uma vela de uma cor diferente — cada cor representa um pedido. Volte todos os dias por 7 dias seguidos. Se faltar um dia, a magia recomeça.',
-    velas:'Branca · Verde · Amarela · Azul · Rosa · Vermelha · Lilás',
+    velas:'Branca (Paz) · Verde (Saúde) · Amarela (Prosperidade) · Azul (Trabalho) · Rosa (Amor) · Vermelha (Emergência) · Lilás (Transmutação)',
     botao:'Começar a Magia',
-    abrir:function(){ openVela(); }
+    abrir:function(){ openMagia(); }
   },
   correio:{
     icon:'💌', titulo:'Correio Angelical',
