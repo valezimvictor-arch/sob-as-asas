@@ -951,16 +951,50 @@
 <section id="s-socorro" class="screen" style="background:var(--ouro-bg)">
   <div class="halo" style="top:40px; width:320px; height:320px"></div>
   <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center">
-    <div style="font-size:40px">🕊️</div>
-    <p class="serif-soft" style="font-size:16px; color:var(--ouro); margin:10px 0 0">Seu anjo está com você</p>
+    <div class="emoji-emocao" style="font-size:40px">🕊️</div>
+    <p class="serif-soft rotulo-emocao" style="font-size:16px; color:var(--ouro); margin:10px 0 0">Seu anjo está com você</p>
     <p id="socorro-msg" class="serif" style="font-size:25px; color:var(--tinta); line-height:1.45; margin:18px 0 0; max-width:330px"></p>
     <div style="width:100%; max-width:320px; margin-top:36px; display:flex; flex-direction:column; gap:10px">
       <button class="btn-ghost" onclick="novaMensagemAnjo()">Outra mensagem</button>
+      <button class="btn-ghost" onclick="abrirRespiracao()">🌬️ Respirar com meu anjo</button>
       <button class="btn-ghost" onclick="openVelinha()">🕯️ Acender uma vela</button>
       <button class="btn-ouro" onclick="show('s-home')">Estou em paz 🙏</button>
     </div>
   </div>
 </section>
+
+<!-- modal: seletor emocional (Preciso do meu anjo v2) -->
+<div id="modal-emocao" style="position:fixed; inset:0; z-index:60; display:none; background:rgba(44,44,42,.55)">
+  <div style="position:absolute; left:0; right:0; bottom:0; background:var(--branco); border-radius:26px 26px 0 0; padding:26px 24px max(env(safe-area-inset-bottom),24px)">
+    <div style="text-align:center">
+      <div style="font-size:30px">🕊️</div>
+      <h3 class="serif" style="font-size:22px; margin:6px 0 0; font-weight:500">Como você está se sentindo agora?</h3>
+      <p class="serif-soft" style="font-size:14px; color:var(--ouro); margin:4px 0 0">Seu anjo escuta sua emoção primeiro</p>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:18px">
+      <button class="btn-ghost" onclick="escolherEmocao('ansioso')" style="padding:18px 10px; flex-direction:column; line-height:1.3"><div style="font-size:26px">🌬️</div><div style="font-size:14px; margin-top:6px">Ansioso(a)</div></button>
+      <button class="btn-ghost" onclick="escolherEmocao('triste')" style="padding:18px 10px; flex-direction:column; line-height:1.3"><div style="font-size:26px">🤍</div><div style="font-size:14px; margin-top:6px">Triste</div></button>
+      <button class="btn-ghost" onclick="escolherEmocao('duvida')" style="padding:18px 10px; flex-direction:column; line-height:1.3"><div style="font-size:26px">🧭</div><div style="font-size:14px; margin-top:6px">Em dúvida</div></button>
+      <button class="btn-ghost" onclick="escolherEmocao('grato')" style="padding:18px 10px; flex-direction:column; line-height:1.3"><div style="font-size:26px">✨</div><div style="font-size:14px; margin-top:6px">Grato(a)</div></button>
+    </div>
+    <button onclick="fecharEmocao()" style="background:none; border:none; color:var(--tinta-suave); font-size:14px; width:100%; margin-top:14px">Fechar</button>
+  </div>
+</div>
+
+<!-- modal: respiração guiada 4-7-8 -->
+<div id="modal-resp" style="position:fixed; inset:0; z-index:70; display:none; background:rgba(20,18,14,.92); align-items:center; justify-content:center">
+  <div style="position:relative; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#FBFAF7; text-align:center">
+    <p id="resp-ciclo" class="serif-soft" style="font-size:13px; color:#EF9F27; letter-spacing:.2em; text-transform:uppercase; margin:0 0 32px">1 de 4</p>
+    <div style="position:relative; width:260px; height:260px; display:flex; align-items:center; justify-content:center">
+      <div id="resp-bolha" style="position:absolute; inset:0; border-radius:50%; transform:scale(0.85); background:radial-gradient(circle, #5F5E5Aaa 0%, #5F5E5A33 60%, transparent 80%)"></div>
+      <div style="position:relative; z-index:1">
+        <div id="resp-fase" class="serif" style="font-size:30px; font-weight:400">Inspire</div>
+        <div id="resp-sub" class="serif-soft" style="font-size:14px; color:#EF9F27; margin-top:4px">4s</div>
+      </div>
+    </div>
+    <button onclick="fecharRespiracao()" style="margin-top:48px; background:none; border:1px solid rgba(251,250,247,.3); color:#FBFAF7; border-radius:12px; padding:10px 22px; font:inherit; font-size:14px">Encerrar</button>
+  </div>
+</div>
 
 <!-- modal: descrição da prática (Magia / Correio / Novena / Gratidão) -->
 <div id="modal-pratica" style="position:fixed; inset:0; z-index:60; display:none; background:rgba(44,44,42,.55)">
@@ -1843,23 +1877,122 @@ function chime(){ try{
 }catch(e){} }
 
 // init
-// ── Preciso do meu anjo (acolhimento instantâneo) ──
-var MSGS_ANJO=[
-  'Respire fundo. Você não está só — seu anjo está ao seu lado neste exato instante.',
-  'Tudo passa. A luz que te guarda é maior do que qualquer tempestade.',
-  'Você é mais forte do que imagina, e nunca esteve desamparado.',
-  'Acalme o coração. Você está sob as asas: protegido e amado.',
-  'Confie. O que parece escuro agora está sendo cuidado por mãos invisíveis.',
-  'Você merece paz. Permita-se receber o cuidado do seu anjo agora.',
-  'Um passo de cada vez. Seu anjo caminha junto, mesmo no silêncio.',
-  'Solte o peso. Há amparo para você — hoje e sempre.',
-  'Coragem: a proteção que te acompanha nunca dorme.',
-  'Você é guardado com ternura. Respire e sinta-se acolhido.',
-  'No meio do caos, existe um cantinho de calma só seu. Seu anjo o guarda.',
-  'Você já superou dias difíceis antes. Não está sozinho nesse também.'
+// ── Preciso do meu anjo v2 (seletor emocional + mensagens curadas + respiração guiada) ──
+var MSGS_POR_EMOCAO = {
+  ansioso: {
+    rotulo:'Ansioso(a)', emoji:'🌬️', subtitulo:'Vamos desacelerar juntos',
+    msgs:[
+      'Pare. Sinta seus pés no chão. Seu anjo está respirando com você agora.',
+      'A ansiedade é uma onda — ela cresce, quebra e passa. Você é a praia, não a onda.',
+      'Tudo o que você precisa para os próximos cinco minutos, você já tem. Confie.',
+      'Seu anjo sussurra: "Eu cuido. Você só precisa estar aqui, agora."',
+      'Solta os ombros. Solta a mandíbula. Você está em segurança sob as asas.',
+      'O futuro que te assusta é apenas pensamento. O presente que te guarda é real.'
+    ]
+  },
+  triste: {
+    rotulo:'Triste', emoji:'🤍', subtitulo:'Tem espaço para sua dor aqui',
+    msgs:[
+      'Chorar é orar com o corpo. Seu anjo recolhe cada lágrima como se fosse ouro.',
+      'A tristeza não é fraqueza — é o coração lembrando do que importa.',
+      'Você não precisa estar bem agora. Só precisa estar — e isso já basta.',
+      'Há um amparo invisível segurando você, mesmo quando parece que nada segura.',
+      'Esse vazio que você sente vai se encher de luz no tempo certo. Espere com ternura.',
+      'Você é amado(a) por uma presença que nunca vai embora. Mesmo agora. Especialmente agora.'
+    ]
+  },
+  duvida: {
+    rotulo:'Em dúvida', emoji:'🧭', subtitulo:'Sua intuição é a voz do seu anjo',
+    msgs:[
+      'Quando a mente confunde, o coração sabe. Coloque a mão no peito e escute.',
+      'Você não precisa decidir tudo hoje. O caminho se mostra quando você dá o primeiro passo.',
+      'Peça um sinal ao seu anjo agora — e fique atento(a) nas próximas 24 horas.',
+      'Seu anjo não decide por você. Ele ilumina as opções para que você escolha em paz.',
+      'A dúvida é o convite para uma pausa. Respire antes de qualquer movimento.',
+      'A resposta que você procura já existe dentro de você. Silêncio. Escute.'
+    ]
+  },
+  grato: {
+    rotulo:'Grato(a)', emoji:'✨', subtitulo:'A gratidão é a oração mais alta',
+    msgs:[
+      'Sua gratidão sobe como incenso e perfuma o céu. Seu anjo sorri agora.',
+      'Quem agradece, multiplica. O que você reconhece, se expande.',
+      'Esse instante de gratidão é uma semente — vai florescer onde menos espera.',
+      'Você está conectado(a) com a Fonte agora mesmo. Permaneça nessa frequência.',
+      'O céu inteiro celebra com você. Receba esse abraço invisível.',
+      'A gratidão é a chave que abre a próxima porta. Continue agradecendo.'
+    ]
+  }
+};
+var _emocaoAtual = null;
+
+function precisoAnjo(){
+  // abre o seletor emocional
+  document.getElementById('modal-emocao').style.display='block';
+  chime();
+}
+function fecharEmocao(){ document.getElementById('modal-emocao').style.display='none'; }
+function escolherEmocao(k){
+  _emocaoAtual = k;
+  fecharEmocao();
+  var info = MSGS_POR_EMOCAO[k];
+  document.querySelector('#s-socorro .emoji-emocao').textContent = info.emoji;
+  document.querySelector('#s-socorro .rotulo-emocao').textContent = info.subtitulo;
+  novaMensagemAnjo();
+  show('s-socorro');
+}
+function novaMensagemAnjo(){
+  var pool = (_emocaoAtual && MSGS_POR_EMOCAO[_emocaoAtual]) ? MSGS_POR_EMOCAO[_emocaoAtual].msgs
+    : MSGS_POR_EMOCAO.ansioso.msgs;
+  document.getElementById('socorro-msg').textContent = pool[Math.floor(Math.random()*pool.length)];
+  buzz();
+}
+
+// ── Respiração guiada (4-7-8) com visual + voz interna ──
+var _resp={timer:null, fase:0, ciclo:0, total:4};
+var RESP_FASES=[
+  {t:'Inspire', d:4, scale:1.4, cor:'#EF9F27'},
+  {t:'Segure',  d:7, scale:1.4, cor:'#F6C868'},
+  {t:'Solte',   d:8, scale:0.85, cor:'#BA7517'},
+  {t:'Pausa',   d:2, scale:0.85, cor:'#5F5E5A'}
 ];
-function novaMensagemAnjo(){ document.getElementById('socorro-msg').textContent = MSGS_ANJO[Math.floor(Math.random()*MSGS_ANJO.length)]; buzz(); }
-function precisoAnjo(){ novaMensagemAnjo(); show('s-socorro'); chime(); }
+function abrirRespiracao(){
+  _resp.ciclo=0; _resp.fase=0;
+  document.getElementById('modal-resp').style.display='flex';
+  document.getElementById('resp-ciclo').textContent = '1 de '+_resp.total;
+  proximaFaseResp(true);
+  harpaStart(); // mesma harpa baixinha do Salmo
+}
+function fecharRespiracao(){
+  if(_resp.timer){ clearTimeout(_resp.timer); _resp.timer=null; }
+  document.getElementById('modal-resp').style.display='none';
+  harpaStop();
+}
+function proximaFaseResp(primeiro){
+  if(!primeiro){
+    _resp.fase++;
+    if(_resp.fase>=RESP_FASES.length){
+      _resp.fase=0; _resp.ciclo++;
+      if(_resp.ciclo>=_resp.total){
+        document.getElementById('resp-fase').textContent='✨';
+        document.getElementById('resp-sub').textContent='Você está sob as asas';
+        chime();
+        _resp.timer=setTimeout(fecharRespiracao, 2400);
+        return;
+      }
+      document.getElementById('resp-ciclo').textContent=(_resp.ciclo+1)+' de '+_resp.total;
+    }
+  }
+  var f=RESP_FASES[_resp.fase];
+  var bolha=document.getElementById('resp-bolha');
+  bolha.style.transition='transform '+f.d+'s ease-in-out, background '+f.d+'s ease';
+  bolha.style.transform='scale('+f.scale+')';
+  bolha.style.background='radial-gradient(circle, '+f.cor+'aa 0%, '+f.cor+'33 60%, transparent 80%)';
+  document.getElementById('resp-fase').textContent=f.t;
+  document.getElementById('resp-sub').textContent=f.d+'s';
+  buzz();
+  _resp.timer=setTimeout(proximaFaseResp, f.d*1000);
+}
 
 // ── Modal explicativo das práticas ──
 var PRATICAS_INFO={

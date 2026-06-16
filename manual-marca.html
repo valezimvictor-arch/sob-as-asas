@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Manual de Marca — Sob as Asas</title>
+<meta name="description" content="Manual de Marca do Sob as Asas — identidade visual, voz, tipografia e gabaritos. Uso interno LVSV Ventures." />
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700" rel="stylesheet" />
+<style>
+  :root{
+    --branco:#FBFAF7; --puro:#fff;
+    --ouro:#BA7517; --ouro-claro:#EF9F27; --ouro-bg:#FAF3E4; --ouro-escuro:#7A4D0E;
+    --celeste:#378ADD; --celeste-bg:#EAF2FB;
+    --tinta:#2C2C2A; --tinta-suave:#5F5E5A;
+    --linha:rgba(186,117,23,.16);
+  }
+  *{box-sizing:border-box}
+  html,body{ margin:0; padding:0; }
+  body{ background:var(--branco); color:var(--tinta); font-family:'Manrope',system-ui,sans-serif; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .serif{ font-family:'Playfair Display',serif; }
+  .serif-soft{ font-family:'Cormorant Garamond',serif; }
+  .wrap{ max-width:960px; margin:0 auto; padding:60px 28px 100px; }
+
+  /* Capa */
+  .capa{ position:relative; text-align:center; padding:80px 24px 60px; border-radius:28px;
+    background:radial-gradient(circle at 50% 0%, rgba(239,159,39,.18), transparent 70%), linear-gradient(180deg, #FFF9EC 0%, var(--branco) 100%);
+    border:1px solid var(--linha); overflow:hidden; }
+  .capa .feather{ font-size:46px; color:var(--ouro-claro); }
+  .capa h1{ font-size:clamp(40px,7vw,64px); font-weight:400; margin:14px 0 6px; letter-spacing:-.01em; }
+  .capa .sub{ font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--ouro); margin:0; }
+  .capa .meta{ font-size:13px; color:var(--tinta-suave); margin-top:34px; letter-spacing:.18em; text-transform:uppercase; }
+
+  /* Seções */
+  section{ margin-top:80px; }
+  .sec-num{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; color:var(--ouro); letter-spacing:.12em; text-transform:uppercase; margin:0 0 4px; }
+  h2{ font-family:'Playfair Display',serif; font-size:34px; font-weight:400; margin:0 0 14px; letter-spacing:-.005em; }
+  h3{ font-family:'Playfair Display',serif; font-size:22px; font-weight:500; margin:28px 0 8px; }
+  h4{ font-family:'Manrope',sans-serif; font-size:13px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--tinta-suave); margin:22px 0 8px; }
+  p{ font-size:15.5px; color:var(--tinta); }
+  .lead{ font-family:'Cormorant Garamond',serif; font-size:21px; line-height:1.55; color:var(--tinta); max-width:660px; }
+  hr.fino{ border:none; border-top:1px solid var(--linha); margin:60px 0 0; }
+  ul{ padding-left:18px; } li{ margin:4px 0; font-size:15.5px; }
+
+  /* Logo */
+  .logo-display{ background:var(--branco); border:1px solid var(--linha); border-radius:22px; padding:50px 24px; text-align:center; margin:18px 0; }
+  .logo-display.preto{ background:var(--tinta); color:var(--branco); }
+  .logo-display.ouro{ background:var(--ouro-bg); }
+  .logo-mark{ font-size:46px; color:var(--ouro-claro); }
+  .logo-mark.invertido{ color:#F6C868; }
+  .logo-nome{ font-family:'Playfair Display',serif; font-size:36px; font-weight:400; margin:8px 0 4px; }
+  .logo-tagline{ font-family:'Cormorant Garamond',serif; font-size:18px; color:var(--ouro); }
+  .logo-tagline.invertido{ color:#F6C868; }
+  .logos-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px; }
+  @media(max-width:640px){ .logos-grid{ grid-template-columns:1fr; } }
+
+  /* Paleta */
+  .paleta{ display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:14px; margin:18px 0; }
+  .cor{ border-radius:16px; overflow:hidden; border:1px solid var(--linha); background:var(--puro); }
+  .cor .amostra{ height:100px; }
+  .cor .info{ padding:12px 14px; }
+  .cor .nome{ font-weight:600; font-size:14px; color:var(--tinta); }
+  .cor .hex{ font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; color:var(--tinta-suave); margin-top:2px; }
+  .cor .uso{ font-size:11.5px; color:var(--tinta-suave); margin-top:6px; line-height:1.5; }
+
+  /* Tipografia */
+  .tipo-bloco{ border:1px solid var(--linha); border-radius:18px; padding:24px 22px; margin:14px 0; background:var(--puro); }
+  .tipo-bloco .ex-display{ font-family:'Playfair Display',serif; font-size:48px; line-height:1.1; font-weight:400; margin:0; color:var(--tinta); }
+  .tipo-bloco .ex-soft{ font-family:'Cormorant Garamond',serif; font-size:32px; font-style:italic; color:var(--ouro); margin:6px 0 0; }
+  .tipo-bloco .ex-body{ font-family:'Manrope',sans-serif; font-size:16px; color:var(--tinta); margin:10px 0 0; }
+  .tipo-bloco .label{ font-family:'Manrope',sans-serif; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--tinta-suave); margin-top:14px; }
+
+  /* Voz/Tom — par de cartões "diga / não diga" */
+  .par{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:14px 0; }
+  @media(max-width:640px){ .par{ grid-template-columns:1fr; } }
+  .card{ border:1px solid var(--linha); border-radius:16px; padding:18px 20px; background:var(--puro); }
+  .card.bom{ border-color:rgba(46,135,86,.22); background:#F2F8F4; }
+  .card.evite{ border-color:rgba(192,57,43,.18); background:#FBF2F1; }
+  .card h5{ font-family:'Manrope',sans-serif; font-size:12px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; margin:0 0 10px; }
+  .card.bom h5{ color:#2E8756; } .card.evite h5{ color:#C0392B; }
+  .card .ex{ font-family:'Cormorant Garamond',serif; font-size:18px; line-height:1.5; color:var(--tinta); margin:0; }
+
+  /* Princípios em grade */
+  .princ{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:14px; margin:14px 0; }
+  .princ .it{ border:1px solid var(--linha); border-radius:16px; padding:18px 20px; background:var(--puro); }
+  .princ .ic{ font-size:24px; color:var(--ouro-claro); }
+  .princ .t{ font-family:'Playfair Display',serif; font-size:18px; margin:6px 0 4px; }
+  .princ .d{ font-size:13.5px; color:var(--tinta-suave); line-height:1.55; }
+
+  /* Gabarito post Instagram */
+  .post-mock{ width:280px; aspect-ratio:1; border-radius:20px; padding:28px 22px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 16px 40px rgba(122,77,14,.12); }
+  .post-mock.ouro{ background:linear-gradient(180deg, #FFF7E6 0%, #FAEBC8 100%); color:var(--tinta); }
+  .post-mock.escuro{ background:linear-gradient(160deg, #2C2C2A 0%, #1A1916 100%); color:#FBFAF7; }
+  .post-mock.celeste{ background:linear-gradient(180deg, #EAF2FB 0%, #C9DDF1 100%); color:#1B3A5F; }
+  .post-mock .pm-tag{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:var(--ouro); letter-spacing:.05em; }
+  .post-mock.escuro .pm-tag{ color:#EF9F27; }
+  .post-mock.celeste .pm-tag{ color:#1E5A99; }
+  .post-mock .pm-frase{ font-family:'Playfair Display',serif; font-size:23px; line-height:1.2; font-weight:500; margin:0; }
+  .post-mock .pm-assin{ font-family:'Cormorant Garamond',serif; font-size:13px; opacity:.75; letter-spacing:.04em; }
+  .posts-grid{ display:flex; gap:22px; flex-wrap:wrap; margin:14px 0; }
+
+  /* Caixinhas de regra */
+  .regra{ background:var(--ouro-bg); border-radius:14px; padding:16px 18px; margin:14px 0; color:var(--ouro-escuro); font-size:14px; line-height:1.6; }
+  .regra strong{ color:var(--ouro); }
+
+  /* Rodapé */
+  footer{ margin-top:80px; padding-top:36px; border-top:1px solid var(--linha); font-size:13px; color:var(--tinta-suave); text-align:center; }
+  footer a{ color:var(--ouro); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ░ Capa ░ -->
+  <div class="capa">
+    <div class="feather">✦</div>
+    <h1 class="serif">Sob as Asas</h1>
+    <p class="sub">Manual de Marca</p>
+    <p class="meta">Uso interno · LVSV Ventures · 2026</p>
+  </div>
+
+  <!-- ░ 1. Essência ░ -->
+  <section>
+    <p class="sec-num">01 — Essência</p>
+    <h2>Quem somos</h2>
+    <p class="lead">Sob as Asas é a prática diária dos anjos da guarda. Um lugar onde a tradição cabalística dos 72 nomes encontra a vida moderna — guiada por Monica Buonfiglio, a maior referência de anjos do Brasil.</p>
+
+    <h3>Propósito</h3>
+    <p>Devolver à pessoa comum o conforto de saber que <em>alguém invisível cuida dela</em> — todos os dias, em momentos pequenos e grandes.</p>
+
+    <h3>Princípios</h3>
+    <div class="princ">
+      <div class="it"><div class="ic">🕊️</div><div class="t">Acolhimento antes de tudo</div><div class="d">O usuário chega frágil. A primeira função da marca é amparar — não impressionar, não vender.</div></div>
+      <div class="it"><div class="ic">📜</div><div class="t">Tradição com elegância</div><div class="d">A cabala dos 72 anjos é antiga e séria. Tratamos com a beleza que ela merece — sem folclorizar.</div></div>
+      <div class="it"><div class="ic">✨</div><div class="t">Mistério, nunca cafonice</div><div class="d">Sutil. Dourado discreto. Espaço em branco. Nada de glitter, nada de "Deus é bom".</div></div>
+      <div class="it"><div class="ic">🌿</div><div class="t">Simples, nunca raso</div><div class="d">Frases curtas e profundas. Cada palavra carrega peso. Se sobrar, corta.</div></div>
+      <div class="it"><div class="ic">🤍</div><div class="t">Feminino e ancestral</div><div class="d">Monica é a voz: mãe, sábia, sacerdotisa. Nossa marca respira a mesma temperatura.</div></div>
+      <div class="it"><div class="ic">⚖️</div><div class="t">Espiritual, não religioso</div><div class="d">Inclusivo a todas as fés. Nunca dogmático. Nunca prescrevemos crença, oferecemos prática.</div></div>
+    </div>
+  </section>
+
+  <!-- ░ 2. Logo ░ -->
+  <section>
+    <p class="sec-num">02 — Logo</p>
+    <h2>Marca gráfica</h2>
+    <p>A marca combina o símbolo <strong>✦</strong> (estrela de 4 pontas, simbolizando luz e direção espiritual) com o nome em <strong>Playfair Display</strong>. Pode ser usada com ou sem tagline.</p>
+
+    <div class="logo-display">
+      <div class="logo-mark">✦</div>
+      <div class="logo-nome serif">Sob as Asas</div>
+      <div class="logo-tagline">por Monica Buonfiglio</div>
+    </div>
+
+    <div class="logos-grid">
+      <div class="logo-display ouro">
+        <div class="logo-mark">✦</div>
+        <div class="logo-nome serif">Sob as Asas</div>
+      </div>
+      <div class="logo-display preto">
+        <div class="logo-mark invertido">✦</div>
+        <div class="logo-nome serif">Sob as Asas</div>
+        <div class="logo-tagline invertido">por Monica Buonfiglio</div>
+      </div>
+    </div>
+
+    <h4>Regras de uso</h4>
+    <ul>
+      <li>Área de respiro mínima: igual à altura do <strong>✦</strong> em todos os lados.</li>
+      <li>Tamanho mínimo digital: 80px de largura. Impresso: 18mm.</li>
+      <li>Nunca distorça, gire ou aplique sombra na marca.</li>
+      <li>Nunca substitua a tipografia por outra fonte.</li>
+      <li>Sobre fundos coloridos: prefira a versão ouro sobre claro, ou ouro claro sobre escuro.</li>
+    </ul>
+
+    <div class="regra"><strong>Ícone do app (PWA):</strong> asa estilizada com auréola em gradiente dourado, sobre fundo creme. Arquivo: <code>asa-icon.svg</code>.</div>
+  </section>
+
+  <!-- ░ 3. Paleta ░ -->
+  <section>
+    <p class="sec-num">03 — Paleta</p>
+    <h2>Cores</h2>
+    <p>Uma paleta enxuta — ouro como protagonista, branco-creme como espaço, celeste como acento de confiança.</p>
+
+    <h4>Primárias</h4>
+    <div class="paleta">
+      <div class="cor"><div class="amostra" style="background:#BA7517"></div><div class="info"><div class="nome">Ouro</div><div class="hex">#BA7517</div><div class="uso">Cor principal. Botões, links, destaques tipográficos.</div></div></div>
+      <div class="cor"><div class="amostra" style="background:#EF9F27"></div><div class="info"><div class="nome">Ouro Claro</div><div class="hex">#EF9F27</div><div class="uso">Acentos luminosos, halos, ícones de luz.</div></div></div>
+      <div class="cor"><div class="amostra" style="background:#FAF3E4; border:1px solid var(--linha)"></div><div class="info"><div class="nome">Ouro Suave</div><div class="hex">#FAF3E4</div><div class="uso">Fundos de cartões, destaques delicados.</div></div></div>
+      <div class="cor"><div class="amostra" style="background:#FBFAF7; border:1px solid var(--linha)"></div><div class="info"><div class="nome">Branco Sagrado</div><div class="hex">#FBFAF7</div><div class="uso">Fundo principal de todas as telas.</div></div></div>
+    </div>
+
+    <h4>Secundárias</h4>
+    <div class="paleta">
+      <div class="cor"><div class="amostra" style="background:#2C2C2A"></div><div class="info"><div class="nome">Tinta</div><div class="hex">#2C2C2A</div><div class="uso">Corpo de texto, títulos.</div></div></div>
+      <div class="cor"><div class="amostra" style="background:#5F5E5A"></div><div class="info"><div class="nome">Tinta Suave</div><div class="hex">#5F5E5A</div><div class="uso">Texto secundário, legendas.</div></div></div>
+      <div class="cor"><div class="amostra" style="background:#378ADD"></div><div class="info"><div class="nome">Celeste</div><div class="hex">#378ADD</div><div class="uso">Confiança, avisos informativos.</div></div></div>
+      <div class="cor"><div class="amostra" style="background:#7A4D0E"></div><div class="info"><div class="nome">Ouro Escuro</div><div class="hex">#7A4D0E</div><div class="uso">Hover de botões, contraste sobre ouro.</div></div></div>
+    </div>
+
+    <div class="regra"><strong>Proporção:</strong> ~70% branco-creme · ~20% ouro/dourado · ~8% tinta · ~2% celeste. Nunca inverta. O dourado é tempero, não fundo.</div>
+  </section>
+
+  <!-- ░ 4. Tipografia ░ -->
+  <section>
+    <p class="sec-num">04 — Tipografia</p>
+    <h2>Fontes</h2>
+    <p>Três famílias, com papéis claros: <strong>Playfair Display</strong> para títulos e momentos cerimoniais, <strong>Cormorant Garamond</strong> para sussurros poéticos e legendas em itálico, <strong>Manrope</strong> para tudo o que é interface.</p>
+
+    <div class="tipo-bloco">
+      <p class="ex-display">Você está sob as asas</p>
+      <p class="label">Playfair Display · Regular 400 / Medium 500 · Títulos, frases-pilar, telas cerimoniais</p>
+    </div>
+
+    <div class="tipo-bloco">
+      <p class="ex-soft">por Monica Buonfiglio</p>
+      <p class="label">Cormorant Garamond · Italic 400 / 500 · Subtítulos, frases curtas, atributos do anjo</p>
+    </div>
+
+    <div class="tipo-bloco">
+      <p class="ex-body">Acenda uma vela e diga o nome do seu anjo. Ele responde no silêncio entre uma respiração e outra.</p>
+      <p class="label">Manrope · Regular 400 / Semibold 600 · Corpo, botões, legendas, interface</p>
+    </div>
+
+    <h4>Escala recomendada</h4>
+    <ul>
+      <li><strong>Display</strong> (Playfair): 38–60px · line-height 1.05–1.15</li>
+      <li><strong>Título</strong> (Playfair): 24–30px · line-height 1.25</li>
+      <li><strong>Sub-poético</strong> (Cormorant Italic): 18–22px · cor ouro</li>
+      <li><strong>Corpo</strong> (Manrope 400): 15–16px · line-height 1.6–1.7</li>
+      <li><strong>Botão</strong> (Manrope 600): 14–16px · letter-spacing normal</li>
+      <li><strong>Caption</strong> (Manrope 500): 11–13px · letter-spacing .14em · uppercase</li>
+    </ul>
+  </section>
+
+  <!-- ░ 5. Voz e tom ░ -->
+  <section>
+    <p class="sec-num">05 — Voz e tom</p>
+    <h2>Como falamos</h2>
+    <p class="lead">Falamos como uma <em>avó sábia que também é cabalista</em>: ternura, autoridade silenciosa, frase curta, nenhum exagero. Nunca apelativo. Nunca religioso. Nunca tecnológico.</p>
+
+    <h3>Diga / Não diga</h3>
+
+    <div class="par">
+      <div class="card bom"><h5>✓ Diga</h5><p class="ex">"Você está sob as asas."</p></div>
+      <div class="card evite"><h5>✗ Não diga</h5><p class="ex">"Deus está com você, fé total!"</p></div>
+    </div>
+
+    <div class="par">
+      <div class="card bom"><h5>✓ Diga</h5><p class="ex">"Seu anjo escuta. Respire."</p></div>
+      <div class="card evite"><h5>✗ Não diga</h5><p class="ex">"Conecte-se com sua espiritualidade através do nosso app inovador."</p></div>
+    </div>
+
+    <div class="par">
+      <div class="card bom"><h5>✓ Diga</h5><p class="ex">"Hoje é dia de Yeyayel — o anjo da boa reputação."</p></div>
+      <div class="card evite"><h5>✗ Não diga</h5><p class="ex">"Yeyayel é tipo seu coach espiritual da semana!"</p></div>
+    </div>
+
+    <div class="par">
+      <div class="card bom"><h5>✓ Diga</h5><p class="ex">"Acenda uma vela. Diga o nome três vezes."</p></div>
+      <div class="card evite"><h5>✗ Não diga</h5><p class="ex">"Realize agora seu ritual angelical e manifeste prosperidade!"</p></div>
+    </div>
+
+    <h3>Princípios de escrita</h3>
+    <ul>
+      <li><strong>Frase curta.</strong> Se passou de 18 palavras, corte.</li>
+      <li><strong>Verbo no imperativo gentil.</strong> "Respire", "Sinta", "Confie" — nunca "Você precisa", "É obrigatório".</li>
+      <li><strong>Nada de jargão espiritual genérico.</strong> Evite "energias", "vibrações altas", "manifestação", "Universo conspirando".</li>
+      <li><strong>Nada de jargão de tech.</strong> Evite "plataforma", "experiência", "jornada do usuário", "engajamento".</li>
+      <li><strong>Use o nome do anjo.</strong> Citar Vehuiah, Jeliel, Sitael cria intimidade e ensina a tradição.</li>
+      <li><strong>Singular, nunca plural genérico.</strong> "Você" — uma pessoa, agora. Nunca "vocês", "as pessoas".</li>
+      <li><strong>Sem exclamações.</strong> Ponto final basta. A força vem da calma, não do volume.</li>
+    </ul>
+  </section>
+
+  <!-- ░ 6. Iconografia ░ -->
+  <section>
+    <p class="sec-num">06 — Iconografia</p>
+    <h2>Símbolos da marca</h2>
+    <p>Um vocabulário visual enxuto, com símbolos universais que evocam o sagrado sem cair no religioso institucional.</p>
+    <div class="princ" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+      <div class="it" style="text-align:center"><div class="ic" style="font-size:36px">✦</div><div class="t" style="font-size:14px">Estrela</div><div class="d">Marca, luz, direção</div></div>
+      <div class="it" style="text-align:center"><div class="ic" style="font-size:36px">🕊️</div><div class="t" style="font-size:14px">Pomba</div><div class="d">Acolhimento, paz</div></div>
+      <div class="it" style="text-align:center"><div class="ic" style="font-size:36px">🪽</div><div class="t" style="font-size:14px">Asa</div><div class="d">Proteção, abrigo</div></div>
+      <div class="it" style="text-align:center"><div class="ic" style="font-size:36px">🕯️</div><div class="t" style="font-size:14px">Vela</div><div class="d">Prática, presença</div></div>
+      <div class="it" style="text-align:center"><div class="ic" style="font-size:36px">📜</div><div class="t" style="font-size:14px">Salmo</div><div class="d">Tradição, palavra</div></div>
+      <div class="it" style="text-align:center"><div class="ic" style="font-size:36px">✨</div><div class="t" style="font-size:14px">Faísca</div><div class="d">Milagre, surpresa</div></div>
+    </div>
+    <div class="regra"><strong>Não usar:</strong> cruzes, terços, mandalas indianas, símbolos zodiacais, anjinhos infantis (querubins de bochecha rosa), arco-íris, pontos coloridos.</div>
+  </section>
+
+  <!-- ░ 7. Posts Instagram ░ -->
+  <section>
+    <p class="sec-num">07 — Posts Instagram</p>
+    <h2>Gabaritos visuais</h2>
+    <p>Três modelos base. Quadrado 1080×1080. Sempre com muito ar — o silêncio em volta da palavra é parte do design.</p>
+
+    <h4>Gabarito A · Dourado clássico (mensagens do anjo do dia)</h4>
+    <div class="posts-grid">
+      <div class="post-mock ouro">
+        <p class="pm-tag">Anjo do dia · 14 a 18 de mar</p>
+        <p class="pm-frase">"Vehuiah é o anjo do começo. Hoje recomece — mesmo que apenas um pequeno gesto."</p>
+        <p class="pm-assin">— Sob as Asas</p>
+      </div>
+      <div class="post-mock ouro">
+        <p class="pm-tag">Salmo do dia</p>
+        <p class="pm-frase">"O Senhor é o meu pastor; nada me faltará."</p>
+        <p class="pm-assin">— Sl 23.1 · Sob as Asas</p>
+      </div>
+    </div>
+
+    <h4>Gabarito B · Noturno cerimonial (rituais, datas especiais, Milagre do Mês)</h4>
+    <div class="posts-grid">
+      <div class="post-mock escuro">
+        <p class="pm-tag">O Milagre do Mês · março</p>
+        <p class="pm-frase">"Conheça a história que Monica escolheu para abençoar este mês."</p>
+        <p class="pm-assin">sobasasas.com.br</p>
+      </div>
+      <div class="post-mock escuro">
+        <p class="pm-tag">Magia das velas · 7 dias</p>
+        <p class="pm-frase">"Sete velas, sete cores, sete pedidos. Comece esta semana."</p>
+        <p class="pm-assin">— Monica Buonfiglio</p>
+      </div>
+    </div>
+
+    <h4>Gabarito C · Celeste claro (acolhimento, mensagens de paz)</h4>
+    <div class="posts-grid">
+      <div class="post-mock celeste">
+        <p class="pm-tag">Para hoje</p>
+        <p class="pm-frase">"Solte os ombros. Solte a mandíbula. Você está em segurança sob as asas."</p>
+        <p class="pm-assin">— Sob as Asas</p>
+      </div>
+      <div class="post-mock celeste">
+        <p class="pm-tag">Respiração 4-7-8</p>
+        <p class="pm-frase">"Inspire 4. Segure 7. Solte 8. Seu anjo respira com você."</p>
+        <p class="pm-assin">@sobasasas</p>
+      </div>
+    </div>
+
+    <h4>Regras de composição</h4>
+    <ul>
+      <li><strong>Hierarquia:</strong> 1 frase principal grande (Playfair), 1 micro-rótulo no topo (Cormorant ouro), 1 assinatura sutil no rodapé.</li>
+      <li><strong>Margem:</strong> mínimo 80px de respiro em cada lado em arte 1080×1080.</li>
+      <li><strong>Linhas:</strong> no máximo 4 linhas de frase principal. Se passar, simplifique o texto — não diminua a fonte.</li>
+      <li><strong>Aspas:</strong> sempre curvas <span class="serif">“ ”</span>, nunca retas " ".</li>
+      <li><strong>Logo nos posts:</strong> opcional. Quando usar, posicione no rodapé central com 60% de opacidade.</li>
+      <li><strong>Carrosséis:</strong> primeiro slide = pergunta ou frase-pilar. Slides 2–N = desenvolvimento curto. Último slide = ação ("Baixe o app", "Conheça seu anjo").</li>
+    </ul>
+
+    <div class="regra"><strong>Frequência sugerida:</strong> 3–4 posts/semana. Segunda = anjo da semana. Quarta = salmo curto. Sexta = prática/ritual. Sábado ou domingo = acolhimento.</div>
+  </section>
+
+  <!-- ░ 8. Aplicações ─░ -->
+  <section>
+    <p class="sec-num">08 — Aplicações</p>
+    <h2>Onde a marca vive</h2>
+    <ul>
+      <li><strong>App PWA + iOS/Android</strong> — <a href="https://www.sobasasas.com.br">sobasasas.com.br</a></li>
+      <li><strong>Landing de lançamento</strong> — <a href="/landing.html">/landing</a></li>
+      <li><strong>Instagram</strong> — @sobasasas (em construção)</li>
+      <li><strong>E-mails transacionais</strong> — magic link, boas-vindas, confirmação de assinatura</li>
+      <li><strong>Newsletter</strong> — opcional, frequência baixa, sempre com 1 mensagem do anjo da semana</li>
+      <li><strong>Materiais da Monica</strong> — selos de coautoria em posts e vídeos dela</li>
+    </ul>
+  </section>
+
+  <!-- ░ Rodapé ░ -->
+  <footer>
+    <p>Manual de Marca <strong>Sob as Asas</strong> · v1.0 · 2026<br/>
+    LVSV Ventures Participações Ltda. · Documento interno · <a href="mailto:contato@sobasasas.com.br">contato@sobasasas.com.br</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
