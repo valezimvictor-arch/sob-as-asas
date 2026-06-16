@@ -2,7 +2,7 @@
 // Strategy: network-first para HTML (sempre fresco), cache-first para assets.
 // A cada deploy, suba o número da versão (v0.1 → v0.2...) para disparar o
 // banner "Nova versão disponível".
-const CACHE = 'sobasasas-v0.5';
+const CACHE = 'sobasasas-v0.6';
 const ASSETS = ['/manifest.json', '/asa-icon.svg'];
 
 self.addEventListener('install', e => {
@@ -47,8 +47,8 @@ self.addEventListener('push', e => {
   const title = data.title || 'Sob as Asas';
   const options = {
     body: data.body || 'Seu anjo tem uma mensagem para você.',
-    icon: '/icons/icon-192.png',
-    badge: '/icons/icon-192.png',
+    icon: '/asa-icon.svg',
+    badge: '/asa-icon.svg',
     data: { url: data.url || '/' },
   };
   e.waitUntil(self.registration.showNotification(title, options));

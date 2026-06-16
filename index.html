@@ -1077,6 +1077,8 @@ function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const el=document.getElementById(id); el.classList.add('active'); el.scrollTop=0;
   if(id==='s-home') initHome();
+  // se saiu de tela de vela, encerra o timer (progresso permanece no localStorage)
+  if(typeof CHAMA_TELAS!=='undefined' && !CHAMA_TELAS[id]) pararChamaCrescente();
   buzz();
 }
 function goCadastro(){ show('s-cadastro'); setTimeout(()=>document.getElementById('in-nome').focus(),400); }
@@ -1087,7 +1089,7 @@ function revelar(){
   const d=+document.getElementById('in-dia').value, m=+document.getElementById('in-mes').value, y=+document.getElementById('in-ano').value;
   const erro=document.getElementById('cad-erro');
   if(!nome){ erro.textContent='Como o anjo deve te chamar?'; return; }
-  if(!(d>=1&&d<=31)||!(m>=1&&m<=12)||!(y>=1900&&y<=2025)){ erro.textContent='Confira sua data de nascimento.'; return; }
+  if(!(d>=1&&d<=31)||!(m>=1&&m<=12)||!(y>=1900&&y<=new Date().getFullYear())){ erro.textContent='Confira sua data de nascimento.'; return; }
   erro.textContent='';
   window._nome=nome.split(' ')[0];
 
@@ -1306,16 +1308,31 @@ function fmtBadge(f){return `<span style="font-size:10px; letter-spacing:.04em; 
 function renderBib(){
   const el=document.getElementById('lista-bib'); if(!el) return; el.innerHTML='';
   BIB.forEach(grp=>{
-    el.insertAdjacentHTML('beforeend',`<p class="label" style="display:block; margin:14px 0 10px">${grp.colecao}</p>`);
+    var lbl=document.createElement('p'); lbl.className='label'; lbl.style.cssText='display:block; margin:14px 0 10px'; lbl.textContent=grp.colecao;
+    el.appendChild(lbl);
     grp.itens.forEach(b=>{
       const locked=b.premium && (window._plano==='free' || !window._plano);
-      const safe=b.t.replace(/'/g,'');
-      const click=locked?`openPaywall('${safe}')`:`openPlayer({titulo:'${safe}',fmt:'${b.fmt} · na voz da Monica',art:'${b.ic}',dur:'${b.m}'})`;
-      el.insertAdjacentHTML('beforeend',`<div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:14px; margin-bottom:10px; ${locked?'opacity:.9':''}" onclick="${click}">
-        <div style="width:46px;height:46px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:22px">${b.ic}</div>
-        <div style="flex:1; min-width:0"><p style="margin:0; font-weight:500">${b.t}</p>
-        <p style="margin:3px 0 0; font-size:12px; color:var(--tinta-suave)">${b.m} &nbsp; ${fmtBadge(b.fmt)}</p></div>
-        <span style="color:${locked?'var(--tinta-suave)':'var(--ouro)'}; font-size:20px">${locked?'🔒':'▶'}</span></div>`);
+      var card=document.createElement('div');
+      card.className='card';
+      card.style.cssText='padding:14px 16px; display:flex; align-items:center; gap:14px; margin-bottom:10px;'+(locked?'opacity:.9':'');
+      card.innerHTML='<div style="width:46px;height:46px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:22px"></div>'
+        +'<div style="flex:1; min-width:0"><p style="margin:0; font-weight:500"></p>'
+        +'<p style="margin:3px 0 0; font-size:12px; color:var(--tinta-suave)"></p></div>'
+        +'<span style="color:'+(locked?'var(--tinta-suave)':'var(--ouro)')+'; font-size:20px">'+(locked?'🔒':'▶')+'</span>';
+      // textContent garante escape de qualquer payload vindo do banco
+      card.children[0].textContent = b.ic || '🪽';
+      card.children[1].children[0].textContent = b.t || '';
+      card.children[1].children[1].innerHTML = ''; // construído abaixo com nodes seguros
+      var meta=card.children[1].children[1];
+      meta.appendChild(document.createTextNode((b.m||'')+'   '));
+      var badge=document.createElement('span');
+      badge.style.cssText='font-size:10px; letter-spacing:.04em; background:var(--ouro-bg); color:#854F0B; padding:2px 7px; border-radius:8px';
+      badge.textContent = b.fmt || '';
+      meta.appendChild(badge);
+      card.addEventListener('click', locked
+        ? function(){ openPaywall(b.t); }
+        : function(){ openPlayer({titulo:b.t, fmt:(b.fmt||'')+' · na voz da Monica', art:b.ic, dur:b.m}); });
+      el.appendChild(card);
     });
   });
 }
@@ -1641,7 +1658,7 @@ function acenderMagia(){
   var s=mbEstado(); if(s.feitoHoje||s.completa) return;
   var ped=document.getElementById('mb-pedido').value.trim();
   if(!ped){ toast('Escreva seu pedido primeiro'); return; }
-  desenharVelaMb(s.dia,true); buzz(); chime(); registrarPresenca();
+  desenharVelaMb(s.dia,true); buzz(); chime(); registrarPresenca(); iniciarChamaCrescente();
   try{
     var arr=JSON.parse(localStorage.getItem('saa_mb_pedidos')||'[]');
     var v=MB_VELAS[s.dia-1];
@@ -1688,17 +1705,25 @@ function acenderVela(){
   iniciarChamaCrescente();
 }
 
-// Chama com força variável — cresce conforme o usuário fica com a tela aberta.
-// Soma minutos acumulados (persiste no localStorage). Cap = 60 minutos = força máxima.
+// Chama com força variável — cresce conforme o usuário fica com a tela da vela aberta.
+// Soma minutos acumulados (persiste no localStorage). Cap = 60 min = força máxima.
+// Aplica em qualquer vela ativa: Magia 7d (mb-chama/mb-glow) ou Velinha (vp-chama/vp-glow).
 var _chamaTimer=null;
+var CHAMA_TELAS = { 's-magia':{c:'mb-chama', g:'mb-glow'}, 's-velinha':{c:'vp-chama', g:'vp-glow'}, 's-vela':{c:'vela-chama', g:'vela-glow'} };
 function lerMinutosChama(){ try{ return parseInt(localStorage.getItem('saa_chama_min')||'0',10); }catch(e){ return 0; } }
 function salvarMinutosChama(v){ try{ localStorage.setItem('saa_chama_min', String(v)); }catch(e){} }
+function telaVelaAtiva(){
+  var act=[...document.querySelectorAll('.screen.active')].map(function(s){return s.id;});
+  for(var k in CHAMA_TELAS){ if(act.indexOf(k)>=0) return CHAMA_TELAS[k]; }
+  return null;
+}
 function aplicarForcaChama(){
+  var alvo=telaVelaAtiva(); if(!alvo) return;
   var min=lerMinutosChama(); var cap=60;
-  var t=Math.min(min/cap, 1);                   // 0..1
-  var escala = 1 + t*0.6;                       // chama até 60% maior
-  var glowOp = 0.55 + t*0.45;                   // glow até quase opaco
-  var chama=document.getElementById('vela-chama'); var glow=document.getElementById('vela-glow');
+  var t=Math.min(min/cap, 1);
+  var escala = 1 + t*0.6;
+  var glowOp = 0.55 + t*0.45;
+  var chama=document.getElementById(alvo.c); var glow=document.getElementById(alvo.g);
   if(chama){ chama.style.transform = 'scale('+escala+')'; chama.style.transformOrigin='bottom center'; }
   if(glow){
     glow.style.opacity = glowOp.toFixed(2);
@@ -1708,15 +1733,12 @@ function aplicarForcaChama(){
 function iniciarChamaCrescente(){
   if(_chamaTimer){ clearInterval(_chamaTimer); _chamaTimer=null; }
   aplicarForcaChama();
-  // a cada 60s na tela da vela, soma 1 min (até 60)
   _chamaTimer=setInterval(function(){
-    var ativa=[...document.querySelectorAll('.screen.active')].some(function(s){return s.id==='s-vela';});
-    if(!ativa){ return; }
+    if(!telaVelaAtiva()){ pararChamaCrescente(); return; }
     var m=lerMinutosChama();
     if(m<60){ salvarMinutosChama(m+1); aplicarForcaChama(); }
   }, 60000);
 }
-// quando a pessoa sai da tela da vela, paramos o cronômetro (mas mantém o progresso)
 function pararChamaCrescente(){ if(_chamaTimer){ clearInterval(_chamaTimer); _chamaTimer=null; } }
 
 // ── compartilhar meu anjo (alça de crescimento via audiência da Monica) ──
@@ -1802,7 +1824,12 @@ window.saaAuth = null;
       client: sb,
       enviarLink: function(email){ return sb.auth.signInWithOtp({ email:email, options:{ emailRedirectTo: location.origin } }); },
       usuario: async function(){ var r=await sb.auth.getUser(); return r && r.data ? r.data.user : null; },
-      salvarPerfil: function(p){ return fetch('/api/save-perfil',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)}); }
+      salvarPerfil: async function(p){
+        var tok='';
+        try{ var r=await sb.auth.getSession(); tok = (r && r.data && r.data.session) ? r.data.session.access_token : ''; }catch(_){}
+        var h={'Content-Type':'application/json'}; if(tok) h['Authorization']='Bearer '+tok;
+        return fetch('/api/save-perfil',{method:'POST',headers:h,body:JSON.stringify(p)});
+      }
     };
     console.log('[Sob as Asas] Supabase conectado ✓');
     // volta do link mágico → entra autenticado e salva o perfil pendente
@@ -2313,8 +2340,11 @@ async function ativarLembretes(){
     var perm=await Notification.requestPermission();
     if(perm!=='granted'){ toast('Permita as notificações para receber o ritual diário.'); return; }
     var reg=await navigator.serviceWorker.ready;
-    var sub=await reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey: urlBase64ToUint8Array(cfg.vapidPublic) });
-    await fetch('/api/save-push',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ userId:window._userId||null, subscription: sub.toJSON(), ritual_horario:'morning' }) });
+    var sub=await reg.pushManager.getSubscription();
+    if(!sub){ sub=await reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey: urlBase64ToUint8Array(cfg.vapidPublic) }); }
+    var tok=''; try{ if(window.saaAuth){ var rs=await window.saaAuth.client.auth.getSession(); tok=(rs&&rs.data&&rs.data.session)?rs.data.session.access_token:''; } }catch(_){}
+    var h={'Content-Type':'application/json'}; if(tok) h['Authorization']='Bearer '+tok;
+    await fetch('/api/save-push',{ method:'POST', headers:h, body:JSON.stringify({ subscription: sub.toJSON(), ritual_horario:'morning' }) });
     try{ localStorage.setItem('saa_push_on','1'); }catch(e){}
     toast('Lembretes ativados! Seu anjo vai te chamar todo dia 🕊️');
     var el=document.getElementById('home-lembretes'); if(el) el.style.display='none';
@@ -2367,7 +2397,7 @@ function acenderVelinha(){
   document.getElementById('vp-glow').style.opacity='1';
   document.getElementById('vp-form').style.display='none';
   document.getElementById('vp-msg').style.display='block';
-  buzz(); chime();
+  buzz(); chime(); iniciarChamaCrescente();
 }
 async function enviarFormExperiencia(){
   var nome=document.getElementById('me-nome').value.trim();

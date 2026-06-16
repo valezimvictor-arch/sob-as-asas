@@ -1,15 +1,18 @@
-// POST /api/save-push  { userId, subscription, ritual_horario }
+// POST /api/save-push  { subscription, ritual_horario }
+// Headers: Authorization: Bearer <jwt> (opcional — sem ele, salva sem user_id).
 // Salva a inscrição de push do navegador em public.push_subscriptions.
 // O cron-ritual usa essa tabela para enviar o lembrete do ritual/salmo.
 
 import { supabase } from './_lib/supabase.js';
+import { verifyUser } from './_lib/auth.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
-  const { userId, subscription, ritual_horario } = req.body || {};
+  const { subscription, ritual_horario } = req.body || {};
   if (!subscription || !subscription.endpoint) {
     return res.status(400).json({ ok: false, error: 'subscription inválida' });
   }
+  const userId = await verifyUser(req); // pode ser null (anônimo)
   const { error } = await supabase.from('push_subscriptions').upsert({
     endpoint: subscription.endpoint,
     p256dh: subscription.keys && subscription.keys.p256dh,
