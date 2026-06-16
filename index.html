@@ -349,6 +349,12 @@
         </div>
       </div>
 
+      <!-- velas acesas hoje (presença coletiva) -->
+      <div id="home-velas-coletivo" style="display:none; margin-top:14px; padding:11px 14px; background:linear-gradient(90deg, rgba(250,243,228,.95), rgba(246,200,104,.18)); border:1px solid var(--linha); border-radius:14px; display:flex; align-items:center; gap:10px">
+        <div style="font-size:18px; line-height:1; flex-shrink:0">🕯️</div>
+        <p style="margin:0; font-size:13px; color:var(--tinta); line-height:1.45"><span id="velas-coletivo-n" style="font-weight:600; color:var(--ouro)">—</span> <span class="serif-soft" style="color:var(--ouro)">velas acesas hoje no Brasil</span> <span id="velas-coletivo-sub" style="color:var(--tinta-suave); font-size:11.5px; display:block; margin-top:2px">você não acende sozinha(o)</span></p>
+      </div>
+
       <!-- BANNER: PWA instalar -->
       <div id="pwa-banner" style="display:none; background:var(--celeste-bg); border-radius:14px; padding:12px 14px; margin-top:14px; display:none; align-items:center; gap:10px">
         <div style="font-size:20px">📲</div>
@@ -1296,6 +1302,7 @@ function initHome(){
   }
   if(window._anjo) document.getElementById('home-anjo').textContent=window._anjo;
   var av=document.getElementById('home-avatar'); if(av && window._nome){ av.textContent=window._nome.trim().charAt(0).toUpperCase()||'•'; }
+  carregarVelasColetivo();
   // Card de "Meu anjo" no topo da home
   var n = window._perfil && window._perfil.anjo_n;
   var cn=document.getElementById('home-anjo-card-nome'), cc=document.getElementById('home-anjo-card-coro'), cd=document.getElementById('home-anjo-card-dom');
@@ -1801,7 +1808,7 @@ function acenderMagia(){
   var s=mbEstado(); if(s.feitoHoje||s.completa) return;
   var ped=document.getElementById('mb-pedido').value.trim();
   if(!ped){ toast('Escreva seu pedido primeiro'); return; }
-  desenharVelaMb(s.dia,true); buzz(); chime(); registrarPresenca(); iniciarChamaCrescente();
+  desenharVelaMb(s.dia,true); buzz(); chime(); registrarPresenca(); iniciarChamaCrescente(); _registrarVela();
   try{
     var arr=JSON.parse(localStorage.getItem('saa_mb_pedidos')||'[]');
     var v=MB_VELAS[s.dia-1];
@@ -1890,6 +1897,33 @@ function shareAnjo(){
   if(navigator.share){ navigator.share({title:'Sob as Asas', text:txt, url:location.origin}).catch(function(){}); }
   else { try{ navigator.clipboard.writeText(txt+' '+location.origin); }catch(e){} toast('Link copiado ✨'); }
   buzz();
+}
+
+// ── Velas acesas hoje no Brasil (presença coletiva) ──
+async function carregarVelasColetivo(){
+  if(!window.saaAuth) return;
+  try{
+    var r = await window.saaAuth.client.rpc('velas_acesas_hoje');
+    if(r.error || r.data == null) return;
+    var n = Number(r.data) || 0;
+    if(n <= 0) return; // mantém oculto se ninguém acendeu ainda hoje
+    var el = document.getElementById('home-velas-coletivo');
+    var num = document.getElementById('velas-coletivo-n');
+    if(num) num.textContent = n.toLocaleString('pt-BR');
+    if(el) el.style.display = 'flex';
+  }catch(e){}
+}
+async function _registrarVela(){
+  if(!window.saaAuth) return;
+  try{
+    var r = await window.saaAuth.client.rpc('incrementar_velas_hoje');
+    if(!r.error && r.data != null){
+      var num = document.getElementById('velas-coletivo-n');
+      var el = document.getElementById('home-velas-coletivo');
+      if(num) num.textContent = Number(r.data).toLocaleString('pt-BR');
+      if(el) el.style.display = 'flex';
+    }
+  }catch(e){}
 }
 
 // ── Acolhimento emocional (onboarding pós-reveal) ──
@@ -2664,7 +2698,7 @@ function acenderVelinha(){
   document.getElementById('vp-glow').style.opacity='1';
   document.getElementById('vp-form').style.display='none';
   document.getElementById('vp-msg').style.display='block';
-  buzz(); chime(); iniciarChamaCrescente();
+  buzz(); chime(); iniciarChamaCrescente(); _registrarVela();
 }
 async function enviarFormExperiencia(){
   var nome=document.getElementById('me-nome').value.trim();
