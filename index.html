@@ -187,11 +187,25 @@
           <p style="color:var(--tinta-suave); font-size:13px; margin:0; letter-spacing:.02em" id="home-saud">Boa noite</p>
           <p class="serif" style="font-size:19px; margin:2px 0 0; color:var(--tinta); line-height:1.25">Seu anjo é <span id="home-anjo" style="color:var(--ouro)">—</span></p>
         </div>
-        <div style="text-align:center; background:var(--ouro-bg); border-radius:14px; padding:8px 12px; min-width:54px; cursor:pointer" onclick="toast(localStorage.getItem('saa_streak_n')+' dias sob as asas 🪽')">
+        <div style="text-align:center; background:var(--ouro-bg); border-radius:14px; padding:8px 10px; min-width:60px; cursor:pointer" onclick="toast('Você tem '+localStorage.getItem('saa_streak_n')+' dias consecutivos sob as asas — continue 🪽')">
           <div id="home-streak" style="font-size:18px; font-weight:600; color:#854F0B; line-height:1; font-family:'Playfair Display',serif">1</div>
-          <div style="font-size:10px; color:var(--ouro); letter-spacing:.06em; text-transform:uppercase; margin-top:2px">dias</div>
+          <div style="font-size:9px; color:var(--ouro); letter-spacing:.05em; text-transform:uppercase; margin-top:3px; line-height:1.2">sob as<br/>asas</div>
         </div>
       </div>
+
+      <!-- BANNER: PWA instalar -->
+      <div id="pwa-banner" style="display:none; background:var(--celeste-bg); border-radius:14px; padding:12px 14px; margin-top:14px; display:none; align-items:center; gap:10px">
+        <div style="font-size:20px">📲</div>
+        <div style="flex:1; min-width:0">
+          <p style="margin:0; font-size:13px; font-weight:600; color:#1E5A99">Instale o Sob as Asas</p>
+          <p style="margin:0; font-size:11px; color:#1E5A99; opacity:.8">Adicione à tela inicial — abre como um app de verdade</p>
+        </div>
+        <button onclick="instalarPWA()" style="background:#1E5A99; color:#fff; border:none; padding:6px 12px; border-radius:10px; font-size:12px; font-weight:600; cursor:pointer">Como?</button>
+        <button onclick="document.getElementById('pwa-banner').style.display='none'; try{localStorage.setItem('saa_pwa_dismissed','1')}catch(e){}" style="background:none; border:none; color:#1E5A99; cursor:pointer; font-size:18px; padding:4px">×</button>
+      </div>
+
+      <!-- BANNER: prática em andamento (Magia ou Novena) -->
+      <div id="home-em-andamento" style="display:none"></div>
 
       <!-- 1. MEU ANJO em destaque (logo abaixo do cabeçalho) -->
       <div class="card fade-in" style="margin-top:20px; padding:18px; background:var(--ouro-bg); border-color:transparent; cursor:pointer" onclick="openMeuAnjo()">
@@ -232,6 +246,20 @@
 
       <!-- 4. PRECISO DO MEU ANJO AGORA -->
       <button onclick="precisoAnjo()" style="width:100%; margin-top:14px; background:linear-gradient(180deg,#F6E6C0,#EFD79A); border:none; border-radius:16px; padding:15px; font:inherit; font-size:15px; font-weight:600; color:#5A3A06; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 16px rgba(186,117,23,.18)">🕊️ Preciso do meu anjo agora</button>
+
+      <!-- CTA Premium (Plano dos Anjos) — só aparece pra quem ainda é free -->
+      <div id="home-premium-cta" style="display:none; margin-top:14px; padding:18px; border-radius:18px; background:linear-gradient(135deg, #FFF6E0 0%, #FAE4B6 100%); border:1px solid rgba(186,117,23,.18); cursor:pointer; position:relative; overflow:hidden" onclick="openPaywall('Plano dos Anjos')">
+        <div style="position:absolute; top:-20px; right:-20px; width:120px; height:120px; border-radius:50%; background:radial-gradient(circle, rgba(239,159,39,.35), rgba(239,159,39,0) 70%); pointer-events:none"></div>
+        <div style="display:flex; align-items:flex-start; gap:12px; position:relative">
+          <div style="font-size:24px">✨</div>
+          <div style="flex:1; min-width:0">
+            <p style="margin:0; font-size:10px; letter-spacing:.14em; color:#854F0B; text-transform:uppercase; font-weight:600">Plano dos Anjos</p>
+            <p class="serif" style="margin:4px 0 0; font-size:18px; color:#3A2400; line-height:1.25">Sua jornada espiritual completa</p>
+            <p style="margin:6px 0 0; font-size:13px; color:#5A3A06; line-height:1.5">Biblioteca inteira, Salmo diário, séries dos 72 anjos e os rituais completos da Monica.</p>
+            <p style="margin:10px 0 0; font-size:13px; color:#854F0B; font-weight:600">Comece com 7 dias grátis →</p>
+          </div>
+        </div>
+      </div>
 
       <!-- 5. MILAGRE DO MÊS -->
       <div class="card" style="margin-top:14px; padding:16px; display:flex; align-items:center; gap:12px; background:var(--celeste-bg); border-color:transparent" onclick="show('s-milagre')">
@@ -596,11 +624,27 @@
 <!-- ░░ MAGIA DOS ANJOS — VELA DO DIA ░░ -->
 <section id="s-vela" class="screen">
   <style>
-    .chama{ width:20px; height:38px; border-radius:50% 50% 50% 50% / 68% 68% 32% 32%;
-      background:linear-gradient(180deg,#FFF6C0,#EF9F27 58%,#D85A30);
-      box-shadow:0 0 22px rgba(239,159,39,.85); transform-origin:bottom center;
-      opacity:0; transition:opacity .8s ease; animation:tremular 1.5s ease-in-out infinite; }
-    @keyframes tremular{ 0%,100%{ transform:rotate(-2deg) scaleY(1) scaleX(1);} 50%{ transform:rotate(2deg) scaleY(1.1) scaleX(.94);} }
+    .chama{ position:relative; width:22px; height:42px; border-radius:50% 50% 50% 50% / 70% 70% 30% 30%;
+      background:radial-gradient(ellipse at 50% 75%, #FFFAE5 0%, #FFE08A 22%, #F6A53A 55%, #D85A30 100%);
+      box-shadow:0 0 28px rgba(239,159,39,.9), 0 0 60px rgba(239,159,39,.45);
+      transform-origin:bottom center; opacity:0;
+      transition:opacity .8s ease;
+      animation:tremular 1.4s ease-in-out infinite, brilho 2.8s ease-in-out infinite; }
+    .chama::after{ content:''; position:absolute; left:50%; top:55%; transform:translate(-50%,-50%);
+      width:8px; height:14px; border-radius:50%;
+      background:radial-gradient(ellipse, #FFFAE5 0%, rgba(255,250,229,0) 70%);
+      animation:nucleo 1.4s ease-in-out infinite alternate; }
+    @keyframes tremular{
+      0%,100%{ transform:rotate(-2deg) scaleY(1) scaleX(1);}
+      25%{ transform:rotate(1.5deg) scaleY(1.05) scaleX(.97);}
+      50%{ transform:rotate(2.5deg) scaleY(1.12) scaleX(.93);}
+      75%{ transform:rotate(-1deg) scaleY(1.04) scaleX(.96);}
+    }
+    @keyframes brilho{
+      0%,100%{ box-shadow:0 0 24px rgba(239,159,39,.85), 0 0 55px rgba(239,159,39,.4);}
+      50%{ box-shadow:0 0 36px rgba(255,200,90,1), 0 0 80px rgba(239,159,39,.6);}
+    }
+    @keyframes nucleo{ from{ opacity:.7; } to{ opacity:1; } }
   </style>
   <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; overflow-y:auto">
     <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
@@ -887,8 +931,9 @@
   <div style="position:absolute; left:0; right:0; bottom:0; background:var(--branco); border-radius:26px 26px 0 0; padding:26px 24px max(env(safe-area-inset-bottom),24px)">
     <div style="text-align:center">
       <div style="font-size:30px">🪽</div>
-      <h3 class="serif" style="font-size:24px; margin:8px 0 0">Continue sob as asas</h3>
-      <p id="paywall-ctx" style="color:var(--tinta-suave); font-size:14px; margin:8px 0 0; line-height:1.5">Desbloqueie toda a biblioteca da Monica.</p>
+      <p style="margin:0; font-size:10px; letter-spacing:.16em; color:var(--ouro); text-transform:uppercase; font-weight:600">Plano dos Anjos</p>
+      <h3 class="serif" style="font-size:24px; margin:6px 0 0">Sua jornada completa</h3>
+      <p id="paywall-ctx" style="color:var(--tinta-suave); font-size:14px; margin:8px 0 0; line-height:1.5">Biblioteca inteira, salmos, séries e rituais completos da Monica.</p>
     </div>
     <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px">
       <div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px; border:2px solid var(--ouro-claro)" onclick="iniciarAssinatura('anual')">
@@ -1008,8 +1053,75 @@ function initHome(){
   var st=registrarPresenca(); var se=document.getElementById('home-streak'); if(se) se.textContent=st;
   try{ if(st>=3 && window.saaAuth && !localStorage.getItem('saa_trial_offered') && !(window._plano && window._plano!=='free')){ localStorage.setItem('saa_trial_offered','1'); setTimeout(function(){ offerTrial(st); },1400); } }catch(e){}
   try{ var vn=parseInt(localStorage.getItem('saa_vela_n')||'0',10); var vs=document.getElementById('home-vela-sub'); if(vs){ vs.textContent = vn>0 ? ('🕯️ '+vn+(vn===1?' dia acendendo a vela':' dias acendendo a vela')) : ''; } }catch(e){}
+  renderEmAndamento();    // cards Magia/Novena em andamento
+  renderPremiumCTA();     // CTA "Plano dos Anjos"
+  renderPWABanner();      // banner "Instalar app"
   if(homeReady) return; homeReady=true;
   renderPedidos(); renderBib(); carregarBiblioteca(); carregarPedidos(); carregarHome();
+}
+
+// Cards "em andamento" da Magia e Novena
+function renderEmAndamento(){
+  var el=document.getElementById('home-em-andamento'); if(!el) return;
+  var hoje=new Date().toISOString().slice(0,10);
+  var ontem=new Date(Date.now()-86400000).toISOString().slice(0,10);
+  var cards=[];
+  try{
+    // Magia dos Anjos (7 dias)
+    var mbLast=localStorage.getItem('saa_mb_last');
+    var mbDia=parseInt(localStorage.getItem('saa_mb_dia')||'1',10);
+    if(mbLast && (mbLast===hoje||mbLast===ontem) && mbDia<=7){
+      var feitoHoje=mbLast===hoje, diaMostrar = feitoHoje ? (mbDia-1) : mbDia;
+      var vela = (typeof MB_VELAS!=='undefined' && MB_VELAS[diaMostrar-1]) ? MB_VELAS[diaMostrar-1] : {cor:'Branca',hex:'#FCF4E0'};
+      var status = feitoHoje ? ('Dia '+(mbDia-1)+' concluído · Volte amanhã para o Dia '+mbDia) : ('Hoje · Dia '+mbDia+' · Vela '+vela.cor);
+      var cor = feitoHoje ? '#A9D18E' : vela.hex;
+      cards.push('<div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px; margin-bottom:10px; cursor:pointer" onclick="abrirPratica(\'magia\')">'
+        +'<div style="width:14px;height:14px;border-radius:50%;background:'+cor+';border:2px solid var(--ouro); box-shadow:0 0 12px '+cor+'"></div>'
+        +'<div style="flex:1; min-width:0"><p style="margin:0; font-size:11px; letter-spacing:.08em; color:var(--ouro); text-transform:uppercase; font-weight:600">Magia em andamento</p>'
+        +'<p style="margin:2px 0 0; font-size:13px; color:var(--tinta)">'+status+'</p></div>'
+        +'<span style="color:var(--ouro)">›</span></div>');
+    }
+    // Novena dos Anjos (9 dias)
+    var joLast=localStorage.getItem('saa_jor_last');
+    var joDia=parseInt(localStorage.getItem('saa_jor_dia')||'1',10);
+    if(joLast && (joLast===hoje||joLast===ontem) && joDia<=9){
+      var feitoH=joLast===hoje, diaM=feitoH?(joDia-1):joDia;
+      var tema = (typeof JORNADA_TEMAS!=='undefined' && JORNADA_TEMAS[diaM-1]) ? JORNADA_TEMAS[diaM-1].t : '';
+      var status2 = feitoH ? ('Dia '+(joDia-1)+' concluído · Volte amanhã para o Dia '+joDia+(tema?(' · '+tema):'')) : ('Hoje · Dia '+joDia+' de 9'+(tema?(' · '+tema):''));
+      cards.push('<div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px; margin-bottom:10px; cursor:pointer" onclick="abrirPratica(\'novena\')">'
+        +'<div style="width:14px;height:14px;border-radius:50%;background:var(--celeste); box-shadow:0 0 12px var(--celeste)"></div>'
+        +'<div style="flex:1; min-width:0"><p style="margin:0; font-size:11px; letter-spacing:.08em; color:var(--celeste); text-transform:uppercase; font-weight:600">Novena em andamento</p>'
+        +'<p style="margin:2px 0 0; font-size:13px; color:var(--tinta)">'+status2+'</p></div>'
+        +'<span style="color:var(--celeste)">›</span></div>');
+    }
+  }catch(e){}
+  if(cards.length){ el.innerHTML='<div style="margin-top:14px">'+cards.join('')+'</div>'; el.style.display='block'; }
+  else { el.innerHTML=''; el.style.display='none'; }
+}
+
+// CTA "Plano dos Anjos" (só aparece pra quem é free e não está em trial)
+function renderPremiumCTA(){
+  var el=document.getElementById('home-premium-cta'); if(!el) return;
+  var plano = window._plano || 'free';
+  el.style.display = (plano==='free') ? 'block' : 'none';
+}
+
+// Banner PWA — só mostra se ainda não foi descartado e o app não está rodando como PWA
+function renderPWABanner(){
+  var el=document.getElementById('pwa-banner'); if(!el) return;
+  var jaInstalado = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+  var dismissed = false; try{ dismissed = localStorage.getItem('saa_pwa_dismissed')==='1'; }catch(e){}
+  if(jaInstalado || dismissed){ el.style.display='none'; return; }
+  el.style.display='flex';
+}
+// Handler do botão "Como?" do banner PWA: mostra instruções por plataforma
+function instalarPWA(){
+  var ua = navigator.userAgent || '';
+  var iOS = /iPhone|iPad|iPod/i.test(ua);
+  var instr = iOS
+    ? 'Toque no ícone de compartilhar do Safari (□↑) e depois em "Adicionar à Tela de Início".'
+    : 'No menu do navegador (⋮ no Chrome), toque em "Adicionar à tela inicial" ou "Instalar app".';
+  alert(instr);
 }
 function nav(view){
   document.querySelectorAll('#s-home [data-view]').forEach(v=>v.classList.toggle('hide', v.dataset.view!==view));
