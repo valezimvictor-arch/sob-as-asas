@@ -2,21 +2,20 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Sob as Asas — Anjos da Guarda</title>
 <meta name="theme-color" content="#FBFAF7" />
 <link rel="manifest" href="/manifest.json" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<script src="https://cdn.tailwindcss.com"></script>
 <script src="/config.js?v=1"></script>
 <style>
   :root{
     --branco:#FBFAF7; --branco-puro:#FFFFFF;
     --ouro:#BA7517; --ouro-claro:#EF9F27; --ouro-suave:#F3E6CC; --ouro-bg:#FAF3E4;
     --celeste:#378ADD; --celeste-bg:#EAF2FB;
-    --tinta:#2C2C2A; --tinta-suave:#6B6A63; --linha:rgba(186,117,23,0.14);
+    --tinta:#2C2C2A; --tinta-suave:#5F5E5A; --linha:rgba(186,117,23,0.14);
   }
   *{ -webkit-tap-highlight-color:transparent; box-sizing:border-box; }
   html,body{ margin:0; height:100%; background:var(--branco); color:var(--tinta);
@@ -57,9 +56,13 @@
   .label{ font-size:12px; letter-spacing:.06em; color:var(--tinta-suave); text-transform:uppercase; }
   .card{ background:var(--branco-puro); border:1px solid var(--linha); border-radius:20px; transition:transform .15s ease, box-shadow .2s ease; }
   .card:active{ transform:scale(.985); box-shadow:0 6px 22px rgba(186,117,23,.10); }
-  ::-webkit-scrollbar{ display:none } *{ scrollbar-width:none }
+  .screen::-webkit-scrollbar{ display:none } .screen{ scrollbar-width:none }
   .pad>div.fade-in,.pad>.card.fade-in{ animation:fadeIn .55s ease both; }
-  @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
+  /* Reduz só animações decorativas — modais, fades de tela e feedbacks essenciais permanecem. */
+  @media (prefers-reduced-motion: reduce){
+    .halo, .luz, .estrela, .clarao, .nuvem, .reveal-anjo, .reveal-fade,
+    #resp-bolha, .chama, #vela-glow, #mb-glow, #vp-glow { animation:none !important; }
+  }
 
   .reveal-anjo{ opacity:0; transform:scale(.8); transition:opacity 1.4s ease, transform 1.4s cubic-bezier(.2,.8,.2,1); }
   .reveal-anjo.on{ opacity:1; transform:scale(1); }
@@ -1952,7 +1955,7 @@ var MSGS_POR_EMOCAO = {
       'Sua gratidão sobe como incenso e perfuma o céu. Seu anjo sorri agora.',
       'Quem agradece, multiplica. O que você reconhece, se expande.',
       'Esse instante de gratidão é uma semente — vai florescer onde menos espera.',
-      'Você está conectado(a) com a Fonte agora mesmo. Permaneça nessa frequência.',
+      'Você está conectado(a) com algo maior agora mesmo. Permaneça nessa presença.',
       'O céu inteiro celebra com você. Receba esse abraço invisível.',
       'A gratidão é a chave que abre a próxima porta. Continue agradecendo.'
     ]
@@ -2130,7 +2133,8 @@ async function salvarHorario(){
 async function sairConta(){
   if(!confirm('Tem certeza que deseja sair?')) return;
   try{ if(window.saaAuth) await window.saaAuth.client.auth.signOut(); }catch(e){}
-  try{ ['saa_pending','saa_streak_n','saa_streak_last','saa_mb_last','saa_mb_dia','saa_mb_pedidos','saa_jor_last','saa_jor_dia','saa_trial_offered','saa_push_on'].forEach(function(k){ localStorage.removeItem(k); }); }catch(e){}
+  // Limpa tudo do app, prefixo saa_ — próximo usuário no mesmo dispositivo começa do zero.
+  try{ Object.keys(localStorage).filter(function(k){ return k.indexOf('saa_')===0; }).forEach(function(k){ localStorage.removeItem(k); }); }catch(e){}
   window._userId=null; window._email=''; window._nome=''; window._anjo=''; window._perfil=null;
   location.href='/';
 }
