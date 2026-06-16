@@ -45,7 +45,21 @@ ORDER BY tablename, policyname;
 -- Lembre-se: o backend (Vercel /api/*.js) usa a SERVICE_KEY, que bypassa RLS.
 -- RLS protege APENAS o que o cliente acessa direto via anon key (no app).
 
--- 4) Exemplo de policy padrão "owner only" (substitua <tabela>):
+-- 4) Tabela `denuncias` (criar se não existir — usada pelo botão "denunciar" da comunidade):
+--    CREATE TABLE IF NOT EXISTS public.denuncias (
+--      id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+--      intencao_id text,
+--      user_id uuid REFERENCES auth.users(id) ON DELETE SET NULL,
+--      motivo text,
+--      criado_em timestamptz DEFAULT now()
+--    );
+--    ALTER TABLE public.denuncias ENABLE ROW LEVEL SECURITY;
+--    -- qualquer um pode denunciar (mesmo anônimo), mas ninguém lê via anon
+--    CREATE POLICY "denuncias_insert_anon" ON public.denuncias
+--      FOR INSERT TO anon, authenticated WITH CHECK (true);
+--    -- leitura: só via service_role (backoffice)
+--
+-- 5) Exemplo de policy padrão "owner only" (substitua <tabela>):
 --    ALTER TABLE public.<tabela> ENABLE ROW LEVEL SECURITY;
 --    CREATE POLICY "<tabela>_owner_select" ON public.<tabela>
 --      FOR SELECT TO authenticated USING (auth.uid() = user_id);

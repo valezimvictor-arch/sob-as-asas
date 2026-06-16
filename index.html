@@ -971,11 +971,11 @@
 </section>
 
 <!-- modal: seletor emocional (Preciso do meu anjo v2) -->
-<div id="modal-emocao" style="position:fixed; inset:0; z-index:60; display:none; background:rgba(44,44,42,.55)">
+<div id="modal-emocao" role="dialog" aria-modal="true" aria-labelledby="modal-emocao-titulo" style="position:fixed; inset:0; z-index:60; display:none; background:rgba(44,44,42,.55)">
   <div style="position:absolute; left:0; right:0; bottom:0; background:var(--branco); border-radius:26px 26px 0 0; padding:26px 24px max(env(safe-area-inset-bottom),24px)">
     <div style="text-align:center">
       <div style="font-size:30px">🕊️</div>
-      <h3 class="serif" style="font-size:22px; margin:6px 0 0; font-weight:500">Como você está se sentindo agora?</h3>
+      <h3 id="modal-emocao-titulo" class="serif" style="font-size:22px; margin:6px 0 0; font-weight:500">Como você está se sentindo agora?</h3>
       <p class="serif-soft" style="font-size:14px; color:var(--ouro); margin:4px 0 0">Seu anjo escuta sua emoção primeiro</p>
     </div>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:18px">
@@ -989,7 +989,7 @@
 </div>
 
 <!-- modal: respiração guiada 4-7-8 -->
-<div id="modal-resp" style="position:fixed; inset:0; z-index:70; display:none; background:rgba(20,18,14,.92); align-items:center; justify-content:center">
+<div id="modal-resp" role="dialog" aria-modal="true" aria-label="Respiração guiada com seu anjo" style="position:fixed; inset:0; z-index:70; display:none; background:rgba(20,18,14,.92); align-items:center; justify-content:center">
   <div style="position:relative; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#FBFAF7; text-align:center">
     <p id="resp-ciclo" class="serif-soft" style="font-size:13px; color:#EF9F27; letter-spacing:.2em; text-transform:uppercase; margin:0 0 32px">1 de 4</p>
     <div style="position:relative; width:260px; height:260px; display:flex; align-items:center; justify-content:center">
@@ -1004,7 +1004,7 @@
 </div>
 
 <!-- modal: descrição da prática (Magia / Correio / Novena / Gratidão) -->
-<div id="modal-pratica" style="position:fixed; inset:0; z-index:60; display:none; background:rgba(44,44,42,.55)">
+<div id="modal-pratica" role="dialog" aria-modal="true" aria-labelledby="pr-titulo" style="position:fixed; inset:0; z-index:60; display:none; background:rgba(44,44,42,.55)">
   <div style="position:absolute; left:0; right:0; bottom:0; background:var(--branco); border-radius:26px 26px 0 0; padding:26px 24px max(env(safe-area-inset-bottom),24px); max-height:88vh; overflow-y:auto">
     <div style="text-align:center">
       <div id="pr-icon" style="font-size:34px"></div>
@@ -1019,7 +1019,7 @@
 </div>
 
 <!-- modal: interesse em experiência (Israel / São Miguel) -->
-<div id="modal-exp" style="position:fixed; inset:0; z-index:60; display:none; background:rgba(44,44,42,.55)">
+<div id="modal-exp" role="dialog" aria-modal="true" aria-labelledby="me-titulo" style="position:fixed; inset:0; z-index:60; display:none; background:rgba(44,44,42,.55)">
   <div style="position:absolute; left:0; right:0; bottom:0; background:var(--branco); border-radius:26px 26px 0 0; padding:24px 22px max(env(safe-area-inset-bottom),24px)">
     <div style="text-align:center; margin-bottom:18px">
       <div id="me-icon" style="font-size:28px"></div>
@@ -1039,7 +1039,7 @@
 </div>
 
 <!-- paywall -->
-<div id="paywall" style="position:fixed; inset:0; z-index:60; display:none; background:rgba(44,44,42,.55)">
+<div id="paywall" role="dialog" aria-modal="true" aria-label="Plano dos Anjos" style="position:fixed; inset:0; z-index:60; display:none; background:rgba(44,44,42,.55)">
   <div style="position:absolute; left:0; right:0; bottom:0; background:var(--branco); border-radius:26px 26px 0 0; padding:26px 24px max(env(safe-area-inset-bottom),24px)">
     <div style="text-align:center">
       <div style="font-size:30px">🪽</div>
@@ -1088,6 +1088,33 @@ function show(id){
   if(typeof CHAMA_TELAS!=='undefined' && !CHAMA_TELAS[id]) pararChamaCrescente();
   buzz();
 }
+
+// ── Modais (ARIA, scroll lock, Escape) ──
+var _modalsAbertos=[];
+function openModal(id, displayMode){
+  var el=document.getElementById(id); if(!el) return;
+  el.style.display = displayMode || 'block';
+  document.body.style.overflow='hidden';
+  if(_modalsAbertos.indexOf(id)<0) _modalsAbertos.push(id);
+}
+function closeModal(id){
+  var el=document.getElementById(id); if(!el) return;
+  el.style.display='none';
+  _modalsAbertos = _modalsAbertos.filter(function(x){return x!==id;});
+  if(!_modalsAbertos.length) document.body.style.overflow='';
+}
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape' && _modalsAbertos.length){
+    var top=_modalsAbertos[_modalsAbertos.length-1];
+    // cada modal tem seu fechador customizado quando precisa de side effects
+    if(top==='modal-resp') return fecharRespiracao();
+    if(top==='modal-emocao') return fecharEmocao();
+    if(top==='modal-pratica') return fecharPratica();
+    if(top==='modal-exp') return fecharFormExperiencia();
+    if(top==='paywall') return closePaywall();
+    closeModal(top);
+  }
+});
 function goCadastro(){ show('s-cadastro'); setTimeout(()=>document.getElementById('in-nome').focus(),400); }
 
 // ── revelação do anjo ──
@@ -1348,9 +1375,9 @@ function renderBib(){
 }
 function openPaywall(ctx){
   if(ctx) document.getElementById('paywall-ctx').textContent='“'+ctx+'” faz parte do plano. Desbloqueie toda a biblioteca da Monica.';
-  document.getElementById('paywall').style.display='block'; buzz();
+  openModal('paywall'); buzz();
 }
-function closePaywall(){ document.getElementById('paywall').style.display='none'; }
+function closePaywall(){ closeModal('paywall'); }
 async function iniciarAssinatura(plano){
   if(!window.saaAuth || !window._userId){ closePaywall(); entrarSantuario(); return; } // precisa logar primeiro
   toast('Abrindo o checkout seguro…');
@@ -1643,7 +1670,7 @@ function openMagia(){
     renderMbDots(8); desenharVelaMb(7,true);
     document.getElementById('mb-dia-label').textContent='Jornada concluída';
     document.getElementById('mb-tema').textContent='7 velas acesas 🕊️';
-    mbMsg('Você concluiu os 7 dias da Magia dos Anjos! Que seus pedidos floresçam.', true);
+    mbMsg('Você concluiu os 7 dias da Magia dos Anjos. Que seus pedidos floresçam.', true);
     show('s-magia'); return;
   }
   if(s.feitoHoje){
@@ -1679,7 +1706,7 @@ function acenderMagia(){
   }catch(e){}
   var prox=s.dia+1;
   renderMbDots(prox);
-  if(prox>7){ mbMsg('Vela do Dia 7 acesa. Você concluiu a Magia dos Anjos! 🕊️', true); }
+  if(prox>7){ mbMsg('Vela do Dia 7 acesa. Você concluiu a Magia dos Anjos. 🕊️', true); }
   else { mbMsg('Vela do Dia '+s.dia+' acesa. 🕯️ Volte amanhã para o Dia '+prox+' — não pule, ou a magia recomeça.', false); }
 }
 function recomecarMagia(){
@@ -1965,10 +1992,10 @@ var _emocaoAtual = null;
 
 function precisoAnjo(){
   // abre o seletor emocional
-  document.getElementById('modal-emocao').style.display='block';
+  openModal('modal-emocao');
   chime();
 }
-function fecharEmocao(){ document.getElementById('modal-emocao').style.display='none'; }
+function fecharEmocao(){ closeModal('modal-emocao'); }
 function escolherEmocao(k){
   _emocaoAtual = k;
   fecharEmocao();
@@ -1995,14 +2022,14 @@ var RESP_FASES=[
 ];
 function abrirRespiracao(){
   _resp.ciclo=0; _resp.fase=0;
-  document.getElementById('modal-resp').style.display='flex';
+  openModal('modal-resp','flex');
   document.getElementById('resp-ciclo').textContent = '1 de '+_resp.total;
   proximaFaseResp(true);
   harpaStart(); // mesma harpa baixinha do Salmo
 }
 function fecharRespiracao(){
   if(_resp.timer){ clearTimeout(_resp.timer); _resp.timer=null; }
-  document.getElementById('modal-resp').style.display='none';
+  closeModal('modal-resp');
   harpaStop();
 }
 function proximaFaseResp(primeiro){
@@ -2073,9 +2100,9 @@ function abrirPratica(qual){
   var velas=document.getElementById('pr-velas');
   if(p.velas){ velas.textContent=p.velas; velas.style.display='block'; } else { velas.style.display='none'; }
   document.getElementById('pr-btn').textContent=p.botao;
-  document.getElementById('modal-pratica').style.display='block'; buzz();
+  openModal('modal-pratica'); buzz();
 }
-function fecharPratica(){ document.getElementById('modal-pratica').style.display='none'; }
+function fecharPratica(){ closeModal('modal-pratica'); }
 function entrarPratica(){
   var p=PRATICAS_INFO[window._praticaAtual]; fecharPratica(); if(p && p.abrir) p.abrir();
 }
@@ -2269,7 +2296,7 @@ function renderJoDots(diaAtual){
 function joMsg(txt,recomecar){ document.getElementById('jo-form').style.display='none'; document.getElementById('jo-msg').style.display='block'; document.getElementById('jo-msg-txt').textContent=txt; document.getElementById('jo-recomecar').style.display=recomecar?'block':'none'; }
 function openJornada(){
   var s=joEstado(); document.getElementById('jo-msg').style.display='none'; document.getElementById('jo-form').style.display='none';
-  if(s.completa){ renderJoDots(10); document.getElementById('jo-dia-label').textContent='Novena concluída'; document.getElementById('jo-tema').textContent='9 dias com seu anjo 🕊️'; joMsg('Você completou a Novena dos Anjos! Que esses 9 dias floresçam em você.', true); show('s-jornada'); return; }
+  if(s.completa){ renderJoDots(10); document.getElementById('jo-dia-label').textContent='Novena concluída'; document.getElementById('jo-tema').textContent='9 dias com seu anjo 🕊️'; joMsg('Você completou a Novena dos Anjos. Que esses 9 dias floresçam em você.', true); show('s-jornada'); return; }
   if(s.feitoHoje){ var df=s.dia-1, vf=reflexaoDoDia(df); renderJoDots(s.dia); document.getElementById('jo-dia-label').textContent='Dia '+df+' concluído'; document.getElementById('jo-tema').textContent=vf.t; joMsg('Você já cumpriu o dia de hoje. 🕊️ Volte amanhã para o Dia '+s.dia+'.', false); show('s-jornada'); return; }
   var v=reflexaoDoDia(s.dia); renderJoDots(s.dia);
   document.getElementById('jo-dia-label').textContent='Dia '+s.dia+' de 9';
@@ -2285,17 +2312,12 @@ function concluirDiaJornada(){
   buzz(); chime(); registrarPresenca();
   try{ localStorage.setItem('saa_jor_last', s.hoje); localStorage.setItem('saa_jor_dia', String(s.dia+1)); }catch(e){}
   var prox=s.dia+1; renderJoDots(prox);
-  if(prox>9){ joMsg('Você completou a Novena dos Anjos! 🕊️', true); }
+  if(prox>9){ joMsg('Você completou a Novena dos Anjos. 🕊️', true); }
   else { joMsg('Dia '+s.dia+' cumprido. 🕊️ Volte amanhã para o Dia '+prox+' — não pule, ou a jornada recomeça.', false); }
 }
 function recomecarJornada(){ try{ localStorage.removeItem('saa_jor_last'); localStorage.setItem('saa_jor_dia','1'); }catch(e){} openJornada(); }
 
 // ── Comunidade (mural de intenções; "orar por") ──
-var DEMO_COM=[
-  {id:'x1', nome:'Joana', texto:'Peço forças para a recuperação da minha mãe. 🙏', oracoes:34},
-  {id:'x2', nome:'Anônimo', texto:'Que eu encontre paz e um novo trabalho este mês.', oracoes:18},
-  {id:'x3', nome:'Carlos', texto:'Gratidão — meu filho nasceu com saúde! Orem em ação de graças.', oracoes:57},
-];
 var COM=[]; var COM_ORADOS={};
 try{ COM_ORADOS=JSON.parse(localStorage.getItem('saa_com_orados')||'{}'); }catch(e){}
 async function carregarComunidade(){
@@ -2303,7 +2325,14 @@ async function carregarComunidade(){
   if(!COM.length) el.innerHTML='<p style="color:var(--tinta-suave);font-size:14px;text-align:center;padding:10px">Carregando…</p>';
   var dados=null;
   if(window.saaAuth){ try{ var r=await window.saaAuth.client.from('comunidade').select('id,nome,texto,oracoes').eq('oculto',false).order('criado_em',{ascending:false}).limit(50); if(!r.error && r.data) dados=r.data; }catch(e){} }
-  COM = (dados && dados.length) ? dados : DEMO_COM;
+  COM = dados || [];
+  if(!COM.length){
+    el.innerHTML='<div style="padding:30px 16px; text-align:center; color:var(--tinta-suave); font-size:14px; line-height:1.6">'
+      +'<div style="font-size:32px; opacity:.6">🕊️</div>'
+      +'<p class="serif-soft" style="font-size:17px; margin:10px 0 4px; color:var(--ouro)">Ainda em silêncio</p>'
+      +'<p style="margin:0">Seja o primeiro a partilhar uma intenção. Os anjos ouvem antes mesmo de alguém ler.</p></div>';
+    return;
+  }
   renderComunidade();
 }
 function renderComunidade(){
@@ -2339,7 +2368,19 @@ async function postarIntencao(){
   ta.value=''; document.getElementById('com-anon').checked=false;
   renderComunidade(); buzz(); toast('Intenção compartilhada 🕊️');
 }
-function denunciar(id){ toast('Denúncia recebida. Obrigado por cuidar da comunidade. 🙏'); }
+async function denunciar(id){
+  if(!confirm('Reportar essa intenção para análise da curadoria?')) return;
+  try{
+    if(window.saaAuth){
+      await window.saaAuth.client.from('denuncias').insert({
+        intencao_id: id || null,
+        user_id: window._userId || null,
+        motivo: 'reportado pelo usuário'
+      });
+    }
+  }catch(e){}
+  toast('Denúncia recebida. Obrigado por cuidar da comunidade. 🙏');
+}
 
 // ── Lembretes diários (push) ──
 function urlBase64ToUint8Array(b64){ var pad='='.repeat((4-b64.length%4)%4); var base=(b64+pad).replace(/-/g,'+').replace(/_/g,'/'); var raw=atob(base); var arr=new Uint8Array(raw.length); for(var i=0;i<raw.length;i++) arr[i]=raw.charCodeAt(i); return arr; }
@@ -2357,7 +2398,7 @@ async function ativarLembretes(){
     var h={'Content-Type':'application/json'}; if(tok) h['Authorization']='Bearer '+tok;
     await fetch('/api/save-push',{ method:'POST', headers:h, body:JSON.stringify({ subscription: sub.toJSON(), ritual_horario:'morning' }) });
     try{ localStorage.setItem('saa_push_on','1'); }catch(e){}
-    toast('Lembretes ativados! Seu anjo vai te chamar todo dia 🕊️');
+    toast('Lembretes ativados. Seu anjo vai te chamar todo dia 🕊️');
     var el=document.getElementById('home-lembretes'); if(el) el.style.display='none';
   }catch(e){ toast('Não consegui ativar os lembretes agora.'); }
 }
@@ -2390,9 +2431,9 @@ function abrirFormExperiencia(tipo){
   document.getElementById('me-email').value=window._email||'';
   document.getElementById('me-tel').value='';
   document.getElementById('me-msg').textContent='';
-  document.getElementById('modal-exp').style.display='block'; buzz();
+  openModal('modal-exp'); buzz();
 }
-function fecharFormExperiencia(){ document.getElementById('modal-exp').style.display='none'; }
+function fecharFormExperiencia(){ closeModal('modal-exp'); }
 
 // ── Vela avulsa (simples, sem ritual nem registro) ──
 function openVelinha(){
