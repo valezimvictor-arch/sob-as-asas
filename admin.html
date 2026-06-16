@@ -71,6 +71,7 @@
       <button class="tab" id="tab-conteudo" onclick="aba('conteudo')">📜 Conteúdos</button>
       <button class="tab" id="tab-milagre" onclick="aba('milagre')">✨ Milagre</button>
       <button class="tab" id="tab-leads" onclick="aba('leads')">📩 Leads</button>
+      <button class="tab" id="tab-newsletter" onclick="aba('newsletter')">✉️ Newsletter</button>
     </div>
 
     <!-- ░░ PAINEL ░░ -->
@@ -136,6 +137,42 @@
       <div id="lista-milagre"></div>
     </div>
 
+    <!-- ░░ NEWSLETTER ░░ -->
+    <div id="sec-newsletter" class="hide">
+      <div class="nota">✉️ <strong>Carta dos Anjos</strong> — semanal, sábado 8h (BRT). Cron automático: <code>0 11 * * 6</code> (UTC). Conteúdo carregado da tabela <code>newsletters</code> (linha mais recente publicada). Sem nada cadastrado, o cron usa um fallback padrão.</div>
+      <div class="card">
+        <h3 style="font-family:'Playfair Display',serif; font-weight:400; font-size:18px; margin:0 0 12px">Conteúdo da próxima edição</h3>
+        <div class="row">
+          <div><label class="f">Anjo da semana</label><input type="text" id="nl-anjo" placeholder="Ex.: Vehuiah" /></div>
+          <div><label class="f">Datas de regência</label><input type="text" id="nl-datas" placeholder="21 a 25 de março" /></div>
+        </div>
+        <div class="row">
+          <div><label class="f">Coro</label><input type="text" id="nl-coro" placeholder="Serafins" /></div>
+          <div><label class="f">Assunto do e-mail</label><input type="text" id="nl-subject" placeholder="Sua Carta dos Anjos desta semana 🕊️" /></div>
+        </div>
+        <label class="f">Mensagem do anjo (corpo)</label>
+        <textarea id="nl-mensagem" rows="3" placeholder="Texto curto e poético sobre o anjo da semana."></textarea>
+        <label class="f">Citação da Monica</label>
+        <textarea id="nl-monica" rows="2" placeholder="Uma frase autoral curta, sem exclamação."></textarea>
+        <div class="row">
+          <div><label class="f">Título da prática</label><input type="text" id="nl-pratica-titulo" placeholder="A vela do recomeço" /></div>
+        </div>
+        <label class="f">Passos da prática (HTML básico permitido)</label>
+        <textarea id="nl-pratica" rows="3" placeholder="<strong>1.</strong> Acenda uma vela branca. <strong>2.</strong> Diga..."></textarea>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px">
+          <button class="btn" onclick="salvarNewsletter()">Salvar como rascunho</button>
+          <button class="btn" onclick="publicarNewsletter()">Publicar (usado no próximo cron)</button>
+          <button class="btn-sec" onclick="previewNewsletter()">👁 Pré-visualizar HTML</button>
+          <button class="btn-sec" onclick="enviarTesteNewsletter()">✉️ Enviar teste pra mim</button>
+        </div>
+        <p class="msg" id="nl-msg"></p>
+        <div style="background:#FBF2F1; border:1px solid rgba(192,57,43,.18); border-radius:12px; padding:12px 14px; margin-top:14px">
+          <button class="btn-sec" style="color:#C0392B; border-color:rgba(192,57,43,.3)" onclick="enviarAgora()">⚠️ Enviar AGORA pra todos os leads opt-in</button>
+          <p style="margin:8px 0 0; font-size:12px; color:#7A2117; line-height:1.55">Use só para testes finais ou edição especial. O envio automático já roda todo sábado 8h.</p>
+        </div>
+      </div>
+    </div>
+
     <!-- ░░ LEADS ░░ -->
     <div id="sec-leads" class="hide">
       <div class="nota">📩 Pessoas que demonstraram interesse: viagens (Israel, Caminhos de São Miguel) e cadastros da landing. Os dados (nome / telefone) vêm no próprio campo origem quando foi via formulário do app.</div>
@@ -161,11 +198,95 @@ function salvarChave(){ KEY=document.getElementById('adminkey').value.trim(); if
 function entrar(){ document.getElementById('auth').classList.add('hide'); document.getElementById('painel').classList.remove('hide'); recarregar(); }
 function recarregar(){ carregarMetricas(); carregarConteudos(); carregarMilagre(); carregarLeads(); }
 function aba(qual){
-  ['painel','conteudo','milagre','leads'].forEach(function(q){
+  ['painel','conteudo','milagre','leads','newsletter'].forEach(function(q){
     document.getElementById('sec-'+q).classList.toggle('hide', q!==qual);
     document.getElementById('tab-'+q).classList.toggle('on', q===qual);
   });
+  if(qual==='newsletter') carregarNewsletter();
 }
+
+// ── Newsletter ──
+function _nlPayload(){
+  return {
+    subject: document.getElementById('nl-subject').value.trim(),
+    preheader: 'O anjo da semana, uma mensagem da Monica e uma prática curta.',
+    anjo_nome: document.getElementById('nl-anjo').value.trim(),
+    anjo_datas: document.getElementById('nl-datas').value.trim(),
+    anjo_coro: document.getElementById('nl-coro').value.trim(),
+    anjo_mensagem: document.getElementById('nl-mensagem').value.trim(),
+    monica_quote: document.getElementById('nl-monica').value.trim(),
+    pratica_titulo: document.getElementById('nl-pratica-titulo').value.trim(),
+    pratica_passos: document.getElementById('nl-pratica').value.trim(),
+  };
+}
+async function carregarNewsletter(){
+  try{
+    var r=await fetch('/api/admin-newsletter',{headers:{'x-admin-key':KEY}});
+    if(!r.ok) return;
+    var j=await r.json();
+    if(j.ok && j.edicao){
+      var d=j.edicao;
+      document.getElementById('nl-subject').value=d.subject||'';
+      document.getElementById('nl-anjo').value=d.anjo_nome||'';
+      document.getElementById('nl-datas').value=d.anjo_datas||'';
+      document.getElementById('nl-coro').value=d.anjo_coro||'';
+      document.getElementById('nl-mensagem').value=d.anjo_mensagem||'';
+      document.getElementById('nl-monica').value=d.monica_quote||'';
+      document.getElementById('nl-pratica-titulo').value=d.pratica_titulo||'';
+      document.getElementById('nl-pratica').value=d.pratica_passos||'';
+    }
+  }catch(e){}
+}
+async function _saveNewsletter(publicar){
+  var p=_nlPayload();
+  if(!p.anjo_nome || !p.anjo_mensagem){ nlMsg('Preencha ao menos o anjo e a mensagem.','C0392B'); return; }
+  p.publicado = !!publicar;
+  try{
+    var r=await fetch('/api/admin-newsletter',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-key':KEY},
+      body:JSON.stringify(p)
+    });
+    var j=await r.json();
+    if(!r.ok || !j.ok) throw new Error(j.error||'falhou');
+    nlMsg(publicar? 'Publicada. O próximo cron de sábado vai enviar esta edição.' : 'Rascunho salvo.','BA7517');
+  }catch(e){ nlMsg('Erro: '+(e.message||e),'C0392B'); }
+}
+function salvarNewsletter(){ _saveNewsletter(false); }
+function publicarNewsletter(){ _saveNewsletter(true); }
+async function previewNewsletter(){
+  nlMsg('Renderizando preview…','BA7517');
+  try{
+    var r=await fetch('/api/cron-newsletter?preview=1',{headers:{'x-admin-key':KEY}});
+    if(!r.ok){ nlMsg('Erro ao renderizar.','C0392B'); return; }
+    var html=await r.text();
+    var blob=new Blob([html],{type:'text/html'});
+    var url=URL.createObjectURL(blob);
+    window.open(url,'_blank');
+    nlMsg('','BA7517');
+  }catch(e){ nlMsg('Erro: '+e.message,'C0392B'); }
+}
+async function enviarTesteNewsletter(){
+  var email=prompt('Enviar teste para qual e-mail?');
+  if(!email) return;
+  nlMsg('Enviando teste para '+email+'…','BA7517');
+  try{
+    var r=await fetch('/api/cron-newsletter?preview=1&email='+encodeURIComponent(email), {headers:{'x-admin-key':KEY}});
+    if(r.ok) nlMsg('Teste enviado para '+email,'BA7517');
+    else { var j=await r.json().catch(function(){return{};}); nlMsg('Erro: '+(j.error||'falhou'),'C0392B'); }
+  }catch(e){ nlMsg('Erro: '+e.message,'C0392B'); }
+}
+async function enviarAgora(){
+  if(!confirm('Tem certeza? Isso envia a edição publicada AGORA para TODOS os leads opt-in.')) return;
+  nlMsg('Disparando…','BA7517');
+  try{
+    var r=await fetch('/api/cron-newsletter', {headers:{'x-admin-key':KEY}});
+    var j=await r.json();
+    if(j.ok) nlMsg('Enviados: '+j.enviados+'  ·  Falhas: '+j.falhas+'  ·  Total: '+j.total,'BA7517');
+    else nlMsg('Erro: '+(j.error||'falhou'),'C0392B');
+  }catch(e){ nlMsg('Erro: '+e.message,'C0392B'); }
+}
+function nlMsg(t,cor){ var el=document.getElementById('nl-msg'); el.textContent=t; el.style.color='#'+cor; }
 var DEMO_MET={usuarios:128,novos7d:23,assinantes:41,trials:12,mrr:1020,arr:12240,pedidos:67,candidatos:9,conteudos:11,gratidoes:54,leads:340};
 async function carregarMetricas(){
   var el=document.getElementById('metricas'); el.innerHTML='<p class="vazio">Carregando…</p>';
