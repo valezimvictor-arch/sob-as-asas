@@ -276,6 +276,16 @@
   </div>
 </section>
 
+<!-- ░░ CALENDÁRIO LITÚRGICO ANGELICAL ░░ -->
+<section id="s-calendario" class="screen">
+  <div style="flex:1; overflow-y:auto" class="pad">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+    <h2 class="serif" style="font-size:26px; margin:10px 0 0; font-weight:400">Calendário Angelical</h2>
+    <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 16px; line-height:1.55">As datas em que os anjos se aproximam mais — para você marcar, lembrar e se preparar.</p>
+    <div id="cal-lista"></div>
+  </div>
+</section>
+
 <!-- ░░ JORNADA "Conhecer seu anjo em 7 dias" ░░ -->
 <section id="s-jornada-anjo" class="screen">
   <div style="flex:1; overflow-y:auto" class="pad">
@@ -439,6 +449,16 @@
         <span style="color:var(--ouro); font-size:20px">›</span>
       </div>
 
+      <!-- 1d. EVENTO ESPECIAL (Novena dos Anjos da Guarda 29/set–7/out, Anjos da Humanidade etc) -->
+      <div id="home-evento-card" class="card" style="display:none; margin-top:10px; padding:16px; align-items:center; gap:14px; cursor:pointer; background:linear-gradient(90deg, rgba(186,117,23,.08), rgba(239,159,39,.16)); border-color:rgba(186,117,23,.22)" onclick="abrirEventoAtual()">
+        <div style="width:46px;height:46px;border-radius:12px;background:rgba(239,159,39,.18);display:flex;align-items:center;justify-content:center;font-size:22px">📅</div>
+        <div style="flex:1; min-width:0">
+          <p id="home-evento-titulo" style="margin:0; font-weight:600; color:var(--tinta)">—</p>
+          <p id="home-evento-sub" style="margin:2px 0 0; font-size:12px; color:var(--ouro); line-height:1.4">—</p>
+        </div>
+        <span style="color:var(--ouro); font-size:20px">›</span>
+      </div>
+
       <!-- 1c. ANTES DE DORMIR (aparece após 20h) -->
       <div id="home-dormir-card" class="card" style="display:none; margin-top:10px; padding:16px; align-items:center; gap:14px; cursor:pointer; background:linear-gradient(90deg, rgba(30,90,153,.06), rgba(55,138,221,.10)); border-color:rgba(55,138,221,.18)" onclick="abrirAntesDormir()">
         <div style="width:46px;height:46px;border-radius:12px;background:rgba(55,138,221,.12);display:flex;align-items:center;justify-content:center;font-size:22px">🌙</div>
@@ -560,6 +580,16 @@
         <div style="flex:1">
           <p style="margin:0; font-weight:600">Lembretes diários</p>
           <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">Seu anjo te chama na hora do ritual</p>
+        </div>
+        <span style="color:var(--tinta-suave)">›</span>
+      </div>
+
+      <!-- 7b. CALENDÁRIO ANGELICAL -->
+      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="openCalendario()">
+        <div style="width:42px;height:42px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📅</div>
+        <div style="flex:1">
+          <p style="margin:0; font-weight:600">Calendário Angelical</p>
+          <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">As datas em que os anjos se aproximam mais</p>
         </div>
         <span style="color:var(--tinta-suave)">›</span>
       </div>
@@ -795,6 +825,7 @@
       </div>
       <button class="btn-ouro" style="margin-top:14px" onclick="imprimirCarta()">📄 Imprimir / salvar em PDF</button>
       <button class="btn-ghost" style="margin-top:10px" onclick="compartilharCarta()">Compartilhar minha carta</button>
+      <button class="btn-ghost" style="margin-top:10px" onclick="compartilharCirculoOracao('Selei uma carta no Correio Angelical. Você ora por ela comigo?')">🤝 Convidar círculo de oração</button>
       <button class="btn-ouro" style="margin-top:10px" onclick="show('s-home')">Voltar ao santuário</button>
     </div>
   </div>
@@ -1383,6 +1414,7 @@ function initHome(){
   carregarVelasColetivo();
   atualizarHomeJornadaCard();
   atualizarHomeDormirCard();
+  atualizarHomeEventoCard();
   // Card de "Meu anjo" no topo da home
   var n = window._perfil && window._perfil.anjo_n;
   var cn=document.getElementById('home-anjo-card-nome'), cc=document.getElementById('home-anjo-card-coro'), cd=document.getElementById('home-anjo-card-dom');
@@ -2002,6 +2034,140 @@ function shareAnjo(){
   if(navigator.share){ navigator.share({title:'Sob as Asas', text:txt, url:location.origin}).catch(function(){}); }
   else { try{ navigator.clipboard.writeText(txt+' '+location.origin); }catch(e){} toast('Link copiado ✨'); }
   buzz();
+}
+
+// ── Calendário Litúrgico Angelical ──
+// Datas curadas pela equipe Monica. Anos relativos (todo ano se repete).
+// Cada entrada: { d: dia, m: mês (1-12), durDias: opcional (evento de N dias),
+//   titulo, coro/icone, descricao, key opcional para eventos ativos no app }
+var CALENDARIO_ANJOS = [
+  { d:1, m:1, titulo:'Ano novo angelical', icone:'✨',
+    descricao:'O primeiro dia do ano é regido por Vehuiah, o primeiro dos 72. Marque uma intenção forte para este ciclo — Vehuiah amplifica recomeços.' },
+  { d:31, m:5, titulo:'Anjos da Humanidade — primeira janela', icone:'🪽',
+    descricao:'Pessoas nascidas hoje são Anjos da Humanidade. Têm papel fundamental e podem escolher entre os 72 o anjo regente que mais ressoa.' },
+  { d:12, m:8, titulo:'Anjos da Humanidade — segunda janela', icone:'🪽',
+    descricao:'Segunda data sagrada dos Anjos da Humanidade no ano.' },
+  { d:24, m:10, titulo:'Anjos da Humanidade — terceira janela', icone:'🪽',
+    descricao:'Terceira data dos Anjos da Humanidade. Energia de transição entre coros.' },
+  { d:5, m:1, titulo:'Anjos da Humanidade — quarta janela', icone:'🪽',
+    descricao:'Quarta janela dos Anjos da Humanidade. Os recém-nascidos nessas datas têm missão de ponte entre planos.' },
+  { d:19, m:3, titulo:'Anjos da Humanidade — quinta janela', icone:'🪽',
+    descricao:'Última janela do ano dos Anjos da Humanidade.' },
+  { d:29, m:9, durDias:9, key:'novena_arcanjos', titulo:'Novena dos Anjos da Guarda', icone:'📿',
+    descricao:'Nove dias começando em São Miguel (29/set) até 7 de outubro — Festa dos Santos Anjos da Guarda. Tradição milenar para se aproximar do seu anjo guardião.' },
+  { d:29, m:9, titulo:'Festa de São Miguel Arcanjo', icone:'⚔️',
+    descricao:'Príncipe das hostes celestes, protetor contra o mal. Dia de invocação para coragem, proteção e justiça.' },
+  { d:2, m:10, titulo:'Festa dos Santos Anjos da Guarda', icone:'🕊️',
+    descricao:'O dia oficial de homenagem aos anjos da guarda na tradição cristã. Acenda uma vela branca e agradeça pela proteção do ano.' },
+  { d:24, m:3, titulo:'Festa do Arcanjo Gabriel', icone:'📯',
+    descricao:'O mensageiro divino — anjo da anunciação, da palavra inspirada e dos sonhos reveladores.' },
+  { d:24, m:10, titulo:'Festa do Arcanjo Rafael', icone:'🌿',
+    descricao:'O médico celestial — anjo da cura, dos viajantes e da reconciliação.' },
+  { d:21, m:12, titulo:'Solstício de inverno (Sul)', icone:'🌒',
+    descricao:'Noite mais longa do hemisfério Sul. Tradicionalmente um momento de recolhimento e de invocar a luz dos anjos para o ciclo que vem.' },
+];
+
+function _proximasEntradas(){
+  var hoje = new Date(); hoje.setHours(0,0,0,0);
+  var anoAtual = hoje.getFullYear();
+  return CALENDARIO_ANJOS.map(function(e){
+    var data = new Date(anoAtual, e.m - 1, e.d);
+    if(data < hoje) data = new Date(anoAtual + 1, e.m - 1, e.d);
+    return Object.assign({}, e, { data:data, _ts: data.getTime() });
+  }).sort(function(a,b){ return a._ts - b._ts; });
+}
+
+function _eventoAtivoHoje(){
+  // detecta se HOJE está dentro de algum evento (durDias > 1)
+  var hoje = new Date(); var hY=hoje.getFullYear(), hM=hoje.getMonth()+1, hD=hoje.getDate();
+  for(var i=0;i<CALENDARIO_ANJOS.length;i++){
+    var e = CALENDARIO_ANJOS[i];
+    if(!e.durDias) continue;
+    var ini = new Date(hY, e.m - 1, e.d);
+    var fim = new Date(ini.getTime() + (e.durDias-1)*86400000);
+    if(hoje >= ini && hoje <= fim){
+      var diaN = Math.floor((hoje - ini)/86400000) + 1;
+      return { evento:e, diaN:diaN, total:e.durDias };
+    }
+    // tenta no ano anterior (caso evento cruze ano novo)
+    ini = new Date(hY - 1, e.m - 1, e.d);
+    fim = new Date(ini.getTime() + (e.durDias-1)*86400000);
+    if(hoje >= ini && hoje <= fim){
+      var diaN2 = Math.floor((hoje - ini)/86400000) + 1;
+      return { evento:e, diaN:diaN2, total:e.durDias };
+    }
+  }
+  return null;
+}
+
+function openCalendario(){
+  var el = document.getElementById('cal-lista');
+  if(el){
+    var MES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    var html = '';
+    _proximasEntradas().forEach(function(e){
+      var dt = e.data;
+      var dia = String(dt.getDate()).padStart(2,'0');
+      var mes = MES[dt.getMonth()];
+      var isHoje = (new Date().toDateString() === dt.toDateString());
+      var durChip = e.durDias ? '<span style="margin-left:8px; font-size:10.5px; background:var(--ouro-bg); color:#854F0B; padding:2px 8px; border-radius:8px; letter-spacing:.04em">'+e.durDias+' dias</span>' : '';
+      html += '<div class="card" style="padding:14px 16px; display:flex; gap:14px; margin-bottom:10px; '+(isHoje?'border-color:var(--ouro-claro); background:var(--ouro-bg)':'')+'">'
+        + '<div style="text-align:center; min-width:56px">'
+          + '<div class="serif" style="font-size:22px; line-height:1; color:var(--ouro)">'+dia+'</div>'
+          + '<div style="font-size:10px; color:var(--tinta-suave); letter-spacing:.16em; text-transform:uppercase; margin-top:4px">'+mes+'</div>'
+        + '</div>'
+        + '<div style="flex:1; min-width:0">'
+          + '<p style="margin:0; font-weight:600; font-size:14.5px; color:var(--tinta)">'+e.icone+' '+esc(e.titulo)+durChip+'</p>'
+          + '<p style="margin:6px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.55">'+esc(e.descricao)+'</p>'
+        + '</div>'
+      + '</div>';
+    });
+    el.innerHTML = html;
+  }
+  show('s-calendario');
+}
+
+// Card de evento ativo na Home (Novena dos Anjos etc)
+function atualizarHomeEventoCard(){
+  var el = document.getElementById('home-evento-card'); if(!el) return;
+  var ativo = _eventoAtivoHoje();
+  if(!ativo){ el.style.display = 'none'; return; }
+  document.getElementById('home-evento-titulo').textContent = ativo.evento.icone + ' ' + ativo.evento.titulo;
+  document.getElementById('home-evento-sub').textContent = 'Dia ' + ativo.diaN + ' de ' + ativo.total + ' — entre na prática agora';
+  el.style.display = 'flex';
+  el.dataset.eventoKey = ativo.evento.key || '';
+}
+function abrirEventoAtual(){
+  var el = document.getElementById('home-evento-card');
+  var key = el && el.dataset.eventoKey;
+  // a Novena dos Anjos da Guarda usa o fluxo de Novena (s-jornada) já existente
+  if(key === 'novena_arcanjos' && typeof openJornada === 'function'){ openJornada(); return; }
+  openCalendario();
+}
+
+// ── Círculo de Oração: convidar 3-5 pessoas para orar pelo seu pedido ──
+async function compartilharCirculoOracao(textoPedido){
+  if(!textoPedido) textoPedido = 'Tenho um pedido no Sob as Asas. Você ora comigo?';
+  var url = 'https://www.sobasasas.com.br/landing?via=circulo';
+  var texto = '🕊️ ' + textoPedido + '\n\nO Sob as Asas é o app de práticas com anjos da guarda da Monica Buonfiglio. Entre no círculo:';
+  // Web Share API (mobile nativo)
+  if(navigator.share){
+    try{
+      await navigator.share({ title:'Círculo de oração — Sob as Asas', text:texto, url:url });
+      try{ if(window.saaAuth && window._userId){ await window.saaAuth.client.from('circulos').insert({ user_id:window._userId, texto:textoPedido }); } }catch(_){}
+      toast('Convite enviado. Seu círculo se forma 🪽');
+      return;
+    }catch(e){ /* usuário cancelou — silencioso */ }
+  }
+  // Fallback: copia para área de transferência + WhatsApp
+  try{
+    var msg = texto + ' ' + url;
+    await navigator.clipboard.writeText(msg);
+    toast('Mensagem copiada. Cole no seu grupo do WhatsApp 🪽');
+    // abre WhatsApp web/app
+    var wa = 'https://wa.me/?text=' + encodeURIComponent(msg);
+    window.open(wa, '_blank');
+  }catch(e){ toast('Não consegui compartilhar agora.'); }
 }
 
 // ── Jornada "Conhecer seu anjo em 7 dias" ──
