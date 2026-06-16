@@ -77,6 +77,15 @@
     <div id="sec-painel">
       <div class="nota">Controle da plataforma: usuários, receita e engajamento.</div>
       <div id="metricas"></div>
+
+      <!-- Funil de conversão -->
+      <div class="card" style="margin-top:18px">
+        <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:14px">
+          <h3 style="font-family:'Playfair Display',serif; font-weight:400; font-size:18px; margin:0">Funil de conversão</h3>
+          <p id="funil-meta" style="margin:0; font-size:11px; color:var(--suave); letter-spacing:.04em; text-transform:uppercase">Lead → Cadastro → Trial → Assinante</p>
+        </div>
+        <div id="funil"></div>
+      </div>
     </div>
 
     <!-- ░░ CONTEÚDOS ░░ -->
@@ -157,7 +166,7 @@ function aba(qual){
     document.getElementById('tab-'+q).classList.toggle('on', q===qual);
   });
 }
-var DEMO_MET={usuarios:128,novos7d:23,assinantes:41,trials:12,mrr:1020,arr:12240,pedidos:67,candidatos:9,conteudos:11,gratidoes:54};
+var DEMO_MET={usuarios:128,novos7d:23,assinantes:41,trials:12,mrr:1020,arr:12240,pedidos:67,candidatos:9,conteudos:11,gratidoes:54,leads:340};
 async function carregarMetricas(){
   var el=document.getElementById('metricas'); el.innerHTML='<p class="vazio">Carregando…</p>';
   var m=null, demo=false;
@@ -172,6 +181,42 @@ async function carregarMetricas(){
     ['Conteúdos', m.conteudos, 'publicados/agendados'], ['Gratidões', m.gratidoes, 'registradas'],
   ];
   el.innerHTML = cards.map(function(c){ return '<div class="metric"><div class="ml">'+c[0]+'</div><div class="mv">'+c[1]+'</div><div class="mh">'+c[2]+'</div></div>'; }).join('') + (demo?'<p class="demo" style="grid-column:1/-1">Dados de demonstração (backend não conectado).</p>':'');
+  renderFunil(m);
+}
+
+function renderFunil(m){
+  var el=document.getElementById('funil'); if(!el) return;
+  var passos=[
+    {rotulo:'Leads', valor:m.leads||0, cor:'#EAF2FB', tinta:'#1E5A99', icon:'📩'},
+    {rotulo:'Cadastros', valor:m.usuarios||0, cor:'#FAF3E4', tinta:'#7A4D0E', icon:'🪽'},
+    {rotulo:'Trial', valor:m.trials||0, cor:'#F6E6C0', tinta:'#5A3A06', icon:'🕯️'},
+    {rotulo:'Assinantes', valor:m.assinantes||0, cor:'#EFD79A', tinta:'#3C2604', icon:'✨'},
+  ];
+  var max=Math.max.apply(null, passos.map(function(p){return p.valor;}).concat([1]));
+  function pct(a,b){ if(!b) return '—'; return ((a/b)*100).toFixed(1).replace('.0','')+'%'; }
+  var html = '<div style="display:flex; flex-direction:column; gap:10px">';
+  passos.forEach(function(p, i){
+    var larg = Math.max(8, (p.valor/max)*100);
+    var convAnt = (i>0 && passos[i-1].valor) ? pct(p.valor, passos[i-1].valor) : null;
+    html += '<div>'
+      + '<div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px; font-size:13px">'
+        + '<span style="color:var(--tinta); font-weight:500">'+p.icon+' '+p.rotulo+'</span>'
+        + '<span style="color:var(--suave); font-variant-numeric:tabular-nums">'+Number(p.valor).toLocaleString('pt-BR')
+        + (convAnt? ' <span style="color:'+p.tinta+'; font-size:11px; background:'+p.cor+'; padding:2px 7px; border-radius:7px; margin-left:6px">'+convAnt+' do anterior</span>' : '')
+        + '</span>'
+      + '</div>'
+      + '<div style="background:#F4F1E9; border-radius:8px; height:18px; overflow:hidden">'
+        + '<div style="width:'+larg+'%; height:100%; background:linear-gradient(90deg,'+p.cor+' 0%, '+p.tinta+' 100%); border-radius:8px; transition:width .6s ease"></div>'
+      + '</div>'
+    + '</div>';
+  });
+  html += '</div>';
+  // Conversão total
+  var totalConv = (passos[0].valor && passos[3].valor) ? pct(passos[3].valor, passos[0].valor) : '—';
+  html += '<p style="text-align:center; margin:16px 0 0; font-size:12.5px; color:var(--suave); line-height:1.6">'
+    + 'Conversão total <strong style="color:var(--ouro)">lead → assinante</strong>: <strong style="color:var(--tinta); font-size:14px">'+totalConv+'</strong>'
+    + '</p>';
+  el.innerHTML = html;
 }
 function esc(s){ return String(s||'').replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
 function iniciais(n){ return (n||'?').split(' ').map(function(p){return p[0];}).slice(0,2).join('').toUpperCase(); }

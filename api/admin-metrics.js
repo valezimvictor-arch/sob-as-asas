@@ -3,7 +3,7 @@
 
 import { supabase } from './_lib/supabase.js';
 
-const PRECO = { mensal: 24.90, anual: 199 / 12 }; // MRR equivalente
+const PRECO = { mensal: 19.90, anual: 149 / 12 }; // MRR equivalente (R$ 12,42/mês no anual)
 
 async function count(tabela, filtro) {
   let q = supabase.from(tabela).select('id', { count: 'exact', head: true });
@@ -20,13 +20,14 @@ export default async function handler(req, res) {
   const seteDias = new Date(Date.now() - 7 * 86400000).toISOString();
 
   try {
-    const [usuarios, novos7d, pedidos, candidatos, conteudos, gratidoes] = await Promise.all([
+    const [usuarios, novos7d, pedidos, candidatos, conteudos, gratidoes, leads] = await Promise.all([
       count('users'),
       count('users', q => q.gte('criado_em', seteDias)),
       count('pedidos'),
       count('pedidos', q => q.eq('candidato_milagre', true)),
       count('conteudos'),
       count('gratidao'),
+      count('leads'),
     ]);
 
     // assinaturas para MRR
@@ -40,7 +41,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       metricas: {
-        usuarios, novos7d, pedidos, candidatos, conteudos, gratidoes,
+        usuarios, novos7d, pedidos, candidatos, conteudos, gratidoes, leads,
         assinantes: ativos, trials,
         mrr: Math.round(mrr),
         arr: Math.round(mrr * 12),
