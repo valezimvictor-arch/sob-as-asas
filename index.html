@@ -66,6 +66,65 @@
   .reveal-fade{ opacity:0; transform:translateY(10px); transition:opacity 1s ease .5s, transform 1s ease .5s; }
   .reveal-fade.on{ opacity:1; transform:none; }
 
+  /* Estrela cadente — atravessa a tela e explode em centelha sobre o nome */
+  .estrela{ position:absolute; top:-10%; left:120%; width:5px; height:5px; border-radius:50%;
+    background:#FFFAE5; box-shadow:0 0 14px 4px rgba(255,250,229,.95), 0 0 40px 10px rgba(239,159,39,.55);
+    opacity:0; pointer-events:none; z-index:5; }
+  .estrela::after{ content:''; position:absolute; top:50%; left:6px; width:90px; height:2px; border-radius:2px;
+    background:linear-gradient(90deg, rgba(255,250,229,0), rgba(255,250,229,.95), rgba(255,250,229,.6));
+    transform:translateY(-50%) rotate(28deg); filter:blur(.5px); }
+  .estrela.go{ animation:cair 1.4s cubic-bezier(.55,.06,.68,.19) forwards; }
+  @keyframes cair{
+    0%{ opacity:0; top:-12%; left:120%; }
+    10%{ opacity:1; }
+    85%{ opacity:1; }
+    100%{ opacity:0; top:42%; left:50%; transform:translate(-50%,-50%) scale(2.4); box-shadow:0 0 40px 14px rgba(255,250,229,1), 0 0 80px 24px rgba(239,159,39,.7); }
+  }
+  /* clarão explosivo no momento da revelação */
+  .clarao{ position:absolute; top:42%; left:50%; transform:translate(-50%,-50%); width:0; height:0; border-radius:50%;
+    background:radial-gradient(circle, rgba(255,250,229,.9) 0%, rgba(239,159,39,.4) 35%, rgba(239,159,39,0) 70%);
+    pointer-events:none; opacity:0; z-index:4; }
+  .clarao.go{ animation:explodir 1.6s ease-out forwards; }
+  @keyframes explodir{
+    0%{ width:0; height:0; opacity:0; }
+    20%{ width:120px; height:120px; opacity:1; }
+    100%{ width:600px; height:600px; opacity:0; }
+  }
+
+  /* Nuvens douradas se movendo bem devagar no welcome */
+  .nuvens{ position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+  .nuvem{ position:absolute; border-radius:50%; filter:blur(36px); opacity:.55;
+    background:radial-gradient(circle, rgba(255,225,160,.6) 0%, rgba(255,225,160,0) 70%); }
+  .nuvem.a{ width:340px; height:200px; top:-40px; left:-60px; animation:nuvemA 60s linear infinite; }
+  .nuvem.b{ width:260px; height:180px; bottom:10%; right:-80px; animation:nuvemB 90s linear infinite; }
+  .nuvem.c{ width:300px; height:160px; top:40%; left:40%; animation:nuvemC 75s linear infinite; opacity:.4; }
+  @keyframes nuvemA{ 0%{ transform:translateX(0)} 50%{ transform:translateX(80px)} 100%{ transform:translateX(0)} }
+  @keyframes nuvemB{ 0%{ transform:translateX(0)} 50%{ transform:translateX(-100px)} 100%{ transform:translateX(0)} }
+  @keyframes nuvemC{ 0%{ transform:translate(0,0)} 50%{ transform:translate(-60px,30px)} 100%{ transform:translate(0,0)} }
+
+  /* Carta selada — dobra + selo caindo */
+  .carta-cont{ position:relative; width:200px; height:140px; margin:10px auto 6px; perspective:900px; }
+  .carta{ position:absolute; inset:0; transform-style:preserve-3d; transform-origin:center top; }
+  .carta-papel{ position:absolute; inset:0; background:#FAF3E4; border:1px solid #EAD9A5; border-radius:8px;
+    box-shadow:0 8px 22px rgba(186,117,23,.18); }
+  .carta-dobra{ position:absolute; left:0; right:0; top:0; height:50%;
+    background:linear-gradient(180deg,#F5E6BE,#FAF3E4); border-bottom:1px solid #D8C481;
+    transform-origin:bottom; transform:rotateX(0deg); transition:transform 1.2s cubic-bezier(.5,0,.25,1); }
+  .carta.fold .carta-dobra{ transform:rotateX(180deg); }
+  .selo{ position:absolute; top:-90px; left:50%; transform:translateX(-50%) scale(.6); opacity:0;
+    width:54px; height:54px; border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #F6D38A 0%, #BA7517 70%, #8A5210 100%);
+    box-shadow:0 4px 14px rgba(186,117,23,.45), inset -3px -4px 8px rgba(0,0,0,.25), inset 3px 4px 8px rgba(255,255,255,.35);
+    color:#FFF7DE; font-family:'Playfair Display',serif; font-size:24px;
+    display:flex; align-items:center; justify-content:center; z-index:3; }
+  .selo.go{ animation:selar 1.2s cubic-bezier(.6,-.28,.74,.05) .8s forwards; }
+  @keyframes selar{
+    0%{ top:-90px; opacity:0; transform:translateX(-50%) scale(.5) rotate(-30deg); }
+    60%{ opacity:1; transform:translateX(-50%) scale(1.15) rotate(0deg); }
+    80%{ transform:translateX(-50%) scale(.92) rotate(0deg); }
+    100%{ top:35%; opacity:1; transform:translate(-50%,-50%) scale(1) rotate(0deg); }
+  }
+
   .nav{ position:sticky; bottom:0; display:flex; justify-content:space-around;
     padding:12px 8px max(env(safe-area-inset-bottom),12px); background:rgba(251,250,247,.92);
     backdrop-filter:blur(10px); border-top:1px solid var(--linha); }
@@ -82,6 +141,7 @@
 
 <!-- ░░ BOAS-VINDAS (tela de abertura) ░░ -->
 <section id="s-welcome" class="screen active">
+  <div class="nuvens"><div class="nuvem a"></div><div class="nuvem b"></div><div class="nuvem c"></div></div>
   <div class="luzes" id="welcome-luzes"></div>
   <div class="halo" style="top:-70px"></div>
   <div class="pad" style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; position:relative;">
@@ -137,6 +197,8 @@
 <section id="s-reveal" class="screen" style="background:var(--ouro-bg)">
   <div class="luzes" id="reveal-luzes"></div>
   <div class="halo" id="reveal-halo" style="top:60px; width:360px; height:360px"></div>
+  <div id="rv-estrela" class="estrela"></div>
+  <div id="rv-clarao" class="clarao"></div>
   <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center">
     <p class="reveal-fade serif-soft" id="rv-intro" style="font-size:19px; color:var(--ouro)">O seu anjo da guarda é…</p>
     <div class="reveal-anjo" id="rv-anjo" style="margin:18px 0">
@@ -164,7 +226,10 @@
         <span class="label">Seu e-mail</span>
         <input id="in-email" class="campo" type="email" inputmode="email" placeholder="voce@email.com" style="margin-top:8px" />
         <p id="login-msg" style="color:#C0392B; font-size:13px; min-height:16px; margin:8px 0 0"></p>
-        <button class="btn-ouro" style="margin-top:8px" onclick="enviarMagicLink()">Receber meu link mágico</button>
+        <button id="login-btn" class="btn-ouro" style="margin-top:8px; position:relative; overflow:hidden" onclick="enviarMagicLink()">
+          <span id="login-btn-label">Receber meu link mágico</span>
+          <div id="login-prog" style="position:absolute; left:0; bottom:0; height:3px; width:0%; background:rgba(90,58,6,.85); transition:width .35s ease"></div>
+        </button>
         <button class="btn-ghost" style="margin-top:12px" onclick="show('s-home')">Entrar sem conta por agora</button>
       </div>
     </div>
@@ -534,7 +599,13 @@
     <!-- estado: selada (ritual) -->
     <div id="correio-selada" style="display:none">
       <div style="text-align:center; margin-top:10px">
-        <div style="font-size:32px">💌</div>
+        <div class="carta-cont" id="carta-anim">
+          <div class="carta" id="carta-papel-wrap">
+            <div class="carta-papel"></div>
+            <div class="carta-dobra"></div>
+            <div class="selo" id="carta-selo">𝒮</div>
+          </div>
+        </div>
         <h2 class="serif" style="font-size:26px; margin:8px 0 0">Sua carta está selada</h2>
       </div>
       <div class="card" style="margin-top:18px; padding:16px 18px">
@@ -1009,11 +1080,19 @@ function revelar(){
   if(window._userId) persistirPerfil(window._userId);  // já logado → grava o perfil na hora
 
   show('s-reveal');
-  // dispara animações em sequência
+  // reset
   document.querySelectorAll('#s-reveal .reveal-anjo, #s-reveal .reveal-fade').forEach(e=>e.classList.remove('on'));
-  setTimeout(()=>document.getElementById('rv-intro').classList.add('on'),300);
-  setTimeout(()=>{ document.getElementById('rv-anjo').classList.add('on'); buzz(); chime(); },1100);
-  setTimeout(()=>document.querySelectorAll('#rv-attr,#rv-faixa,#s-reveal .reveal-fade').forEach(e=>e.classList.add('on')),2000);
+  var estrela=document.getElementById('rv-estrela'); var clarao=document.getElementById('rv-clarao');
+  if(estrela){ estrela.classList.remove('go'); void estrela.offsetWidth; }
+  if(clarao){ clarao.classList.remove('go'); void clarao.offsetWidth; }
+  // 1. estrela cadente atravessa a tela (0-1.4s)
+  setTimeout(()=>{ if(estrela) estrela.classList.add('go'); },150);
+  // 2. clarão na hora do impacto, junto com a revelação do nome
+  setTimeout(()=>{ if(clarao) clarao.classList.add('go'); buzz(); chime(); },1100);
+  // 3. nome do anjo aparece "como" sendo gerado pelo impacto
+  setTimeout(()=>document.getElementById('rv-intro').classList.add('on'),350);
+  setTimeout(()=>{ document.getElementById('rv-anjo').classList.add('on'); },1200);
+  setTimeout(()=>document.querySelectorAll('#rv-attr,#rv-faixa,#s-reveal .reveal-fade').forEach(e=>e.classList.add('on')),2100);
 }
 
 // ── home ──
@@ -1269,16 +1348,58 @@ function plToggle(){
   document.getElementById('pl-toggle').textContent=plState.playing?'❚❚':'▶';
   buzz();
   if(plState.playing){
+    harpaStart();
     plState.timer=setInterval(function(){
       plState.cur=Math.min(plState.dur, plState.cur+1);
       document.getElementById('pl-cur').textContent=fmtTime(plState.cur);
       document.getElementById('pl-bar').style.width=(plState.cur/plState.dur*100)+'%';
-      if(plState.cur>=plState.dur){ clearInterval(plState.timer); plState.timer=null; plState.playing=false; document.getElementById('pl-toggle').textContent='▶'; }
+      if(plState.cur>=plState.dur){ clearInterval(plState.timer); plState.timer=null; plState.playing=false; document.getElementById('pl-toggle').textContent='▶'; harpaStop(); }
     },1000);
-  } else if(plState.timer){ clearInterval(plState.timer); plState.timer=null; }
+  } else { if(plState.timer){ clearInterval(plState.timer); plState.timer=null; } harpaStop(); }
+}
+
+// ── Som ambiente: harpa celestial bem baixinha (drone com 3 notas em acorde maior) ──
+var _harpa={ctx:null, nodes:[], gain:null, lfo:null};
+function harpaStart(){
+  try{
+    if(_harpa.ctx){ return; }
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return;
+    var ctx = new AC();
+    var master = ctx.createGain();
+    master.gain.value = 0.0;
+    master.connect(ctx.destination);
+    // acorde Dó maior (C4-E4-G4) — frequências em Hz
+    var freqs = [261.63, 329.63, 392.00];
+    var nodes = freqs.map(function(f, i){
+      var o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = f;
+      var g = ctx.createGain(); g.gain.value = (i===0 ? 0.55 : (i===1 ? 0.42 : 0.50));
+      o.connect(g); g.connect(master); o.start(); return o;
+    });
+    // LFO bem lento para "respirar" o volume — sensação de harpa flutuando
+    var lfo = ctx.createOscillator(); lfo.type='sine'; lfo.frequency.value = 0.12;
+    var lfoGain = ctx.createGain(); lfoGain.gain.value = 0.012;
+    lfo.connect(lfoGain); lfoGain.connect(master.gain); lfo.start();
+    // fade-in suave 1.5s até volume bem baixinho (0.05)
+    master.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 1.5);
+    _harpa = { ctx:ctx, nodes:nodes, gain:master, lfo:lfo };
+  }catch(e){}
+}
+function harpaStop(){
+  try{
+    if(!_harpa.ctx) return;
+    var ctx=_harpa.ctx, g=_harpa.gain;
+    if(g){ g.gain.cancelScheduledValues(ctx.currentTime); g.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.8); }
+    setTimeout(function(){
+      try{ _harpa.nodes.forEach(function(o){ try{o.stop();}catch(_){} }); }catch(_){}
+      try{ if(_harpa.lfo) _harpa.lfo.stop(); }catch(_){}
+      try{ ctx.close(); }catch(_){}
+      _harpa = {ctx:null, nodes:[], gain:null, lfo:null};
+    }, 900);
+  }catch(e){}
 }
 function plSeek(d){ plState.cur=Math.max(0,Math.min(plState.dur,plState.cur+d)); document.getElementById('pl-cur').textContent=fmtTime(plState.cur); document.getElementById('pl-bar').style.width=(plState.cur/plState.dur*100)+'%'; buzz(); }
-function closePlayer(){ if(plState.timer){clearInterval(plState.timer); plState.timer=null;} plState.playing=false; show(window._prevScreen||'s-home'); }
+function closePlayer(){ if(plState.timer){clearInterval(plState.timer); plState.timer=null;} plState.playing=false; harpaStop(); show(window._prevScreen||'s-home'); }
 
 // ── diário de gratidão (demo local; espelha public.gratidao) ──
 function esc(s){ return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
@@ -1352,6 +1473,14 @@ function selarCarta(){
   document.getElementById('correio-escrita').style.display='none';
   document.getElementById('correio-selada').style.display='block';
   document.querySelector('#s-correio .pad').scrollTop=0; buzz();
+  // dispara dobra + selo
+  var papel=document.getElementById('carta-papel-wrap'); var selo=document.getElementById('carta-selo');
+  if(papel && selo){
+    papel.classList.remove('fold'); selo.classList.remove('go');
+    void papel.offsetWidth; void selo.offsetWidth;
+    setTimeout(function(){ papel.classList.add('fold'); },120);
+    setTimeout(function(){ selo.classList.add('go'); chime(); },800);
+  }
 }
 function imprimirCarta(){
   var nome=esc(window._nome||'');
@@ -1522,7 +1651,39 @@ function acenderVela(){
       localStorage.setItem('saa_vela_last',hoje); localStorage.setItem('saa_vela_n',String(vn));
     }
   }catch(e){}
+  iniciarChamaCrescente();
 }
+
+// Chama com força variável — cresce conforme o usuário fica com a tela aberta.
+// Soma minutos acumulados (persiste no localStorage). Cap = 60 minutos = força máxima.
+var _chamaTimer=null;
+function lerMinutosChama(){ try{ return parseInt(localStorage.getItem('saa_chama_min')||'0',10); }catch(e){ return 0; } }
+function salvarMinutosChama(v){ try{ localStorage.setItem('saa_chama_min', String(v)); }catch(e){} }
+function aplicarForcaChama(){
+  var min=lerMinutosChama(); var cap=60;
+  var t=Math.min(min/cap, 1);                   // 0..1
+  var escala = 1 + t*0.6;                       // chama até 60% maior
+  var glowOp = 0.55 + t*0.45;                   // glow até quase opaco
+  var chama=document.getElementById('vela-chama'); var glow=document.getElementById('vela-glow');
+  if(chama){ chama.style.transform = 'scale('+escala+')'; chama.style.transformOrigin='bottom center'; }
+  if(glow){
+    glow.style.opacity = glowOp.toFixed(2);
+    glow.style.transform = 'translateX(-50%) scale('+(1 + t*0.4)+')';
+  }
+}
+function iniciarChamaCrescente(){
+  if(_chamaTimer){ clearInterval(_chamaTimer); _chamaTimer=null; }
+  aplicarForcaChama();
+  // a cada 60s na tela da vela, soma 1 min (até 60)
+  _chamaTimer=setInterval(function(){
+    var ativa=[...document.querySelectorAll('.screen.active')].some(function(s){return s.id==='s-vela';});
+    if(!ativa){ return; }
+    var m=lerMinutosChama();
+    if(m<60){ salvarMinutosChama(m+1); aplicarForcaChama(); }
+  }, 60000);
+}
+// quando a pessoa sai da tela da vela, paramos o cronômetro (mas mantém o progresso)
+function pararChamaCrescente(){ if(_chamaTimer){ clearInterval(_chamaTimer); _chamaTimer=null; } }
 
 // ── compartilhar meu anjo (alça de crescimento via audiência da Monica) ──
 function shareAnjo(){
@@ -1544,13 +1705,24 @@ async function enviarMagicLink(){
   var msg=document.getElementById('login-msg');
   if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ msg.textContent='Digite um e-mail válido.'; return; }
   msg.textContent=''; buzz();
-  if(!window.saaAuth){ document.getElementById('login-form').style.display='none'; document.getElementById('login-enviado').style.display='block'; return; }
+  // anima barra de progresso enquanto envia
+  var btn=document.getElementById('login-btn'); var prog=document.getElementById('login-prog'); var lab=document.getElementById('login-btn-label');
+  if(btn){ btn.disabled=true; btn.style.opacity='.85'; }
+  if(lab) lab.textContent='Enviando…';
+  if(prog){ prog.style.width='0%'; setTimeout(function(){ prog.style.width='35%'; },50); setTimeout(function(){ prog.style.width='70%'; },350); }
+  function finalizar(sucesso, txt){
+    if(prog){ prog.style.width = sucesso ? '100%' : '0%'; }
+    if(lab) lab.textContent = sucesso ? 'Enviado ✓' : 'Receber meu link mágico';
+    setTimeout(function(){ if(btn){ btn.disabled=false; btn.style.opacity='1'; } if(lab) lab.textContent='Receber meu link mágico'; if(prog) prog.style.width='0%'; }, sucesso?900:0);
+    if(sucesso){ document.getElementById('login-form').style.display='none'; document.getElementById('login-enviado').style.display='block'; }
+    else if(txt) msg.textContent=txt;
+  }
+  if(!window.saaAuth){ setTimeout(function(){ finalizar(true); }, 700); return; }
   try{
     var r=await window.saaAuth.enviarLink(email);
-    if(r && r.error){ msg.textContent='Não consegui enviar: '+r.error.message; return; }
-    document.getElementById('login-form').style.display='none';
-    document.getElementById('login-enviado').style.display='block';
-  }catch(e){ msg.textContent='Erro ao enviar o link. Tente de novo.'; }
+    if(r && r.error){ finalizar(false, 'Não consegui enviar: '+r.error.message); return; }
+    finalizar(true);
+  }catch(e){ finalizar(false, 'Erro ao enviar o link. Tente de novo.'); }
 }
 // chamado quando o usuário volta autenticado (clicou no link mágico)
 function persistirPerfil(userId){
