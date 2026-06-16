@@ -263,8 +263,45 @@
     <p class="reveal-fade serif-soft" id="rv-attr" style="font-size:20px; color:var(--tinta); max-width:300px; line-height:1.5">Consolo e lucidez</p>
     <p class="reveal-fade" id="rv-faixa" style="font-size:13px; color:var(--tinta-suave); margin-top:10px"></p>
     <div class="reveal-fade" style="width:100%; max-width:320px; margin-top:40px">
-      <button class="btn-ouro" onclick="entrarSantuario()">Entrar no santuário</button>
+      <button class="btn-ouro" onclick="continuarAposReveal()">Entrar no santuário</button>
       <button class="btn-ghost" style="margin-top:12px" onclick="shareAnjo()">Compartilhar meu anjo</button>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ ACOLHIMENTO (onboarding emocional após reveal) ░░ -->
+<section id="s-acolhimento" class="screen">
+  <div class="halo" style="top:30px; width:340px; height:340px"></div>
+  <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; z-index:1">
+    <p class="serif-soft" style="font-size:16px; color:var(--ouro); margin:0">Antes de continuar</p>
+    <h2 class="serif" style="font-size:30px; margin:10px 0 6px; font-weight:400; line-height:1.15; max-width:360px">Como você está chegando aqui?</h2>
+    <p style="font-size:14px; color:var(--tinta-suave); margin:0 0 30px; max-width:340px; line-height:1.6">Seu anjo recebe melhor quem chega de coração aberto. Conta pra ele.</p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%; max-width:360px">
+      <button class="btn-ghost" onclick="escolherAcolhimento('ansioso')" style="padding:18px 8px; flex-direction:column; line-height:1.25; min-height:96px"><div style="font-size:24px">🌬️</div><div style="font-size:13.5px; margin-top:8px; color:var(--tinta)">Ansiosa(o)</div><div style="font-size:11px; color:var(--tinta-suave); margin-top:2px">preciso de calma</div></button>
+      <button class="btn-ghost" onclick="escolherAcolhimento('triste')" style="padding:18px 8px; flex-direction:column; line-height:1.25; min-height:96px"><div style="font-size:24px">🤍</div><div style="font-size:13.5px; margin-top:8px; color:var(--tinta)">Triste</div><div style="font-size:11px; color:var(--tinta-suave); margin-top:2px">preciso de amparo</div></button>
+      <button class="btn-ghost" onclick="escolherAcolhimento('duvida')" style="padding:18px 8px; flex-direction:column; line-height:1.25; min-height:96px"><div style="font-size:24px">🧭</div><div style="font-size:13.5px; margin-top:8px; color:var(--tinta)">Em dúvida</div><div style="font-size:11px; color:var(--tinta-suave); margin-top:2px">preciso de direção</div></button>
+      <button class="btn-ghost" onclick="escolherAcolhimento('grato')" style="padding:18px 8px; flex-direction:column; line-height:1.25; min-height:96px"><div style="font-size:24px">✨</div><div style="font-size:13.5px; margin-top:8px; color:var(--tinta)">Grata(o)</div><div style="font-size:11px; color:var(--tinta-suave); margin-top:2px">quero agradecer</div></button>
+      <button class="btn-ghost" onclick="escolherAcolhimento('curioso')" style="padding:18px 8px; flex-direction:column; line-height:1.25; min-height:96px; grid-column:1 / span 2"><div style="font-size:24px">🌱</div><div style="font-size:13.5px; margin-top:8px; color:var(--tinta)">Só curiosa(o)</div><div style="font-size:11px; color:var(--tinta-suave); margin-top:2px">quero conhecer a casa</div></button>
+    </div>
+
+    <button class="btn-ghost" style="border:none; color:var(--tinta-suave); font-size:13px; margin-top:22px; padding:8px" onclick="pularAcolhimento()">Pular por agora</button>
+  </div>
+</section>
+
+<!-- ░░ PRIMEIRA PRÁTICA (acolhimento personalizado) ░░ -->
+<section id="s-primeira-pratica" class="screen" style="background:var(--ouro-bg)">
+  <div class="halo" style="top:20px; width:380px; height:380px"></div>
+  <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; z-index:1">
+    <p id="fp-tag" class="serif-soft" style="font-size:16px; color:var(--ouro); margin:0">Seu anjo sabia</p>
+    <div id="fp-icone" style="font-size:44px; margin:14px 0 4px">🕊️</div>
+    <h2 id="fp-titulo" class="serif" style="font-size:28px; margin:8px 0 0; font-weight:400; max-width:340px; line-height:1.2"></h2>
+    <p id="fp-mensagem" style="font-size:15.5px; color:var(--tinta); margin:18px auto 0; max-width:340px; line-height:1.65"></p>
+    <p id="fp-anjo-ref" style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:var(--ouro); margin:18px 0 0; max-width:340px; line-height:1.5"></p>
+
+    <div style="width:100%; max-width:320px; margin-top:36px">
+      <button id="fp-cta" class="btn-ouro" onclick="acaoPrimeiraPratica()">Começar</button>
+      <button class="btn-ghost" style="margin-top:12px" onclick="finalizarAcolhimento()">Depois, primeiro o tour</button>
     </div>
   </div>
 </section>
@@ -1855,6 +1892,85 @@ function shareAnjo(){
   buzz();
 }
 
+// ── Acolhimento emocional (onboarding pós-reveal) ──
+var ACOLHIMENTO = {
+  ansioso: {
+    icone:'🌬️',
+    titulo:'Vamos respirar juntos',
+    msg:'Antes de qualquer prática, três respirações. Seu anjo se aproxima quando o corpo desacelera — não quando a mente acelera.',
+    ctaTexto:'Respirar com meu anjo',
+    acao:function(){ abrirRespiracao(); }
+  },
+  triste: {
+    icone:'🕯️',
+    titulo:'Acenda uma vela primeiro',
+    msg:'A tristeza precisa de um símbolo. A vela é isso: uma chama pequena que diz "estou aqui, não estou só". Escreva uma palavra e acenda.',
+    ctaTexto:'Acender uma vela',
+    acao:function(){ openVelinha(); }
+  },
+  duvida: {
+    icone:'✉️',
+    titulo:'Escreva ao seu anjo',
+    msg:'O Correio Angelical é onde a dúvida vira pergunta. Não precisa de resposta agora — só do gesto de entregar.',
+    ctaTexto:'Abrir o Correio Angelical',
+    acao:function(){ openCorreio && openCorreio(); }
+  },
+  grato: {
+    icone:'🙏',
+    titulo:'Comece pela gratidão',
+    msg:'Quem chega agradecendo abre uma porta diferente. Anote três coisas — pequenas, comuns — que estão indo bem agora.',
+    ctaTexto:'Abrir o diário de gratidão',
+    acao:function(){ openGratidao && openGratidao(); }
+  },
+  curioso: {
+    icone:'📜',
+    titulo:'Conheça seu anjo a fundo',
+    msg:'Cada anjo tem seu coro, salmo, atributos e dias de regência. Sua primeira leitura é o seu próprio.',
+    ctaTexto:'Conhecer meu anjo',
+    acao:function(){ if(typeof openMeuAnjo==='function') openMeuAnjo(); else show('s-home'); }
+  }
+};
+var _acolhAtual = null;
+
+function continuarAposReveal(){
+  // mostra acolhimento só uma vez — depois disso, vai direto pro santuário
+  try{ if(localStorage.getItem('saa_acolhimento_done')==='1'){ entrarSantuario(); return; } }catch(_){}
+  show('s-acolhimento');
+}
+function escolherAcolhimento(k){
+  _acolhAtual = k;
+  var info = ACOLHIMENTO[k]; if(!info) return finalizarAcolhimento();
+  document.getElementById('fp-icone').textContent = info.icone;
+  document.getElementById('fp-titulo').textContent = info.titulo;
+  document.getElementById('fp-mensagem').textContent = info.msg;
+  document.getElementById('fp-cta').textContent = info.ctaTexto;
+  // referência ao anjo já revelado (se houver)
+  var ref = window._anjo ? ('Com '+window._anjo+' ao seu lado.') : '';
+  document.getElementById('fp-anjo-ref').textContent = ref;
+  try{ localStorage.setItem('saa_emocao_inicial', k); }catch(_){}
+  show('s-primeira-pratica');
+}
+function acaoPrimeiraPratica(){
+  try{ localStorage.setItem('saa_acolhimento_done','1'); }catch(_){}
+  var info = ACOLHIMENTO[_acolhAtual]; if(!info) return finalizarAcolhimento();
+  // garante login/santuário antes de abrir a prática
+  if(window.saaAuth && !window._userId){
+    // guarda intenção para abrir depois do magic link
+    try{ localStorage.setItem('saa_acao_pos_login', _acolhAtual); }catch(_){}
+    resetLoginUI(); show('s-login'); return;
+  }
+  show('s-home');
+  setTimeout(function(){ try{ info.acao(); }catch(e){} }, 300);
+}
+function finalizarAcolhimento(){
+  try{ localStorage.setItem('saa_acolhimento_done','1'); }catch(_){}
+  entrarSantuario();
+}
+function pularAcolhimento(){
+  try{ localStorage.setItem('saa_acolhimento_done','1'); }catch(_){}
+  entrarSantuario();
+}
+
 // ── login por link mágico ──
 function resetLoginUI(){ document.getElementById('login-form').style.display='block'; document.getElementById('login-enviado').style.display='none'; document.getElementById('login-msg').textContent=''; }
 function entrarSantuario(){
@@ -1898,10 +2014,22 @@ async function aoLogar(session){
   window._userId = session.user.id;
   window._email = session.user.email || '';
   var pend=null; try{ pend=JSON.parse(localStorage.getItem('saa_pending')||'null'); }catch(e){}
+  // ação pendente do acolhimento (escolhida antes do magic link)
+  function _executarAcaoPendente(){
+    try{
+      var acao=localStorage.getItem('saa_acao_pos_login');
+      if(!acao) return;
+      localStorage.removeItem('saa_acao_pos_login');
+      var info=ACOLHIMENTO && ACOLHIMENTO[acao];
+      if(info && typeof info.acao==='function'){
+        setTimeout(function(){ try{ info.acao(); }catch(_){} }, 500);
+      }
+    }catch(_){}
+  }
   if(pend){
     window._nome=pend.nome; window._anjo=pend.anjo_nome; window._perfil=pend;
     persistirPerfil(session.user.id);
-    show('s-home'); return;
+    show('s-home'); _executarAcaoPendente(); return;
   }
   // sem perfil pendente → verifica se o usuário já tem perfil salvo (retorno)
   try{
@@ -1910,7 +2038,7 @@ async function aoLogar(session){
       window._nome=res.data.nome; window._anjo=res.data.anjo_nome;
       window._perfil={ nome:res.data.nome, anjo_n:res.data.anjo_n, anjo_nome:res.data.anjo_nome };
       if(res.data.plano && res.data.plano!=='free') window._plano=res.data.plano;
-      show('s-home'); return;
+      show('s-home'); _executarAcaoPendente(); return;
     }
   }catch(e){}
   // primeiro acesso de verdade (ex.: link aberto em outro navegador) → onboarding
