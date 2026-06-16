@@ -138,6 +138,53 @@
   .fade-in{ animation:fadeIn .6s ease both; }
   @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
   .hide{ display:none !important; }
+
+  /* ── Polimento extra ── */
+
+  /* Aurora dourada bem sutil deslizando atrás do conteúdo principal */
+  #s-home::before, #s-cadastro::before {
+    content:''; position:absolute; inset:-10% -20%; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 0%, rgba(239,159,39,.10) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 35% at 80% 100%, rgba(186,117,23,.06) 0%, transparent 65%);
+    animation:aurora 28s ease-in-out infinite alternate;
+  }
+  @keyframes aurora{ 0%{transform:translate(0,0);} 100%{transform:translate(-4%,2%);} }
+  #s-home > .pad, #s-cadastro > .pad { position:relative; z-index:1; }
+
+  /* Glow dourado pulsando atrás do nome do anjo na revelação */
+  #rv-anjo{ position:relative; }
+  #rv-anjo::before{ content:''; position:absolute; inset:-30px -40px;
+    background:radial-gradient(ellipse, rgba(239,159,39,.35) 0%, rgba(239,159,39,0) 65%);
+    z-index:-1; opacity:0; transition:opacity 1.4s ease 1s;
+    animation:pulseAnjo 4s ease-in-out infinite 2.4s; }
+  .reveal-anjo.on ~ #rv-anjo::before, .reveal-anjo#rv-anjo.on::before { opacity:1; }
+  @keyframes pulseAnjo{ 0%,100%{opacity:.65; transform:scale(1);} 50%{opacity:1; transform:scale(1.08);} }
+
+  /* Streak chip com micro-glow dourado */
+  .streak-chip{ position:relative; }
+  .streak-chip::after{ content:''; position:absolute; inset:-3px; border-radius:14px;
+    background:radial-gradient(circle, rgba(239,159,39,.25), transparent 70%);
+    z-index:-1; opacity:0; animation:streakGlow 5s ease-in-out infinite; }
+  @keyframes streakGlow{ 0%,100%{opacity:.4;} 50%{opacity:.85;} }
+
+  /* Skeleton shimmer (substitui "Carregando…" inertes) */
+  .skel{ background:linear-gradient(90deg, #F2EDDF 0%, #FAF3E4 50%, #F2EDDF 100%);
+    background-size:200% 100%; animation:shimmer 1.6s linear infinite; border-radius:12px; }
+  @keyframes shimmer{ from{background-position:200% 0;} to{background-position:-200% 0;} }
+
+  /* Botão ouro: brilho passando suavemente quando idle (apenas em CTAs principais) */
+  .btn-ouro{ position:relative; overflow:hidden; }
+  .btn-ouro::after{ content:''; position:absolute; top:0; left:-150%; width:60%; height:100%;
+    background:linear-gradient(120deg, transparent, rgba(255,250,229,.45), transparent);
+    transform:skewX(-20deg); animation:shineBtn 6s ease-in-out infinite; pointer-events:none; }
+  @keyframes shineBtn{ 0%{left:-150%;} 60%{left:150%;} 100%{left:150%;} }
+
+  @media (prefers-reduced-motion: reduce){
+    #s-home::before, #s-cadastro::before, .streak-chip::after, .btn-ouro::after,
+    #rv-anjo::before { animation:none !important; }
+    .skel { animation:none !important; background:#F2EDDF; }
+  }
 </style>
 </head>
 <body>
@@ -259,7 +306,7 @@
           <p style="color:var(--tinta-suave); font-size:13px; margin:0; letter-spacing:.02em" id="home-saud">Boa noite</p>
           <p class="serif" style="font-size:19px; margin:2px 0 0; color:var(--tinta); line-height:1.25">Seu anjo é <span id="home-anjo" style="color:var(--ouro)">—</span></p>
         </div>
-        <div style="text-align:center; background:var(--ouro-bg); border-radius:14px; padding:8px 10px; min-width:60px; cursor:pointer" onclick="toast('Você tem '+localStorage.getItem('saa_streak_n')+' dias consecutivos sob as asas — continue 🪽')">
+        <div class="streak-chip" style="text-align:center; background:var(--ouro-bg); border-radius:14px; padding:8px 10px; min-width:60px; cursor:pointer" onclick="toast('Você tem '+localStorage.getItem('saa_streak_n')+' dias consecutivos sob as asas — continue 🪽')">
           <div id="home-streak" style="font-size:18px; font-weight:600; color:#854F0B; line-height:1; font-family:'Playfair Display',serif">1</div>
           <div style="font-size:9px; color:var(--ouro); letter-spacing:.05em; text-transform:uppercase; margin-top:3px; line-height:1.2">sob as<br/>asas</div>
         </div>
