@@ -185,7 +185,11 @@
       <p id="cad-erro" style="color:#C0392B; font-size:13px; min-height:16px; margin:0"></p>
     </div>
     <div style="margin-top:auto; padding-top:24px">
-      <button class="btn-ouro" onclick="revelar()">✦ Revelar meu anjo da guarda</button>
+      <label for="in-consent" style="display:flex; align-items:flex-start; gap:10px; padding:14px 16px; background:var(--ouro-bg); border-radius:14px; font-size:12.5px; color:var(--tinta); line-height:1.55; cursor:pointer">
+        <input id="in-consent" type="checkbox" style="margin-top:3px; flex-shrink:0; accent-color:var(--ouro)" />
+        <span>Autorizo o uso da minha data de nascimento para o cálculo do anjo regente e leio a <a href="/privacidade" target="_blank" style="color:var(--ouro); font-weight:500">Política de Privacidade</a>. Ciente de que envolve <strong>dado pessoal sensível</strong> (LGPD art. 11).</span>
+      </label>
+      <button class="btn-ouro" style="margin-top:14px" onclick="revelar()">✦ Revelar meu anjo da guarda</button>
       <p style="text-align:center; font-size:11px; color:var(--tinta-suave); margin:14px 0 0; line-height:1.6">
         7 dias por nossa conta, depois R$ 19,90/mês.<br/>Cancele quando quiser.
       </p>
@@ -546,8 +550,8 @@
       </div>
     </div>
     <div class="card" style="margin-top:14px; padding:18px">
-      <p class="serif-soft" style="font-size:19px; color:var(--tinta); line-height:1.5; margin:0">"Dona Aparecida pediu para rever a filha que não via há 8 anos. Este mês, sob as asas, esse reencontro aconteceu."</p>
-      <p style="margin:14px 0 0; font-size:13px; color:var(--tinta-suave)">Selecionado com carinho pela Monica entre os pedidos da comunidade. O próximo pode ser o seu — registre no Livro de pedidos.</p>
+      <p class="serif-soft" style="font-size:19px; color:var(--tinta); line-height:1.5; margin:0">Todo mês, a Monica escolhe uma história entre os pedidos compartilhados e busca realizá-la — como gesto de carinho da casa.</p>
+      <p style="margin:14px 0 0; font-size:13px; color:var(--tinta-suave)">Não é sorteio: é seleção editorial, e a candidatura é sempre gratuita. <a href="/regulamento-milagre" target="_blank" style="color:var(--ouro)">Conheça o regulamento</a>.</p>
     </div>
     <button class="btn-ghost" style="margin-top:16px" onclick="nav('pedidos'); show('s-home')">Compartilhar meu pedido</button>
   </div>
@@ -1090,6 +1094,9 @@ function revelar(){
   const erro=document.getElementById('cad-erro');
   if(!nome){ erro.textContent='Como o anjo deve te chamar?'; return; }
   if(!(d>=1&&d<=31)||!(m>=1&&m<=12)||!(y>=1900&&y<=new Date().getFullYear())){ erro.textContent='Confira sua data de nascimento.'; return; }
+  var consent=document.getElementById('in-consent');
+  if(consent && !consent.checked){ erro.textContent='Marque o consentimento para continuar.'; return; }
+  try{ localStorage.setItem('saa_consent_lgpd', new Date().toISOString()); }catch(_){}
   erro.textContent='';
   window._nome=nome.split(' ')[0];
 
