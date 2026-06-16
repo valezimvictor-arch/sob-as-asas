@@ -74,6 +74,7 @@
       <button class="tab" id="tab-conteudo" onclick="aba('conteudo')">📜 Conteúdos</button>
       <button class="tab" id="tab-milagre" onclick="aba('milagre')">✨ Milagre</button>
       <button class="tab" id="tab-leads" onclick="aba('leads')">📩 Leads</button>
+      <button class="tab" id="tab-usuarios" onclick="aba('usuarios')">👥 Usuários</button>
       <button class="tab" id="tab-newsletter" onclick="aba('newsletter')">✉️ Newsletter</button>
     </div>
 
@@ -158,6 +159,23 @@
       <div id="lista-milagre"></div>
     </div>
 
+    <!-- ░░ USUÁRIOS ░░ -->
+    <div id="sec-usuarios" class="hide">
+      <div class="nota">👥 Todos os cadastros do app. Você pode <strong>alterar o plano</strong> (free / mensal / anual / cortesia), <strong>redefinir o perfil</strong> (apaga nome/nascimento/anjo — útil quando o usuário pediu pra recomeçar) ou <strong>excluir a conta inteira</strong>. Exclusão é definitiva e atende a LGPD.</div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:0 0 12px">
+        <input id="us-busca" type="text" placeholder="Buscar por nome, e-mail ou anjo…" style="flex:1; min-width:200px" oninput="filtrarUsuarios()" />
+        <select id="us-filtro-plano" onchange="filtrarUsuarios()" style="width:auto">
+          <option value="">Todos os planos</option>
+          <option value="free">Free</option>
+          <option value="mensal">Mensal</option>
+          <option value="anual">Anual</option>
+          <option value="cortesia">Cortesia</option>
+        </select>
+        <button class="btn-sec" onclick="exportarUsuariosCSV()">⬇ Exportar CSV</button>
+      </div>
+      <div id="lista-usuarios"></div>
+    </div>
+
     <!-- ░░ NEWSLETTER ░░ -->
     <div id="sec-newsletter" class="hide">
       <div class="nota">✉️ <strong>Carta dos Anjos</strong> — semanal, sábado 8h (BRT). Cron automático: <code>0 11 * * 6</code> (UTC). Conteúdo carregado da tabela <code>newsletters</code> (linha mais recente publicada). Sem nada cadastrado, o cron usa um fallback padrão.</div>
@@ -219,11 +237,118 @@ function salvarChave(){ KEY=document.getElementById('adminkey').value.trim(); if
 function entrar(){ document.getElementById('auth').classList.add('hide'); document.getElementById('painel').classList.remove('hide'); recarregar(); }
 function recarregar(){ carregarMetricas(); carregarConteudos(); carregarMilagre(); carregarLeads(); }
 function aba(qual){
-  ['painel','conteudo','milagre','leads','newsletter'].forEach(function(q){
+  ['painel','conteudo','milagre','leads','usuarios','newsletter'].forEach(function(q){
     document.getElementById('sec-'+q).classList.toggle('hide', q!==qual);
     document.getElementById('tab-'+q).classList.toggle('on', q===qual);
   });
   if(qual==='newsletter') carregarNewsletter();
+  if(qual==='usuarios') carregarUsuarios();
+}
+
+// ── Usuários ──
+var _usuariosCache = [];
+function _planoBadge(p){
+  var cor = p==='anual' ? '#854F0B' : p==='mensal' ? '#1E5A99' : p==='cortesia' ? '#2E8756' : '#5F5E5A';
+  var bg  = p==='anual' ? 'var(--ouro-bg)' : p==='mensal' ? 'var(--celeste-bg)' : p==='cortesia' ? '#F2F8F4' : '#F1EFE8';
+  return '<span class="tag" style="background:'+bg+'; color:'+cor+'">'+(p||'free')+'</span>';
+}
+function _fmtData(s){ if(!s) return '—'; try{ return new Date(s).toLocaleDateString('pt-BR'); }catch(_){return s;} }
+async function carregarUsuarios(){
+  var el = document.getElementById('lista-usuarios');
+  el.innerHTML = '<p class="vazio">Carregando…</p>';
+  try{
+    var r = await fetch('/api/admin-users', { headers:{ 'x-admin-key':KEY } });
+    var j = await r.json();
+    if(!j.ok){ el.innerHTML = '<p class="vazio">Erro: '+(j.error||'falhou')+'</p>'; return; }
+    _usuariosCache = j.usuarios || [];
+    renderUsuarios();
+  }catch(e){ el.innerHTML = '<p class="vazio">Erro: '+e.message+'</p>'; }
+}
+function renderUsuarios(){
+  var el = document.getElementById('lista-usuarios');
+  var q = (document.getElementById('us-busca').value || '').toLowerCase();
+  var filtroPlano = document.getElementById('us-filtro-plano').value;
+  var lista = _usuariosCache.filter(function(u){
+    var hay = ((u.nome||'') + ' ' + (u.email||'') + ' ' + (u.anjo_nome||'')).toLowerCase();
+    var qOk = !q || hay.indexOf(q) >= 0;
+    var pOk = !filtroPlano || (u.plano||'free') === filtroPlano;
+    return qOk && pOk;
+  });
+  if(!lista.length){ el.innerHTML = '<p class="vazio">Nenhum usuário com esse filtro.</p>'; return; }
+  el.innerHTML = lista.map(function(u){
+    var nome = esc(u.nome || '—');
+    var email = esc(u.email || '—');
+    var anjo = u.anjo_nome ? (esc(u.anjo_nome) + (u.anjo_n? ' (n.'+u.anjo_n+')' : '')) : '—';
+    var nasc = _fmtData(u.nascimento);
+    var entrou = _fmtData(u.criado_em);
+    var plano = u.plano || 'free';
+    return '<div class="card" data-uid="'+esc(u.id)+'">'
+      + '<div class="meta">'
+        + '<div class="avatar">'+iniciais(u.nome||u.email||'?')+'</div>'
+        + '<div style="flex:1; min-width:0"><p class="nome" style="margin:0">'+nome+'</p>'
+        + '<p style="margin:2px 0 0; font-size:12px; color:var(--suave)">'+email+'</p></div>'
+        + _planoBadge(plano)
+      + '</div>'
+      + '<p style="margin:8px 0 0; font-size:13px; color:var(--tinta); line-height:1.55">'
+        + '<strong>Anjo:</strong> '+anjo+' &nbsp;·&nbsp; <strong>Nascimento:</strong> '+nasc+' &nbsp;·&nbsp; <strong>Entrou:</strong> '+entrou
+      + '</p>'
+      + '<div class="actions" style="margin-top:12px">'
+        + '<select onchange="mudarPlano(\''+u.id+'\', this.value)" style="width:auto; padding:7px 10px">'
+          + '<option value="">Mudar plano…</option>'
+          + '<option value="free">→ Free</option>'
+          + '<option value="mensal">→ Mensal</option>'
+          + '<option value="anual">→ Anual</option>'
+          + '<option value="cortesia">→ Cortesia</option>'
+        + '</select>'
+        + '<button class="btn-sec" onclick="redefinirPerfil(\''+u.id+'\')">↺ Redefinir perfil</button>'
+        + '<button class="btn-sec" style="color:#C0392B; border-color:rgba(192,57,43,.3)" onclick="excluirUsuario(\''+u.id+'\', \''+esc(nome)+'\')">🗑 Excluir conta</button>'
+      + '</div>'
+    + '</div>';
+  }).join('');
+}
+function filtrarUsuarios(){ renderUsuarios(); }
+async function mudarPlano(id, plano){
+  if(!plano) return;
+  if(!confirm('Mudar plano deste usuário para "'+plano+'"?')) return;
+  try{
+    var r = await fetch('/api/admin-users',{ method:'POST', headers:{'Content-Type':'application/json','x-admin-key':KEY}, body: JSON.stringify({ action:'plano', id:id, plano:plano }) });
+    var j = await r.json();
+    if(!j.ok) throw new Error(j.error||'falhou');
+    var u = _usuariosCache.find(function(x){return x.id===id;}); if(u) u.plano = plano;
+    renderUsuarios();
+  }catch(e){ alert('Erro: '+e.message); }
+}
+async function redefinirPerfil(id){
+  if(!confirm('Apagar nome, nascimento e anjo deste usuário? (Conta e e-mail continuam.)')) return;
+  try{
+    var r = await fetch('/api/admin-users',{ method:'POST', headers:{'Content-Type':'application/json','x-admin-key':KEY}, body: JSON.stringify({ action:'redefinir_perfil', id:id }) });
+    var j = await r.json();
+    if(!j.ok) throw new Error(j.error||'falhou');
+    carregarUsuarios();
+  }catch(e){ alert('Erro: '+e.message); }
+}
+async function excluirUsuario(id, nome){
+  if(!confirm('Excluir DEFINITIVAMENTE a conta de "'+nome+'"? Isso apaga e-mail, perfil e histórico. Não dá pra desfazer.')) return;
+  if(!confirm('Tem certeza absoluta? Digite OK na próxima.')) return;
+  var t = prompt('Digite EXCLUIR para confirmar:');
+  if(t !== 'EXCLUIR'){ alert('Cancelado.'); return; }
+  try{
+    var r = await fetch('/api/admin-users',{ method:'POST', headers:{'Content-Type':'application/json','x-admin-key':KEY}, body: JSON.stringify({ action:'excluir', id:id }) });
+    var j = await r.json();
+    if(!j.ok) throw new Error(j.error||'falhou');
+    _usuariosCache = _usuariosCache.filter(function(x){return x.id!==id;});
+    renderUsuarios();
+  }catch(e){ alert('Erro: '+e.message); }
+}
+function exportarUsuariosCSV(){
+  if(!_usuariosCache.length){ alert('Nada para exportar.'); return; }
+  var head = ['id','nome','email','nascimento','anjo_n','anjo_nome','plano','ritual_horario','criado_em'];
+  var rows = _usuariosCache.map(function(u){ return head.map(function(k){ var v=(u[k]==null?'':String(u[k])).replace(/"/g,'""'); return '"'+v+'"'; }).join(','); });
+  var csv = head.join(',') + '\n' + rows.join('\n');
+  var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a'); a.href=url; a.download='sob-as-asas-usuarios-'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
+  URL.revokeObjectURL(url);
 }
 
 // ── Newsletter ──
