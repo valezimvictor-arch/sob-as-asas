@@ -139,6 +139,13 @@
   @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
   .hide{ display:none !important; }
 
+  /* Chips de filtro da biblioteca */
+  .bib-chip{ flex-shrink:0; background:var(--puro); border:1px solid var(--linha); color:var(--tinta-suave);
+    border-radius:999px; padding:8px 16px; font:inherit; font-size:13px; cursor:pointer; white-space:nowrap;
+    transition:background .15s, color .15s, border-color .15s; }
+  .bib-chip.on{ background:var(--ouro-bg); color:#854F0B; border-color:transparent; font-weight:500; }
+  #bib-filtros::-webkit-scrollbar{ display:none } #bib-filtros{ scrollbar-width:none }
+
   /* ── Polimento extra ── */
 
   /* Aurora dourada bem sutil deslizando atrás do conteúdo principal */
@@ -269,6 +276,45 @@
   </div>
 </section>
 
+<!-- ░░ JORNADA "Conhecer seu anjo em 7 dias" ░░ -->
+<section id="s-jornada-anjo" class="screen">
+  <div style="flex:1; overflow-y:auto" class="pad">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+    <h2 class="serif" style="font-size:26px; margin:10px 0 0; font-weight:400">Conheça seu anjo em 7 dias</h2>
+    <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 14px; line-height:1.55">Uma mensagem curta por dia, com a Monica te apresentando o anjo que cuida de você. Faça no seu tempo — se faltar um dia, ele te espera.</p>
+
+    <!-- Dots de progresso -->
+    <div id="ja-dots" style="display:flex; gap:7px; margin:10px 0 18px; justify-content:center"></div>
+
+    <!-- Conteúdo do dia atual -->
+    <div class="card" id="ja-card-dia" style="padding:22px 22px 18px; margin-bottom:14px">
+      <p style="margin:0; font-size:11px; letter-spacing:.16em; color:var(--ouro); text-transform:uppercase; font-weight:600"><span id="ja-dia-rotulo">Dia 1</span> de 7</p>
+      <h3 id="ja-tema" class="serif" style="font-size:22px; margin:8px 0 0; font-weight:500">—</h3>
+      <p id="ja-corpo" style="margin:14px 0 0; font-size:15px; color:var(--tinta); line-height:1.7">—</p>
+      <div id="ja-acoes" style="margin-top:18px; display:flex; flex-direction:column; gap:10px">
+        <button class="btn-ouro" id="ja-btn-concluir" onclick="concluirDiaJornada()">Concluir o Dia ▸</button>
+        <button class="btn-ghost" id="ja-btn-audio" style="display:none" onclick="ouvirAudioJornada()">▶ Ouvir na voz da Monica</button>
+      </div>
+    </div>
+
+    <!-- Estado: aguarde amanhã -->
+    <div class="card" id="ja-card-aguarde" style="display:none; padding:20px; text-align:center">
+      <div style="font-size:30px">🕊️</div>
+      <p class="serif" style="font-size:18px; margin:8px 0 0">Volte amanhã</p>
+      <p style="margin:6px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.55">Você já concluiu o dia de hoje. Os anjos são pacientes — o próximo capítulo te espera.</p>
+    </div>
+
+    <!-- Estado: concluído -->
+    <div class="card" id="ja-card-completo" style="display:none; padding:24px; text-align:center; background:var(--ouro-bg); border-color:transparent">
+      <div style="font-size:38px">✨</div>
+      <h3 class="serif" style="font-size:22px; margin:10px 0 4px; font-weight:500">Você conheceu seu anjo</h3>
+      <p style="margin:0; font-size:14px; color:var(--ouro); line-height:1.6">Sete dias sob as asas. Que o que você guardou aqui te acompanhe.</p>
+      <button class="btn-ouro" style="margin-top:18px" onclick="openMeuAnjo()">Ver a ficha completa do meu anjo</button>
+      <button class="btn-ghost" style="margin-top:10px" onclick="show('s-home')">Voltar ao santuário</button>
+    </div>
+  </div>
+</section>
+
 <!-- ░░ ACOLHIMENTO (onboarding emocional após reveal) ░░ -->
 <section id="s-acolhimento" class="screen">
   <div class="halo" style="top:30px; width:340px; height:340px"></div>
@@ -381,6 +427,26 @@
           </div>
           <span style="color:var(--ouro); font-size:20px">›</span>
         </div>
+      </div>
+
+      <!-- 1b. CONHECER MEU ANJO EM 7 DIAS (mini-jornada de descoberta) -->
+      <div id="home-ja-card" class="card" style="display:none; margin-top:10px; padding:16px; display:none; align-items:center; gap:14px; cursor:pointer; background:linear-gradient(90deg, var(--puro), rgba(250,243,228,.6))" onclick="openJornadaAnjo()">
+        <div style="width:46px;height:46px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:22px">📿</div>
+        <div style="flex:1; min-width:0">
+          <p style="margin:0; font-weight:600">Conheça seu anjo em 7 dias</p>
+          <p id="home-ja-sub" style="margin:2px 0 0; font-size:12px; color:var(--tinta-suave); line-height:1.4">Uma mensagem curta por dia, descobrindo seu anjo a fundo</p>
+        </div>
+        <span style="color:var(--ouro); font-size:20px">›</span>
+      </div>
+
+      <!-- 1c. ANTES DE DORMIR (aparece após 20h) -->
+      <div id="home-dormir-card" class="card" style="display:none; margin-top:10px; padding:16px; align-items:center; gap:14px; cursor:pointer; background:linear-gradient(90deg, rgba(30,90,153,.06), rgba(55,138,221,.10)); border-color:rgba(55,138,221,.18)" onclick="abrirAntesDormir()">
+        <div style="width:46px;height:46px;border-radius:12px;background:rgba(55,138,221,.12);display:flex;align-items:center;justify-content:center;font-size:22px">🌙</div>
+        <div style="flex:1; min-width:0">
+          <p style="margin:0; font-weight:600">Antes de dormir</p>
+          <p style="margin:2px 0 0; font-size:12px; color:#1E5A99; line-height:1.4">Áudios curados para fechar o dia em paz, sob as asas</p>
+        </div>
+        <span style="color:#378ADD; font-size:20px">›</span>
       </div>
 
       <!-- 2. SALMO DE HOJE -->
@@ -557,8 +623,20 @@
     <!-- view: biblioteca -->
     <div data-view="biblioteca" class="hide">
       <h2 class="serif" style="font-size:26px; margin:0">Biblioteca da Monica</h2>
-      <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 4px">Áudios, vídeos e salmos na voz dela.</p>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 12px">Áudios, vídeos e salmos na voz dela.</p>
+      <div id="bib-filtros" style="display:flex; gap:8px; overflow-x:auto; padding:4px 0 12px; -webkit-overflow-scrolling:touch">
+        <button class="bib-chip on" data-sent="" onclick="filtrarBib('')">Todos</button>
+        <button class="bib-chip" data-sent="ansiedade" onclick="filtrarBib('ansiedade')">🌬️ Ansiedade</button>
+        <button class="bib-chip" data-sent="tristeza" onclick="filtrarBib('tristeza')">🤍 Tristeza</button>
+        <button class="bib-chip" data-sent="duvida" onclick="filtrarBib('duvida')">🧭 Em dúvida</button>
+        <button class="bib-chip" data-sent="protecao" onclick="filtrarBib('protecao')">🛡️ Proteção</button>
+        <button class="bib-chip" data-sent="cura" onclick="filtrarBib('cura')">🌿 Cura</button>
+        <button class="bib-chip" data-sent="prosperidade" onclick="filtrarBib('prosperidade')">💫 Prosperidade</button>
+        <button class="bib-chip" data-sent="reconciliacao" onclick="filtrarBib('reconciliacao')">🕊️ Reconciliação</button>
+        <button class="bib-chip" data-sent="sono" onclick="filtrarBib('sono')">🌙 Para dormir</button>
+      </div>
       <div id="lista-bib"></div>
+      <p id="bib-vazio" style="display:none; color:var(--tinta-suave); font-size:14px; text-align:center; padding:30px 16px; line-height:1.6">Ainda não há conteúdos com essa marca. Voltamos com novidades em breve.</p>
     </div>
 
     <!-- view: comunidade -->
@@ -1303,6 +1381,8 @@ function initHome(){
   if(window._anjo) document.getElementById('home-anjo').textContent=window._anjo;
   var av=document.getElementById('home-avatar'); if(av && window._nome){ av.textContent=window._nome.trim().charAt(0).toUpperCase()||'•'; }
   carregarVelasColetivo();
+  atualizarHomeJornadaCard();
+  atualizarHomeDormirCard();
   // Card de "Meu anjo" no topo da home
   var n = window._perfil && window._perfil.anjo_n;
   var cn=document.getElementById('home-anjo-card-nome'), cc=document.getElementById('home-anjo-card-coro'), cd=document.getElementById('home-anjo-card-dom');
@@ -1392,6 +1472,11 @@ function nav(view){
   document.querySelectorAll('#s-home [data-view]').forEach(v=>v.classList.toggle('hide', v.dataset.view!==view));
   document.querySelectorAll('.nav [data-nav]').forEach(b=>b.classList.toggle('sel', b.dataset.nav===view));
   document.querySelector('#s-home .pad').scrollTop=0; buzz();
+  if(view==='biblioteca'){
+    // sincroniza chips com filtro salvo
+    document.querySelectorAll('.bib-chip').forEach(function(c){ c.classList.toggle('on', (c.dataset.sent||'') === _bibFiltro); });
+    renderBib();
+  }
 }
 
 // ── pedidos (Supabase quando logado; demo local caso contrário) ──
@@ -1457,10 +1542,15 @@ let BIB=[
 function fmtBadge(f){return `<span style="font-size:10px; letter-spacing:.04em; background:var(--ouro-bg); color:#854F0B; padding:2px 7px; border-radius:8px">${f}</span>`;}
 function renderBib(){
   const el=document.getElementById('lista-bib'); if(!el) return; el.innerHTML='';
+  var vazio = document.getElementById('bib-vazio');
+  var totalRender = 0;
   BIB.forEach(grp=>{
+    var itensFiltrados = grp.itens.filter(_filtraItem);
+    if(!itensFiltrados.length) return;
     var lbl=document.createElement('p'); lbl.className='label'; lbl.style.cssText='display:block; margin:14px 0 10px'; lbl.textContent=grp.colecao;
     el.appendChild(lbl);
-    grp.itens.forEach(b=>{
+    itensFiltrados.forEach(b=>{
+      totalRender++;
       const locked=b.premium && (window._plano==='free' || !window._plano);
       var card=document.createElement('div');
       card.className='card';
@@ -1485,6 +1575,7 @@ function renderBib(){
       el.appendChild(card);
     });
   });
+  if(vazio) vazio.style.display = (totalRender===0 && _bibFiltro) ? 'block' : 'none';
 }
 function openPaywall(ctx){
   if(ctx) document.getElementById('paywall-ctx').textContent='“'+ctx+'” faz parte do plano. Desbloqueie toda a biblioteca da Monica.';
@@ -1507,21 +1598,35 @@ const FMT_LABEL={audio:'Áudio', video:'Vídeo', salmo:'Áudio', texto:'Texto'};
 const ICON_COL={mensagem_semana:'🎬', salmo_diario:'📜', '72_anjos':'📿', para_dormir:'🌙', prosperidade:'💫', protecao:'🕊️'};
 function durLabel(seg){ if(!seg) return ''; return Math.round(seg/60)+' min'; }
 const ORDEM_COLECAO=['mensagem_semana','salmo_diario','72_anjos','protecao','prosperidade','para_dormir'];
+var _bibFiltro = ''; // sentimento atual; '' = todos
+try{ _bibFiltro = localStorage.getItem('saa_bib_filtro') || ''; }catch(_){}
 async function carregarBiblioteca(){
   if(!window.saaAuth) return;  // modo demo
   try{
-    // NÃO ordenar por 'colecao' no banco (PostgREST retorna vazio nesse caso);
-    // ordenamos as coleções no cliente, abaixo.
     var _hoje=new Date().toISOString().slice(0,10);
-    var res=await window.saaAuth.client.from('conteudos').select('titulo,formato,colecao,duracao_seg,premium').eq('publicado',true).or('data_pub.is.null,data_pub.lte.'+_hoje).order('data_pub',{ascending:false});
+    var res=await window.saaAuth.client.from('conteudos').select('titulo,formato,colecao,duracao_seg,premium,sentimentos').eq('publicado',true).or('data_pub.is.null,data_pub.lte.'+_hoje).order('data_pub',{ascending:false});
     if(res.error || !res.data || !res.data.length) return;  // mantém o demo
     var grupos={};
-    res.data.forEach(function(c){ (grupos[c.colecao]=grupos[c.colecao]||[]).push({ t:c.titulo, m:durLabel(c.duracao_seg), ic:(ICON_COL[c.colecao]||'🪽'), fmt:(FMT_LABEL[c.formato]||'Áudio'), premium:c.premium }); });
+    res.data.forEach(function(c){ (grupos[c.colecao]=grupos[c.colecao]||[]).push({ t:c.titulo, m:durLabel(c.duracao_seg), ic:(ICON_COL[c.colecao]||'🪽'), fmt:(FMT_LABEL[c.formato]||'Áudio'), premium:c.premium, sentimentos:c.sentimentos||[] }); });
     var chaves=Object.keys(grupos).sort(function(a,b){ var ia=ORDEM_COLECAO.indexOf(a), ib=ORDEM_COLECAO.indexOf(b); return (ia<0?99:ia)-(ib<0?99:ib); });
     BIB = chaves.map(function(k){ return { colecao:(COLECAO_LABEL[k]||k), itens:grupos[k] }; });
     renderBib();
     console.log('[Sob as Asas] Biblioteca carregada do Supabase ('+res.data.length+' itens).');
   }catch(e){}
+}
+function filtrarBib(sent){
+  _bibFiltro = sent || '';
+  // toggle visual nos chips
+  document.querySelectorAll('.bib-chip').forEach(function(c){
+    c.classList.toggle('on', (c.dataset.sent||'') === _bibFiltro);
+  });
+  try{ localStorage.setItem('saa_bib_filtro', _bibFiltro); }catch(_){}
+  renderBib();
+}
+function _filtraItem(it){
+  if(!_bibFiltro) return true;
+  var s = it.sentimentos || [];
+  return Array.isArray(s) && s.indexOf(_bibFiltro) >= 0;
 }
 
 // ── player de mídia ──
@@ -1897,6 +2002,133 @@ function shareAnjo(){
   if(navigator.share){ navigator.share({title:'Sob as Asas', text:txt, url:location.origin}).catch(function(){}); }
   else { try{ navigator.clipboard.writeText(txt+' '+location.origin); }catch(e){} toast('Link copiado ✨'); }
   buzz();
+}
+
+// ── Jornada "Conhecer seu anjo em 7 dias" ──
+// Cada dia tem um tema universal; o texto referencia o anjo do usuário se possível.
+// Áudios opcionais via conteudos.colecao='conhecer_anjo' + dia_jornada (e anjo_n NULL p/ genérico).
+var JORNADA_TEMAS = [
+  { tema:'O nome do seu anjo', corpo:'Cada um dos 72 carrega uma vibração própria, um modo único de cuidar. Comece chamando o nome do seu anjo em voz baixa, três vezes. Sentir o nome na boca já é um pequeno ritual de aproximação.' },
+  { tema:'O coro a que ele pertence', corpo:'Há nove coros angelicais — cada um com uma função no céu. Saber a qual coro o seu anjo pertence é entender o tipo de cuidado que ele oferece: alguns sustentam, outros iluminam, outros curam.' },
+  { tema:'O salmo que ele rege', corpo:'Cada um dos 72 anjos tem um salmo que carrega sua frequência. Hoje, leia o seu — devagar, em voz alta se puder. Não precisa entender tudo; deixe que o que importa fique guardado.' },
+  { tema:'O dom principal que ele oferece', corpo:'Toda relação angelical tem um dom-âncora. O do seu anjo é uma palavra-chave que vai voltar à sua vida nos próximos meses. Anote essa palavra hoje em algum lugar visível.' },
+  { tema:'Quando invocá-lo', corpo:'Anjos atendem em momentos específicos. Conheça os horários e situações em que o seu se aproxima mais — não para virar regra, mas para ter um encontro mais previsível com a presença dele.' },
+  { tema:'A oração de chamamento', corpo:'Existe uma oração curta, feita para invocar o seu anjo. Leia ela hoje. Decore se puder. Nas próximas semanas, ela vai surgir naturalmente quando você precisar.' },
+  { tema:'A afirmação para a sua vida', corpo:'Toda jornada angelical termina com uma afirmação — uma frase curta que resume o que o seu anjo veio te lembrar. Repita por sete dias seguidos. Em vinte e um, ela vira hábito da alma.' }
+];
+
+function _jaEstado(){
+  var hoje = new Date().toISOString().slice(0,10);
+  var last = localStorage.getItem('saa_ja_last');
+  var dia = parseInt(localStorage.getItem('saa_ja_dia')||'1', 10);
+  if(dia > 7) return { hoje:hoje, dia:7, completa:true, feitoHoje:true, last:last };
+  var feitoHoje = (last === hoje);
+  return { hoje:hoje, dia:dia, completa:false, feitoHoje:feitoHoje, last:last };
+}
+
+function renderJaDots(diaAtual){
+  var el = document.getElementById('ja-dots'); if(!el) return;
+  el.innerHTML = '';
+  for(var i=1; i<=7; i++){
+    var d = document.createElement('div');
+    var feito = i < diaAtual || (diaAtual>7);
+    var atual = i === diaAtual;
+    d.style.cssText = 'width:10px; height:10px; border-radius:50%; transition:transform .2s;';
+    d.style.background = feito ? 'var(--ouro)' : atual ? 'var(--ouro-claro)' : 'rgba(186,117,23,.2)';
+    d.style.boxShadow = atual ? '0 0 0 4px rgba(239,159,39,.18)' : 'none';
+    d.style.transform = atual ? 'scale(1.3)' : 'scale(1)';
+    el.appendChild(d);
+  }
+}
+
+function openJornadaAnjo(){
+  var s = _jaEstado();
+  document.getElementById('ja-card-aguarde').style.display = 'none';
+  document.getElementById('ja-card-completo').style.display = 'none';
+  document.getElementById('ja-card-dia').style.display = 'block';
+
+  if(s.completa){
+    document.getElementById('ja-card-dia').style.display = 'none';
+    document.getElementById('ja-card-completo').style.display = 'block';
+    renderJaDots(8);
+    show('s-jornada-anjo'); return;
+  }
+  renderJaDots(s.dia);
+
+  var info = JORNADA_TEMAS[s.dia - 1];
+  document.getElementById('ja-dia-rotulo').textContent = 'Dia ' + s.dia;
+  document.getElementById('ja-tema').textContent = info.tema;
+  document.getElementById('ja-corpo').textContent = info.corpo;
+
+  if(s.feitoHoje){
+    document.getElementById('ja-card-dia').style.display = 'none';
+    document.getElementById('ja-card-aguarde').style.display = 'block';
+  }
+  // tenta achar áudio na biblioteca (colecao='conhecer_anjo', dia=s.dia)
+  _carregarAudioJornada(s.dia);
+  show('s-jornada-anjo');
+}
+
+async function _carregarAudioJornada(dia){
+  var btn = document.getElementById('ja-btn-audio'); if(!btn) return;
+  btn.style.display = 'none';
+  if(!window.saaAuth) return;
+  try{
+    var anjoN = (window._perfil && window._perfil.anjo_n) || null;
+    var q = window.saaAuth.client.from('conteudos')
+      .select('titulo,media_url,duracao_seg')
+      .eq('colecao','conhecer_anjo').eq('dia_jornada', dia).eq('publicado', true).limit(1);
+    // prioriza áudio específico do anjo (anjo_n=N) sobre genérico (anjo_n=null) na app, escolhendo manualmente abaixo
+    var r = await q;
+    if(r.error || !r.data || !r.data.length) return;
+    var a = r.data[0];
+    btn.style.display = 'block';
+    btn.dataset.titulo = a.titulo || ('Dia '+dia);
+    btn.dataset.dur = a.duracao_seg ? Math.round(a.duracao_seg/60)+' min' : '2 min';
+    btn.dataset.url = a.media_url || '';
+  }catch(_){}
+}
+function ouvirAudioJornada(){
+  var btn = document.getElementById('ja-btn-audio');
+  if(!btn || !btn.dataset.titulo) return;
+  openPlayer({ titulo: btn.dataset.titulo, fmt: 'Áudio · na voz da Monica', art: '📿', dur: btn.dataset.dur });
+}
+function concluirDiaJornada(){
+  var s = _jaEstado(); if(s.completa || s.feitoHoje) return;
+  try{
+    localStorage.setItem('saa_ja_last', s.hoje);
+    localStorage.setItem('saa_ja_dia', String(s.dia + 1));
+  }catch(_){}
+  buzz(); chime(); registrarPresenca();
+  openJornadaAnjo();
+  atualizarHomeJornadaCard();
+}
+
+// Card do home: mostra "Conheça seu anjo em 7 dias" só se a jornada estiver aberta/em andamento
+function atualizarHomeJornadaCard(){
+  var el = document.getElementById('home-ja-card'); if(!el) return;
+  var s = _jaEstado();
+  var sub = document.getElementById('home-ja-sub');
+  if(s.completa){ el.style.display = 'none'; return; }
+  el.style.display = 'flex';
+  if(s.dia === 1 && !s.feitoHoje) {
+    if(sub) sub.textContent = 'Uma mensagem curta por dia, descobrindo seu anjo a fundo';
+  } else if(s.feitoHoje) {
+    if(sub) sub.textContent = 'Dia '+s.dia+' concluído — volte amanhã';
+  } else {
+    if(sub) sub.textContent = 'Próximo: Dia '+s.dia+' de 7';
+  }
+}
+
+// "Antes de dormir" — card só aparece à noite (>=20h)
+function atualizarHomeDormirCard(){
+  var el = document.getElementById('home-dormir-card'); if(!el) return;
+  var h = new Date().getHours();
+  el.style.display = (h >= 20 || h < 5) ? 'flex' : 'none';
+}
+function abrirAntesDormir(){
+  filtrarBib('sono');
+  nav('biblioteca');
 }
 
 // ── Velas acesas hoje no Brasil (presença coletiva) ──

@@ -48,6 +48,9 @@
   #metricas{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
   .metric{ background:var(--puro); border:1px solid var(--linha); border-radius:14px; padding:14px 16px; }
   .ml{ font-size:12px; color:var(--suave); } .mv{ font-size:24px; font-weight:600; color:var(--tinta); margin:4px 0 2px; } .mh{ font-size:11px; color:var(--suave); }
+  .sentchip{ display:inline-flex; align-items:center; gap:6px; background:var(--puro); border:1px solid var(--linha); border-radius:999px; padding:6px 12px; font-size:12.5px; color:var(--tinta); cursor:pointer; }
+  .sentchip input{ width:auto; margin:0; accent-color:var(--ouro); }
+  .sentchip:has(input:checked){ background:var(--ouro-bg); color:#854F0B; border-color:transparent; }
 </style>
 </head>
 <body>
@@ -108,16 +111,34 @@
         <input type="text" id="c-titulo" placeholder="Ex.: Salmo 91 — a proteção" />
         <div class="row">
           <div><label class="f">Coleção</label>
-            <select id="c-colecao">
+            <select id="c-colecao" onchange="toggleJornadaCampos()">
               <option value="salmo_diario">Salmo Diário</option>
               <option value="mensagem_semana">Mensagem da semana</option>
               <option value="72_anjos">Os 72 Anjos</option>
               <option value="para_dormir">Para dormir</option>
               <option value="prosperidade">Prosperidade</option>
               <option value="protecao">Proteção</option>
+              <option value="conhecer_anjo">Conhecer seu anjo (7 dias)</option>
             </select>
           </div>
           <div><label class="f">Duração (min, opcional)</label><input type="number" id="c-dur" min="0" placeholder="2" /></div>
+        </div>
+        <div id="c-jornada-row" class="row" style="display:none">
+          <div><label class="f">Dia da jornada (1–7)</label><input type="number" id="c-dia-jornada" min="1" max="7" placeholder="1" /></div>
+          <div><label class="f">Anjo (n, opcional)</label><input type="number" id="c-anjo-n" min="1" max="72" placeholder="vazio = genérico" /></div>
+        </div>
+        <label class="f">Sentimentos atendidos (selecione um ou mais)</label>
+        <div id="c-sentimentos" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:6px">
+          <label class="sentchip"><input type="checkbox" value="ansiedade"/> 🌬️ Ansiedade</label>
+          <label class="sentchip"><input type="checkbox" value="tristeza"/> 🤍 Tristeza</label>
+          <label class="sentchip"><input type="checkbox" value="duvida"/> 🧭 Em dúvida</label>
+          <label class="sentchip"><input type="checkbox" value="gratidao"/> ✨ Gratidão</label>
+          <label class="sentchip"><input type="checkbox" value="protecao"/> 🛡️ Proteção</label>
+          <label class="sentchip"><input type="checkbox" value="cura"/> 🌿 Cura</label>
+          <label class="sentchip"><input type="checkbox" value="prosperidade"/> 💫 Prosperidade</label>
+          <label class="sentchip"><input type="checkbox" value="reconciliacao"/> 🕊️ Reconciliação</label>
+          <label class="sentchip"><input type="checkbox" value="sono"/> 🌙 Para dormir</label>
+          <label class="sentchip"><input type="checkbox" value="foco"/> 🎯 Foco</label>
         </div>
         <label class="f">Arquivo (vídeo ou áudio)</label>
         <input type="file" id="c-file" accept="audio/*,video/*" />
@@ -344,7 +365,11 @@ function iniciais(n){ return (n||'?').split(' ').map(function(p){return p[0];}).
 function val(id){ return (document.getElementById(id).value||'').trim(); }
 
 // ── CONTEÚDOS ──
-var COL_LABEL={salmo_diario:'Salmo Diário',mensagem_semana:'Mensagem da semana','72_anjos':'Os 72 Anjos',para_dormir:'Para dormir',prosperidade:'Prosperidade',protecao:'Proteção'};
+var COL_LABEL={salmo_diario:'Salmo Diário',mensagem_semana:'Mensagem da semana','72_anjos':'Os 72 Anjos',para_dormir:'Para dormir',prosperidade:'Prosperidade',protecao:'Proteção',conhecer_anjo:'Conhecer seu anjo'};
+function toggleJornadaCampos(){
+  var col = val('c-colecao');
+  document.getElementById('c-jornada-row').style.display = (col==='conhecer_anjo') ? 'flex' : 'none';
+}
 var DEMO_CONT=[
   {id:'c1',titulo:'Salmo 91 — a proteção',formato:'salmo',colecao:'salmo_diario',premium:false,publicado:true,data_pub:'2026-06-13'},
   {id:'c2',titulo:'Mensagem da Monica — esta semana',formato:'video',colecao:'mensagem_semana',premium:false,publicado:true,data_pub:'2026-06-12'},
@@ -364,8 +389,13 @@ async function criarConteudo(){
   try{
     var media_url=null; var f=document.getElementById('c-file').files[0];
     if(f){ msg.textContent='Enviando arquivo… (pode levar um tempo)'; media_url=await subirArquivo(f); }
-    var dur=val('c-dur'); var body={ action:'criar', titulo:titulo, formato:val('c-tipo'), colecao:val('c-colecao'),
+    var dur=val('c-dur');
+    var sentimentos = Array.prototype.slice.call(document.querySelectorAll('#c-sentimentos input:checked')).map(function(i){return i.value;});
+    var diaJornada = val('c-dia-jornada'); var anjoN = val('c-anjo-n');
+    var body={ action:'criar', titulo:titulo, formato:val('c-tipo'), colecao:val('c-colecao'),
       corpo:val('c-corpo')||null, media_url:media_url, duracao_seg: dur? Number(dur)*60 : null,
+      sentimentos: sentimentos, dia_jornada: diaJornada? Number(diaJornada) : null,
+      anjo_n: anjoN? Number(anjoN) : null,
       premium:document.getElementById('c-premium').checked, data_pub:val('c-data')||null, publicado:true };
     var r=await fetch('/api/admin-conteudo',{method:'POST',headers:{'Content-Type':'application/json','x-admin-key':KEY},body:JSON.stringify(body)});
     var j=await r.json(); if(!j.ok) throw new Error(j.error||'falha');

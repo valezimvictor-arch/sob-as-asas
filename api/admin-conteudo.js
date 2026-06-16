@@ -39,6 +39,9 @@ export default async function handler(req, res) {
         premium: b.premium !== false,
         data_pub: b.data_pub || null,       // data (pode ser futura → agendado)
         publicado: b.publicado !== false,
+        sentimentos: Array.isArray(b.sentimentos) ? b.sentimentos : [],
+        dia_jornada: b.dia_jornada ? Number(b.dia_jornada) : null,
+        anjo_n: b.anjo_n ? Number(b.anjo_n) : null,
       };
       const { data, error } = await supabase.from('conteudos').insert(row).select().single();
       if (error) return res.status(500).json({ ok: false, error: error.message });
