@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Bloqueia inversão automática no Apple Mail / Outlook dark mode -->
+<meta name="color-scheme" content="light only" />
+<meta name="supported-color-schemes" content="light only" />
+<title>Sob as Asas — seu link de entrada</title>
+<!--[if mso]>
+<noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+<![endif]-->
+<style type="text/css">
+  :root { color-scheme: light only; supported-color-schemes: light only; }
+  /* Apple Mail dark mode: força tudo claro */
+  @media (prefers-color-scheme: dark) {
+    .force-light{ background-color:#FBFAF7 !important; color:#2C2C2A !important; }
+    .force-light-card{ background-color:#FFFFFF !important; border-color:rgba(186,117,23,.18) !important; }
+    .force-tinta{ color:#2C2C2A !important; }
+    .force-suave{ color:#5F5E5A !important; }
+    .force-ouro{ color:#BA7517 !important; }
+  }
+  /* Gmail às vezes ignora classes — duplicado inline abaixo */
+  a { color:#BA7517 !important; }
+  body, table, td { font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+  .btn-ouro:hover { background:#D89A2C !important; }
+</style>
+</head>
+<body class="force-light" style="margin:0; padding:0; width:100%; background-color:#FBFAF7 !important; color:#2C2C2A !important;">
+
+<!-- preheader (texto invisível, aparece como prévia na caixa de entrada) -->
+<div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#FBFAF7;">
+  Seu link de entrada do Sob as Asas — clique para acessar seu santuário com Monica Buonfiglio.
+</div>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" class="force-light" style="background-color:#FBFAF7 !important;">
+  <tr>
+    <td align="center" style="padding:40px 16px 60px;">
+
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:520px;">
+
+        <!-- Topo: marca -->
+        <tr>
+          <td align="center" style="padding-bottom:30px;">
+            <div style="font-size:34px; color:#EF9F27; line-height:1;">&#10022;</div>
+            <h1 style="margin:10px 0 4px; font-family:Georgia,'Playfair Display',serif; font-weight:400; font-size:30px; color:#2C2C2A !important; letter-spacing:.005em;" class="force-tinta">Sob as Asas</h1>
+            <p style="margin:0; font-family:Georgia,'Cormorant Garamond',serif; font-style:italic; font-size:15px; color:#BA7517 !important;" class="force-ouro">por Monica Buonfiglio</p>
+          </td>
+        </tr>
+
+        <!-- Card central -->
+        <tr>
+          <td class="force-light-card" style="background-color:#FFFFFF !important; border:1px solid rgba(186,117,23,0.16); border-radius:22px; padding:34px 26px 30px;">
+
+            <h2 style="margin:0 0 6px; font-family:Georgia,'Playfair Display',serif; font-weight:400; font-size:22px; color:#2C2C2A !important; text-align:center;" class="force-tinta">Seu link de entrada chegou</h2>
+            <p style="margin:0 0 24px; font-size:14.5px; color:#5F5E5A !important; line-height:1.65; text-align:center;" class="force-suave">
+              Clique no botão abaixo para entrar no seu santuário. Esse link funciona uma única vez e expira em 1 hora.
+            </p>
+
+            <!-- Botão -->
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+              <tr>
+                <td align="center" style="padding:6px 0 4px;">
+                  <a class="btn-ouro" href="{{ .ConfirmationURL }}"
+                     style="display:inline-block; font-family:-apple-system,Helvetica,Arial,sans-serif; font-weight:600; font-size:15px; color:#5A3A06 !important; background-color:#F6C868; background-image:linear-gradient(180deg,#F6C868,#D89A2C); padding:15px 36px; border-radius:14px; text-decoration:none; box-shadow:0 6px 18px rgba(186,117,23,.22);">
+                    Entrar no Sob as Asas
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+            <p style="margin:22px 0 0; font-size:12.5px; color:#5F5E5A !important; line-height:1.6; text-align:center;" class="force-suave">
+              Se o botão não funcionar, copie e cole este endereço no seu navegador:
+            </p>
+            <p style="margin:8px 0 0; font-size:11.5px; color:#BA7517 !important; line-height:1.5; text-align:center; word-break:break-all;" class="force-ouro">
+              <a href="{{ .ConfirmationURL }}" style="color:#BA7517 !important; text-decoration:underline;">{{ .ConfirmationURL }}</a>
+            </p>
+
+            <hr style="border:none; border-top:1px solid rgba(186,117,23,.14); margin:26px 0;" />
+
+            <p style="margin:0; font-family:Georgia,'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:#BA7517 !important; text-align:center; line-height:1.5;" class="force-ouro">
+              "Você não chega aqui por acaso.<br/>Seu anjo te trouxe."
+            </p>
+          </td>
+        </tr>
+
+        <!-- Rodapé -->
+        <tr>
+          <td align="center" style="padding:24px 12px 0;">
+            <p style="margin:0; font-size:11.5px; color:#5F5E5A !important; line-height:1.65;" class="force-suave">
+              Você está recebendo este e-mail porque pediu o link de entrada no Sob as Asas.<br/>
+              Se não foi você, pode ignorar — nada acontece sem clicar no botão.
+            </p>
+            <p style="margin:14px 0 0; font-size:11px; color:#5F5E5A !important;" class="force-suave">
+              Sob as Asas &middot; uma realização <strong style="color:#5F5E5A !important;" class="force-suave">LVSV Ventures</strong><br/>
+              <a href="https://www.sobasasas.com.br" style="color:#BA7517 !important; text-decoration:none;">sobasasas.com.br</a>
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

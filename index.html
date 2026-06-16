@@ -1038,6 +1038,28 @@
   </div>
 </div>
 
+<!-- modal: instrução iOS para ativar lembretes via PWA instalado -->
+<div id="ios-push-modal" role="dialog" aria-modal="true" aria-labelledby="ios-push-titulo" style="position:fixed; inset:0; z-index:62; display:none; background:rgba(44,44,42,.55)">
+  <div style="position:absolute; left:0; right:0; bottom:0; background:var(--branco); border-radius:26px 26px 0 0; padding:26px 24px max(env(safe-area-inset-bottom),24px); max-height:88vh; overflow-y:auto">
+    <div style="text-align:center">
+      <div style="font-size:32px">🪽</div>
+      <h3 id="ios-push-titulo" class="serif" style="font-size:22px; margin:8px 0 0; font-weight:500">Para receber os lembretes no iPhone</h3>
+      <p class="serif-soft" style="font-size:14px; color:var(--ouro); margin:4px 0 0">Instale o app na sua tela de início primeiro — o Apple Push só funciona pelo app instalado</p>
+    </div>
+    <ol style="margin:22px 0 0; padding-left:18px; font-size:14px; line-height:1.7; color:var(--tinta)">
+      <li>Abra este app no <strong>Safari</strong> (não no Chrome/Firefox)</li>
+      <li>Toque no botão de <strong>compartilhar</strong> <span style="display:inline-block; vertical-align:-3px">⬆️</span> na barra inferior</li>
+      <li>Role e toque em <strong>"Adicionar à Tela de Início"</strong></li>
+      <li>Confirme. Volte e <strong>abra o app pelo ícone</strong> que apareceu na tela</li>
+      <li>Lá dentro, toque novamente em "Ativar lembretes"</li>
+    </ol>
+    <div style="background:var(--ouro-bg); border-radius:14px; padding:14px 16px; margin:18px 0 0; font-size:12.5px; color:var(--ouro); line-height:1.55">
+      Por que essa volta? A Apple só permite notificações em apps web que viram "aplicativo de verdade" pela Tela de Início — uma proteção contra spam.
+    </div>
+    <button class="btn-ouro" style="margin-top:18px" onclick="fecharIosPushModal()">Entendi</button>
+  </div>
+</div>
+
 <!-- paywall -->
 <div id="paywall" role="dialog" aria-modal="true" aria-label="Plano dos Anjos" style="position:fixed; inset:0; z-index:60; display:none; background:rgba(44,44,42,.55)">
   <div style="position:absolute; left:0; right:0; bottom:0; background:var(--branco); border-radius:26px 26px 0 0; padding:26px 24px max(env(safe-area-inset-bottom),24px)">
@@ -2384,10 +2406,24 @@ async function denunciar(id){
 
 // ── Lembretes diários (push) ──
 function urlBase64ToUint8Array(b64){ var pad='='.repeat((4-b64.length%4)%4); var base=(b64+pad).replace(/-/g,'+').replace(/_/g,'/'); var raw=atob(base); var arr=new Uint8Array(raw.length); for(var i=0;i<raw.length;i++) arr[i]=raw.charCodeAt(i); return arr; }
+function isIOS(){ return /iPad|iPhone|iPod/.test(navigator.userAgent); }
+function isStandalonePWA(){
+  return (window.navigator.standalone === true) ||
+    (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+}
 async function ativarLembretes(){
   var cfg=window.SAA_CONFIG||{};
   if(!cfg.vapidPublic){ toast('Lembretes diários chegando em breve 🕊️'); return; }
-  if(!('serviceWorker' in navigator) || !('PushManager' in window)){ toast('Seu dispositivo não suporta lembretes.'); return; }
+
+  // iOS: só dá pra ativar push depois de instalar o app na tela de início
+  if(isIOS() && !isStandalonePWA()){
+    document.getElementById('ios-push-modal').style.display='block';
+    document.body.style.overflow='hidden';
+    return;
+  }
+  if(!('serviceWorker' in navigator) || !('PushManager' in window)){
+    toast('Lembretes ainda não disponíveis nesse navegador.'); return;
+  }
   try{
     var perm=await Notification.requestPermission();
     if(perm!=='granted'){ toast('Permita as notificações para receber o ritual diário.'); return; }
@@ -2401,6 +2437,10 @@ async function ativarLembretes(){
     toast('Lembretes ativados. Seu anjo vai te chamar todo dia 🕊️');
     var el=document.getElementById('home-lembretes'); if(el) el.style.display='none';
   }catch(e){ toast('Não consegui ativar os lembretes agora.'); }
+}
+function fecharIosPushModal(){
+  document.getElementById('ios-push-modal').style.display='none';
+  document.body.style.overflow='';
 }
 
 // ── Oferta de trial no pico de valor (após 3 dias de uso) ──
