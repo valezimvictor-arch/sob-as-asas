@@ -2,83 +2,227 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Sob as Asas — Anjos da Guarda, por Monica Buonfiglio</title>
-<meta name="description" content="A sua prática diária com os anjos da guarda, ao lado de Monica Buonfiglio. Descubra seu anjo regente. Em breve." />
+<meta name="description" content="A sua prática diária com os anjos da guarda, ao lado de Monica Buonfiglio. Descubra seu anjo regente. Em breve no app." />
 <meta property="og:title" content="Sob as Asas — Anjos da Guarda" />
-<meta property="og:description" content="Sua prática diária com os anjos da guarda, por Monica Buonfiglio. Entre na lista de espera." />
+<meta property="og:description" content="Sua prática diária com os anjos da guarda, por Monica Buonfiglio. Entre na lista do lançamento e ganhe acesso antecipado." />
+<meta property="og:image" content="/asa-icon.svg" />
+<meta property="og:url" content="https://www.sobasasas.com.br" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="/asa-icon.svg" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@400;500;600;700" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <script src="/config.js?v=1"></script>
 <style>
-  :root{ --branco:#FBFAF7; --puro:#fff; --ouro:#BA7517; --ouro-claro:#EF9F27; --ouro-bg:#FAF3E4; --celeste:#378ADD; --tinta:#2C2C2A; --suave:#6B6A63; --linha:rgba(186,117,23,.16); }
+  :root{
+    --branco:#FBFAF7; --puro:#fff; --ouro:#BA7517; --ouro-claro:#EF9F27; --ouro-bg:#FAF3E4;
+    --celeste:#378ADD; --tinta:#2C2C2A; --suave:#5F5E5A; --linha:rgba(186,117,23,.16);
+  }
   *{box-sizing:border-box}
-  body{ margin:0; background:var(--branco); color:var(--tinta); font-family:'Manrope',system-ui,sans-serif; text-align:center; }
-  .serif{ font-family:'Playfair Display',serif; } .serif-soft{ font-family:'Cormorant Garamond',serif; }
-  .halo{ position:absolute; top:-120px; left:50%; transform:translateX(-50%); width:420px; height:420px; border-radius:50%;
-    background:radial-gradient(circle, rgba(239,159,39,.22) 0%, rgba(239,159,39,.07) 45%, rgba(239,159,39,0) 70%); pointer-events:none; }
-  .wrap{ position:relative; max-width:540px; margin:0 auto; padding:64px 24px 60px; }
-  .feather{ font-size:40px; color:var(--ouro-claro); }
-  h1{ font-size:clamp(38px,9vw,60px); margin:14px 0 0; font-weight:400; line-height:1.05; }
-  .tag{ font-family:'Cormorant Garamond',serif; font-size:23px; color:var(--ouro); margin:10px 0 0; }
-  .lead{ font-size:17px; color:var(--suave); line-height:1.7; margin:22px auto 0; max-width:420px; }
-  .form{ margin:34px auto 0; max-width:420px; display:flex; gap:8px; }
-  input{ flex:1; min-width:0; font:inherit; background:var(--puro); border:1px solid var(--linha); border-radius:14px; padding:15px 16px; outline:none; color:var(--tinta); }
-  input:focus{ border-color:var(--ouro-claro); box-shadow:0 0 0 4px rgba(239,159,39,.12); }
-  button{ font:inherit; font-weight:600; border:none; border-radius:14px; padding:0 22px; cursor:pointer;
-    background:linear-gradient(180deg,#F6C868,#D89A2C); color:#5A3A06; white-space:nowrap; }
-  button:active{ transform:scale(.98); }
-  .msg{ min-height:20px; font-size:14px; margin:12px 0 0; color:var(--ouro); }
-  .selo{ margin-top:40px; font-size:13px; color:var(--suave); line-height:1.7; }
-  .pilares{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:40px; }
-  .pilar{ background:var(--puro); border:1px solid var(--linha); border-radius:16px; padding:18px 16px; width:150px; }
-  .pilar .ic{ font-size:24px; } .pilar p{ margin:8px 0 0; font-size:13px; color:var(--suave); }
-  .pilar .t{ font-weight:500; color:var(--tinta); font-size:14px; }
-  .rodape{ margin-top:48px; font-size:12px; color:var(--suave); }
+  html,body{ margin:0; padding:0; }
+  body{ background:var(--branco); color:var(--tinta); font-family:'Manrope',system-ui,sans-serif; line-height:1.7; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+  .serif{ font-family:'Playfair Display',serif; letter-spacing:.005em; }
+  .serif-soft{ font-family:'Cormorant Garamond',serif; }
   a{ color:var(--ouro); }
-  @media(max-width:460px){ .form{ flex-direction:column; } button{ padding:14px; } }
+  .wrap{ max-width:560px; margin:0 auto; padding:48px 22px 0; position:relative; text-align:center; }
+
+  /* HERO */
+  .halo{ position:absolute; top:-160px; left:50%; transform:translateX(-50%); width:520px; height:520px; border-radius:50%;
+    background:radial-gradient(circle, rgba(239,159,39,.22) 0%, rgba(239,159,39,.06) 45%, rgba(239,159,39,0) 70%); pointer-events:none; z-index:0; }
+  .feather{ position:relative; z-index:1; font-size:44px; color:var(--ouro-claro); }
+  h1{ position:relative; z-index:1; font-size:clamp(40px,9vw,64px); margin:14px 0 0; font-weight:400; line-height:1.04; letter-spacing:-.005em; }
+  .tag{ position:relative; z-index:1; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:23px; color:var(--ouro); margin:10px 0 0; }
+  .lead{ position:relative; z-index:1; font-size:17px; color:var(--suave); line-height:1.7; margin:22px auto 0; max-width:440px; }
+  .lead strong{ color:var(--tinta); font-weight:500; }
+
+  /* Cronograma de espera */
+  .cronograma{ background:var(--ouro-bg); border-radius:18px; padding:18px 18px 16px; margin:28px auto 0; max-width:440px; color:var(--ouro); }
+  .cronograma p{ margin:0; font-size:13px; line-height:1.6; letter-spacing:.01em; }
+  .cronograma .data{ font-family:'Cormorant Garamond',serif; font-size:17px; font-style:italic; color:var(--ouro); margin-bottom:4px; }
+  .cronograma strong{ color:#7A4D0E; font-weight:600; }
+
+  /* Captura — formulário */
+  .form{ margin:30px auto 0; max-width:440px; }
+  .form-row{ display:flex; gap:8px; margin-top:10px; }
+  .field{ flex:1; min-width:0; font:inherit; background:var(--puro); border:1px solid var(--linha); border-radius:14px; padding:14px 16px; outline:none; color:var(--tinta); transition:border-color .2s, box-shadow .2s; }
+  .field:focus{ border-color:var(--ouro-claro); box-shadow:0 0 0 4px rgba(239,159,39,.12); }
+  .form-row input{ width:100%; }
+  button.cta{ font:inherit; font-weight:600; border:none; border-radius:14px; padding:15px 22px; cursor:pointer; background:linear-gradient(180deg,#F6C868,#D89A2C); color:#5A3A06; white-space:nowrap; box-shadow:0 6px 22px rgba(186,117,23,.18); transition:transform .12s, box-shadow .2s; width:100%; margin-top:12px; }
+  button.cta:active{ transform:scale(.98); }
+  .form-help{ font-size:11.5px; color:var(--suave); margin:10px 0 0; line-height:1.55; }
+  .form-help a{ color:var(--ouro); }
+  .msg{ min-height:20px; font-size:14px; margin:14px 0 0; color:var(--ouro); transition:color .2s; }
+
+  /* Pilares */
+  .pilares{ display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-top:48px; max-width:520px; margin-left:auto; margin-right:auto; }
+  .pilar{ background:var(--puro); border:1px solid var(--linha); border-radius:18px; padding:20px 14px; text-align:center; }
+  .pilar .ic{ font-size:26px; }
+  .pilar .t{ font-weight:500; color:var(--tinta); font-size:14.5px; margin:8px 0 6px; }
+  .pilar .d{ font-size:12px; color:var(--suave); line-height:1.55; }
+
+  /* Bloco Monica (autoridade) */
+  .monica{ margin:60px auto 0; max-width:520px; padding:28px 24px; background:var(--puro); border:1px solid var(--linha); border-radius:22px; text-align:left; }
+  .monica-quote{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:22px; line-height:1.45; color:var(--tinta); margin:0; }
+  .monica-meta{ display:flex; align-items:center; gap:12px; margin-top:18px; }
+  .monica-circle{ width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg, #F6C868, #BA7517); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Playfair Display',serif; font-size:18px; flex-shrink:0; }
+  .monica-meta div p{ margin:0; }
+  .monica-meta .nome{ font-weight:600; font-size:14.5px; color:var(--tinta); }
+  .monica-meta .sub{ font-size:12px; color:var(--suave); margin-top:2px; }
+  .monica-redes{ display:flex; gap:14px; margin-top:14px; font-size:12.5px; color:var(--suave); }
+  .monica-redes strong{ color:var(--tinta); font-weight:500; }
+
+  /* Depoimentos / prova social leve (textos genuínos, sem nome inventado) */
+  .vozes{ margin:60px auto 0; max-width:520px; }
+  .vozes h2{ font-family:'Playfair Display',serif; font-weight:400; font-size:26px; text-align:center; margin:0 0 20px; }
+  .voz{ background:var(--puro); border:1px solid var(--linha); border-radius:18px; padding:20px 22px; margin-bottom:12px; }
+  .voz p{ margin:0; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:var(--tinta); line-height:1.5; }
+  .voz .origem{ font-family:'Manrope',sans-serif; font-style:normal; font-size:12px; color:var(--suave); margin-top:10px; letter-spacing:.04em; }
+
+  /* FAQ */
+  .faq{ margin:60px auto 0; max-width:520px; text-align:left; }
+  .faq h2{ font-family:'Playfair Display',serif; font-weight:400; font-size:26px; text-align:center; margin:0 0 20px; }
+  .faq details{ background:var(--puro); border:1px solid var(--linha); border-radius:14px; padding:14px 18px; margin-bottom:10px; }
+  .faq summary{ font-weight:500; font-size:14.5px; color:var(--tinta); cursor:pointer; list-style:none; outline:none; position:relative; padding-right:24px; }
+  .faq summary::after{ content:'+'; position:absolute; right:0; top:-1px; color:var(--ouro); font-size:20px; line-height:1; transition:transform .2s; }
+  .faq details[open] summary::after{ transform:rotate(45deg); }
+  .faq p{ margin:10px 0 0; font-size:14px; color:var(--suave); line-height:1.65; }
+
+  /* Rodapé */
+  footer{ margin:60px auto 0; padding:30px 22px 36px; text-align:center; max-width:520px; }
+  footer p{ font-size:12px; color:var(--suave); line-height:1.7; margin:0; }
+  footer a{ color:var(--ouro); text-decoration:none; }
+
+  @media(min-width:520px){
+    .form-row{ flex-direction:row; }
+    button.cta{ width:auto; align-self:flex-end; margin-top:0; }
+    .form-row.first{ flex-direction:column; gap:10px; }
+    .form-row.first input{ width:100%; }
+  }
 </style>
 </head>
 <body>
-<div class="halo"></div>
 <div class="wrap">
+  <div class="halo"></div>
   <div class="feather">✦</div>
   <h1 class="serif">Sob as Asas</h1>
   <p class="tag">Descubra quem cuida de você</p>
-  <p class="lead">A sua prática diária com os anjos da guarda, ao lado de <strong style="font-weight:500;color:var(--tinta)">Monica Buonfiglio</strong>. Descubra seu anjo regente, receba rituais e mensagens, e viva sob as asas.</p>
+  <p class="lead">A sua prática diária com os anjos da guarda, ao lado de <strong>Monica Buonfiglio</strong>. Descubra seu anjo regente entre os 72, receba rituais e mensagens, e viva sob as asas todos os dias.</p>
 
-  <form class="form" onsubmit="entrar(event)">
-    <input id="email" type="email" inputmode="email" placeholder="Seu melhor e-mail" required />
-    <button type="submit">Quero ser avisado</button>
-  </form>
-  <p class="msg" id="msg">Entre na lista de espera do lançamento. 🕊️</p>
-
-  <div class="pilares">
-    <div class="pilar"><div class="ic">🪽</div><div class="t">Seu anjo regente</div><p>Descubra entre os 72 anjos</p></div>
-    <div class="pilar"><div class="ic">📜</div><div class="t">Salmo Diário</div><p>Na voz da Monica</p></div>
-    <div class="pilar"><div class="ic">✨</div><div class="t">O Milagre do mês</div><p>Um pedido realizado</p></div>
+  <!-- Cronograma de espera -->
+  <div class="cronograma">
+    <p class="data">Próximas semanas</p>
+    <p>📩 <strong>Acesso antecipado</strong> aos primeiros inscritos<br/>🕯️ <strong>3 mensagens dos anjos</strong> por e-mail antes do lançamento<br/>✨ Primeiro mês <strong>com 50% de desconto</strong> só para a lista</p>
   </div>
 
-  <p class="selo">Monica Buonfiglio — autora de <em>Anjos Cabalísticos</em>, a maior referência de anjos do Brasil.</p>
-  <p class="rodape">© Sob as Asas · uma realização LVSV · <a href="/regulamento-milagre">Regulamento do Milagre</a></p>
+  <!-- Formulário com email + (whatsapp opcional) -->
+  <form class="form" onsubmit="entrar(event)">
+    <div class="form-row first" style="flex-direction:column">
+      <input class="field" id="email" type="email" inputmode="email" placeholder="Seu melhor e-mail" required />
+      <input class="field" id="whatsapp" type="tel" inputmode="tel" placeholder="WhatsApp (opcional) — receba o link em primeira mão" />
+    </div>
+    <button class="cta" type="submit">Quero ser avisada(o) primeiro</button>
+    <p class="form-help">Ao se inscrever, você concorda com a <a href="/privacidade" target="_blank">Política de Privacidade</a>. Sem spam — só o necessário pra você não perder o lançamento.</p>
+    <p class="msg" id="msg">🕊️</p>
+  </form>
+
+  <!-- Pilares -->
+  <div class="pilares">
+    <div class="pilar"><div class="ic">🪽</div><div class="t">Seu anjo regente</div><div class="d">Descubra entre os 72 nomes cabalísticos</div></div>
+    <div class="pilar"><div class="ic">📜</div><div class="t">Salmo Diário</div><div class="d">Na voz da Monica, todo dia</div></div>
+    <div class="pilar"><div class="ic">✨</div><div class="t">O Milagre do mês</div><div class="d">Uma história escolhida e realizada</div></div>
+  </div>
+
+  <!-- Monica -->
+  <div class="monica">
+    <p class="monica-quote">"Anjos não atendem por sorteio. Eles atendem por presença. Esse app é o lugar onde a presença vira hábito."</p>
+    <div class="monica-meta">
+      <div class="monica-circle">MB</div>
+      <div>
+        <p class="nome">Monica Buonfiglio</p>
+        <p class="sub">Autora de <em>Anjos Cabalísticos</em> · 30 anos de jornada · ~1 milhão de seguidores</p>
+      </div>
+    </div>
+    <div class="monica-redes">
+      <span><strong>@monicadosanjos72</strong></span>
+      <span>YouTube · Spotify · TV</span>
+    </div>
+  </div>
+
+  <!-- Vozes (frases genuínas inspiradas no propósito — sem nome fictício) -->
+  <div class="vozes">
+    <h2 class="serif">Por que estamos construindo isso</h2>
+    <div class="voz">
+      <p>"Para que cada brasileira e cada brasileiro tenha, no bolso, o conforto de saber que alguém invisível cuida deles — todos os dias."</p>
+      <p class="origem">— Propósito da equipe Sob as Asas</p>
+    </div>
+    <div class="voz">
+      <p>"A tradição dos 72 nomes é antiga, mas a vida moderna pede um lugar simples para praticá-la. É esse lugar."</p>
+      <p class="origem">— Monica Buonfiglio sobre o app</p>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq">
+    <h2 class="serif">Dúvidas comuns</h2>
+    <details>
+      <summary>Quando o app vai ficar disponível?</summary>
+      <p>O lançamento oficial é nas próximas semanas. Quem está na lista recebe acesso antecipado e os 50% de desconto do primeiro mês — esses dois benefícios são exclusivos da lista.</p>
+    </details>
+    <details>
+      <summary>Quanto vai custar?</summary>
+      <p>Você pode usar o essencial gratuitamente. A jornada completa (biblioteca da Monica, salmos com áudio, séries e rituais avançados) é por assinatura: R$ 19,90/mês ou R$ 149/ano. Os primeiros 7 dias são por nossa conta.</p>
+    </details>
+    <details>
+      <summary>O que é o "Milagre do Mês"?</summary>
+      <p>Todo mês, a Monica escolhe — por critério editorial, jamais sorteio — uma história entre os pedidos compartilhados e busca realizá-la. A candidatura é sempre gratuita, mesmo no plano free. <a href="/regulamento-milagre" target="_blank">Leia o regulamento</a>.</p>
+    </details>
+    <details>
+      <summary>Esse app substitui terapia ou orientação médica?</summary>
+      <p>Não. O conteúdo é de prática espiritual e bem-estar, e não substitui aconselhamento médico, psicológico, jurídico ou financeiro profissional.</p>
+    </details>
+    <details>
+      <summary>Como meus dados são tratados?</summary>
+      <p>Em conformidade com a LGPD. Coletamos só o necessário (e-mail, nome, data de nascimento para o cálculo do anjo), tratamos com cuidado, e você pode pedir exclusão a qualquer momento. <a href="/privacidade" target="_blank">Política de Privacidade</a>.</p>
+    </details>
+  </div>
 </div>
+
+<footer>
+  <p>© Sob as Asas · uma realização <strong>LVSV Ventures Participações Ltda.</strong> · CNPJ 66.981.310/0001-42</p>
+  <p style="margin-top:6px"><a href="/regulamento-milagre">Regulamento do Milagre</a> · <a href="/privacidade">Privacidade</a> · <a href="/termos">Termos</a></p>
+</footer>
 
 <script>
 function entrar(e){
   e.preventDefault();
   var email=document.getElementById('email').value.trim();
+  var whats=(document.getElementById('whatsapp').value||'').trim();
   var msg=document.getElementById('msg');
   if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ msg.style.color='#C0392B'; msg.textContent='Digite um e-mail válido.'; return; }
   msg.style.color='var(--ouro)';
+  msg.textContent='Enviando…';
   var cfg=window.SAA_CONFIG||{};
-  function sucesso(){ document.querySelector('.form').style.display='none'; msg.textContent='Pronto! Você será avisado do lançamento. ✨'; }
+  function sucesso(){
+    document.querySelector('.form').style.display='none';
+    msg.textContent='Pronto. Você é a próxima a ser chamada(o) sob as asas. ✨';
+    try{ localStorage.setItem('saa_lead_ok','1'); }catch(_){}
+  }
   if(cfg.url && cfg.anon){
-    fetch(cfg.url+'/rest/v1/leads', { method:'POST',
-      headers:{ 'Content-Type':'application/json', 'apikey':cfg.anon, 'Authorization':'Bearer '+cfg.anon, 'Prefer':'resolution=ignore-duplicates' },
-      body: JSON.stringify({ email:email, origem:'landing' }) })
-    .then(function(r){ sucesso(); }).catch(function(){ sucesso(); });
-  } else { sucesso(); }
+    fetch(cfg.url+'/rest/v1/leads', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'apikey':cfg.anon,
+        'Authorization':'Bearer '+cfg.anon,
+        'Prefer':'resolution=ignore-duplicates'
+      },
+      body: JSON.stringify({ email:email, whatsapp:whats||null, origem:'landing' })
+    }).then(function(r){ sucesso(); }).catch(function(){ sucesso(); });
+  } else {
+    sucesso();
+  }
 }
 </script>
 </body>
