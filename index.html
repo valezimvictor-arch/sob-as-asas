@@ -139,6 +139,17 @@
   @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
   .hide{ display:none !important; }
 
+  /* Modais centralizados no desktop (mantém bottom-sheet no mobile <=640px) */
+  @media (min-width: 641px){
+    #modal-emocao > div, #modal-pratica > div, #modal-exp > div, #paywall > div {
+      left: 50% !important; right: auto !important; bottom: auto !important; top: 50% !important;
+      transform: translate(-50%, -50%) !important;
+      max-width: 480px !important; width: calc(100% - 40px) !important;
+      border-radius: 22px !important;
+      max-height: 86vh !important; overflow-y: auto !important;
+    }
+  }
+
   /* Chips de filtro da biblioteca */
   .bib-chip{ flex-shrink:0; background:var(--puro); border:1px solid var(--linha); color:var(--tinta-suave);
     border-radius:999px; padding:8px 16px; font:inherit; font-size:13px; cursor:pointer; white-space:nowrap;
@@ -273,6 +284,75 @@
       <button class="btn-ouro" onclick="continuarAposReveal()">Entrar no santuário</button>
       <button class="btn-ghost" style="margin-top:12px" onclick="shareAnjo()">Compartilhar meu anjo</button>
     </div>
+  </div>
+</section>
+
+<!-- ░░ SOBRE A MONICA — página de autoridade ░░ -->
+<section id="s-monica" class="screen">
+  <div style="flex:1; overflow-y:auto" class="pad">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+
+    <div style="text-align:center; margin-top:10px">
+      <p class="serif-soft" style="font-size:15px; color:var(--ouro); margin:0">A casa dos anjos no Brasil</p>
+      <h2 class="serif" style="font-size:30px; margin:8px 0 0; font-weight:400">Monica Buonfiglio</h2>
+    </div>
+
+    <!-- Foto da Monica (substituir assets/monica.jpg quando subir a foto real) -->
+    <div style="margin:24px auto 0; max-width:340px; aspect-ratio:1/1; border-radius:22px; overflow:hidden; background:linear-gradient(160deg, #F6E1B0, #BA7517); position:relative; box-shadow:0 16px 40px rgba(186,117,23,.18)">
+      <img src="/assets/monica.jpg" alt="Monica Buonfiglio" style="width:100%; height:100%; object-fit:cover; display:block" onerror="this.style.display='none'; this.parentNode.querySelector('.monica-placeholder').style.display='flex'" />
+      <div class="monica-placeholder" style="display:none; position:absolute; inset:0; flex-direction:column; align-items:center; justify-content:center; color:#5A3A06; text-align:center; padding:24px">
+        <div style="font-family:'Playfair Display',serif; font-size:54px; font-weight:500; line-height:1; opacity:.65">MB</div>
+        <p style="margin:14px 0 0; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; opacity:.85">Foto da Monica aqui</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:22px; padding:22px 22px; background:var(--branco-puro); border-color:transparent">
+      <p style="margin:0; font-size:15.5px; color:var(--tinta); line-height:1.75; font-family:'Cormorant Garamond',serif">Monica Buonfiglio é considerada uma das mais respeitadas estudiosas de assuntos relacionados à espiritualidade. Suas obras abordam temas como angelologia, oráculos, comportamento, história, espiritismo, astrologia e religiões afro-brasileiras.</p>
+    </div>
+
+    <!-- Números da carreira -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px">
+      <div class="card" style="padding:18px 16px; text-align:center; background:var(--ouro-bg); border-color:transparent">
+        <p class="serif" style="margin:0; font-size:26px; color:var(--ouro); line-height:1">10+ milhões</p>
+        <p style="margin:6px 0 0; font-size:11px; color:#5A3A06; letter-spacing:.08em; text-transform:uppercase">exemplares vendidos</p>
+      </div>
+      <div class="card" style="padding:18px 16px; text-align:center; background:var(--ouro-bg); border-color:transparent">
+        <p class="serif" style="margin:0; font-size:26px; color:var(--ouro); line-height:1">67</p>
+        <p style="margin:6px 0 0; font-size:11px; color:#5A3A06; letter-spacing:.08em; text-transform:uppercase">obras publicadas</p>
+      </div>
+      <div class="card" style="padding:18px 16px; text-align:center; background:var(--ouro-bg); border-color:transparent">
+        <p class="serif" style="margin:0; font-size:26px; color:var(--ouro); line-height:1">21</p>
+        <p style="margin:6px 0 0; font-size:11px; color:#5A3A06; letter-spacing:.08em; text-transform:uppercase">Best-sellers</p>
+      </div>
+      <div class="card" style="padding:18px 16px; text-align:center; background:var(--ouro-bg); border-color:transparent">
+        <p class="serif" style="margin:0; font-size:26px; color:var(--ouro); line-height:1">5</p>
+        <p style="margin:6px 0 0; font-size:11px; color:#5A3A06; letter-spacing:.08em; text-transform:uppercase">livros simultâneos na lista</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px; padding:22px 22px; background:var(--branco-puro); border-color:transparent">
+      <p style="margin:0; font-size:15.5px; color:var(--tinta); line-height:1.75; font-family:'Cormorant Garamond',serif">Monica é a única autora brasileira que conseguiu colocar cinco livros ao mesmo tempo no ranking dos best-sellers — todos com vendagem acima de cem mil exemplares. A revista Veja a listou como uma das vinte pessoas mais bem-sucedidas do país, e ela ocupou durante trinta e cinco semanas consecutivas o primeiro lugar da lista dos best-sellers.</p>
+    </div>
+
+    <p class="label" style="display:block; margin:28px 0 12px">Onde encontrar mais</p>
+
+    <div class="card" style="padding:14px 18px; display:flex; align-items:center; gap:14px; margin-bottom:10px; cursor:pointer" onclick="window.open('https://www.magiadosanjos.com.br/','_blank')">
+      <div style="width:42px; height:42px; border-radius:12px; background:var(--ouro-bg); display:flex; align-items:center; justify-content:center; font-size:20px">🌐</div>
+      <div style="flex:1"><p style="margin:0; font-weight:600">Site oficial</p><p style="margin:2px 0 0; font-size:12px; color:var(--tinta-suave)">magiadosanjos.com.br</p></div>
+      <span style="color:var(--tinta-suave)">↗</span>
+    </div>
+    <div class="card" style="padding:14px 18px; display:flex; align-items:center; gap:14px; margin-bottom:10px; cursor:pointer" onclick="window.open('https://www.instagram.com/monicadosanjos72/','_blank')">
+      <div style="width:42px; height:42px; border-radius:12px; background:var(--ouro-bg); display:flex; align-items:center; justify-content:center; font-size:20px">📷</div>
+      <div style="flex:1"><p style="margin:0; font-weight:600">Instagram</p><p style="margin:2px 0 0; font-size:12px; color:var(--tinta-suave)">@monicadosanjos72</p></div>
+      <span style="color:var(--tinta-suave)">↗</span>
+    </div>
+    <div class="card" style="padding:14px 18px; display:flex; align-items:center; gap:14px; margin-bottom:10px; cursor:pointer" onclick="window.open('https://www.youtube.com/@monicadosanjos72','_blank')">
+      <div style="width:42px; height:42px; border-radius:12px; background:var(--ouro-bg); display:flex; align-items:center; justify-content:center; font-size:20px">▶</div>
+      <div style="flex:1"><p style="margin:0; font-weight:600">YouTube</p><p style="margin:2px 0 0; font-size:12px; color:var(--tinta-suave)">@monicadosanjos72</p></div>
+      <span style="color:var(--tinta-suave)">↗</span>
+    </div>
+
+    <button class="btn-ouro" style="margin-top:18px" onclick="show('s-home')">Voltar ao santuário</button>
   </div>
 </section>
 
@@ -461,13 +541,13 @@
   <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; justify-content:center">
     <div id="login-form">
       <h2 class="serif" style="font-size:28px; margin:0; text-align:center">Salve seu santuário</h2>
-      <p style="color:var(--tinta-suave); font-size:14px; margin:10px 0 0; text-align:center; line-height:1.6">Enviamos um link mágico pro seu e-mail.<br/>Sem senha — é só tocar e voltar.</p>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:10px 0 0; text-align:center; line-height:1.6">Vamos te enviar um código por e-mail.<br/>Sem senha — é só digitar e entrar.</p>
       <div style="margin-top:26px">
         <span class="label">Seu e-mail</span>
         <input id="in-email" class="campo" type="email" inputmode="email" placeholder="voce@email.com" style="margin-top:8px" />
         <p id="login-msg" style="color:#C0392B; font-size:13px; min-height:16px; margin:8px 0 0"></p>
         <button id="login-btn" class="btn-ouro" style="margin-top:8px; position:relative; overflow:hidden" onclick="enviarMagicLink()">
-          <span id="login-btn-label">Receber meu link mágico</span>
+          <span id="login-btn-label">Receber meu código de entrada</span>
           <div id="login-prog" style="position:absolute; left:0; bottom:0; height:3px; width:0%; background:rgba(90,58,6,.85); transition:width .35s ease"></div>
         </button>
         <button class="btn-ghost" style="margin-top:12px" onclick="show('s-home')">Entrar sem conta por agora</button>
@@ -475,8 +555,23 @@
     </div>
     <div id="login-enviado" style="display:none; text-align:center">
       <div style="font-size:34px">📩</div>
-      <h2 class="serif" style="font-size:26px; margin:10px 0 0">Link enviado ✨</h2>
-      <p style="color:var(--tinta-suave); font-size:14px; margin:10px 0 0; line-height:1.6">Abra seu e-mail e toque no link<br/>pra entrar sob as asas.</p>
+      <h2 class="serif" style="font-size:26px; margin:10px 0 0">Verifique seu e-mail</h2>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:10px 0 18px; line-height:1.6">Enviamos um <strong>código de 6 dígitos</strong> para<br/><span id="login-enviado-email" style="color:var(--ouro)">—</span></p>
+
+      <div style="text-align:left">
+        <span class="label">Cole o código aqui</span>
+        <input id="in-codigo" class="campo" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6"
+               placeholder="000000"
+               style="margin-top:8px; text-align:center; font-size:24px; letter-spacing:.4em; font-family:'Playfair Display',serif"
+               oninput="this.value=this.value.replace(/\D/g,''); if(this.value.length===6) verificarCodigo()" />
+        <p id="codigo-msg" style="color:#C0392B; font-size:13px; min-height:16px; margin:8px 0 0"></p>
+        <button class="btn-ouro" style="margin-top:8px" onclick="verificarCodigo()">Entrar</button>
+      </div>
+
+      <div style="margin-top:18px; padding-top:14px; border-top:1px solid var(--linha); font-size:12.5px; color:var(--tinta-suave); line-height:1.6">
+        Não chegou? Confira o spam.<br/>
+        Ou <button onclick="resetLoginUI(); document.getElementById('in-email').focus()" style="background:none; border:none; color:var(--ouro); font:inherit; cursor:pointer; padding:0; text-decoration:underline">tentar com outro e-mail</button>.
+      </div>
     </div>
   </div>
 </section>
@@ -487,7 +582,7 @@
     <!-- view: início -->
     <div data-view="inicio">
       <div style="display:flex; align-items:center; gap:12px">
-        <div id="home-avatar" style="width:46px;height:46px;border-radius:50%;background:linear-gradient(180deg,#F6E1B0,#E8B967);display:flex;align-items:center;justify-content:center;color:#5A3A06;font-family:'Playfair Display',serif;font-size:18px;letter-spacing:.02em;flex-shrink:0;box-shadow:0 2px 10px rgba(186,117,23,.18)" onclick="openAjustes()">L</div>
+        <div id="home-avatar" style="position:relative; width:46px;height:46px;border-radius:50%;background:linear-gradient(180deg,#F6E1B0,#E8B967);display:flex;align-items:center;justify-content:center;color:#5A3A06;font-family:'Playfair Display',serif;font-size:18px;letter-spacing:.02em;flex-shrink:0;box-shadow:0 2px 10px rgba(186,117,23,.18); cursor:pointer" onclick="openAjustes()" title="Ajustes e conta">L<span style="position:absolute; bottom:-2px; right:-2px; width:16px; height:16px; border-radius:50%; background:var(--branco); display:flex; align-items:center; justify-content:center; font-size:9px; color:var(--ouro); border:1px solid var(--linha)">⚙</span></div>
         <div style="flex:1; min-width:0">
           <p style="color:var(--tinta-suave); font-size:13px; margin:0; letter-spacing:.02em" id="home-saud">Boa noite</p>
           <p class="serif" style="font-size:19px; margin:2px 0 0; color:var(--tinta); line-height:1.25">Seu anjo é <span id="home-anjo" style="color:var(--ouro)">—</span></p>
@@ -688,6 +783,16 @@
         <span style="color:var(--ouro); font-size:20px">›</span>
       </div>
 
+      <!-- 7.0 SOBRE A MONICA -->
+      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px; background:linear-gradient(90deg, var(--puro), rgba(250,243,228,.6))" onclick="show('s-monica')">
+        <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg, #F6C868, #BA7517);display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Playfair Display',serif;font-size:14px;font-weight:500;flex-shrink:0">MB</div>
+        <div style="flex:1">
+          <p style="margin:0; font-weight:600">Quem é Monica Buonfiglio</p>
+          <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">A maior referência de anjos do Brasil</p>
+        </div>
+        <span style="color:var(--tinta-suave)">›</span>
+      </div>
+
       <!-- 7a. COMPATIBILIDADE ANGELICAL -->
       <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="openCompat()">
         <div style="width:42px;height:42px;border-radius:12px;background:#F6E1B0;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🪽</div>
@@ -748,6 +853,10 @@
           <a href="/privacidade" target="_blank" style="color:var(--tinta-suave); text-decoration:none">Privacidade</a>
           <span>·</span>
           <a href="/regulamento-milagre" target="_blank" style="color:var(--tinta-suave); text-decoration:none">Regulamento do Milagre</a>
+        </div>
+        <div style="margin:18px 0 0; display:flex; gap:12px; justify-content:center; flex-wrap:wrap">
+          <button class="btn-ghost" style="padding:8px 18px; font-size:12px; width:auto" onclick="openAjustes()">⚙ Ajustes</button>
+          <button class="btn-ghost" style="padding:8px 18px; font-size:12px; width:auto; color:#C0392B; border-color:rgba(192,57,43,.25)" onclick="sairConta()">↩ Sair da conta</button>
         </div>
       </div>
     </div>
@@ -1184,9 +1293,46 @@
     <p class="label" style="display:block; margin:4px 0 10px">Experiências com a Monica</p>
 
     <div class="card" style="padding:0; margin-bottom:10px; border:none; overflow:hidden; cursor:pointer; background:var(--branco-puro)" onclick="abrirFormExperiencia('israel')">
-      <div style="height:150px; position:relative; background-image:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.6) 100%), url('https://images.pexels.com/photos/2087389/pexels-photo-2087389.jpeg?auto=compress&cs=tinysrgb&w=1200'); background-size:cover; background-position:center">
+      <div style="height:150px; position:relative; background:linear-gradient(160deg, #C39154 0%, #A87136 50%, #7A4D0E 100%); overflow:hidden">
+        <!-- silhueta de Jerusalém: cúpula + minaretes + muralha (SVG inline, sem URL externa) -->
+        <svg viewBox="0 0 400 150" preserveAspectRatio="xMidYMax slice" style="position:absolute; inset:0; width:100%; height:100%">
+          <!-- sol/lua nascendo -->
+          <circle cx="320" cy="35" r="22" fill="#FFE3A8" opacity=".95"/>
+          <circle cx="320" cy="35" r="34" fill="#FFE3A8" opacity=".25"/>
+          <!-- estrelas distantes -->
+          <circle cx="50" cy="22" r="1.2" fill="#FFF5D8"/>
+          <circle cx="110" cy="32" r="1" fill="#FFF5D8"/>
+          <circle cx="240" cy="20" r="1.4" fill="#FFF5D8"/>
+          <!-- muralha de Jerusalém -->
+          <rect x="0" y="105" width="400" height="45" fill="rgba(0,0,0,.4)"/>
+          <!-- crenelagem da muralha (ameias) -->
+          <g fill="rgba(0,0,0,.55)">
+            <rect x="10" y="100" width="8" height="8"/><rect x="30" y="100" width="8" height="8"/>
+            <rect x="50" y="100" width="8" height="8"/><rect x="70" y="100" width="8" height="8"/>
+            <rect x="170" y="100" width="8" height="8"/><rect x="190" y="100" width="8" height="8"/>
+            <rect x="350" y="100" width="8" height="8"/><rect x="370" y="100" width="8" height="8"/>
+          </g>
+          <!-- Cúpula da Rocha (centro) -->
+          <g fill="#0F1F33" transform="translate(160,55)">
+            <rect x="0" y="40" width="60" height="50"/>
+            <path d="M0,40 Q30,5 60,40 Z"/>
+            <rect x="28" y="15" width="4" height="20"/>
+          </g>
+          <!-- Minarete à esquerda -->
+          <g fill="#0F1F33" transform="translate(90,70)">
+            <rect x="0" y="20" width="14" height="35"/>
+            <polygon points="0,20 7,5 14,20"/>
+            <rect x="5" y="0" width="4" height="6"/>
+          </g>
+          <!-- Pequena cúpula à direita -->
+          <g fill="#0F1F33" transform="translate(255,75)">
+            <rect x="0" y="25" width="36" height="30"/>
+            <path d="M0,25 Q18,2 36,25 Z"/>
+          </g>
+        </svg>
+        <div style="position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.55) 100%)"></div>
         <span style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,.92); color:#5A3A06; font-size:10px; letter-spacing:.08em; padding:4px 10px; border-radius:999px; font-weight:600">VIAGEM</span>
-        <div style="position:absolute; left:18px; bottom:14px; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,.4)">
+        <div style="position:absolute; left:18px; bottom:14px; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,.4); z-index:1">
           <p class="serif" style="margin:0; font-size:22px; letter-spacing:.02em">Israel · Terra Santa</p>
           <p style="margin:3px 0 0; font-size:12px; opacity:.92">Uma jornada com a Monica</p>
         </div>
@@ -2717,16 +2863,21 @@ async function enviarMagicLink(){
   var msg=document.getElementById('login-msg');
   if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ msg.textContent='Digite um e-mail válido.'; return; }
   msg.textContent=''; buzz();
-  // anima barra de progresso enquanto envia
+  window._loginEmail = email;
   var btn=document.getElementById('login-btn'); var prog=document.getElementById('login-prog'); var lab=document.getElementById('login-btn-label');
   if(btn){ btn.disabled=true; btn.style.opacity='.85'; }
   if(lab) lab.textContent='Enviando…';
   if(prog){ prog.style.width='0%'; setTimeout(function(){ prog.style.width='35%'; },50); setTimeout(function(){ prog.style.width='70%'; },350); }
   function finalizar(sucesso, txt){
     if(prog){ prog.style.width = sucesso ? '100%' : '0%'; }
-    if(lab) lab.textContent = sucesso ? 'Enviado ✓' : 'Receber meu link mágico';
-    setTimeout(function(){ if(btn){ btn.disabled=false; btn.style.opacity='1'; } if(lab) lab.textContent='Receber meu link mágico'; if(prog) prog.style.width='0%'; }, sucesso?900:0);
-    if(sucesso){ document.getElementById('login-form').style.display='none'; document.getElementById('login-enviado').style.display='block'; }
+    if(lab) lab.textContent = sucesso ? 'Enviado ✓' : 'Receber meu código de entrada';
+    setTimeout(function(){ if(btn){ btn.disabled=false; btn.style.opacity='1'; } if(lab) lab.textContent='Receber meu código de entrada'; if(prog) prog.style.width='0%'; }, sucesso?900:0);
+    if(sucesso){
+      document.getElementById('login-form').style.display='none';
+      document.getElementById('login-enviado').style.display='block';
+      document.getElementById('login-enviado-email').textContent = email;
+      setTimeout(function(){ var i=document.getElementById('in-codigo'); if(i) i.focus(); }, 250);
+    }
     else if(txt) msg.textContent=txt;
   }
   if(!window.saaAuth){ setTimeout(function(){ finalizar(true); }, 700); return; }
@@ -2734,7 +2885,34 @@ async function enviarMagicLink(){
     var r=await window.saaAuth.enviarLink(email);
     if(r && r.error){ finalizar(false, 'Não consegui enviar: '+r.error.message); return; }
     finalizar(true);
-  }catch(e){ finalizar(false, 'Erro ao enviar o link. Tente de novo.'); }
+  }catch(e){ finalizar(false, 'Erro ao enviar o código. Tente de novo.'); }
+}
+
+async function verificarCodigo(){
+  var codigo=(document.getElementById('in-codigo').value||'').replace(/\D/g,'').trim();
+  var msg=document.getElementById('codigo-msg');
+  if(codigo.length !== 6){ msg.textContent='O código tem 6 dígitos.'; return; }
+  if(!window.saaAuth){
+    // modo demo — não há verificação real
+    show('s-home'); return;
+  }
+  var email = window._loginEmail || (window._email||'');
+  if(!email){ msg.textContent='E-mail não encontrado. Recomece.'; return; }
+  msg.textContent='Verificando…'; msg.style.color='var(--ouro)'; buzz();
+  try{
+    var r = await window.saaAuth.client.auth.verifyOtp({ email:email, token:codigo, type:'email' });
+    if(r.error){
+      msg.textContent='Código inválido ou expirado. Tente de novo.';
+      msg.style.color='#C0392B';
+      return;
+    }
+    msg.textContent='Entrando…';
+    chime();
+    // onAuthStateChange chama aoLogar automaticamente
+  }catch(e){
+    msg.textContent='Erro ao verificar. Tente de novo.';
+    msg.style.color='#C0392B';
+  }
 }
 // chamado quando o usuário volta autenticado (clicou no link mágico)
 function persistirPerfil(userId){
@@ -3366,12 +3544,29 @@ function offerTrial(dias){
   document.getElementById('paywall').style.display='block'; buzz();
 }
 
-// ── Loja (vitrine; pagamento via Stripe em breve) ──
+// ── Loja (vitrine; agrupado por categoria) ──
 var LOJA=[
-  {t:'Curso de Angelologia', d:'Aprofunde-se nos 72 anjos, com a Monica', ic:'🎓', url:'https://cursosmagiadosanjos.com.br/aluno/curso/vitrine.php?idE=298&idC=1527'},
-  {t:'Anjos Cabalísticos', d:'Livro da Monica Buonfiglio', ic:'📖', status:'Esgotado'},
-  {t:'A Magia dos Anjos Cabalísticos', d:'Livro da Monica Buonfiglio', ic:'📖', status:'Esgotado'},
+  // Cursos
+  {cat:'cursos', t:'Curso de Angelologia', d:'Aprofunde-se nos 72 anjos, com a Monica', ic:'🎓', url:'https://cursosmagiadosanjos.com.br/aluno/curso/vitrine.php?idE=298&idC=1527'},
+
+  // Livros
+  {cat:'livros', t:'Livro: Maria', d:'A história da Mãe vista pela Monica', ic:'📖', url:'https://www.magiadosanjos.com.br/pagina-de-produto/c%C3%B3pia-de-maria'},
+  {cat:'livros', t:'Livro: Jesus', d:'A trajetória de Jesus pela Monica', ic:'📖', url:'https://www.magiadosanjos.com.br/pagina-de-produto/c%C3%B3pia-de-jesus'},
+
+  // Consultas
+  {cat:'consultas', t:'Mapa Natal com a Monica', d:'Consulta completa com Monica Buonfiglio', ic:'🔮', url:'https://www.magiadosanjos.com.br/pagina-de-produto/consulta-mapa-astral-natal-com-monica-buonfiglio'},
+  {cat:'consultas', t:'Mapa Natal + Revolução Solar', d:'Consulta com Monica Buonfiglio', ic:'☉', url:'https://www.magiadosanjos.com.br/pagina-de-produto/consulta-mapa-natal-e-revolu%C3%A7%C3%A3o-solar-com-monica-buonfiglio'},
+  {cat:'consultas', t:'Mapa Astral Kármico', d:'Olhar profundo sobre os ciclos da alma', ic:'⌛', url:'https://www.magiadosanjos.com.br/pagina-de-produto/consulta-mapa-astral-k%C3%A1rmico'},
+  {cat:'consultas', t:'Mapa Astral Empresarial', d:'Para decisões de negócio', ic:'🏛', url:'https://www.magiadosanjos.com.br/pagina-de-produto/consulta-mapa-astral-empresarial'},
+  {cat:'consultas', t:'Mapa Natal de recém-nascido', d:'Para presentear quem acabou de chegar', ic:'🕊', url:'https://www.magiadosanjos.com.br/pagina-de-produto/consulta-mapa-natal-de-rec%C3%A9m-nascido'},
+  {cat:'consultas', t:'Mapa Astral — 40 minutos', d:'Consulta direta de 40min', ic:'⌚', url:'https://www.magiadosanjos.com.br/pagina-de-produto/consulta-de-mapa-astral-40-minutos'},
+  {cat:'consultas', t:'Mapa Astral de Eventos', d:'Para datas e ocasiões específicas', ic:'📅', url:'https://www.magiadosanjos.com.br/pagina-de-produto/consulta-mapa-astral-de-eventos-com-monica-buonfiglio'},
 ];
+var LOJA_CATS = {
+  cursos:    { label:'Cursos com a Monica',   ordem:1 },
+  livros:    { label:'Livros da Monica',      ordem:2 },
+  consultas: { label:'Consultas pessoais com a Monica', ordem:3 },
+};
 function openLoja(){ renderLoja(); show('s-loja'); }
 function abrirProduto(p){ if(p.url){ try{ window.open(p.url,'_blank'); }catch(e){ location.href=p.url; } } else { toast('Esgotado por enquanto 🕊️'); } }
 var ME_CONFIG={
@@ -3428,10 +3623,26 @@ async function enviarFormExperiencia(){
 }
 function renderLoja(){
   var el=document.getElementById('lista-loja');
-  el.innerHTML=LOJA.map(function(p,i){
-    var badge = p.url ? '<span style="font-size:11px; background:#F6C868; color:#5A3A06; padding:3px 9px; border-radius:8px; white-space:nowrap">Ver curso ↗</span>'
-                      : '<span style="font-size:11px; background:#F1EFE8; color:#5F5E5A; padding:3px 9px; border-radius:8px">'+(p.status||'em breve')+'</span>';
-    return '<div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px; margin-bottom:10px; '+(p.url?'':'opacity:.92')+'" onclick="abrirProduto(LOJA['+i+'])"><div style="width:42px;height:42px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:22px">'+p.ic+'</div><div style="flex:1; min-width:0"><p style="margin:0;font-weight:600">'+p.t+'</p><p style="margin:0;font-size:12px;color:var(--tinta-suave)">'+p.d+'</p></div>'+badge+'</div>';
+  // agrupa por categoria, mantendo o índice original para abrirProduto(LOJA[i])
+  var grupos = {};
+  LOJA.forEach(function(p,i){ var c=p.cat||'outros'; (grupos[c]=grupos[c]||[]).push({...p, _i:i}); });
+  var ordem = Object.keys(grupos).sort(function(a,b){
+    return ((LOJA_CATS[a]&&LOJA_CATS[a].ordem)||99) - ((LOJA_CATS[b]&&LOJA_CATS[b].ordem)||99);
+  });
+  el.innerHTML = ordem.map(function(c){
+    var cat = LOJA_CATS[c] || { label:c };
+    var rotuloBadge = c==='cursos' ? 'Ver curso ↗' : (c==='livros' ? 'Comprar ↗' : 'Agendar ↗');
+    var itens = grupos[c].map(function(p){
+      var badge = p.url
+        ? '<span style="font-size:11px; background:#F6C868; color:#5A3A06; padding:3px 9px; border-radius:8px; white-space:nowrap">'+rotuloBadge+'</span>'
+        : '<span style="font-size:11px; background:#F1EFE8; color:#5F5E5A; padding:3px 9px; border-radius:8px">'+(p.status||'em breve')+'</span>';
+      return '<div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px; margin-bottom:10px; '+(p.url?'':'opacity:.92')+'" onclick="abrirProduto(LOJA['+p._i+'])">'
+        + '<div style="width:42px;height:42px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:22px">'+p.ic+'</div>'
+        + '<div style="flex:1; min-width:0"><p style="margin:0;font-weight:600">'+p.t+'</p><p style="margin:0;font-size:12px;color:var(--tinta-suave)">'+p.d+'</p></div>'
+        + badge
+        + '</div>';
+    }).join('');
+    return '<p class="label" style="display:block; margin:18px 0 10px">'+cat.label+'</p>' + itens;
   }).join('');
 }
 
