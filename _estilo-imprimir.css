@@ -1,0 +1,171 @@
+/* Estilo compartilhado para todos os PDFs imprimíveis da Monica.
+   Cada arquivo HTML faz <link rel="stylesheet" href="/_estilo-imprimir.css"> */
+
+@page {
+  size: A4;
+  margin: 22mm 20mm 22mm 20mm;
+}
+@media print {
+  .nao-imprimir { display: none !important; }
+  body { background: white !important; }
+}
+
+:root{
+  --ouro:#BA7517; --ouro-claro:#EF9F27; --ouro-bg:#FAF3E4; --ouro-escuro:#7A4D0E;
+  --tinta:#1F1F1D; --tinta-suave:#5F5E5A; --linha:rgba(186,117,23,.22);
+  --branco:#FBFAF7; --celeste-bg:#EAF2FB; --celeste:#1E5A99;
+}
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; }
+body{
+  background: var(--branco);
+  color: var(--tinta);
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  font-size: 16pt;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.topo-acoes{
+  position: sticky; top: 0; z-index: 10;
+  background: #2C2C2A; color: #FBFAF7;
+  padding: 12px 22px; display:flex; align-items:center; justify-content:space-between;
+  font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 13px;
+}
+.topo-acoes button{
+  background: #F6C868; color:#5A3A06; border:none; border-radius:8px;
+  padding:8px 14px; font:inherit; font-weight:600; cursor:pointer;
+}
+.topo-acoes button:hover{ background:#EFB04A; }
+.topo-acoes .titulo{ font-family: Georgia, serif; font-style: italic; font-size:14px; opacity:.85; }
+
+.folha{
+  max-width: 210mm; margin: 0 auto;
+  background: white; padding: 22mm 20mm;
+  box-shadow: 0 4px 24px rgba(0,0,0,.08);
+  margin-bottom: 12mm;
+}
+@media print { .folha{ box-shadow:none; padding:0; margin:0; max-width:none; } }
+
+.roteiro { page-break-after: always; }
+.roteiro:last-of-type { page-break-after: auto; }
+
+/* CAPA */
+.capa{ text-align:center; padding-top: 40mm; page-break-after: always; }
+.capa .feather{ font-size:32pt; color: var(--ouro-claro); margin-bottom: 8mm; }
+.capa h1{
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400; font-size: 42pt; margin: 0;
+  line-height: 1.05; letter-spacing: -0.01em;
+}
+.capa .sub{
+  font-family: 'EB Garamond', Georgia, serif; font-style: italic;
+  font-size: 18pt; color: var(--ouro); margin: 6mm 0 0;
+}
+.capa .selo{
+  margin: 16mm auto 0; width: 90mm; padding: 8mm 4mm;
+  border-top: 1px solid var(--linha); border-bottom: 1px solid var(--linha);
+  font-family: 'EB Garamond', serif; font-size: 12pt;
+  color: var(--tinta-suave); letter-spacing: .04em;
+}
+.capa .selo strong{ color: var(--ouro); font-style:italic; }
+.capa .meta{
+  margin-top: 14mm; font-size: 11pt; color: var(--tinta-suave);
+  letter-spacing: .18em; text-transform: uppercase;
+}
+
+/* SUMÁRIO */
+.sumario{ padding-top: 8mm; page-break-after: always; }
+.sumario h2{
+  font-family: 'Playfair Display', serif; font-weight:400; font-size: 24pt;
+  margin: 0 0 4mm; color: var(--tinta);
+}
+.sumario .intro{ font-size: 13pt; color: var(--tinta-suave); line-height:1.65; margin-bottom: 8mm; max-width: 150mm; }
+.sumario ol{ padding-left: 8mm; margin: 0; }
+.sumario li{ font-size: 14pt; padding: 3mm 0; border-bottom: 1px dotted var(--linha); }
+.sumario li::marker { color: var(--ouro); font-weight: 600; }
+.sumario li .titulo{ font-family: 'Playfair Display', serif; font-weight: 500; font-size: 15pt; }
+.sumario li .dur{ float: right; font-size: 11pt; color: var(--tinta-suave); font-style: italic; }
+
+/* INSTRUÇÕES */
+.instr{ padding-top: 4mm; page-break-after: always; }
+.instr h2{ font-family: 'Playfair Display', serif; font-weight:400; font-size: 22pt; margin: 0 0 6mm; }
+.instr .bloco{
+  background: var(--ouro-bg); border-left: 3px solid var(--ouro-claro);
+  padding: 6mm 8mm; margin: 4mm 0; font-size: 12pt; line-height: 1.6;
+}
+.instr .bloco strong{ color: var(--ouro-escuro); }
+.instr .bloco code{
+  background: white; border:1px solid var(--linha);
+  padding: 1mm 2mm; border-radius: 3px; font-size: 11pt; color: var(--ouro);
+}
+.instr ul{ margin: 0; padding-left: 6mm; }
+.instr li{ padding: 1mm 0; }
+
+/* ROTEIRO */
+.roteiro{ padding-top: 4mm; }
+.roteiro .cabec{
+  display: flex; align-items: baseline; justify-content: space-between;
+  border-bottom: 2px solid var(--ouro);
+  padding-bottom: 4mm; margin-bottom: 8mm;
+}
+.roteiro .num{
+  font-family: 'EB Garamond', serif; font-style: italic;
+  font-size: 14pt; color: var(--ouro); letter-spacing: .04em;
+}
+.roteiro .dur{
+  font-family: 'EB Garamond', serif; font-style: italic;
+  font-size: 12pt; color: var(--tinta-suave);
+}
+.roteiro h2{
+  font-family: 'Playfair Display', serif; font-weight: 400;
+  font-size: 30pt; margin: 0; line-height: 1.1; color: var(--tinta);
+}
+.roteiro .meta{
+  font-size: 10.5pt; color: var(--tinta-suave); margin: 8mm 0 4mm;
+  font-family: Georgia, serif;
+  border-top: 1px dotted var(--linha); border-bottom: 1px dotted var(--linha);
+  padding: 3mm 0;
+}
+.roteiro .meta strong{ color: var(--ouro); }
+
+.texto{
+  margin-top: 6mm; font-family: 'EB Garamond', Georgia, serif;
+  font-size: 16pt; line-height: 1.85; color: var(--tinta);
+}
+.texto p{ margin: 0 0 6mm; }
+.texto .pausa-longa{
+  display: inline-block; background: var(--ouro-bg); color: var(--ouro-escuro);
+  font-family: 'EB Garamond', serif; font-style: italic; font-size: 13pt;
+  padding: 0 4mm; border-radius: 4mm; margin: 0 2mm;
+  border: 1px dashed var(--ouro-claro);
+}
+.texto .pausa-curta{
+  display: inline-block; background: #F3EDDF; color: var(--tinta-suave);
+  font-family: 'EB Garamond', serif; font-style: italic; font-size: 11pt;
+  padding: 0 2mm; border-radius: 3mm; margin: 0 1mm;
+}
+.texto .destaque{
+  font-family: 'EB Garamond', serif; font-style: italic;
+  color: var(--ouro); font-size: 18pt; text-align:center;
+  display: block; margin: 8mm 0;
+}
+
+.rodape{
+  margin-top: 14mm; padding-top: 4mm; border-top: 1px solid var(--linha);
+  font-size: 10pt; color: var(--tinta-suave);
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-style: italic; font-family: Georgia, serif;
+}
+
+/* Bloco estrutural (para vídeos com tempos marcados — Para Dormir) */
+.estrutura{
+  background: var(--celeste-bg); border-left: 3px solid var(--celeste);
+  padding: 5mm 7mm; margin: 6mm 0; font-size: 12pt; color: var(--celeste);
+  font-family: Georgia, serif; line-height: 1.55;
+}
+.estrutura .tempo{
+  display: inline-block; font-family: 'Courier New', monospace;
+  font-size: 11pt; background: white; padding: 1mm 3mm; border-radius: 3px;
+  color: var(--celeste); margin-right: 3mm; border: 1px solid rgba(55,138,221,.3);
+}
