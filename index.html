@@ -286,6 +286,99 @@
   </div>
 </section>
 
+<!-- ░░ MENSAGEM MENSAL DO SEU ANJO ░░ -->
+<section id="s-mensagem-mensal" class="screen" style="background:var(--ouro-bg)">
+  <div style="flex:1; overflow-y:auto" class="pad">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+    <div style="text-align:center; margin-top:14px">
+      <p class="serif-soft" style="font-size:15px; color:var(--ouro); margin:0" id="mm-mesano">— de 2026</p>
+      <h2 id="mm-titulo" class="serif" style="font-size:30px; margin:8px 0 4px; font-weight:400">A mensagem do seu anjo</h2>
+      <p id="mm-anjo" style="font-size:13px; color:var(--tinta-suave); letter-spacing:.04em">—</p>
+    </div>
+    <div id="mm-corpo" class="card" style="margin-top:22px; padding:24px 22px; background:var(--branco-puro); border-color:transparent">
+      <p id="mm-texto" style="margin:0; font-size:16px; color:var(--tinta); line-height:1.75; white-space:pre-wrap; font-family:'Cormorant Garamond',serif"></p>
+    </div>
+    <div id="mm-audio" style="display:none; margin-top:14px">
+      <button class="btn-ouro" onclick="mmTocarAudio()">▶ Ouvir na voz da Monica</button>
+    </div>
+    <div id="mm-paywall" style="display:none; margin-top:14px; padding:18px 20px; border-radius:16px; background:linear-gradient(180deg, rgba(186,117,23,.08), rgba(239,159,39,.16)); border:1px solid rgba(186,117,23,.22); text-align:center">
+      <p style="margin:0; font-size:11px; letter-spacing:.16em; color:var(--ouro); text-transform:uppercase; font-weight:600">Mensagem completa</p>
+      <p class="serif" style="font-size:19px; margin:8px 0 8px">Faz parte do Plano dos Anjos</p>
+      <p style="margin:0 0 16px; font-size:14px; color:var(--tinta-suave); line-height:1.55">Todo mês a Monica entrega uma carta exclusiva para cada um dos 72 anjos. A sua já está esperando.</p>
+      <button class="btn-ouro" onclick="openPaywall('Mensagem mensal')">Começar 7 dias grátis</button>
+    </div>
+    <div id="mm-vazio" style="display:none; margin-top:24px; text-align:center; padding:30px 14px; color:var(--tinta-suave); font-size:14px; line-height:1.6">
+      <div style="font-size:30px; opacity:.6">🪽</div>
+      <p class="serif-soft" style="font-size:17px; color:var(--ouro); margin:10px 0 4px">Em preparo</p>
+      <p style="margin:0">A mensagem deste mês está sendo escrita com a Monica. Volte em breve.</p>
+    </div>
+    <button class="btn-ghost" style="margin-top:18px" onclick="show('s-home')">Voltar ao santuário</button>
+  </div>
+</section>
+
+<!-- ░░ COMPATIBILIDADE ANGELICAL ░░ -->
+<section id="s-compat" class="screen">
+  <div style="flex:1; overflow-y:auto" class="pad">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+    <div id="compat-intro">
+      <h2 class="serif" style="font-size:26px; margin:10px 0 0; font-weight:400">Compatibilidade angelical</h2>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 18px; line-height:1.55">Descubra como o seu anjo se relaciona com o de alguém que você ama. Pode ser a sua parceira, seu filho, sua mãe, uma amiga.</p>
+
+      <div class="card" style="padding:18px; background:var(--ouro-bg); border-color:transparent">
+        <p style="margin:0 0 4px; font-size:11px; letter-spacing:.16em; color:var(--ouro); text-transform:uppercase; font-weight:600">Seu anjo</p>
+        <p id="compat-meu" class="serif" style="font-size:22px; margin:4px 0 0; color:var(--tinta); font-weight:500">—</p>
+      </div>
+
+      <p class="label" style="display:block; margin:22px 0 8px">Nome da outra pessoa</p>
+      <input id="compat-nome" class="campo" placeholder="Quem você quer comparar?" />
+      <p class="label" style="display:block; margin:18px 0 8px">Data de nascimento dela</p>
+      <div style="display:flex; gap:10px">
+        <input id="compat-dia" class="campo" inputmode="numeric" maxlength="2" placeholder="Dia" style="text-align:center; flex:1; min-width:0" />
+        <input id="compat-mes" class="campo" inputmode="numeric" maxlength="2" placeholder="Mês" style="text-align:center; flex:1; min-width:0" />
+        <input id="compat-ano" class="campo" inputmode="numeric" maxlength="4" placeholder="Ano" style="text-align:center; flex:1.4; min-width:0" />
+      </div>
+      <p id="compat-erro" style="color:#C0392B; font-size:13px; min-height:16px; margin:8px 0 0"></p>
+      <button class="btn-ouro" style="margin-top:14px" onclick="calcularCompatibilidade()">Descobrir a compatibilidade</button>
+    </div>
+
+    <!-- estado: resultado -->
+    <div id="compat-resultado" style="display:none">
+      <div style="text-align:center; margin-top:6px">
+        <p class="serif-soft" style="font-size:15px; color:var(--ouro); margin:0">Compatibilidade angelical</p>
+        <h2 id="compat-titulo" class="serif" style="font-size:26px; margin:8px 0 4px; font-weight:400">—</h2>
+        <p id="compat-score" style="font-size:13px; color:var(--tinta-suave); margin:0 0 18px">—</p>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 14px">
+        <div class="card" style="padding:14px; background:var(--ouro-bg); border-color:transparent; text-align:center">
+          <p style="margin:0; font-size:10px; letter-spacing:.12em; color:var(--ouro); text-transform:uppercase; font-weight:600">Você</p>
+          <p id="compat-r-meu-nome" class="serif" style="margin:6px 0 2px; font-size:18px; color:var(--tinta)">—</p>
+          <p id="compat-r-meu-coro" style="margin:0; font-size:12px; color:var(--tinta-suave)">—</p>
+        </div>
+        <div class="card" style="padding:14px; background:var(--ouro-bg); border-color:transparent; text-align:center">
+          <p id="compat-r-outro-rotulo" style="margin:0; font-size:10px; letter-spacing:.12em; color:var(--ouro); text-transform:uppercase; font-weight:600">A outra pessoa</p>
+          <p id="compat-r-outro-nome" class="serif" style="margin:6px 0 2px; font-size:18px; color:var(--tinta)">—</p>
+          <p id="compat-r-outro-coro" style="margin:0; font-size:12px; color:var(--tinta-suave)">—</p>
+        </div>
+      </div>
+
+      <div class="card" style="padding:18px 20px">
+        <p style="margin:0 0 8px; font-size:11px; letter-spacing:.14em; color:var(--ouro); text-transform:uppercase; font-weight:600">A leitura</p>
+        <p id="compat-r-analise" style="margin:0; font-size:15px; color:var(--tinta); line-height:1.65"></p>
+      </div>
+
+      <div class="card" style="padding:18px 20px; margin-top:12px; background:var(--celeste-bg); border-color:transparent">
+        <p style="margin:0 0 8px; font-size:11px; letter-spacing:.14em; color:#1E5A99; text-transform:uppercase; font-weight:600">Prática sugerida</p>
+        <p id="compat-r-pratica" class="serif-soft" style="margin:0; font-size:16px; color:#1B3A5F; line-height:1.55; font-style:italic"></p>
+      </div>
+
+      <button class="btn-ouro" style="margin-top:18px" onclick="compartilharCompatibilidade()">🪽 Compartilhar com a pessoa</button>
+      <button class="btn-ghost" style="margin-top:10px" onclick="resetCompat()">Comparar com outra pessoa</button>
+      <button class="btn-ghost" style="margin-top:10px" onclick="show('s-home')">Voltar ao santuário</button>
+    </div>
+  </div>
+</section>
+
 <!-- ░░ JORNADA "Conhecer seu anjo em 7 dias" ░░ -->
 <section id="s-jornada-anjo" class="screen">
   <div style="flex:1; overflow-y:auto" class="pad">
@@ -581,6 +674,26 @@
         <div style="flex:1">
           <p style="margin:0; font-weight:600">Lembretes diários</p>
           <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">Seu anjo te chama na hora do ritual</p>
+        </div>
+        <span style="color:var(--tinta-suave)">›</span>
+      </div>
+
+      <!-- 1e. MENSAGEM MENSAL DO SEU ANJO -->
+      <div id="home-mm-card" class="card" style="display:none; margin-top:10px; padding:16px; align-items:center; gap:14px; cursor:pointer; background:linear-gradient(90deg, rgba(186,117,23,.05), rgba(239,159,39,.14)); border-color:rgba(186,117,23,.18)" onclick="openMensagemMensal()">
+        <div style="width:46px;height:46px;border-radius:12px;background:rgba(239,159,39,.18);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">📜</div>
+        <div style="flex:1; min-width:0">
+          <p id="home-mm-titulo" style="margin:0; font-weight:600; color:var(--tinta)">A mensagem do seu anjo este mês</p>
+          <p id="home-mm-sub" style="margin:2px 0 0; font-size:12px; color:var(--ouro); line-height:1.4">Tocar para ler</p>
+        </div>
+        <span style="color:var(--ouro); font-size:20px">›</span>
+      </div>
+
+      <!-- 7a. COMPATIBILIDADE ANGELICAL -->
+      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="openCompat()">
+        <div style="width:42px;height:42px;border-radius:12px;background:#F6E1B0;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🪽</div>
+        <div style="flex:1">
+          <p style="margin:0; font-weight:600">Compatibilidade angelical</p>
+          <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">Veja como o seu anjo se relaciona com o de alguém querido</p>
         </div>
         <span style="color:var(--tinta-suave)">›</span>
       </div>
@@ -1440,6 +1553,7 @@ function initHome(){
   atualizarHomeJornadaCard();
   atualizarHomeDormirCard();
   atualizarHomeEventoCard();
+  carregarMensagemMensal();
   // Card de "Meu anjo" no topo da home
   var n = window._perfil && (typeof window._perfil.anjo_n!=='undefined' ? window._perfil.anjo_n : null);
   // Fallback: se temos só o nome do anjo (string), procura o n na lista
@@ -2065,6 +2179,163 @@ function shareAnjo(){
   if(navigator.share){ navigator.share({title:'Sob as Asas', text:txt, url:location.origin}).catch(function(){}); }
   else { try{ navigator.clipboard.writeText(txt+' '+location.origin); }catch(e){} toast('Link copiado ✨'); }
   buzz();
+}
+
+// ── Mensagem Mensal do seu Anjo ──
+var _mmCache = null; // { mes, ano, anjo_n, titulo, texto, audio_url, duracao_seg }
+var MESES_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+async function carregarMensagemMensal(){
+  if(!window.saaAuth) return;
+  var n = window._perfil && window._perfil.anjo_n;
+  if(!n && window._anjo){
+    for(var i=0;i<ANJOS.length;i++){ if(ANJOS[i][1]===window._anjo){ n=ANJOS[i][0]; break; } }
+  }
+  if(!n) return;
+  var hoje = new Date();
+  var mes = hoje.getMonth()+1, ano = hoje.getFullYear();
+  try{
+    var r = await window.saaAuth.client.from('mensagens_mensais')
+      .select('anjo_n, mes, ano, titulo, texto, audio_url, duracao_seg')
+      .eq('anjo_n', n).eq('mes', mes).eq('ano', ano).eq('publicado', true).maybeSingle();
+    if(r.error) return;
+    _mmCache = r.data || null;
+    var card = document.getElementById('home-mm-card');
+    if(_mmCache){
+      if(card){
+        card.style.display = 'flex';
+        document.getElementById('home-mm-titulo').textContent = 'A mensagem de ' + MESES_PT[mes-1] + ' do seu anjo';
+        document.getElementById('home-mm-sub').textContent = _mmCache.titulo || 'Tocar para ler';
+      }
+    } else {
+      // Sem mensagem do mês corrente — esconde card
+      if(card) card.style.display = 'none';
+    }
+  }catch(e){}
+}
+
+function openMensagemMensal(){
+  var hoje = new Date();
+  var mes = hoje.getMonth()+1, ano = hoje.getFullYear();
+  document.getElementById('mm-mesano').textContent = MESES_PT[mes-1] + ' de ' + ano;
+  document.getElementById('mm-anjo').textContent = (window._anjo || 'seu anjo').toUpperCase();
+  document.getElementById('mm-corpo').style.display = 'none';
+  document.getElementById('mm-audio').style.display = 'none';
+  document.getElementById('mm-paywall').style.display = 'none';
+  document.getElementById('mm-vazio').style.display = 'none';
+  if(!_mmCache){
+    document.getElementById('mm-vazio').style.display = 'block';
+    document.getElementById('mm-titulo').textContent = 'Em breve';
+  } else {
+    document.getElementById('mm-titulo').textContent = _mmCache.titulo || 'A mensagem do seu anjo';
+    var ehPremium = window._plano && window._plano !== 'free';
+    if(ehPremium){
+      document.getElementById('mm-corpo').style.display = 'block';
+      document.getElementById('mm-texto').textContent = _mmCache.texto;
+      if(_mmCache.audio_url){
+        document.getElementById('mm-audio').style.display = 'block';
+      }
+    } else {
+      // Teaser: 2 primeiros parágrafos + paywall
+      var trecho = (_mmCache.texto || '').split(/\n\n+/).slice(0,2).join('\n\n');
+      if(trecho.length > 350) trecho = trecho.slice(0, 350) + '…';
+      document.getElementById('mm-corpo').style.display = 'block';
+      document.getElementById('mm-texto').textContent = trecho + '\n\n[…]';
+      document.getElementById('mm-paywall').style.display = 'block';
+    }
+  }
+  show('s-mensagem-mensal');
+}
+
+function mmTocarAudio(){
+  if(!_mmCache || !_mmCache.audio_url) return;
+  var dur = _mmCache.duracao_seg ? Math.round(_mmCache.duracao_seg/60)+' min' : '5 min';
+  openPlayer({titulo: _mmCache.titulo || 'Mensagem do mês', fmt:'Áudio · na voz da Monica', art:'📜', dur:dur});
+}
+
+// ── Compatibilidade Angelical ──
+var _compatOutro = null;
+function openCompat(){
+  document.getElementById('compat-intro').style.display='block';
+  document.getElementById('compat-resultado').style.display='none';
+  var nomeMeu = window._anjo || 'seu anjo';
+  document.getElementById('compat-meu').textContent = nomeMeu;
+  document.getElementById('compat-nome').value='';
+  document.getElementById('compat-dia').value='';
+  document.getElementById('compat-mes').value='';
+  document.getElementById('compat-ano').value='';
+  document.getElementById('compat-erro').textContent='';
+  show('s-compat');
+}
+function _calcAnjoLocal(dia, mes){
+  // ANJOS[i] = [n, nome, dom, [[dia,mes],...]]
+  for(var i=0;i<ANJOS.length;i++){
+    var a=ANJOS[i]; var datas=a[3]||[];
+    for(var j=0;j<datas.length;j++){
+      if(datas[j][0]===dia && datas[j][1]===mes) return { n:a[0], nome:a[1], dom:a[2] };
+    }
+  }
+  return null;
+}
+async function calcularCompatibilidade(){
+  var nome=document.getElementById('compat-nome').value.trim();
+  var d=+document.getElementById('compat-dia').value;
+  var m=+document.getElementById('compat-mes').value;
+  var y=+document.getElementById('compat-ano').value;
+  var erro=document.getElementById('compat-erro');
+  if(!nome){ erro.textContent='Diga quem é a outra pessoa.'; return; }
+  if(!(d>=1&&d<=31)||!(m>=1&&m<=12)||!(y>=1900&&y<=new Date().getFullYear())){
+    erro.textContent='Confira a data de nascimento.'; return;
+  }
+  erro.textContent='';
+  var meuN = window._perfil && window._perfil.anjo_n;
+  if(!meuN && window._anjo){
+    for(var i=0;i<ANJOS.length;i++){ if(ANJOS[i][1]===window._anjo){ meuN=ANJOS[i][0]; break; } }
+  }
+  if(!meuN){ erro.textContent='Não encontrei o seu anjo. Refaça o cadastro.'; return; }
+  var outro = _calcAnjoLocal(d, m);
+  if(!outro){
+    // Anjos da Humanidade (datas raras)
+    erro.textContent='Essa pessoa nasceu em uma data dos Anjos da Humanidade — vamos preparar essa leitura especial em breve.';
+    return;
+  }
+  buzz();
+  try{
+    var r = await fetch('/api/calc-compatibilidade?n1='+meuN+'&n2='+outro.n);
+    var j = await r.json();
+    if(!j.ok){ erro.textContent='Erro: '+(j.error||'falhou'); return; }
+    _compatOutro = { nome:nome, n:outro.n, anjoNome:outro.nome, d:d, m:m, y:y };
+    document.getElementById('compat-intro').style.display='none';
+    document.getElementById('compat-resultado').style.display='block';
+    document.getElementById('compat-titulo').textContent = j.titulo;
+    document.getElementById('compat-score').textContent = 'Afinidade ' + j.score + '/100 · ' + j.tipo;
+    document.getElementById('compat-r-meu-nome').textContent = window._anjo || '—';
+    document.getElementById('compat-r-meu-coro').textContent = 'Coro dos ' + j.coro1 + ' · ' + j.elemento1;
+    document.getElementById('compat-r-outro-rotulo').textContent = nome;
+    document.getElementById('compat-r-outro-nome').textContent = outro.nome;
+    document.getElementById('compat-r-outro-coro').textContent = 'Coro dos ' + j.coro2 + ' · ' + j.elemento2;
+    document.getElementById('compat-r-analise').textContent = j.analise;
+    document.getElementById('compat-r-pratica').textContent = j.pratica;
+    chime();
+  }catch(e){ erro.textContent='Não consegui calcular agora.'; }
+}
+function resetCompat(){ openCompat(); }
+async function compartilharCompatibilidade(){
+  if(!_compatOutro){ return; }
+  var titulo = document.getElementById('compat-titulo').textContent;
+  var meuAnjo = window._anjo || 'meu anjo';
+  var texto = '🪽 Acabei de descobrir: meu anjo (' + meuAnjo + ') e o seu anjo (' + _compatOutro.anjoNome + ') têm ' + titulo + '. Descubra o seu também:';
+  var url = 'https://www.sobasasas.com.br/landing?via=compat';
+  if(navigator.share){
+    try{ await navigator.share({title:'Compatibilidade angelical — Sob as Asas', text:texto, url:url}); toast('Convite enviado 🪽'); return; }
+    catch(e){}
+  }
+  try{
+    await navigator.clipboard.writeText(texto + ' ' + url);
+    toast('Mensagem copiada — cole onde quiser 🪽');
+    var wa = 'https://wa.me/?text=' + encodeURIComponent(texto + ' ' + url);
+    window.open(wa, '_blank');
+  }catch(e){ toast('Não consegui compartilhar agora.'); }
 }
 
 // ── Calendário Litúrgico Angelical ──

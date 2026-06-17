@@ -76,6 +76,7 @@
       <button class="tab" id="tab-leads" onclick="aba('leads')">📩 Leads</button>
       <button class="tab" id="tab-usuarios" onclick="aba('usuarios')">👥 Usuários</button>
       <button class="tab" id="tab-newsletter" onclick="aba('newsletter')">✉️ Newsletter</button>
+      <button class="tab" id="tab-mensal" onclick="aba('mensal')">📜 Mensagem Mensal</button>
     </div>
 
     <!-- ░░ PAINEL ░░ -->
@@ -186,6 +187,49 @@
       <div id="lista-usuarios"></div>
     </div>
 
+    <!-- ░░ MENSAGEM MENSAL ░░ -->
+    <div id="sec-mensal" class="hide">
+      <div class="nota">📜 <strong>Mensagem Mensal</strong> — uma carta por anjo por mês, produto-âncora premium. Curadoria da Monica. Ideal: 800-1500 palavras. Aparece no app dia 1º para usuários do plano pago.</div>
+
+      <div class="card">
+        <h3 style="font-family:'Playfair Display',serif; font-weight:400; font-size:18px; margin:0 0 12px">Nova mensagem (ou atualizar existente)</h3>
+        <div class="row">
+          <div><label class="f">Anjo (1 a 72)</label><input type="number" id="mm-anjo" min="1" max="72" placeholder="Ex.: 4 (Elemiah)" /></div>
+          <div><label class="f">Mês (1-12)</label><input type="number" id="mm-mes" min="1" max="12" /></div>
+          <div><label class="f">Ano</label><input type="number" id="mm-ano" min="2026" max="2030" /></div>
+        </div>
+        <label class="f">Título da mensagem</label>
+        <input type="text" id="mm-titulo" placeholder="Ex.: A travessia do mês — Elemiah te leva" />
+        <label class="f">Texto da mensagem (use linhas em branco para separar parágrafos)</label>
+        <textarea id="mm-texto" rows="14" placeholder="Texto curado pela Monica, ~800-1500 palavras..."></textarea>
+        <div class="row">
+          <div><label class="f">URL do áudio (opcional)</label><input type="text" id="mm-audio-url" placeholder="https://.../audio.mp3" /></div>
+          <div><label class="f">Duração (min)</label><input type="number" id="mm-dur" min="0" /></div>
+        </div>
+        <label style="display:flex;align-items:center;gap:8px;margin:12px 0;font-size:13px;color:var(--suave)"><input type="checkbox" id="mm-publicado" style="width:auto" /> Publicado (aparece no app)</label>
+        <div style="display:flex; gap:8px; margin-top:8px">
+          <button class="btn" onclick="salvarMensagemMensal()">Salvar / Atualizar</button>
+        </div>
+        <p class="msg" id="mm-msg"></p>
+      </div>
+
+      <h3 style="font-size:15px;font-weight:500;margin:24px 0 10px">Mensagens existentes</h3>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin:0 0 12px">
+        <select id="mm-filtro-mes" onchange="carregarMensagensMensais()" style="width:auto">
+          <option value="">Todos os meses</option>
+          <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
+          <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
+          <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
+          <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+        </select>
+        <select id="mm-filtro-ano" onchange="carregarMensagensMensais()" style="width:auto">
+          <option value="">Todos os anos</option>
+          <option value="2026" selected>2026</option><option value="2027">2027</option><option value="2028">2028</option>
+        </select>
+      </div>
+      <div id="lista-mensagens-mensais"></div>
+    </div>
+
     <!-- ░░ NEWSLETTER ░░ -->
     <div id="sec-newsletter" class="hide">
       <div class="nota">✉️ <strong>Carta dos Anjos</strong> — semanal, sábado 8h (BRT). Cron automático: <code>0 11 * * 6</code> (UTC). Conteúdo carregado da tabela <code>newsletters</code> (linha mais recente publicada). Sem nada cadastrado, o cron usa um fallback padrão.</div>
@@ -247,12 +291,126 @@ function salvarChave(){ KEY=document.getElementById('adminkey').value.trim(); if
 function entrar(){ document.getElementById('auth').classList.add('hide'); document.getElementById('painel').classList.remove('hide'); recarregar(); }
 function recarregar(){ carregarMetricas(); carregarConteudos(); carregarMilagre(); carregarLeads(); }
 function aba(qual){
-  ['painel','conteudo','milagre','leads','usuarios','newsletter'].forEach(function(q){
+  ['painel','conteudo','milagre','leads','usuarios','newsletter','mensal'].forEach(function(q){
     document.getElementById('sec-'+q).classList.toggle('hide', q!==qual);
     document.getElementById('tab-'+q).classList.toggle('on', q===qual);
   });
   if(qual==='newsletter') carregarNewsletter();
   if(qual==='usuarios') carregarUsuarios();
+  if(qual==='mensal'){
+    var hoje=new Date();
+    if(!document.getElementById('mm-mes').value) document.getElementById('mm-mes').value = hoje.getMonth()+1;
+    if(!document.getElementById('mm-ano').value) document.getElementById('mm-ano').value = hoje.getFullYear();
+    carregarMensagensMensais();
+  }
+}
+
+// ── Mensagens Mensais (admin) ──
+function _mmPayload(){
+  return {
+    anjo_n: Number(val('mm-anjo')),
+    mes: Number(val('mm-mes')),
+    ano: Number(val('mm-ano')),
+    titulo: val('mm-titulo'),
+    texto: val('mm-texto'),
+    audio_url: val('mm-audio-url') || null,
+    duracao_seg: val('mm-dur') ? Number(val('mm-dur')) * 60 : null,
+    publicado: document.getElementById('mm-publicado').checked,
+  };
+}
+function mmMsg(t, cor){ var el=document.getElementById('mm-msg'); el.textContent=t; el.style.color='#'+cor; }
+async function salvarMensagemMensal(){
+  var p = _mmPayload();
+  if(!p.anjo_n || p.anjo_n<1 || p.anjo_n>72){ mmMsg('Anjo deve ser de 1 a 72.', 'C0392B'); return; }
+  if(!p.mes || p.mes<1 || p.mes>12){ mmMsg('Mês inválido.', 'C0392B'); return; }
+  if(!p.ano || p.ano<2026){ mmMsg('Ano inválido.', 'C0392B'); return; }
+  if(!p.texto || p.texto.length < 50){ mmMsg('Texto muito curto (mínimo 50 caracteres).', 'C0392B'); return; }
+  mmMsg('Salvando…', 'BA7517');
+  try{
+    p.action = 'criar';
+    var r = await fetch('/api/admin-mensagem-mensal',{ method:'POST', headers:{'Content-Type':'application/json','x-admin-key':KEY}, body:JSON.stringify(p) });
+    var j = await r.json();
+    if(!j.ok) throw new Error(j.error||'falhou');
+    mmMsg(p.publicado ? 'Publicada — já aparece no app dos usuários desse anjo.' : 'Rascunho salvo.', 'BA7517');
+    carregarMensagensMensais();
+  }catch(e){ mmMsg('Erro: '+e.message, 'C0392B'); }
+}
+async function carregarMensagensMensais(){
+  var el = document.getElementById('lista-mensagens-mensais');
+  el.innerHTML = '<p class="vazio">Carregando…</p>';
+  var qs = [];
+  var mf = document.getElementById('mm-filtro-mes').value;
+  var af = document.getElementById('mm-filtro-ano').value;
+  if(mf) qs.push('mes='+mf);
+  if(af) qs.push('ano='+af);
+  var url = '/api/admin-mensagem-mensal' + (qs.length? '?'+qs.join('&') : '');
+  try{
+    var r = await fetch(url, { headers:{'x-admin-key':KEY} });
+    var j = await r.json();
+    if(!j.ok){ el.innerHTML='<p class="vazio">Erro: '+(j.error||'falhou')+'</p>'; return; }
+    var lista = j.mensagens || [];
+    if(!lista.length){ el.innerHTML='<p class="vazio">Nenhuma mensagem.</p>'; return; }
+    var MESES = ['—','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    el.innerHTML = lista.map(function(m){
+      var pub = m.publicado ? '<span class="tag" style="background:#F2F8F4; color:#2E8756">Publicada</span>'
+                            : '<span class="tag" style="background:#F1EFE8; color:#5F5E5A">Rascunho</span>';
+      return '<div class="card">'
+        + '<div style="display:flex; align-items:center; gap:14px">'
+          + '<div style="text-align:center; min-width:48px">'
+            + '<div class="serif" style="font-size:20px; color:var(--ouro); line-height:1">'+m.anjo_n+'</div>'
+            + '<div style="font-size:10px; color:var(--suave); letter-spacing:.1em; margin-top:3px">'+MESES[m.mes]+'/'+m.ano+'</div>'
+          + '</div>'
+          + '<div style="flex:1; min-width:0"><p style="margin:0; font-weight:500">'+esc(m.titulo||'(sem título)')+'</p>'
+          + '<p style="margin:4px 0 0; font-size:11.5px; color:var(--suave)">'+ (m.audio_url? '🎙 Com áudio · ' : '') + 'Atualizada em ' + (m.atualizado_em? new Date(m.atualizado_em).toLocaleDateString('pt-BR') : '—') + '</p></div>'
+          + pub
+        + '</div>'
+        + '<div class="actions" style="margin-top:10px">'
+          + '<button class="btn-sec" onclick="editarMm(\''+m.id+'\','+m.anjo_n+','+m.mes+','+m.ano+')">Editar</button>'
+          + '<button class="btn-sec" onclick="toggleMm(\''+m.id+'\')">'+(m.publicado?'Despublicar':'Publicar')+'</button>'
+          + '<button class="btn-sec" style="color:#C0392B; border-color:rgba(192,57,43,.3)" onclick="excluirMm(\''+m.id+'\')">Excluir</button>'
+        + '</div>'
+      + '</div>';
+    }).join('');
+  }catch(e){ el.innerHTML='<p class="vazio">Erro: '+e.message+'</p>'; }
+}
+async function editarMm(id, n, mes, ano){
+  // Recarrega a mensagem completa via GET (texto não vem na lista)
+  try{
+    var r = await fetch('/api/admin-mensagem-mensal?mes='+mes+'&ano='+ano, { headers:{'x-admin-key':KEY} });
+    var j = await r.json();
+    var item = (j.mensagens||[]).find(function(x){return x.id===id;});
+    if(!item){ alert('Não consegui carregar a mensagem.'); return; }
+    // Buscar o texto completo (lista não retorna texto pra economizar)
+    if(sb){
+      var rs = await sb.from('mensagens_mensais').select('texto').eq('id', id).maybeSingle();
+      if(rs && rs.data) item.texto = rs.data.texto;
+    }
+    document.getElementById('mm-anjo').value = item.anjo_n;
+    document.getElementById('mm-mes').value = item.mes;
+    document.getElementById('mm-ano').value = item.ano;
+    document.getElementById('mm-titulo').value = item.titulo || '';
+    document.getElementById('mm-texto').value = item.texto || '';
+    document.getElementById('mm-audio-url').value = item.audio_url || '';
+    document.getElementById('mm-dur').value = item.duracao_seg ? Math.round(item.duracao_seg/60) : '';
+    document.getElementById('mm-publicado').checked = !!item.publicado;
+    window.scrollTo({top:0, behavior:'smooth'});
+    mmMsg('Editando — altere e clique em Salvar.', 'BA7517');
+  }catch(e){ alert('Erro: '+e.message); }
+}
+async function toggleMm(id){
+  try{
+    var r = await fetch('/api/admin-mensagem-mensal',{method:'POST', headers:{'Content-Type':'application/json','x-admin-key':KEY}, body:JSON.stringify({action:'toggle', id:id})});
+    var j = await r.json(); if(!j.ok) throw new Error(j.error||'falhou');
+    carregarMensagensMensais();
+  }catch(e){ alert('Erro: '+e.message); }
+}
+async function excluirMm(id){
+  if(!confirm('Excluir definitivamente essa mensagem?')) return;
+  try{
+    var r = await fetch('/api/admin-mensagem-mensal',{method:'POST', headers:{'Content-Type':'application/json','x-admin-key':KEY}, body:JSON.stringify({action:'excluir', id:id})});
+    var j = await r.json(); if(!j.ok) throw new Error(j.error||'falhou');
+    carregarMensagensMensais();
+  }catch(e){ alert('Erro: '+e.message); }
 }
 
 // ── Usuários ──
