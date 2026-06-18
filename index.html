@@ -629,19 +629,16 @@
       </div>
 
       <!-- 1.1 SOBRE A MONICA — autoridade em destaque (logo após o anjo) -->
-      <div class="card fade-in" style="margin-top:14px; padding:0; cursor:pointer; overflow:hidden; border:1px solid var(--linha); position:relative" onclick="show('s-monica')">
-        <div style="display:flex; align-items:stretch; gap:0">
-          <div style="width:96px; flex-shrink:0; background:linear-gradient(160deg, #F6C868, #BA7517); position:relative; overflow:hidden">
-            <img src="/assets/monica.jpg" alt="Monica Buonfiglio" loading="lazy" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block" onerror="this.style.display='none'; this.parentNode.querySelector('.mb-fallback').style.display='flex'" />
-            <div class="mb-fallback" style="display:none; position:absolute; inset:0; align-items:center; justify-content:center; color:#fff; font-family:'Playfair Display',serif; font-size:30px; font-weight:500">MB</div>
-          </div>
-          <div style="flex:1; padding:14px 16px; display:flex; flex-direction:column; justify-content:center; min-width:0">
-            <p style="margin:0; font-size:10px; letter-spacing:.16em; color:var(--ouro); text-transform:uppercase; font-weight:600">Por trás do app</p>
-            <p class="serif" style="margin:4px 0 2px; font-size:19px; color:var(--tinta); font-weight:500; line-height:1.2">Monica Buonfiglio</p>
-            <p class="serif-soft" style="margin:0; font-size:14px; color:var(--ouro); font-style:italic; line-height:1.35">10 milhões de exemplares · 67 livros</p>
-            <p style="margin:6px 0 0; font-size:11.5px; color:var(--tinta-suave); line-height:1.4">A maior referência brasileira em anjos cabalísticos →</p>
-          </div>
+      <div class="card fade-in" style="margin-top:14px; padding:18px 18px 18px 14px; cursor:pointer; display:flex; align-items:center; gap:16px" onclick="show('s-monica')">
+        <div style="width:64px; height:64px; flex-shrink:0; border-radius:50%; background:linear-gradient(135deg, #F6C868 0%, #D89A2C 50%, #BA7517 100%); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(186,117,23,.22)">
+          <span style="font-family:'Playfair Display',serif; font-size:22px; font-weight:500; color:#FFFAF0; letter-spacing:.02em; text-shadow:0 1px 2px rgba(90,58,6,.25)">MB</span>
         </div>
+        <div style="flex:1; min-width:0">
+          <p style="margin:0; font-size:10px; letter-spacing:.16em; color:var(--ouro); text-transform:uppercase; font-weight:600">Por trás do app</p>
+          <p class="serif" style="margin:3px 0 2px; font-size:20px; color:var(--tinta); font-weight:500; line-height:1.15">Monica Buonfiglio</p>
+          <p class="serif-soft" style="margin:0; font-size:14px; color:var(--ouro); font-style:italic; line-height:1.35">10 milhões de exemplares · 67 livros</p>
+        </div>
+        <span style="color:var(--ouro); font-size:20px; flex-shrink:0">›</span>
       </div>
 
       <!-- 1b. CONHECER MEU ANJO EM 7 DIAS (mini-jornada de descoberta) -->
@@ -3209,6 +3206,23 @@ var PRATICAS_INFO={
     abrir:function(){ openGratidao(); }
   }
 };
+function _botaoDinamico(qual, padrao){
+  try{
+    if(qual==='magia' && typeof mbEstado==='function'){
+      var s = mbEstado();
+      if(s.completa) return 'Ver minha Magia concluída';
+      if(s.feitoHoje) return 'Ver o dia de hoje';
+      if(s.dia > 1) return 'Continuar a Magia (Dia '+s.dia+')';
+    }
+    if(qual==='novena' && typeof joEstado==='function'){
+      var j = joEstado();
+      if(j.completa) return 'Ver minha Novena concluída';
+      if(j.feitoHoje) return 'Ver o dia de hoje';
+      if(j.dia > 1) return 'Continuar a Novena (Dia '+j.dia+')';
+    }
+  }catch(e){}
+  return padrao;
+}
 function abrirPratica(qual){
   var p=PRATICAS_INFO[qual]; if(!p){ return; }
   window._praticaAtual=qual;
@@ -3218,7 +3232,7 @@ function abrirPratica(qual){
   document.getElementById('pr-desc').textContent=p.descricao;
   var velas=document.getElementById('pr-velas');
   if(p.velas){ velas.textContent=p.velas; velas.style.display='block'; } else { velas.style.display='none'; }
-  document.getElementById('pr-btn').textContent=p.botao;
+  document.getElementById('pr-btn').textContent = _botaoDinamico(qual, p.botao);
   openModal('modal-pratica'); buzz();
 }
 function fecharPratica(){ closeModal('modal-pratica'); }
