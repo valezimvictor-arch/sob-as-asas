@@ -2854,9 +2854,13 @@ function pularAcolhimento(){
 // ── login por link mágico ──
 function resetLoginUI(){ document.getElementById('login-form').style.display='block'; document.getElementById('login-enviado').style.display='none'; document.getElementById('login-msg').textContent=''; }
 function entrarSantuario(){
-  if(window._userId){ show('s-home'); return; }  // já logado → entra direto
+  // Já logado E com perfil completo → home direto
+  if(window._userId && window._nome && window._anjo){ show('s-home'); return; }
+  // Sessão ativa mas perfil não foi completado → vai pro cadastro
+  if(window._userId){ show('s-cadastro'); setTimeout(function(){var i=document.getElementById('in-nome'); if(i) i.focus();},400); return; }
+  // Não logado → tela de login
   if(window.saaAuth){ resetLoginUI(); show('s-login'); setTimeout(function(){var i=document.getElementById('in-email'); if(i) i.focus();},450); }
-  else { show('s-home'); }  // modo demo
+  else { show('s-home'); }  // modo demo (sem Supabase configurado)
 }
 async function enviarMagicLink(){
   var email=(document.getElementById('in-email').value||'').trim();
