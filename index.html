@@ -548,10 +548,11 @@
       <p style="margin:0 0 16px; font-size:14px; color:var(--tinta-suave); line-height:1.55">Todo mês a Monica entrega uma carta exclusiva para cada um dos 72 anjos. A sua já está esperando.</p>
       <button class="btn-ouro" onclick="openPaywall('Mensagem mensal')">Começar 7 dias grátis</button>
     </div>
-    <div id="mm-vazio" style="display:none; margin-top:24px; text-align:center; padding:30px 14px; color:var(--tinta-suave); font-size:14px; line-height:1.6">
-      <div style="font-size:30px; opacity:.6">🪽</div>
-      <p class="serif-soft" style="font-size:17px; color:var(--ouro); margin:10px 0 4px">Em preparo</p>
-      <p style="margin:0">A mensagem deste mês está sendo escrita com a Monica. Volte em breve.</p>
+    <div id="mm-vazio" style="display:none; margin-top:24px; text-align:center; padding:30px 18px; color:var(--tinta-suave); font-size:14px; line-height:1.65">
+      <div style="font-size:34px; animation:respira-sigilo 6s ease-in-out infinite">🪽</div>
+      <p class="serif" style="font-size:19px; color:var(--ouro); margin:14px 0 8px; font-weight:500">Seu anjo está escrevendo</p>
+      <p style="margin:0 0 6px; font-style:italic; font-family:'Cormorant Garamond','EB Garamond',serif; font-size:16px">"Cada carta nasce no tempo certo. A sua chega quando a Monica termina de ouvi-la."</p>
+      <p style="margin:14px 0 0; font-size:13px; color:var(--ouro)">— em breve aqui, no santuário</p>
     </div>
     <button class="btn-ghost" style="margin-top:18px" onclick="show('s-home')">Voltar ao santuário</button>
   </div>
@@ -1235,7 +1236,11 @@
         <button class="bib-chip" data-sent="sono" onclick="filtrarBib('sono')">🌙 Para dormir</button>
       </div>
       <div id="lista-bib"></div>
-      <p id="bib-vazio" style="display:none; color:var(--tinta-suave); font-size:14px; text-align:center; padding:30px 16px; line-height:1.6">Ainda não há conteúdos com essa marca. Voltamos com novidades em breve.</p>
+      <div id="bib-vazio" style="display:none; text-align:center; padding:34px 18px; line-height:1.65">
+        <div style="font-size:30px; opacity:.6">📿</div>
+        <p class="serif" style="font-size:17px; color:var(--ouro); margin:12px 0 6px; font-weight:500">Nada com essa marca por aqui</p>
+        <p style="margin:0; font-family:'Cormorant Garamond','EB Garamond',serif; font-style:italic; font-size:15px; color:var(--tinta-suave)">Tente outra emoção, ou volte ao começo da biblioteca.<br>O que está se preparando ainda chega.</p>
+      </div>
     </div>
 
     <!-- view: comunidade -->
@@ -2248,6 +2253,14 @@ function nav(view){
 let PEDIDOS=[{t:'Saúde para minha mãe',s:'realizado'},{t:'Paz no meu trabalho',s:'aberto'},{t:'Proteção na viagem',s:'aberto'}];
 function renderPedidos(){
   const el=document.getElementById('lista-pedidos'); if(!el) return; el.innerHTML='';
+  if(!PEDIDOS.length){
+    el.innerHTML = '<div style="text-align:center; padding:30px 18px; color:var(--tinta-suave); line-height:1.65">'
+      + '<div style="font-size:28px; opacity:.6">🕯️</div>'
+      + '<p class="serif" style="font-size:17px; color:var(--ouro); margin:12px 0 6px; font-weight:500">Suas intenções, em silêncio</p>'
+      + '<p style="margin:0; font-family:\'Cormorant Garamond\',\'EB Garamond\',serif; font-style:italic; font-size:15px">Escreva o que pesa no peito. Seu anjo escuta — e o que se escreve fica em oração até o tempo certo.</p>'
+      + '</div>';
+    return;
+  }
   PEDIDOS.forEach(p=>{
     const ok=p.s==='realizado';
     el.insertAdjacentHTML('beforeend',`<div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px">
@@ -2528,7 +2541,14 @@ let GRAT=[{t:'Pela saúde da minha família', d:'Ontem'},{t:'Por um dia de paz n
 function openGratidao(){ renderGrat(); carregarGratidao(); show('s-gratidao'); setTimeout(function(){var i=document.getElementById('nova-gratidao'); if(i) i.focus();},450); }
 function renderGrat(){
   var el=document.getElementById('lista-gratidao'); if(!el) return; el.innerHTML='';
-  if(!GRAT.length){ el.innerHTML='<p style="color:var(--tinta-suave);font-size:14px">Seu diário começa hoje 🙏</p>'; return; }
+  if(!GRAT.length){
+    el.innerHTML = '<div style="text-align:center; padding:30px 18px; color:var(--tinta-suave); line-height:1.65">'
+      + '<div style="font-size:28px; opacity:.6">🙏</div>'
+      + '<p class="serif" style="font-size:17px; color:var(--ouro); margin:12px 0 6px; font-weight:500">Comece pelo que já está aqui</p>'
+      + '<p style="margin:0; font-family:\'Cormorant Garamond\',\'EB Garamond\',serif; font-style:italic; font-size:15px">A gratidão não nasce do que vai chegar — nasce do que você ainda não viu que recebeu. Escreva uma coisa só. Hoje basta.</p>'
+      + '</div>';
+    return;
+  }
   GRAT.forEach(function(g){ el.insertAdjacentHTML('beforeend','<div class="card" style="padding:14px 16px"><p class="serif-soft" style="margin:0;font-size:17px;color:var(--tinta);line-height:1.4">'+esc(g.t)+'</p><p style="margin:6px 0 0;font-size:12px;color:var(--tinta-suave)">'+esc(g.d)+'</p></div>'); });
 }
 async function carregarGratidao(){
@@ -3037,8 +3057,14 @@ function abrirIndicar(){
       .eq('indicador_id', window._userId)
       .then(function(r){
         if(r.error || !r.data) return;
-        document.getElementById('indicar-stat-conv').textContent = r.data.length;
-        document.getElementById('indicar-stat-assin').textContent = r.data.filter(function(x){return x.virou_assinante;}).length;
+        var elConv = document.getElementById('indicar-stat-conv');
+        var elAssin = document.getElementById('indicar-stat-assin');
+        if(elConv) elConv.textContent = r.data.length;
+        if(elAssin) elAssin.textContent = r.data.filter(function(x){return x.virou_assinante;}).length;
+      })
+      .catch(function(e){
+        // Tabela ainda não existe ou RLS bloqueou — mantém stats locais
+        console.warn('[indicacoes] falha ao buscar stats:', e && e.message);
       });
   }
 }
