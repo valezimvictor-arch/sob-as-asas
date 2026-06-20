@@ -2919,26 +2919,32 @@ async function verificarCodigo(){
   var msg=document.getElementById('codigo-msg');
   if(codigo.length !== 6){ msg.textContent='O código tem 6 dígitos.'; return; }
   if(!window.saaAuth){
-    // modo demo — não há verificação real
     show('s-home'); return;
   }
   var email = window._loginEmail || (window._email||'');
   if(!email){ msg.textContent='E-mail não encontrado. Recomece.'; return; }
   msg.textContent='Verificando…'; msg.style.color='var(--ouro)'; buzz();
-  try{
-    var r = await window.saaAuth.client.auth.verifyOtp({ email:email, token:codigo, type:'email' });
-    if(r.error){
-      msg.textContent='Código inválido ou expirado. Tente de novo.';
-      msg.style.color='#C0392B';
-      return;
-    }
-    msg.textContent='Entrando…';
-    chime();
-    // onAuthStateChange chama aoLogar automaticamente
-  }catch(e){
-    msg.textContent='Erro ao verificar. Tente de novo.';
-    msg.style.color='#C0392B';
+  console.log('[verificarCodigo] email=', email, 'token=', codigo);
+
+  // Supabase usa 'email' pra sign-up novo e 'magiclink' pra login de usuário existente.
+  // Tentamos os dois em sequência.
+  var tipos = ['email', 'magiclink'];
+  var ultimoErro = null;
+  for(var i=0; i<tipos.length; i++){
+    try{
+      var r = await window.saaAuth.client.auth.verifyOtp({ email:email, token:codigo, type:tipos[i] });
+      console.log('[verificarCodigo] tentativa type='+tipos[i]+':', r);
+      if(!r.error){
+        msg.textContent='Entrando…';
+        chime();
+        return; // sucesso — onAuthStateChange → aoLogar
+      }
+      ultimoErro = r.error;
+    }catch(e){ ultimoErro = e; }
   }
+  console.error('[verificarCodigo] falhou em ambos os tipos:', ultimoErro);
+  msg.textContent = 'Código inválido ou expirado. Peça um novo.';
+  msg.style.color = '#C0392B';
 }
 // chamado quando o usuário volta autenticado (clicou no link mágico)
 function persistirPerfil(userId){
