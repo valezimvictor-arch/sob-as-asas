@@ -2016,7 +2016,9 @@ function revelar(){
   }
   window._anjo=anjo.nome;
   window._perfil={ nome:window._nome, nascimento:(y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0')), anjo_n:anjo.n, anjo_nome:anjo.nome };
-  try{ localStorage.setItem('saa_pending', JSON.stringify(window._perfil)); }catch(e){}
+  // PII (nome, nascimento) fica em sessionStorage — limpo ao fechar abas,
+  // não persiste no dispositivo. Só persiste no Supabase (autenticado).
+  try{ sessionStorage.setItem('saa_pending', JSON.stringify(window._perfil)); }catch(e){}
   if(window._userId) persistirPerfil(window._userId);  // já logado → grava o perfil na hora
 
   show('s-reveal');
@@ -3687,7 +3689,7 @@ async function verificarCodigo(){
 function persistirPerfil(userId){
   if(!window.saaAuth || !window._perfil || !userId) return;
   window.saaAuth.salvarPerfil({ userId:userId, nome:window._perfil.nome, nascimento:window._perfil.nascimento, ritual_horario:'morning' })
-    .then(function(){ try{ localStorage.removeItem('saa_pending'); }catch(e){} })
+    .then(function(){ try{ sessionStorage.removeItem('saa_pending'); localStorage.removeItem('saa_pending'); }catch(e){} })
     .catch(function(){});
 }
 async function aoLogar(session){
@@ -3698,7 +3700,11 @@ async function aoLogar(session){
   window._aoLogarRodando = true;
   window._userId = session.user.id;
   window._email = session.user.email || '';
-  var pend=null; try{ pend=JSON.parse(localStorage.getItem('saa_pending')||'null'); }catch(e){}
+  // Lê do sessionStorage (PII não persiste no dispositivo) — com fallback pra
+  // localStorage por compatibilidade com versões anteriores (será migrado adiante).
+  var pend=null;
+  try{ pend=JSON.parse(sessionStorage.getItem('saa_pending')||'null'); }catch(e){}
+  if(!pend){ try{ pend=JSON.parse(localStorage.getItem('saa_pending')||'null'); localStorage.removeItem('saa_pending'); }catch(e){} }
   // ação pendente do acolhimento (escolhida antes do magic link)
   function _executarAcaoPendente(){
     try{
