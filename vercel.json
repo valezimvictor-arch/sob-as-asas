@@ -55,6 +55,7 @@
     { "source": "/landing", "destination": "/landing.html" },
     { "source": "/termos", "destination": "/termos.html" },
     { "source": "/privacidade", "destination": "/privacidade.html" },
-    { "source": "/regulamento-milagre", "destination": "/regulamento-milagre.html" }
+    { "source": "/regulamento-milagre", "destination": "/regulamento-milagre.html" },
+    { "source": "/presente", "destination": "/presente.html" }
   ]
 }

@@ -207,6 +207,47 @@
     #rv-anjo::before { animation:none !important; }
     .skel { animation:none !important; background:#F2EDDF; }
   }
+
+  /* ── Carta impressa do anjo ── */
+  .carta-folha{
+    background:#FBF8EE;
+    border:1px solid rgba(186,117,23,.22);
+    border-radius:6px;
+    padding:54px 48px;
+    margin:0 auto;
+    max-width:620px;
+    box-shadow:0 2px 22px rgba(186,117,23,.12);
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(239,159,39,.05), transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(186,117,23,.06), transparent 40%);
+  }
+  .carta-topo{ text-align:center; border-bottom:1px solid rgba(186,117,23,.18); padding-bottom:22px; margin-bottom:28px; }
+  .carta-asa{ font-size:30px; color:var(--ouro-claro); line-height:1; }
+  .carta-brand{ font-family:'Playfair Display', Georgia, serif; font-size:24px; color:var(--ouro); margin-top:8px; letter-spacing:.01em; }
+  .carta-brand-sub{ font-family:'EB Garamond', Georgia, serif; font-style:italic; font-size:13px; color:#7F6B45; margin-top:2px; }
+  .carta-para{ font-family:'EB Garamond', Georgia, serif; font-style:italic; font-size:18px; color:#6B5A3A; text-align:center; margin:0 0 22px; }
+  .carta-titulo-bloco{ text-align:center; margin:0 0 32px; }
+  .carta-rotulo{ font-size:10.5px; letter-spacing:.22em; color:var(--ouro); text-transform:uppercase; font-weight:600; margin:0 0 8px; }
+  .carta-nome{ font-family:'Playfair Display', Georgia, serif; font-weight:500; font-size:46px; color:var(--tinta); margin:0 0 6px; line-height:1.1; letter-spacing:.005em; }
+  .carta-dom{ font-family:'EB Garamond', Georgia, serif; font-style:italic; font-size:18px; color:var(--ouro); margin:0; }
+  .carta-secao{ margin:24px 0; }
+  .carta-texto{ font-family:'EB Garamond', Georgia, serif; font-size:17px; line-height:1.65; color:var(--tinta); margin:0; text-align:justify; }
+  .carta-italico{ font-style:italic; text-align:center; }
+  .carta-salmo-bloco{ background:rgba(239,159,39,.08); border-left:3px solid var(--ouro); padding:18px 22px; border-radius:0 8px 8px 0; }
+  .carta-salmo{ font-family:'EB Garamond', Georgia, serif; font-style:italic; font-size:18px; line-height:1.6; color:var(--tinta); margin:0 0 8px; }
+  .carta-salmo-ref{ font-size:12px; color:var(--ouro); margin:0; letter-spacing:.05em; }
+  .carta-rodape{ text-align:center; border-top:1px solid rgba(186,117,23,.18); padding-top:22px; margin-top:36px; }
+  .carta-data{ font-size:12px; color:#7F6B45; margin:0 0 14px; font-style:italic; font-family:'EB Garamond', Georgia, serif; }
+  .carta-assinatura{ font-family:'Playfair Display', Georgia, serif; font-size:20px; color:var(--ouro); margin:0; font-style:italic; }
+
+  @media print{
+    @page { size: A4; margin: 14mm; }
+    body{ background:#fff !important; }
+    .no-print, .nav-tabs, #toast, .topbar, header, .home-header{ display:none !important; }
+    #s-carta-anjo{ position:static !important; height:auto !important; display:block !important; padding:0 !important; }
+    .pad{ padding:0 !important; }
+    .carta-folha{ box-shadow:none !important; border:none !important; padding:24px 0 !important; max-width:100% !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
 </style>
 </head>
 <body>
@@ -400,6 +441,111 @@
   </div>
 </section>
 
+<!-- ░░ MEDALHAS — álbum espiritual de marcos ░░ -->
+<section id="s-medalhas" class="screen">
+  <div style="flex:1; overflow-y:auto" class="pad">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+    <h2 class="serif" style="font-size:26px; margin:10px 0 0; font-weight:400">Suas medalhas</h2>
+    <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 18px; line-height:1.55">Marcos da sua jornada sob as asas. Não é gamificação — é álbum espiritual.</p>
+    <div id="medalhas-stats" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px"></div>
+    <div id="medalhas-lista"></div>
+  </div>
+</section>
+
+<!-- ░░ CARTA DO ANJO (imprimir) ░░ -->
+<section id="s-carta-anjo" class="screen">
+  <div style="flex:1; overflow-y:auto" class="pad carta-screen">
+    <div class="no-print" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px">
+      <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px">← voltar</button>
+      <button onclick="window.print()" class="btn-ouro" style="padding:10px 18px; font-size:13px; width:auto">Imprimir / Salvar PDF</button>
+    </div>
+    <div class="no-print" style="text-align:center; margin-bottom:18px">
+      <p style="color:var(--tinta-suave); font-size:13px; line-height:1.6; margin:0">Sua carta do anjo, diagramada pra imprimir em A4 e moldurar.<br>Use "Salvar como PDF" pra guardar uma versão digital.</p>
+    </div>
+
+    <div id="carta-anjo-conteudo" class="carta-folha">
+      <div class="carta-topo">
+        <div class="carta-asa">⊹</div>
+        <div class="carta-brand">Sob as Asas</div>
+        <div class="carta-brand-sub">por Monica Buonfiglio</div>
+      </div>
+
+      <p class="carta-para">Para <span id="carta-nome-pessoa">—</span></p>
+
+      <div class="carta-titulo-bloco">
+        <p class="carta-rotulo">Seu anjo da guarda</p>
+        <h1 id="carta-nome-anjo" class="carta-nome">—</h1>
+        <p id="carta-dom" class="carta-dom">—</p>
+      </div>
+
+      <div class="carta-secao">
+        <p id="carta-atributos" class="carta-texto">—</p>
+      </div>
+
+      <div class="carta-secao carta-salmo-bloco">
+        <p class="carta-rotulo">Seu salmo</p>
+        <p id="carta-salmo" class="carta-salmo">—</p>
+        <p id="carta-salmo-ref" class="carta-salmo-ref">—</p>
+      </div>
+
+      <div class="carta-secao">
+        <p class="carta-rotulo">Sua oração</p>
+        <p id="carta-invocacao" class="carta-texto carta-italico">—</p>
+      </div>
+
+      <div class="carta-secao">
+        <p class="carta-rotulo">Sua afirmação</p>
+        <p id="carta-afirmacao" class="carta-texto carta-italico">—</p>
+      </div>
+
+      <div class="carta-rodape">
+        <p class="carta-data">Carta selada em <span id="carta-data">—</span></p>
+        <p class="carta-assinatura">Monica Buonfiglio</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ INDICAR ░░ -->
+<section id="s-indicar" class="screen">
+  <div style="flex:1; overflow-y:auto" class="pad">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+    <div style="text-align:center; margin:14px 0 22px">
+      <div style="font-size:42px">🪽</div>
+      <h2 class="serif" style="font-size:28px; margin:10px 0 6px; font-weight:400">Convide quem você ama</h2>
+      <p style="color:var(--tinta-suave); font-size:14px; line-height:1.6; margin:0">Cada pessoa que entra pelo seu convite ganha <strong>14 dias grátis</strong> em vez de 7. E você ganha <strong>30 dias adicionais</strong> no seu plano cada vez que um convite vira assinatura.</p>
+    </div>
+
+    <div class="card" style="padding:18px; background:var(--ouro-bg); border-color:transparent; margin-bottom:14px">
+      <p style="margin:0 0 6px; font-size:11px; letter-spacing:.16em; color:var(--ouro); text-transform:uppercase; font-weight:600">Seu link</p>
+      <p id="indicar-link" class="serif" style="font-size:14px; word-break:break-all; margin:0 0 12px; color:var(--tinta)">—</p>
+      <div style="display:flex; gap:8px">
+        <button class="btn-ouro" style="flex:1" onclick="copiarLinkIndicacao()">Copiar link</button>
+        <button class="btn-secundario" style="flex:1" onclick="compartilharIndicacao()">Compartilhar</button>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px">
+      <div class="card" style="padding:14px; text-align:center"><p style="margin:0; font-size:10px; letter-spacing:.12em; color:var(--ouro); text-transform:uppercase; font-weight:600">Convites</p><p id="indicar-stat-conv" class="serif" style="margin:6px 0 0; font-size:26px; color:var(--tinta)">0</p></div>
+      <div class="card" style="padding:14px; text-align:center"><p style="margin:0; font-size:10px; letter-spacing:.12em; color:var(--ouro); text-transform:uppercase; font-weight:600">Viraram assinantes</p><p id="indicar-stat-assin" class="serif" style="margin:6px 0 0; font-size:26px; color:var(--tinta)">0</p></div>
+    </div>
+
+    <a href="/presente" target="_blank" rel="noopener" class="card" style="display:flex; align-items:center; gap:12px; padding:14px 16px; margin-bottom:14px; text-decoration:none; color:var(--tinta)">
+      <div style="font-size:24px">🎁</div>
+      <div style="flex:1">
+        <p style="margin:0; font-weight:600">Ou presenteie um ano inteiro</p>
+        <p style="margin:2px 0 0; font-size:12px; color:var(--tinta-suave)">R$ 149 · pagamento único · sem renovação</p>
+      </div>
+      <span style="color:var(--ouro)">▸</span>
+    </a>
+
+    <div class="card" style="padding:18px">
+      <p style="margin:0 0 8px; font-size:13px; color:var(--ouro); font-weight:600">Sugestões de quem convidar</p>
+      <p style="margin:4px 0; font-size:14px; line-height:1.6; color:var(--tinta-suave)">• A pessoa que você lembra quando reza<br>• A amiga que perdeu alguém recentemente<br>• Sua filha, sua mãe, sua afilhada<br>• Aquela que está num momento difícil</p>
+    </div>
+  </div>
+</section>
+
 <!-- ░░ COMPATIBILIDADE ANGELICAL ░░ -->
 <section id="s-compat" class="screen">
   <div style="flex:1; overflow-y:auto" class="pad">
@@ -497,6 +643,7 @@
       <h3 class="serif" style="font-size:22px; margin:10px 0 4px; font-weight:500">Você conheceu seu anjo</h3>
       <p style="margin:0; font-size:14px; color:var(--ouro); line-height:1.6">Sete dias sob as asas. Que o que você guardou aqui te acompanhe.</p>
       <button class="btn-ouro" style="margin-top:18px" onclick="openMeuAnjo()">Ver a ficha completa do meu anjo</button>
+      <button class="btn-ghost" style="margin-top:10px" onclick="abrirCartaAnjo()">Imprimir minha carta do anjo ✦</button>
       <button class="btn-ghost" style="margin-top:10px" onclick="show('s-home')">Voltar ao santuário</button>
     </div>
   </div>
@@ -591,7 +738,7 @@
           <p style="color:var(--tinta-suave); font-size:13px; margin:0; letter-spacing:.02em" id="home-saud">Boa noite</p>
           <p class="serif" style="font-size:19px; margin:2px 0 0; color:var(--tinta); line-height:1.25">Seu anjo é <span id="home-anjo" style="color:var(--ouro)">—</span></p>
         </div>
-        <div class="streak-chip" style="text-align:center; background:var(--ouro-bg); border-radius:14px; padding:8px 10px; min-width:62px; cursor:pointer" onclick="toast('Você tem '+(localStorage.getItem('saa_streak_n')||'1')+' dia(s) consecutivo(s) abrindo o app — continue 🪽')" title="Dias consecutivos abrindo o app">
+        <div class="streak-chip" style="text-align:center; background:var(--ouro-bg); border-radius:14px; padding:8px 10px; min-width:62px; cursor:pointer" onclick="openMedalhas()" title="Suas medalhas e marcos">
           <div style="font-size:9px; color:var(--ouro); letter-spacing:.05em; text-transform:uppercase; margin-bottom:2px; line-height:1">Dia</div>
           <div id="home-streak" style="font-size:20px; font-weight:600; color:#854F0B; line-height:1; font-family:'Playfair Display',serif">1</div>
           <div style="font-size:9px; color:var(--ouro); letter-spacing:.05em; text-transform:uppercase; margin-top:3px; line-height:1.2">consecutivo</div>
@@ -599,6 +746,25 @@
       </div>
 
       <!-- velas acesas hoje (presença coletiva) -->
+      <!-- Bênção rápida (30s) — pura presença, sem ritual -->
+      <button id="home-bencao-btn" class="card" style="margin-top:14px; padding:14px 16px; display:flex; align-items:center; gap:12px; width:100%; cursor:pointer; background:linear-gradient(90deg, rgba(250,243,228,.6), rgba(246,200,104,.18)); border:1px solid var(--linha); border-radius:14px; text-align:left" onclick="receberBencao()">
+        <div style="width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,#F6C868,#BA7517); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; box-shadow:0 2px 10px rgba(186,117,23,.22)">🕊️</div>
+        <div style="flex:1; min-width:0">
+          <p style="margin:0; font-weight:600; color:var(--tinta); font-family:'Manrope', sans-serif">Receber uma bênção</p>
+          <p style="margin:2px 0 0; font-size:12px; color:var(--ouro); font-family:'Cormorant Garamond', serif; font-style:italic">30 segundos · sem ritual, sem nada a fazer</p>
+        </div>
+        <span style="color:var(--ouro); font-size:18px">▸</span>
+      </button>
+
+      <button class="card" style="margin-top:10px; padding:14px 16px; display:flex; align-items:center; gap:12px; width:100%; cursor:pointer; background:#fff; border:1px solid var(--linha); border-radius:14px; text-align:left" onclick="abrirIndicar()">
+        <div style="width:38px; height:38px; border-radius:50%; background:var(--ouro-bg); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0">🪽</div>
+        <div style="flex:1; min-width:0">
+          <p style="margin:0; font-weight:600; color:var(--tinta); font-family:'Manrope', sans-serif; font-size:14.5px">Convide quem você ama</p>
+          <p style="margin:2px 0 0; font-size:12px; color:var(--tinta-suave)">ela ganha 14 dias · você ganha 30</p>
+        </div>
+        <span style="color:var(--ouro); font-size:18px">▸</span>
+      </button>
+
       <div id="home-velas-coletivo" style="display:none; margin-top:14px; padding:11px 14px; background:linear-gradient(90deg, rgba(250,243,228,.95), rgba(246,200,104,.18)); border:1px solid var(--linha); border-radius:14px; align-items:center; gap:10px">
         <div style="font-size:18px; line-height:1; flex-shrink:0">🕯️</div>
         <p style="margin:0; font-size:13px; color:var(--tinta); line-height:1.45"><span id="velas-coletivo-n" style="font-weight:600; color:var(--ouro)">—</span> <span class="serif-soft" style="color:var(--ouro)">velas acesas hoje no Brasil</span> <span id="velas-coletivo-sub" style="color:var(--tinta-suave); font-size:11.5px; display:block; margin-top:2px">você não acende sozinha(o)</span></p>
@@ -1479,6 +1645,19 @@
 </div>
 
 <!-- modal: respiração guiada 4-7-8 -->
+<!-- Modal: Bênção de 30 segundos -->
+<div id="modal-bencao" role="dialog" aria-modal="true" aria-label="Bênção de 30 segundos" style="position:fixed; inset:0; z-index:72; display:none; background:radial-gradient(ellipse at center, rgba(186,117,23,.85) 0%, rgba(44,44,42,.92) 65%, rgba(20,18,14,.95) 100%); align-items:center; justify-content:center">
+  <div style="position:relative; width:100%; max-width:520px; padding:40px 28px; display:flex; flex-direction:column; align-items:center; text-align:center; color:#FBFAF7">
+    <div id="bencao-halo" style="position:absolute; top:6%; width:280px; height:280px; border-radius:50%; background:radial-gradient(circle, rgba(255,235,180,.5) 0%, rgba(255,235,180,0) 70%); animation:respira 3.5s ease-in-out infinite; pointer-events:none"></div>
+    <div style="font-size:42px; position:relative; z-index:1">🕊️</div>
+    <p id="bencao-titulo" class="serif-soft" style="font-size:15px; color:#F6D38A; margin:14px 0 0; letter-spacing:.16em; text-transform:uppercase; font-style:normal; position:relative; z-index:1">Sua bênção</p>
+    <p id="bencao-texto" class="serif" style="font-size:24px; line-height:1.45; margin:18px 0 0; max-width:380px; font-weight:400; position:relative; z-index:1">—</p>
+    <audio id="bencao-audio" style="display:none"></audio>
+    <p id="bencao-rodape" class="serif-soft" style="font-size:14px; color:#F6D38A; margin:30px 0 0; font-style:italic; position:relative; z-index:1">Sob as asas</p>
+    <button onclick="fecharBencao()" style="margin-top:34px; background:none; border:1px solid rgba(251,250,247,.3); color:#FBFAF7; border-radius:12px; padding:10px 24px; font:inherit; font-size:14px; cursor:pointer; position:relative; z-index:1">Encerrar</button>
+  </div>
+</div>
+
 <div id="modal-resp" role="dialog" aria-modal="true" aria-label="Respiração guiada com seu anjo" style="position:fixed; inset:0; z-index:70; display:none; background:rgba(20,18,14,.92); align-items:center; justify-content:center">
   <div style="position:relative; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#FBFAF7; text-align:center">
     <p id="resp-ciclo" class="serif-soft" style="font-size:13px; color:#EF9F27; letter-spacing:.2em; text-transform:uppercase; margin:0 0 32px">1 de 4</p>
@@ -1709,6 +1888,8 @@ function initHome(){
   atualizarHomeDormirCard();
   atualizarHomeEventoCard();
   carregarMensagemMensal();
+  // Mood check-in: se for a primeira abertura do dia, oferece o roteamento emocional
+  setTimeout(verificarMoodDiario, 800);
   // Card de "Meu anjo" no topo da home
   var n = window._perfil && (typeof window._perfil.anjo_n!=='undefined' ? window._perfil.anjo_n : null);
   // Fallback: se temos só o nome do anjo (string), procura o n na lista
@@ -1960,7 +2141,8 @@ async function iniciarAssinatura(plano){
   }
   toast('Abrindo o checkout seguro…');
   try{
-    var r=await fetch('/api/create-checkout',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ userId:window._userId, plano:plano, email:window._email||'' }) });
+    var ref = localStorage.getItem('saa_ref_origem') || '';
+    var r=await fetch('/api/create-checkout',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ userId:window._userId, plano:plano, email:window._email||'', ref:ref }) });
     var j=await r.json();
     console.log('[iniciarAssinatura] resposta:', r.status, j);
     if(j && j.ok && j.url){
@@ -2114,6 +2296,7 @@ async function addGratidao(){
   if(!t){ toast('Escreva sua gratidão primeiro'); return; }
   if(window.saaAuth && window._userId){ try{ await window.saaAuth.client.from('gratidao').insert({ user_id:window._userId, texto:t }); }catch(e){} }
   GRAT.unshift({t:t, d:'Hoje'}); ta.value=''; renderGrat(); buzz(); toast('Gratidão registrada 🙏');
+  try{ var n=parseInt(localStorage.getItem('saa_grat_n')||'0',10)+1; localStorage.setItem('saa_grat_n', String(n)); }catch(_){}
 }
 // ── home dinâmica: salmo do dia + mensagem da semana (do Supabase) ──
 async function carregarHome(){
@@ -2163,6 +2346,7 @@ function selarCarta(){
   document.getElementById('correio-escrita').style.display='none';
   document.getElementById('correio-selada').style.display='block';
   document.querySelector('#s-correio .pad').scrollTop=0; buzz();
+  try{ var n=parseInt(localStorage.getItem('saa_co_seladas')||'0',10)+1; localStorage.setItem('saa_co_seladas', String(n)); }catch(_){}
   // dispara dobra + selo
   var papel=document.getElementById('carta-papel-wrap'); var selo=document.getElementById('carta-selo');
   if(papel && selo){
@@ -2460,6 +2644,265 @@ function mmTocarAudio(){
   openPlayer({titulo: _mmCache.titulo || 'Mensagem do mês', fmt:'Áudio · na voz da Monica', art:'📜', dur:dur});
 }
 
+// ── Mood check-in diário ──
+// Toda primeira abertura do dia, oferece o seletor emocional. Roteia pra prática certa.
+// Não obrigatório: o usuário pode pular sem fricção.
+function verificarMoodDiario(){
+  try{
+    if(!window._userId && !window._anjo) return; // só pra quem completou onboarding
+    var hoje = new Date().toISOString().slice(0,10);
+    var ultimo = localStorage.getItem('saa_mood_last');
+    if(ultimo === hoje) return; // já fez check-in hoje
+    // Não interromper se outro modal estiver aberto
+    if(typeof _modalsAbertos !== 'undefined' && _modalsAbertos.length) return;
+    // Não interromper logo no primeiro dia (ainda no acolhimento)
+    var streak = parseInt(localStorage.getItem('saa_streak_n')||'0',10);
+    if(streak < 1) return;
+    abrirMoodCheckin();
+  }catch(_){}
+}
+
+function abrirMoodCheckin(){
+  // Reusa o modal-emocao mas troca o título pra mood check-in
+  var titulo = document.getElementById('modal-emocao-titulo');
+  var sub = document.querySelector('#modal-emocao .serif-soft');
+  if(titulo) titulo.textContent = 'Como você está chegando hoje?';
+  if(sub) sub.textContent = 'Seu anjo te conhece pela emoção primeiro';
+  // Marca como visto pra não repetir
+  try{ localStorage.setItem('saa_mood_last', new Date().toISOString().slice(0,10)); }catch(_){}
+  openModal('modal-emocao');
+  chime();
+}
+
+// ── Bênção de 30 segundos ──
+// Pool inicial de bênçãos curadas (fallback enquanto Monica não grava áudios).
+// Cada uma deve render numa frase de 1-2 linhas, com pausa visual.
+var BENCAOS_TEXTO = [
+  'Que sua respiração seja mais leve nos próximos minutos. Sob as asas.',
+  'O que pesa hoje não vai pesar pra sempre. Seu anjo segura junto.',
+  'Você é vista. Você é visto. Mesmo quando ninguém diz isso em voz alta.',
+  'Acalme os ombros. Solte a mandíbula. A presença já chegou.',
+  'O dia que vem vai te receber inteira — inteiro. Confie.',
+  'Você é amada por uma presença que nunca dorme.',
+  'Tudo o que precisa amadurecer está amadurecendo, no tempo certo.',
+  'Solte o que ficou. O que importa, fica em você sem esforço.',
+  'Hoje, basta respirar. O resto sua presença resolve.',
+  'Você não precisa ter pressa. Sob as asas, o tempo é outro.',
+  'Há um cuidado invisível em volta de você agora. Receba.',
+  'A graça já está no caminho. Não cabe esticar a mão pra forçar.',
+  'O que parece silêncio é o anjo trabalhando enquanto você não vê.',
+];
+
+async function receberBencao(){
+  buzz();
+  var textoEl = document.getElementById('bencao-texto');
+  var audioEl = document.getElementById('bencao-audio');
+  var modalEl = document.getElementById('modal-bencao');
+
+  // Tenta achar áudio de bênção da Monica no banco; se não tiver, usa só texto.
+  var temAudio = false;
+  if(window.saaAuth){
+    try{
+      var r = await window.saaAuth.client.from('conteudos')
+        .select('titulo,media_url').eq('publicado',true).eq('colecao','bencao').limit(20);
+      if(!r.error && r.data && r.data.length){
+        var pick = r.data[Math.floor(Math.random()*r.data.length)];
+        if(pick && pick.media_url){
+          audioEl.src = pick.media_url;
+          audioEl.style.display = 'none';
+          temAudio = true;
+        }
+      }
+    }catch(_){}
+  }
+
+  // Sempre mostra um texto (até pra acompanhar o áudio quando houver)
+  var t = BENCAOS_TEXTO[Math.floor(Math.random()*BENCAOS_TEXTO.length)];
+  textoEl.textContent = t;
+
+  modalEl.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  chime();
+
+  if(temAudio){
+    try{ audioEl.play(); }catch(_){}
+  } else {
+    // Sem áudio: fecha sozinho após 30s
+    setTimeout(function(){
+      if(modalEl.style.display !== 'none') fecharBencao();
+    }, 30000);
+  }
+}
+
+function fecharBencao(){
+  var audioEl = document.getElementById('bencao-audio');
+  try{ audioEl.pause(); audioEl.currentTime = 0; }catch(_){}
+  document.getElementById('modal-bencao').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// Auto-fechamento quando áudio acaba (registra uma vez)
+document.addEventListener('DOMContentLoaded', function(){
+  var a = document.getElementById('bencao-audio');
+  if(a){ a.addEventListener('ended', fecharBencao); }
+  // Captura ref na URL (?ref=<codigo>) e guarda pra usar no signup
+  try{
+    var qs = new URLSearchParams(window.location.search);
+    var ref = qs.get('ref');
+    if(ref && /^[a-z0-9]{4,12}$/i.test(ref)){
+      localStorage.setItem('saa_ref_origem', ref);
+    }
+  }catch(_){}
+});
+
+// ── Programa de indicação ──
+// Cada usuário tem um código curto derivado do seu userId. Convida amigos,
+// ganha 30 dias por amigo que vira assinante. Amigo que entra pelo link
+// ganha 14 dias de trial em vez de 7 (feito no backend create-checkout).
+function _codigoIndicacao(){
+  var uid = window._userId || '';
+  if(!uid) return '';
+  // Pega os primeiros 8 chars (sem hífen) — suficiente pra ser único na prática
+  return uid.replace(/-/g,'').slice(0,8).toLowerCase();
+}
+
+function abrirIndicar(){
+  var codigo = _codigoIndicacao();
+  if(!codigo){
+    toast('Termine seu cadastro primeiro pra ganhar seu link.');
+    return;
+  }
+  var link = 'https://sobasasas.com.br/?ref=' + codigo;
+  document.getElementById('indicar-link').textContent = link;
+  // Stats — futuramente vão do Supabase; por ora mostra o que temos localmente
+  var conv = parseInt(localStorage.getItem('saa_ref_convites')||'0',10);
+  var assin = parseInt(localStorage.getItem('saa_ref_assinaturas')||'0',10);
+  document.getElementById('indicar-stat-conv').textContent = conv;
+  document.getElementById('indicar-stat-assin').textContent = assin;
+  show('s-indicar');
+
+  // Tenta puxar stats reais do Supabase (se a tabela existir)
+  if(window.saaAuth && window._userId){
+    window.saaAuth.client.from('indicacoes')
+      .select('id, virou_assinante', { count:'exact' })
+      .eq('indicador_id', window._userId)
+      .then(function(r){
+        if(r.error || !r.data) return;
+        document.getElementById('indicar-stat-conv').textContent = r.data.length;
+        document.getElementById('indicar-stat-assin').textContent = r.data.filter(function(x){return x.virou_assinante;}).length;
+      });
+  }
+}
+
+function copiarLinkIndicacao(){
+  var link = document.getElementById('indicar-link').textContent;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(link).then(function(){ toast('Link copiado'); buzz(); })
+      .catch(function(){ toast('Não consegui copiar — segure o link pra copiar manualmente.'); });
+  } else {
+    toast('Segure o link pra copiar manualmente.');
+  }
+  // Conta tentativa de compartilhamento (proxy de convite)
+  var n = parseInt(localStorage.getItem('saa_ref_convites')||'0',10);
+  localStorage.setItem('saa_ref_convites', String(n+1));
+}
+
+function compartilharIndicacao(){
+  var link = document.getElementById('indicar-link').textContent;
+  var texto = 'Sob as Asas — uma prática diária com os 72 anjos cabalísticos, com a Monica Buonfiglio. Comece com 14 dias grátis pelo meu convite:\n\n' + link;
+  if(navigator.share){
+    navigator.share({ title:'Sob as Asas', text: texto, url: link })
+      .then(function(){ buzz(); })
+      .catch(function(){});
+  } else {
+    copiarLinkIndicacao();
+  }
+  var n = parseInt(localStorage.getItem('saa_ref_convites')||'0',10);
+  localStorage.setItem('saa_ref_convites', String(n+1));
+}
+
+// ── Medalhas (álbum espiritual de marcos) ──
+// Calcula medalhas conquistadas a partir do estado local. Sem gamificação agressiva —
+// são marcos simbólicos da jornada. Cada uma tem nome poético + ícone + condição.
+var MEDALHAS = [
+  // Tempo (presença contínua)
+  { id:'7d',    nome:'Primeira semana',      sub:'7 dias consecutivos',           icon:'🕊️', cond:function(c){return c.streak>=7;} },
+  { id:'30d',   nome:'Um mês de presença',   sub:'30 dias consecutivos',          icon:'🌙', cond:function(c){return c.streak>=30;} },
+  { id:'72d',   nome:'Passou por todos os anjos', sub:'72 dias consecutivos (um por anjo)', icon:'📿', cond:function(c){return c.streak>=72;} },
+  { id:'100d',  nome:'A travessia',          sub:'100 dias consecutivos',         icon:'✨', cond:function(c){return c.streak>=100;} },
+  { id:'365d',  nome:'Um ano sob as asas',   sub:'365 dias consecutivos',         icon:'🪽', cond:function(c){return c.streak>=365;} },
+  // Práticas concluídas
+  { id:'vela1', nome:'A primeira vela',      sub:'Acendeu sua primeira vela',     icon:'🕯️', cond:function(c){return c.velas>=1;} },
+  { id:'magia', nome:'Magia completada',     sub:'Concluiu os 7 dias da Magia',   icon:'🎴', cond:function(c){return c.magia==='completa';} },
+  { id:'novena',nome:'Novena dos Anjos',     sub:'Atravessou os 9 dias da Novena',icon:'🌟', cond:function(c){return c.novena==='completa';} },
+  { id:'carta1',nome:'Primeira carta selada',sub:'Escreveu no Correio Angelical', icon:'💌', cond:function(c){return c.cartas>=1;} },
+  { id:'grat1', nome:'Primeira gratidão',    sub:'Registrou no diário',           icon:'🙏', cond:function(c){return c.gratidoes>=1;} },
+  { id:'jor1',  nome:'Conheceu seu anjo',    sub:'Concluiu os 7 dias da Jornada', icon:'📜', cond:function(c){return c.jornada==='completa';} },
+  // Comunidade
+  { id:'compat',nome:'Círculo se forma',     sub:'Comparou seu anjo com alguém',  icon:'💑', cond:function(c){return c.compat;} },
+  { id:'med10', nome:'10 dias com seu anjo', sub:'10 presenças seguidas',          icon:'🌅', cond:function(c){return c.streak>=10;} },
+];
+
+function _medCtx(){
+  function ls(k, dflt){ try{ return localStorage.getItem(k) || dflt; }catch(_){ return dflt; } }
+  function lsn(k){ return parseInt(ls(k,'0'),10) || 0; }
+  return {
+    streak:    lsn('saa_streak_n'),
+    velas:     lsn('saa_vela_n') + lsn('saa_mb_dia') - 1,
+    cartas:    lsn('saa_co_seladas') || (ls('saa_co_carta_last') ? 1 : 0),
+    gratidoes: lsn('saa_grat_n'),
+    magia:     (lsn('saa_mb_dia') > 7 ? 'completa' : 'em-andamento'),
+    novena:    (lsn('saa_jor_dia') > 9 ? 'completa' : 'em-andamento'),
+    jornada:   (lsn('saa_ja_dia') > 7 ? 'completa' : 'em-andamento'),
+    compat:    !!ls('saa_compat_done',''),
+  };
+}
+
+function openMedalhas(){
+  var ctx = _medCtx();
+  var ganhas = MEDALHAS.filter(function(m){ return m.cond(ctx); });
+  var faltam = MEDALHAS.filter(function(m){ return !m.cond(ctx); });
+
+  // Stats no topo
+  var stats = document.getElementById('medalhas-stats');
+  stats.innerHTML =
+      '<div class="card" style="padding:16px; text-align:center; background:var(--ouro-bg); border-color:transparent">'
+    + '<p style="margin:0; font-size:11px; letter-spacing:.12em; color:var(--ouro); text-transform:uppercase; font-weight:600">Conquistadas</p>'
+    + '<p class="serif" style="margin:4px 0 0; font-size:30px; color:var(--tinta)">'+ganhas.length+'</p>'
+    + '<p style="margin:0; font-size:12px; color:var(--tinta-suave)">de '+MEDALHAS.length+' totais</p></div>'
+    + '<div class="card" style="padding:16px; text-align:center">'
+    + '<p style="margin:0; font-size:11px; letter-spacing:.12em; color:var(--tinta-suave); text-transform:uppercase; font-weight:600">Streak atual</p>'
+    + '<p class="serif" style="margin:4px 0 0; font-size:30px; color:var(--ouro)">'+ctx.streak+'</p>'
+    + '<p style="margin:0; font-size:12px; color:var(--tinta-suave)">dia(s) consecutivo(s)</p></div>';
+
+  // Render lista (conquistadas primeiro, depois bloqueadas)
+  var el = document.getElementById('medalhas-lista');
+  function _renderM(m, ganha){
+    var op = ganha ? '1' : '.55';
+    var bg = ganha ? 'var(--ouro-bg)' : 'var(--branco-puro)';
+    var iconStyle = ganha
+      ? 'background:linear-gradient(135deg,#F6C868,#BA7517); color:#fff;'
+      : 'background:#F1EFE8; color:#5F5E5A; filter:grayscale(.6);';
+    return '<div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:14px; margin-bottom:10px; background:'+bg+'; border-color:transparent; opacity:'+op+'">'
+      + '<div style="width:44px;height:44px;border-radius:50%;'+iconStyle+'display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">'+m.icon+'</div>'
+      + '<div style="flex:1; min-width:0"><p style="margin:0;font-weight:600;color:'+(ganha?'var(--tinta)':'var(--tinta-suave)')+'">'+m.nome+'</p>'
+      + '<p style="margin:2px 0 0; font-size:12.5px; color:var(--tinta-suave)">'+m.sub+'</p></div>'
+      + (ganha ? '<span class="serif-soft" style="font-size:13px; color:var(--ouro); font-style:italic">conquistada</span>'
+               : '<span style="font-size:11px; color:var(--tinta-suave); letter-spacing:.06em">a caminho</span>')
+      + '</div>';
+  }
+  el.innerHTML = '';
+  if(ganhas.length){
+    el.innerHTML += '<p class="label" style="display:block; margin:4px 0 10px">Já conquistadas</p>'
+                  + ganhas.map(function(m){ return _renderM(m,true); }).join('');
+  }
+  if(faltam.length){
+    el.innerHTML += '<p class="label" style="display:block; margin:24px 0 10px">A caminho</p>'
+                  + faltam.map(function(m){ return _renderM(m,false); }).join('');
+  }
+  show('s-medalhas');
+}
+
 // ── Compatibilidade Angelical ──
 var _compatOutro = null;
 function openCompat(){
@@ -2512,6 +2955,7 @@ async function calcularCompatibilidade(){
     var j = await r.json();
     if(!j.ok){ erro.textContent='Erro: '+(j.error||'falhou'); return; }
     _compatOutro = { nome:nome, n:outro.n, anjoNome:outro.nome, d:d, m:m, y:y };
+    try{ localStorage.setItem('saa_compat_done','1'); }catch(_){}
     document.getElementById('compat-intro').style.display='none';
     document.getElementById('compat-resultado').style.display='block';
     document.getElementById('compat-titulo').textContent = j.titulo;
@@ -3410,6 +3854,36 @@ function _hideRow(id){ var el=document.getElementById(id); if(el) el.style.displ
 function _showRow(id){ var el=document.getElementById(id); if(el) el.style.display=''; }
 function _hideCard(id){ var el=document.getElementById(id); if(el) el.style.display='none'; }
 function _showCard(id){ var el=document.getElementById(id); if(el) el.style.display=''; }
+
+// ── Carta impressa do anjo ──
+async function abrirCartaAnjo(){
+  var n = window._perfil && typeof window._perfil.anjo_n!=='undefined' ? window._perfil.anjo_n : null;
+  if(!n){
+    toast('Termine seu cadastro pra receber sua carta.');
+    return;
+  }
+  var dados = await carregarAnjosRicos();
+  if(!dados || !dados[String(n)]){
+    toast('Não consegui carregar os dados do anjo. Tente em alguns segundos.');
+    return;
+  }
+  var a = dados[String(n)];
+  var nomePessoa = (window._nome || '').trim() || '(seu nome)';
+  document.getElementById('carta-nome-pessoa').textContent = nomePessoa;
+  document.getElementById('carta-nome-anjo').textContent = a.nome;
+  document.getElementById('carta-dom').textContent = a.dom_principal;
+  document.getElementById('carta-atributos').textContent = a.atributos;
+  document.getElementById('carta-salmo').textContent = '"' + a.salmo_texto + '"';
+  document.getElementById('carta-salmo-ref').textContent = a.salmo_ref + ' · Almeida Revista e Corrigida';
+  document.getElementById('carta-invocacao').textContent = a.invocacao;
+  document.getElementById('carta-afirmacao').textContent = a.afirmacao;
+  // Data por extenso em português
+  var d = new Date();
+  var meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  document.getElementById('carta-data').textContent = d.getDate() + ' de ' + meses[d.getMonth()] + ' de ' + d.getFullYear();
+  show('s-carta-anjo');
+  chime();
+}
 
 async function openMeuAnjo(){
   var n = window._perfil && typeof window._perfil.anjo_n!=='undefined' ? window._perfil.anjo_n : null;

@@ -19,9 +19,13 @@ const PRICES = {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
-  const { userId, plano = 'mensal', email } = req.body || {};
+  const { userId, plano = 'mensal', email, ref } = req.body || {};
   const price = PRICES[plano];
   if (!price) return res.status(400).json({ ok: false, error: 'Plano inválido' });
+
+  // Trial estendido pra quem entrou por indicação
+  const trialPadrao = Number(process.env.TRIAL_DAYS || 7);
+  const trialDias = (ref && /^[a-z0-9]{4,12}$/i.test(ref)) ? Math.max(trialPadrao, 14) : trialPadrao;
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -30,8 +34,8 @@ export default async function handler(req, res) {
       customer_email: email || undefined,
       client_reference_id: userId || undefined,
       subscription_data: {
-        trial_period_days: Number(process.env.TRIAL_DAYS || 7),
-        metadata: { userId: userId || '', plano },
+        trial_period_days: trialDias,
+        metadata: { userId: userId || '', plano, ref: ref || '' },
       },
       allow_promotion_codes: true,
       locale: 'pt-BR',
