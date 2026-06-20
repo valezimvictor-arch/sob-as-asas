@@ -2066,6 +2066,9 @@ function revelar(){
   try{ sessionStorage.setItem('saa_pending', JSON.stringify(window._perfil)); }catch(e){}
   if(window._userId) persistirPerfil(window._userId);  // já logado → grava o perfil na hora
 
+  // Plausible: marco do funil — anjo revelado
+  try{ if(window.plausible) window.plausible('anjo_revelado', { props: { coro: anjo.coro || 'desconhecido', n: anjo.n } }); }catch(_){}
+
   show('s-reveal');
   // reset
   document.querySelectorAll('#s-reveal .reveal-anjo, #s-reveal .reveal-fade').forEach(e=>e.classList.remove('on'));
@@ -2449,6 +2452,8 @@ async function iniciarAssinatura(plano){
     var r=await fetch('/api/create-checkout',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ userId:window._userId, plano:plano, email:window._email||'', ref:ref }) });
     var j=await r.json();
     if(j && j.ok && j.url){
+      // Plausible: marco do funil — checkout aberto
+      try{ if(window.plausible) window.plausible('trial_iniciado', { props: { plano: plano, indicado: ref ? 'sim' : 'nao' } }); }catch(_){}
       window.location.href = j.url;
     } else {
       var msg = (j && j.error) ? j.error : ('Erro HTTP '+r.status);
@@ -3099,6 +3104,14 @@ document.addEventListener('DOMContentLoaded', function(){
     var ref = qs.get('ref');
     if(ref && /^[a-z0-9]{4,12}$/i.test(ref)){
       localStorage.setItem('saa_ref_origem', ref);
+      try{ if(window.plausible) window.plausible('chegou_por_indicacao', { props: { ref: ref } }); }catch(_){}
+    }
+    // Volta do Stripe com sucesso → marca conversão
+    if(qs.get('assinatura') === 'ok'){
+      try{ if(window.plausible) window.plausible('assinatura_concluida'); }catch(_){}
+    }
+    if(qs.get('assinatura') === 'cancelada'){
+      try{ if(window.plausible) window.plausible('assinatura_cancelada_checkout'); }catch(_){}
     }
   }catch(_){}
 });
@@ -3806,6 +3819,8 @@ async function enviarMagicLink(){
   try{
     var r=await window.saaAuth.enviarLink(email);
     if(r && r.error){ finalizar(false, 'Não consegui enviar: '+r.error.message); return; }
+    // Plausible: marco do funil — login OTP enviado
+    try{ if(window.plausible) window.plausible('login_otp_enviado'); }catch(_){}
     finalizar(true);
   }catch(e){ finalizar(false, 'Erro ao enviar o código. Tente de novo.'); }
 }

@@ -126,6 +126,7 @@ textarea.campo{min-height:90px; resize:vertical; line-height:1.55;}
     if(qs.get('ok')==='1' || qs.get('session_id')){
       document.getElementById('estado-form').style.display='none';
       document.getElementById('estado-ok').style.display='block';
+      try{ if(window.plausible) window.plausible('presente_pago'); }catch(_){}
     }
   }catch(_){}
 })();
@@ -160,6 +161,7 @@ async function enviarPresente(){
     });
     var j = await r.json();
     if(j && j.ok && j.url){
+      try{ if(window.plausible) window.plausible('presente_iniciado'); }catch(_){}
       window.location.href = j.url;
     } else {
       erro.textContent = j.error || 'Não conseguimos abrir o pagamento. Tente novamente.';
