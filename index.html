@@ -2041,7 +2041,36 @@
       <span id="paywall-btn-label">Começar 7 dias grátis · Anual</span>
     </button>
     <button onclick="closePaywall()" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;width:100%;margin-top:12px">Agora não</button>
+    <button onclick="abrirTempoDeGraca()" style="background:none;border:none;color:var(--ouro);font-size:13px;width:100%;margin-top:8px;font-style:italic;font-family:'Cormorant Garamond',serif;text-decoration:underline;text-underline-offset:3px">Não posso pagar agora</button>
     <p style="text-align:center; font-size:11px; color:var(--tinta-suave); margin:10px 0 0">A candidatura ao Milagre do mês é sempre gratuita.</p>
+  </div>
+</div>
+
+<!-- ░░ TEMPO DE GRAÇA — cortesia pra quem não pode pagar agora ░░ -->
+<div id="modal-graca" role="dialog" aria-modal="true" aria-label="Tempo de Graça" style="position:fixed; inset:0; z-index:62; display:none; background:rgba(44,44,42,.55)">
+  <div style="position:absolute; left:0; right:0; bottom:0; background:var(--branco); border-radius:26px 26px 0 0; padding:26px 24px max(env(safe-area-inset-bottom),24px); max-height:88vh; overflow-y:auto">
+    <div id="graca-form">
+      <div style="text-align:center; margin-bottom:18px">
+        <div style="font-size:34px">🪽</div>
+        <h3 class="serif" style="font-size:24px; margin:10px 0 4px; font-weight:500">Tempo de graça</h3>
+        <p style="margin:0; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16.5px; color:var(--ouro); line-height:1.5">"Quem precisa, recebe. Esse é o trato com os anjos." — Monica</p>
+      </div>
+      <p style="font-size:13.5px; color:var(--tinta); line-height:1.65; margin:0 0 16px">Se você está num momento que não comporta uma assinatura, escreve uma linha. <strong>30 dias de cortesia</strong> liberados sem perguntas — não pedimos comprovação, não julgamos motivo. Quando puder, decide se segue.</p>
+
+      <p class="label" style="display:block; margin-bottom:6px">Conte em uma frase (opcional)</p>
+      <textarea id="graca-motivo" class="campo" rows="3" placeholder="O que está acontecendo. Pode ser bem curto." style="resize:vertical"></textarea>
+
+      <button class="btn-ouro" style="margin-top:14px" onclick="solicitarTempoDeGraca()">Solicitar 30 dias de cortesia</button>
+      <button class="btn-ghost" style="margin-top:10px" onclick="fecharTempoDeGraca()">Voltar</button>
+    </div>
+
+    <div id="graca-sucesso" style="display:none; text-align:center; padding:10px 0">
+      <div style="font-size:42px">🕊️</div>
+      <h3 class="serif" style="font-size:24px; margin:12px 0 6px; font-weight:500">Recebemos</h3>
+      <p style="margin:0; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:var(--ouro); line-height:1.55">"Em até 48h, a Monica ou a equipe libera seus 30 dias. Você recebe um email."</p>
+      <p style="margin:14px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.6">Enquanto isso, o app continua aberto pro que é gratuito: anjo da hora, mensagem do dia, bênção. Volta aqui quando quiser.</p>
+      <button class="btn-ghost" style="margin-top:22px" onclick="fecharTempoDeGraca()">Voltar ao santuário</button>
+    </div>
   </div>
 </div>
 
@@ -2128,6 +2157,42 @@ async function preencherTelaAnjoHora(){
   document.getElementById('ahn-coro').textContent = 'Coro dos ' + (a.coro || '');
   document.getElementById('ahn-afirmacao').textContent = '"' + (a.afirmacao || '') + '"';
 }
+// Tempo de Graça — cortesia pra quem não pode pagar agora
+function abrirTempoDeGraca(){
+  closePaywall();
+  document.getElementById('graca-form').style.display = 'block';
+  document.getElementById('graca-sucesso').style.display = 'none';
+  document.getElementById('graca-motivo').value = '';
+  openModal('modal-graca');
+}
+function fecharTempoDeGraca(){ closeModal('modal-graca'); }
+async function solicitarTempoDeGraca(){
+  var motivo = (document.getElementById('graca-motivo').value || '').trim();
+  var email = window._email || '';
+  if(!email){
+    toast('Faça login primeiro pra solicitar a cortesia');
+    return;
+  }
+  var btn = event.target;
+  if(btn){ btn.disabled = true; btn.textContent = 'Enviando…'; }
+  try{
+    var r = await fetch('/api/tempo-de-graca', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: window._userId || '', email: email, motivo: motivo })
+    });
+    var j = await r.json();
+    if(!j.ok) throw new Error(j.error || 'falha');
+    document.getElementById('graca-form').style.display = 'none';
+    document.getElementById('graca-sucesso').style.display = 'block';
+    chime(); buzz();
+    try{ if(window.plausible) window.plausible('tempo_de_graca_solicitado'); }catch(_){}
+  }catch(e){
+    if(btn){ btn.disabled = false; btn.textContent = 'Solicitar 30 dias de cortesia'; }
+    toast('Não conseguimos enviar agora. Tente em alguns segundos.');
+  }
+}
+
 async function calcularAnjoHumanidade(){
   var hora = (document.getElementById('ahn-input').value || '').trim();
   if(!/^\d{2}:\d{2}$/.test(hora)){
