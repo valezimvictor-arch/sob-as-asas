@@ -1947,7 +1947,9 @@ function anjoRegente(m,d){ return INDICE[m*100+d] || ANJOS_HUMANIDADE; }
 // ── navegação entre telas ──
 function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  const el=document.getElementById(id); el.classList.add('active'); el.scrollTop=0;
+  const el=document.getElementById(id);
+  if(!el){ console.warn('[show] tela inexistente:', id); return; }
+  el.classList.add('active'); el.scrollTop=0;
   if(id==='s-home') initHome();
   // se saiu de tela de vela, encerra o timer (progresso permanece no localStorage)
   if(typeof CHAMA_TELAS!=='undefined' && !CHAMA_TELAS[id]) pararChamaCrescente();
@@ -2157,7 +2159,12 @@ function initHome(){
   renderPremiumCTA();     // CTA "Plano dos Anjos"
   renderPWABanner();      // banner "Instalar app"
   if(homeReady) return; homeReady=true;
-  renderPedidos(); renderBib(); carregarBiblioteca(); carregarPedidos(); carregarHome();
+  // Loaders async: chamam render quando os dados chegam (não pré-renderiza vazio)
+  Promise.all([
+    typeof carregarBiblioteca==='function' ? Promise.resolve().then(carregarBiblioteca).catch(function(e){console.warn('[initHome] biblioteca:',e);}) : null,
+    typeof carregarPedidos==='function'    ? Promise.resolve().then(carregarPedidos).catch(function(e){console.warn('[initHome] pedidos:',e);})    : null,
+    typeof carregarHome==='function'       ? Promise.resolve().then(carregarHome).catch(function(e){console.warn('[initHome] home:',e);})          : null,
+  ]).catch(function(e){ console.warn('[initHome] erro geral:',e); });
 }
 
 // Cards "em andamento" da Magia e Novena
@@ -2366,7 +2373,6 @@ function _aguardarSaaAuth(timeoutMs){
 }
 
 async function iniciarAssinatura(plano){
-  console.log('[iniciarAssinatura] plano=', plano, 'userId=', window._userId, 'saaAuth=', !!window.saaAuth);
   // Espera o script terminar de carregar (race condition após redirect do Stripe)
   if(!window.saaAuth){
     toast('Carregando… um instante 🪽');
@@ -2386,7 +2392,6 @@ async function iniciarAssinatura(plano){
     var ref = localStorage.getItem('saa_ref_origem') || '';
     var r=await fetch('/api/create-checkout',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ userId:window._userId, plano:plano, email:window._email||'', ref:ref }) });
     var j=await r.json();
-    console.log('[iniciarAssinatura] resposta:', r.status, j);
     if(j && j.ok && j.url){
       window.location.href = j.url;
     } else {
@@ -2419,7 +2424,6 @@ async function carregarBiblioteca(){
     var chaves=Object.keys(grupos).sort(function(a,b){ var ia=ORDEM_COLECAO.indexOf(a), ib=ORDEM_COLECAO.indexOf(b); return (ia<0?99:ia)-(ib<0?99:ib); });
     BIB = chaves.map(function(k){ return { colecao:(COLECAO_LABEL[k]||k), itens:grupos[k] }; });
     renderBib();
-    console.log('[Sob as Asas] Biblioteca carregada do Supabase ('+res.data.length+' itens).');
   }catch(e){}
 }
 function filtrarBib(sent){
@@ -2669,7 +2673,7 @@ function mbEstado(){
   return { hoje:hoje, dia:dia, feitoHoje:(last===hoje), completa:(dia>7), recomecou:recomecou };
 }
 function renderMbDots(diaAtual){
-  var el=document.getElementById('mb-dots'); el.innerHTML='';
+  var el=document.getElementById('mb-dots'); if(!el) return; el.innerHTML='';
   for(var i=1;i<=7;i++){
     var feito=i<diaAtual, atual=i===diaAtual, v=MB_VELAS[i-1];
     // mostra a cor sempre (com brilho diferente conforme o estado)
@@ -3649,7 +3653,6 @@ async function verificarCodigo(){
   var email = window._loginEmail || (window._email||'');
   if(!email){ msg.textContent='E-mail não encontrado. Recomece.'; return; }
   msg.textContent='Verificando…'; msg.style.color='var(--ouro)'; buzz();
-  console.log('[verificarCodigo] email=', email, 'token=', codigo);
 
   // Supabase usa 'email' pra sign-up novo e 'magiclink' pra login de usuário existente.
   // Tentamos os dois em sequência.
@@ -3658,16 +3661,25 @@ async function verificarCodigo(){
   for(var i=0; i<tipos.length; i++){
     try{
       var r = await window.saaAuth.client.auth.verifyOtp({ email:email, token:codigo, type:tipos[i] });
-      console.log('[verificarCodigo] tentativa type='+tipos[i]+':', r);
       if(!r.error){
         msg.textContent='Entrando…';
         chime();
-        return; // sucesso — onAuthStateChange → aoLogar
+        // Chama aoLogar diretamente com a session retornada (não depende de onAuthStateChange)
+        var session = r.data && r.data.session;
+        if(session && session.user){
+          try{ await aoLogar(session); }catch(_){}
+        } else {
+          // Fallback: tenta puxar a session ativa
+          try{
+            var sess = await window.saaAuth.client.auth.getSession();
+            if(sess && sess.data && sess.data.session) await aoLogar(sess.data.session);
+          }catch(_){}
+        }
+        return; // sucesso
       }
       ultimoErro = r.error;
     }catch(e){ ultimoErro = e; }
   }
-  console.error('[verificarCodigo] falhou em ambos os tipos:', ultimoErro);
   msg.textContent = 'Código inválido ou expirado. Peça um novo.';
   msg.style.color = '#C0392B';
 }
@@ -3680,6 +3692,10 @@ function persistirPerfil(userId){
 }
 async function aoLogar(session){
   if(!session || !session.user) return;
+  // Idempotente: evita rodar duas vezes (verifyOtp + onAuthStateChange disparam ambos)
+  if(window._aoLogarRodando) return;
+  if(window._userId === session.user.id && window._aoLogarFeito) return;
+  window._aoLogarRodando = true;
   window._userId = session.user.id;
   window._email = session.user.email || '';
   var pend=null; try{ pend=JSON.parse(localStorage.getItem('saa_pending')||'null'); }catch(e){}
@@ -3698,6 +3714,7 @@ async function aoLogar(session){
   if(pend){
     window._nome=pend.nome; window._anjo=pend.anjo_nome; window._perfil=pend;
     persistirPerfil(session.user.id);
+    window._aoLogarFeito = true; window._aoLogarRodando = false;
     show('s-home'); _executarAcaoPendente(); return;
   }
   // sem perfil pendente → verifica se o usuário já tem perfil salvo (retorno)
@@ -3707,10 +3724,12 @@ async function aoLogar(session){
       window._nome=res.data.nome; window._anjo=res.data.anjo_nome;
       window._perfil={ nome:res.data.nome, anjo_n:res.data.anjo_n, anjo_nome:res.data.anjo_nome };
       if(res.data.plano && res.data.plano!=='free') window._plano=res.data.plano;
-      show('s-home'); _executarAcaoPendente(); return;
+      window._aoLogarFeito = true; window._aoLogarRodando = false;
+    show('s-home'); _executarAcaoPendente(); return;
     }
   }catch(e){}
   // primeiro acesso de verdade (ex.: link aberto em outro navegador) → onboarding
+  window._aoLogarFeito = true; window._aoLogarRodando = false;
   show('s-cadastro');
 }
 
@@ -3734,7 +3753,6 @@ window.saaAuth = null;
         return fetch('/api/save-perfil',{method:'POST',headers:h,body:JSON.stringify(p)});
       }
     };
-    console.log('[Sob as Asas] Supabase conectado ✓');
     // volta do link mágico → entra autenticado e salva o perfil pendente
     sb.auth.getSession().then(function(res){ if(res && res.data && res.data.session) aoLogar(res.data.session); }).catch(function(){});
     sb.auth.onAuthStateChange(function(_e, session){ if(session && session.user) aoLogar(session); });
@@ -4218,7 +4236,7 @@ function joEstado(){
   return { hoje:hoje, dia:dia, feitoHoje:(last===hoje), completa:(dia>9), recomecou:recomecou };
 }
 function renderJoDots(diaAtual){
-  var el=document.getElementById('jo-dots'); el.innerHTML='';
+  var el=document.getElementById('jo-dots'); if(!el) return; el.innerHTML='';
   for(var i=1;i<=9;i++){ var feito=i<diaAtual, atual=i===diaAtual;
     el.insertAdjacentHTML('beforeend','<div style="width:13px;height:13px;border-radius:50%;background:'+(feito?'var(--ouro-claro)':'transparent')+';border:2px solid '+((feito||atual)?'var(--ouro)':'var(--linha)')+'"></div>'); }
 }
