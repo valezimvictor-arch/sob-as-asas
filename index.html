@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <script src="/config.js?v=1"></script>
+<script type="module" src="/js/geradorTextos.js?v=1"></script>
 <style>
   :root{
     --branco:#FBFAF7; --branco-puro:#FFFFFF;
@@ -908,6 +909,12 @@
         <div class="altar-filete"></div>
         <p id="altar-dom" class="altar-dom"><em>—</em></p>
         <p id="altar-horario" class="altar-horario" style="display:none">rege agora · <b>—</b></p>
+      </div>
+
+      <!-- Mensagem do dia (auto-gerada pelo GeradorTextos) -->
+      <div id="home-msg-dia" class="card" style="display:none; margin-top:14px; padding:16px 18px; background:linear-gradient(180deg, rgba(250,243,228,.55), #FBF6E8); border:1px solid var(--linha); border-radius:14px">
+        <p style="margin:0 0 6px; font-size:10.5px; letter-spacing:.18em; color:var(--ouro); text-transform:uppercase; font-weight:600">Mensagem de hoje</p>
+        <p id="home-msg-dia-texto" class="serif" style="margin:0; font-size:16px; line-height:1.55; color:var(--tinta); font-family:'Cormorant Garamond','EB Garamond',Georgia,serif; font-style:italic">—</p>
       </div>
 
       <!-- velas acesas hoje (presença coletiva) -->
@@ -2073,14 +2080,24 @@ async function renderizarAltarHome(){
       if(a){
         var elDom = document.getElementById('altar-dom');
         if(elDom){
-          var prefixo = _prefixoAnjo(a);
-          elDom.innerHTML = prefixo + '<em>'+_escTxt(a.dom_principal||'')+'</em>';
+          // "Coro dos Querubins · viagens interiores e paz"
+          elDom.innerHTML = _escTxt(a.coro||'') + ' <span style="color:var(--ouro-claro); margin:0 6px">·</span> <em>' + _escTxt((a.dom_principal||'').toLowerCase()) + '</em>';
         }
         if(a.horario){
           var elHor = document.getElementById('altar-horario');
           if(elHor){
             elHor.style.display = '';
             elHor.innerHTML = 'rege agora · <b>'+_escTxt(a.horario)+'</b>';
+          }
+        }
+        // Mensagem do dia auto-gerada
+        if(window.GeradorTextos){
+          var msg = window.GeradorTextos.mensagemDoDia(a, new Date());
+          var elMsg = document.getElementById('home-msg-dia-texto');
+          var elMsgCard = document.getElementById('home-msg-dia');
+          if(msg && elMsg && elMsgCard){
+            elMsg.textContent = msg;
+            elMsgCard.style.display = '';
           }
         }
       }

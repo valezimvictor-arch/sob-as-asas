@@ -2,8 +2,8 @@
 // Strategy: network-first para HTML (sempre fresco), cache-first para assets.
 // A cada deploy, suba o número da versão (v0.1 → v0.2...) para disparar o
 // banner "Nova versão disponível".
-const CACHE = 'sobasasas-v0.30';
-const ASSETS = ['/manifest.json', '/asa-icon.svg'];
+const CACHE = 'sobasasas-v0.31';
+const ASSETS = ['/manifest.json', '/asa-icon.svg', '/js/geradorTextos.js'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
