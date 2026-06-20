@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Protótipo · Novo cabeçalho do home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ouro:#BA7517; --ouro-claro:#EF9F27; --ouro-escuro:#7C4E0F;
+  --ouro-bg:#FAF3E4; --bg:#FBFAF7; --tinta:#1F1F1D;
+  --tinta-suave:#5F5E5A; --linha:rgba(186,117,23,.16);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; font-family:'Manrope',-apple-system,sans-serif;
+  background:var(--bg); color:var(--tinta); padding:24px 0 60px;
+}
+.demo-wrap{max-width:560px; margin:0 auto; padding:0 18px;}
+.demo-titulo{font-family:'Playfair Display',serif; font-size:14px; color:var(--ouro); letter-spacing:.18em; text-transform:uppercase; text-align:center; margin:0 0 8px;}
+.demo-sub{text-align:center; color:var(--tinta-suave); font-size:13px; margin:0 0 28px;}
+.demo-rotulo{display:block; margin:38px 0 10px; font-size:11px; letter-spacing:.18em; color:var(--ouro); text-transform:uppercase; font-weight:600; padding-left:14px; border-left:2px solid var(--ouro-claro);}
+
+/* ════════════════════════════════════════════════════════════
+   VERSÃO ATUAL (referência, simplificada)
+   ════════════════════════════════════════════════════════════ */
+.atual{
+  background:var(--ouro-bg); border-radius:14px;
+  padding:18px 18px; display:flex; align-items:center; gap:14px;
+}
+.atual-avatar{
+  width:56px; height:56px; border-radius:50%;
+  background:linear-gradient(135deg,#F6C868,#D89A2C);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Playfair Display',serif; font-size:24px; color:#5A3A06; font-weight:500;
+}
+.atual-saud{color:var(--tinta-suave); font-size:14px; margin:0;}
+.atual-anjo{font-family:'Playfair Display',serif; font-size:24px; margin:2px 0 0; color:var(--tinta);}
+.atual-anjo b{color:var(--ouro); font-weight:500;}
+
+/* ════════════════════════════════════════════════════════════
+   VERSÃO NOVA — "Sob a presença de"
+   ════════════════════════════════════════════════════════════ */
+.novo{
+  position:relative; padding:32px 22px 30px; border-radius:22px;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(239,159,39,.22), transparent 60%),
+    radial-gradient(circle at 90% 110%, rgba(186,117,23,.10), transparent 50%),
+    linear-gradient(180deg, #FBF6E8 0%, #FAF3E4 100%);
+  border:1px solid var(--linha);
+  overflow:hidden;
+}
+.novo::before{
+  /* Filigrana sutil de fundo */
+  content:""; position:absolute; inset:0;
+  background-image:
+    radial-gradient(circle at 15% 15%, rgba(186,117,23,.045) 1px, transparent 2px),
+    radial-gradient(circle at 85% 85%, rgba(186,117,23,.035) 1px, transparent 2px),
+    radial-gradient(circle at 50% 50%, rgba(186,117,23,.025) 1px, transparent 2px);
+  background-size: 56px 56px, 76px 76px, 32px 32px;
+  pointer-events:none; opacity:.5;
+}
+
+.novo-saud{
+  position:relative; z-index:1;
+  text-align:center; font-family:'EB Garamond',Georgia,serif;
+  font-style:italic; font-size:15px; color:var(--tinta-suave);
+  margin:0 0 6px; letter-spacing:.005em;
+}
+.novo-saud b{font-weight:500; color:var(--ouro-escuro); font-style:normal;}
+
+.novo-presenca{
+  position:relative; z-index:1;
+  text-align:center; font-family:'EB Garamond',Georgia,serif;
+  font-style:italic; font-size:14.5px; color:var(--ouro);
+  margin:0 0 4px; letter-spacing:.04em;
+}
+
+.novo-sigilo{
+  position:relative; z-index:1;
+  display:block; margin:14px auto 14px; width:88px; height:88px;
+  animation:respira-sigilo 6s ease-in-out infinite;
+}
+@keyframes respira-sigilo{
+  0%, 100%{ transform:scale(1); filter:drop-shadow(0 2px 14px rgba(186,117,23,.28)); }
+  50%{ transform:scale(1.035); filter:drop-shadow(0 4px 22px rgba(239,159,39,.42)); }
+}
+.novo-sigilo-rotate{ animation:gira-lenta 80s linear infinite; transform-origin:center; }
+@keyframes gira-lenta{ to{ transform:rotate(360deg); } }
+
+.novo-nome{
+  position:relative; z-index:1;
+  text-align:center; font-family:'Playfair Display',Georgia,serif;
+  font-weight:500; font-size:46px; color:var(--tinta);
+  letter-spacing:.005em; line-height:1; margin:0 0 8px;
+}
+.novo-filete{
+  position:relative; z-index:1;
+  width:64px; height:1.5px; margin:0 auto 12px;
+  background:linear-gradient(90deg, transparent, var(--ouro), transparent);
+}
+.novo-dom{
+  position:relative; z-index:1;
+  text-align:center; font-family:'EB Garamond',Georgia,serif;
+  font-style:italic; font-size:16px; color:var(--ouro);
+  margin:0; line-height:1.5;
+}
+.novo-dom .sep{color:var(--ouro-claro); margin:0 6px; font-style:normal;}
+.novo-horario{
+  position:relative; z-index:1;
+  text-align:center; font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--tinta-suave); margin:14px 0 0; font-weight:500;
+}
+.novo-horario b{color:var(--ouro); font-weight:600;}
+
+/* Versão B — mais minimalista, sigilo menor à esquerda */
+.novoB{
+  position:relative; padding:22px 20px; border-radius:18px;
+  background:linear-gradient(180deg, #FCF8EC 0%, #FAF3E4 100%);
+  border:1px solid var(--linha);
+  display:flex; align-items:center; gap:18px;
+}
+.novoB-sigilo{
+  flex-shrink:0; width:62px; height:62px;
+  animation:respira-sigilo 6s ease-in-out infinite;
+}
+.novoB-texto{flex:1; min-width:0;}
+.novoB-saud{font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:13.5px; color:var(--tinta-suave); margin:0 0 2px;}
+.novoB-pres{font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--ouro); font-weight:600; margin:0 0 4px;}
+.novoB-nome{font-family:'Playfair Display',Georgia,serif; font-weight:500; font-size:28px; color:var(--tinta); margin:0; line-height:1.05;}
+.novoB-dom{font-family:'EB Garamond',Georgia,serif; font-style:italic; font-size:13.5px; color:var(--ouro); margin:3px 0 0;}
+
+.legenda{font-size:12px; color:var(--tinta-suave); text-align:center; margin:10px 0 0; line-height:1.6;}
+</style>
+</head>
+<body>
+
+<div class="demo-wrap">
+
+  <p class="demo-titulo">Protótipo · novo cabeçalho do home</p>
+  <p class="demo-sub">Mock com Victor + Elemiah (anjo 4). Aprove uma versão e eu aplico no app.</p>
+
+  <!-- ───────── ATUAL ───────── -->
+  <span class="demo-rotulo">A · Versão atual (referência)</span>
+  <div class="atual">
+    <div class="atual-avatar">V</div>
+    <div>
+      <p class="atual-saud">Boa noite, Victor</p>
+      <p class="atual-anjo">Seu anjo é <b>Elemiah</b></p>
+    </div>
+  </div>
+  <p class="legenda">Funcional, mas chapado. Não traduz a grandeza do produto.</p>
+
+
+  <!-- ───────── VERSÃO 1 — Altar central ───────── -->
+  <span class="demo-rotulo">B · Versão 1 — Altar central (recomendada)</span>
+  <div class="novo">
+
+    <p class="novo-saud">Boa noite, <b>Victor</b></p>
+    <p class="novo-presenca">— sob a presença de —</p>
+
+    <!-- Sigilo cabalístico construído (estilizado, não-literal) -->
+    <svg class="novo-sigilo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#F6C868" stop-opacity=".55"/>
+          <stop offset="60%" stop-color="#EF9F27" stop-opacity=".15"/>
+          <stop offset="100%" stop-color="#BA7517" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="ouro1" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#F6C868"/>
+          <stop offset="50%" stop-color="#D89A2C"/>
+          <stop offset="100%" stop-color="#7C4E0F"/>
+        </linearGradient>
+        <linearGradient id="ouro2" x1="0" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#EF9F27"/>
+          <stop offset="100%" stop-color="#BA7517"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Halo de fundo -->
+      <circle cx="50" cy="50" r="48" fill="url(#halo)"/>
+
+      <!-- Anel externo -->
+      <circle cx="50" cy="50" r="38" fill="none" stroke="url(#ouro1)" stroke-width="1.2"/>
+      <circle cx="50" cy="50" r="34" fill="none" stroke="url(#ouro2)" stroke-width=".5" stroke-dasharray="1 2.5"/>
+
+      <!-- Rosácea (8 pétalas) — gira lentamente -->
+      <g class="novo-sigilo-rotate">
+        <g stroke="url(#ouro1)" stroke-width="1" fill="none" opacity=".85">
+          <path d="M50 18 Q56 32 50 50 Q44 32 50 18 Z"/>
+          <path d="M82 50 Q68 56 50 50 Q68 44 82 50 Z"/>
+          <path d="M50 82 Q44 68 50 50 Q56 68 50 82 Z"/>
+          <path d="M18 50 Q32 44 50 50 Q32 56 18 50 Z"/>
+          <path d="M73 27 Q63 36 50 50 Q63 36 73 27 Z" opacity=".5"/>
+          <path d="M73 73 Q63 64 50 50 Q63 64 73 73 Z" opacity=".5"/>
+          <path d="M27 73 Q37 64 50 50 Q37 64 27 73 Z" opacity=".5"/>
+          <path d="M27 27 Q37 36 50 50 Q37 36 27 27 Z" opacity=".5"/>
+        </g>
+      </g>
+
+      <!-- Centro: hexagrama discreto + número -->
+      <g transform="translate(50,50)">
+        <polygon points="0,-14 12,7 -12,7" fill="none" stroke="url(#ouro2)" stroke-width="1" opacity=".6"/>
+        <polygon points="0,14 12,-7 -12,-7" fill="none" stroke="url(#ouro2)" stroke-width="1" opacity=".6"/>
+        <circle r="6" fill="#FBF6E8" stroke="url(#ouro1)" stroke-width=".8"/>
+        <text x="0" y="3.5" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="10" font-weight="500" fill="#7C4E0F">4</text>
+      </g>
+    </svg>
+
+    <h1 class="novo-nome">Elemiah</h1>
+    <div class="novo-filete"></div>
+    <p class="novo-dom">anjo dos caminhos<span class="sep">·</span><em>viagens interiores e paz</em></p>
+    <p class="novo-horario">rege agora · <b>01:00 → 01:20</b></p>
+
+  </div>
+  <p class="legenda">Sigilo construído (rosácea + hexagrama + número do anjo), respiração suave em loop de 6s. "Sob a presença de" reforça que o anjo <em>está aqui</em>, não é só uma classificação. Tagline puxa <code>dom_principal</code> do JSON.</p>
+
+
+  <!-- ───────── VERSÃO 2 — Horizontal compacta ───────── -->
+  <span class="demo-rotulo">C · Versão 2 — Horizontal compacta (para scroll)</span>
+  <div class="novoB">
+    <svg class="novoB-sigilo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="50" cy="50" r="48" fill="url(#halo)"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="url(#ouro1)" stroke-width="1.2"/>
+      <g class="novo-sigilo-rotate">
+        <g stroke="url(#ouro1)" stroke-width="1" fill="none" opacity=".85">
+          <path d="M50 18 Q56 32 50 50 Q44 32 50 18 Z"/>
+          <path d="M82 50 Q68 56 50 50 Q68 44 82 50 Z"/>
+          <path d="M50 82 Q44 68 50 50 Q56 68 50 82 Z"/>
+          <path d="M18 50 Q32 44 50 50 Q32 56 18 50 Z"/>
+        </g>
+      </g>
+      <g transform="translate(50,50)">
+        <circle r="6" fill="#FBF6E8" stroke="url(#ouro1)" stroke-width=".8"/>
+        <text x="0" y="3.5" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="10" font-weight="500" fill="#7C4E0F">4</text>
+      </g>
+    </svg>
+    <div class="novoB-texto">
+      <p class="novoB-saud">Boa noite, Victor</p>
+      <p class="novoB-pres">sob a presença de</p>
+      <h1 class="novoB-nome">Elemiah</h1>
+      <p class="novoB-dom">viagens interiores e paz</p>
+    </div>
+  </div>
+  <p class="legenda">Mesma linguagem visual, mas em layout horizontal — ideal quando o usuário rola pra baixo e o cabeçalho fica "sticky" mais compacto. Bom para acessibilidade.</p>
+
+
+  <!-- ───────── VERSÃO 3 — Variante noite ───────── -->
+  <span class="demo-rotulo">D · Versão 3 — Mesma estrutura em tom noturno</span>
+  <div class="novo" style="background:linear-gradient(180deg,#1B1814 0%,#2A241B 100%); border-color:rgba(186,117,23,.32)">
+    <p class="novo-saud" style="color:#C9BFA8">Boa noite, <b style="color:#F6C868">Victor</b></p>
+    <p class="novo-presenca" style="color:#EF9F27">— sob a presença de —</p>
+
+    <svg class="novo-sigilo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="50" cy="50" r="48" fill="url(#halo)"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="url(#ouro1)" stroke-width="1.4"/>
+      <circle cx="50" cy="50" r="34" fill="none" stroke="#EF9F27" stroke-width=".5" stroke-dasharray="1 2.5" opacity=".7"/>
+      <g class="novo-sigilo-rotate">
+        <g stroke="url(#ouro1)" stroke-width="1" fill="none" opacity=".9">
+          <path d="M50 18 Q56 32 50 50 Q44 32 50 18 Z"/>
+          <path d="M82 50 Q68 56 50 50 Q68 44 82 50 Z"/>
+          <path d="M50 82 Q44 68 50 50 Q56 68 50 82 Z"/>
+          <path d="M18 50 Q32 44 50 50 Q32 56 18 50 Z"/>
+          <path d="M73 27 Q63 36 50 50 Q63 36 73 27 Z" opacity=".5"/>
+          <path d="M73 73 Q63 64 50 50 Q63 64 73 73 Z" opacity=".5"/>
+          <path d="M27 73 Q37 64 50 50 Q37 64 27 73 Z" opacity=".5"/>
+          <path d="M27 27 Q37 36 50 50 Q37 36 27 27 Z" opacity=".5"/>
+        </g>
+      </g>
+      <g transform="translate(50,50)">
+        <polygon points="0,-14 12,7 -12,7" fill="none" stroke="#F6C868" stroke-width="1" opacity=".7"/>
+        <polygon points="0,14 12,-7 -12,-7" fill="none" stroke="#F6C868" stroke-width="1" opacity=".7"/>
+        <circle r="6" fill="#2A241B" stroke="url(#ouro1)" stroke-width=".8"/>
+        <text x="0" y="3.5" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="10" font-weight="500" fill="#F6C868">4</text>
+      </g>
+    </svg>
+
+    <h1 class="novo-nome" style="color:#FBF6E8">Elemiah</h1>
+    <div class="novo-filete"></div>
+    <p class="novo-dom" style="color:#F6C868">anjo dos caminhos<span class="sep">·</span><em>viagens interiores e paz</em></p>
+    <p class="novo-horario" style="color:#C9BFA8">rege agora · <b style="color:#F6C868">01:00 → 01:20</b></p>
+  </div>
+  <p class="legenda">Mesma estrutura da Versão 1, mas em modo escuro — possível ativar automaticamente após 21h pra reforçar o ritmo dia/noite. Opcional.</p>
+
+
+  <p style="text-align:center; font-size:13px; color:var(--tinta-suave); margin:48px 0 0; line-height:1.7">
+    <strong style="color:var(--ouro)">Recomendação:</strong> usar a <strong>Versão 1 (Altar central)</strong> como cabeçalho principal,<br>
+    com transição automática pra <strong>Versão 3 (modo noite)</strong> entre 19h e 6h.<br>
+    A Versão 2 entra como variante compacta quando o scroll passa de 200px.
+  </p>
+
+</div>
+
+</body>
+</html>
