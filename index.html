@@ -1909,13 +1909,32 @@ function openPaywall(ctx){
 }
 function closePaywall(){ closeModal('paywall'); }
 async function iniciarAssinatura(plano){
-  if(!window.saaAuth || !window._userId){ closePaywall(); entrarSantuario(); return; } // precisa logar primeiro
+  console.log('[iniciarAssinatura] plano=', plano, 'userId=', window._userId, 'saaAuth=', !!window.saaAuth);
+  if(!window.saaAuth){
+    toast('Configuração do Supabase não carregou. Recarrega a página.');
+    return;
+  }
+  if(!window._userId){
+    toast('Você precisa estar logada(o) para assinar. Abrindo login…');
+    setTimeout(function(){ closePaywall(); entrarSantuario(); }, 1500);
+    return;
+  }
   toast('Abrindo o checkout seguro…');
   try{
     var r=await fetch('/api/create-checkout',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ userId:window._userId, plano:plano, email:window._email||'' }) });
     var j=await r.json();
-    if(j && j.ok && j.url){ window.location.href=j.url; } else { toast('Não consegui abrir o checkout.'); }
-  }catch(e){ toast('Erro ao abrir o checkout.'); }
+    console.log('[iniciarAssinatura] resposta:', r.status, j);
+    if(j && j.ok && j.url){
+      window.location.href = j.url;
+    } else {
+      var msg = (j && j.error) ? j.error : ('Erro HTTP '+r.status);
+      toast('Falha no checkout: '+msg);
+      console.error('[iniciarAssinatura] resposta inválida:', j);
+    }
+  }catch(e){
+    toast('Erro de rede ao abrir checkout: '+e.message);
+    console.error('[iniciarAssinatura] exceção:', e);
+  }
 }
 
 // ── biblioteca a partir do Supabase (cai pro demo se vazio/sem conexão) ──
