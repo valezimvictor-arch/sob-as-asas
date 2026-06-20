@@ -8,11 +8,9 @@ window.SAA_CONFIG = {
   vapidPublic: 'BMjfmsj7ToubD8KPb_uuEo19w3jidgzomoMY9txih0H9_nejOmtDYswqG_J16T3MIFsKBHj8rWya-esXXPFtjTA',
 
   // Observabilidade (opcional — só carrega se preenchido)
-  // Sentry: erros em produção · https://sentry.io → crie projeto "javascript-browser"
-  //   sentryDsn: 'https://xxxxx@oXXX.ingest.sentry.io/YYY',
-  sentryDsn: '',
+  // Sentry: erros em produção · https://sentry.io
+  sentryDsn: 'https://ea6a8dbb77f05f01a1a08fc0a527c4a4@o4511598638923776.ingest.us.sentry.io/4511598642593792',
 
-  // Plausible: analytics privacy-first · https://plausible.io → adicione o domínio
-  //   plausibleDomain: 'sobasasas.com.br'
-  plausibleDomain: '',
+  // Plausible: analytics privacy-first · https://plausible.io
+  plausibleDomain: 'sobasasas.com.br',
 };

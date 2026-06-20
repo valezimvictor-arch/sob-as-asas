@@ -2432,6 +2432,7 @@ function _aguardarSaaAuth(timeoutMs){
 }
 
 async function iniciarAssinatura(plano){
+  console.log('[Sob as Asas] iniciarAssinatura chamada com plano=', plano);
   // Espera o script terminar de carregar (race condition após redirect do Stripe)
   if(!window.saaAuth){
     toast('Carregando… um instante 🪽');
