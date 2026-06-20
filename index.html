@@ -155,6 +155,10 @@
     border-radius:999px; padding:8px 16px; font:inherit; font-size:13px; cursor:pointer; white-space:nowrap;
     transition:background .15s, color .15s, border-color .15s; }
   .bib-chip.on{ background:var(--ouro-bg); color:#854F0B; border-color:transparent; font-weight:500; }
+
+  /* Paywall: cartões de plano com seleção visual */
+  .paywall-plano{ border:1px solid var(--linha); transition:border-color .15s, background .15s; cursor:pointer; }
+  .paywall-plano.selecionado{ border:2px solid var(--ouro-claro); background:rgba(250,243,228,.5); padding:13px 15px !important; }
   #bib-filtros::-webkit-scrollbar{ display:none } #bib-filtros{ scrollbar-width:none }
 
   /* ── Polimento extra ── */
@@ -1556,15 +1560,17 @@
       <p id="paywall-ctx" style="color:var(--tinta-suave); font-size:14px; margin:8px 0 0; line-height:1.5">Biblioteca inteira, salmos, séries e rituais completos da Monica.</p>
     </div>
     <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px">
-      <div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px; border:2px solid var(--ouro-claro)" onclick="iniciarAssinatura('anual')">
+      <div id="paywall-card-anual" class="card paywall-plano selecionado" style="padding:14px 16px; display:flex; align-items:center; gap:12px" onclick="selecionarPlano('anual')">
         <div style="flex:1"><p style="margin:0; font-weight:600">Anual</p><p style="margin:0; font-size:12px; color:var(--tinta-suave)">R$ 149/ano · R$ 12,42/mês</p></div>
         <span style="font-size:11px; background:var(--ouro-bg); color:#854F0B; padding:3px 9px; border-radius:8px">−37%</span>
       </div>
-      <div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px" onclick="iniciarAssinatura('mensal')">
+      <div id="paywall-card-mensal" class="card paywall-plano" style="padding:14px 16px; display:flex; align-items:center; gap:12px" onclick="selecionarPlano('mensal')">
         <div style="flex:1"><p style="margin:0; font-weight:600">Mensal</p><p style="margin:0; font-size:12px; color:var(--tinta-suave)">R$ 19,90/mês</p></div>
       </div>
     </div>
-    <button class="btn-ouro" style="margin-top:16px" onclick="iniciarAssinatura('anual')">Começar 7 dias grátis</button>
+    <button class="btn-ouro" style="margin-top:16px" onclick="iniciarAssinatura(window._planoSelecionado||'anual')">
+      <span id="paywall-btn-label">Começar 7 dias grátis · Anual</span>
+    </button>
     <button onclick="closePaywall()" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;width:100%;margin-top:12px">Agora não</button>
     <p style="text-align:center; font-size:11px; color:var(--tinta-suave); margin:10px 0 0">A candidatura ao Milagre do mês é sempre gratuita.</p>
   </div>
@@ -1908,6 +1914,20 @@ function openPaywall(ctx){
   openModal('paywall'); buzz();
 }
 function closePaywall(){ closeModal('paywall'); }
+// Seleção visual do plano no paywall — clicar no card só MARCA, não envia checkout
+window._planoSelecionado = 'anual';
+function selecionarPlano(plano){
+  if(plano!=='anual' && plano!=='mensal') return;
+  window._planoSelecionado = plano;
+  var a = document.getElementById('paywall-card-anual');
+  var m = document.getElementById('paywall-card-mensal');
+  var lb = document.getElementById('paywall-btn-label');
+  if(a) a.classList.toggle('selecionado', plano==='anual');
+  if(m) m.classList.toggle('selecionado', plano==='mensal');
+  if(lb) lb.textContent = (plano==='anual') ? 'Começar 7 dias grátis · Anual' : 'Começar 7 dias grátis · Mensal';
+  buzz();
+}
+
 // Espera até `timeoutMs` pelo script do Supabase terminar de carregar.
 // Resolve true se carregou, false se estourou o timeout.
 function _aguardarSaaAuth(timeoutMs){
