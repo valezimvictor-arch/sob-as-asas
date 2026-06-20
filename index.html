@@ -17,7 +17,7 @@
     --branco:#FBFAF7; --branco-puro:#FFFFFF;
     --ouro:#BA7517; --ouro-claro:#EF9F27; --ouro-suave:#F3E6CC; --ouro-bg:#FAF3E4;
     --celeste:#378ADD; --celeste-bg:#EAF2FB;
-    --tinta:#2C2C2A; --tinta-suave:#5F5E5A; --linha:rgba(186,117,23,0.14);
+    --tinta:#2C2C2A; --tinta-suave:#555350; --linha:rgba(186,117,23,0.14);
   }
   *{ -webkit-tap-highlight-color:transparent; box-sizing:border-box; }
   html,body{ margin:0; height:100%; background:var(--branco); color:var(--tinta);
@@ -47,10 +47,15 @@
 
   .btn-ouro{ background:linear-gradient(180deg,#F6C868,#D89A2C); color:#5A3A06;
     border:none; border-radius:16px; padding:16px; font-weight:600; font-size:16px;
-    width:100%; box-shadow:0 6px 22px rgba(186,117,23,.28); transition:transform .15s, box-shadow .2s; }
+    width:100%; min-height:48px; box-shadow:0 6px 22px rgba(186,117,23,.28); transition:transform .15s, box-shadow .2s; }
   .btn-ouro:active{ transform:scale(.975); box-shadow:0 3px 12px rgba(186,117,23,.22); }
+  .btn-ouro:focus-visible, .btn-ghost:focus-visible{ outline:3px solid var(--ouro-claro); outline-offset:2px; }
   .btn-ghost{ background:transparent; border:1px solid var(--linha); color:var(--ouro);
-    border-radius:16px; padding:15px; font-weight:500; width:100%; }
+    border-radius:16px; padding:15px; font-weight:500; width:100%; min-height:48px; }
+  /* Foco visível em qualquer elemento interativo — acessibilidade pra teclado */
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{
+    outline:3px solid var(--ouro-claro); outline-offset:2px; border-radius:4px;
+  }
   .campo{ width:100%; background:var(--branco-puro); border:1px solid var(--linha);
     border-radius:14px; padding:14px 16px; font-size:16px; color:var(--tinta); outline:none;
     transition:border-color .2s, box-shadow .2s; }
@@ -218,25 +223,26 @@
     gap:12px; margin-bottom:14px;
   }
   .altar-avatar{
-    width:34px; height:34px; border-radius:50%;
+    /* Área de toque ≥44px (WCAG) — visual interno permanece menor */
+    width:44px; height:44px; border-radius:50%;
     background:linear-gradient(180deg,#F6E1B0,#E8B967);
     display:flex; align-items:center; justify-content:center;
-    color:#5A3A06; font-size:14px;
+    color:#5A3A06; font-size:16px;
     cursor:pointer; flex-shrink:0;
     box-shadow:0 1px 6px rgba(186,117,23,.18);
     transition:transform .15s;
   }
   .altar-avatar:active{ transform:scale(.92); }
   .altar-streak{
-    display:flex; align-items:baseline; gap:6px;
+    display:flex; align-items:baseline; gap:7px;
     background:var(--ouro-bg); border-radius:99px;
-    padding:6px 14px; cursor:pointer;
+    padding:10px 16px; cursor:pointer; min-height:44px;
     transition:transform .15s;
   }
   .altar-streak:active{ transform:scale(.97); }
-  .altar-streak-rotulo{ font-size:10px; color:var(--ouro); letter-spacing:.12em; text-transform:uppercase; font-weight:600; }
-  .altar-streak-n{ font-family:'Playfair Display',serif; font-size:18px; font-weight:500; color:#854F0B; line-height:1; }
-  .altar-streak-sub{ font-size:10px; color:var(--ouro); letter-spacing:.06em; text-transform:uppercase; font-weight:500; }
+  .altar-streak-rotulo{ font-size:11px; color:#7C4E0F; letter-spacing:.12em; text-transform:uppercase; font-weight:600; }
+  .altar-streak-n{ font-family:'Playfair Display',serif; font-size:19px; font-weight:500; color:#5A3A06; line-height:1; }
+  .altar-streak-sub{ font-size:11px; color:#7C4E0F; letter-spacing:.06em; text-transform:uppercase; font-weight:500; }
 
   .altar{
     position:relative; padding:24px 22px 28px; border-radius:22px;
