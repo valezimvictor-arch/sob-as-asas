@@ -125,3 +125,34 @@ plausible('trial_iniciado', { props: { plano: 'mensal' } });
 plausible('anjo_revelado',  { props: { coro: 'Serafins' } });
 plausible('presente_comprado');
 ```
+
+---
+
+## 8. Infraestrutura de email
+
+### Outbound (envios do app)
+- **Provedor:** Resend ([resend.com](https://resend.com))
+- **Domínio verificado:** `sobasasas.com.br` (DKIM `resend._domainkey` no DNS)
+- **From padrão:** `Sob as Asas <contato@sobasasas.com.br>` (configurado em `RESEND_FROM` no Vercel)
+- **Usado por:** `api/_lib/resend.js` (newsletter, magic link, smoke test, re-engajamento, tempo de graça)
+
+### Inbound (recebimento)
+- **Provedor:** Zoho Mail Free
+- **MX records no Registro.br:** `mx.zoho.com` (10), `mx2.zoho.com` (20), `mx3.zoho.com` (50)
+- **DKIM Zoho:** `zoho._domainkey.sobasasas.com.br` no DNS
+- **Acesso:** webmail `mail.zoho.com` com a conta `contato@sobasasas.com.br`
+- **Plano:** Free (5 usuários, 5GB/usuário). Migrar pra Mail Lite ($1/usuário/mês) se passar de 5GB.
+
+### SPF combinado
+Registro TXT na raiz `sobasasas.com.br`:
+```
+v=spf1 include:zoho.com include:_spf.resend.com -all
+```
+⚠️ **Não criar 2 SPFs separados** — quebra autenticação. Deve ser 1 registro combinando os dois `include:`.
+
+### DMARC
+- **TXT em `_dmarc.sobasasas.com.br`:** `v=DMARC1; p=quarantine; rua=mailto:contato@sobasasas.com.br; pct=100; adkim=s; aspf=s`
+- Status atual: **quarantine** (spam pra spoofs). Migrar pra `p=reject` após 60-90 dias confirmando que não tem falso positivo.
+
+### Histórico
+- Versão 1 (jun/2026): ImprovMX como forwarder + Resend pra envios → migrado para Zoho em jul/2026 quando precisamos de webmail real + múltiplos endereços (`contato@`, `monica@`, `imprensa@`, etc).
