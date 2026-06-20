@@ -6,4 +6,13 @@ window.SAA_CONFIG = {
   anon: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRtZWxxaHFsZXlubXBsc21xanVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyOTU5MTMsImV4cCI6MjA5Njg3MTkxM30.gSf0XRY9Xbjb1DLntgbPA9LFIyZwSwtrrBmqvnAi6MU',
   // VAPID PUBLIC key (push) — a private fica na Vercel (VAPID_PRIVATE_KEY)
   vapidPublic: 'BMjfmsj7ToubD8KPb_uuEo19w3jidgzomoMY9txih0H9_nejOmtDYswqG_J16T3MIFsKBHj8rWya-esXXPFtjTA',
+
+  // Observabilidade (opcional — só carrega se preenchido)
+  // Sentry: erros em produção · https://sentry.io → crie projeto "javascript-browser"
+  //   sentryDsn: 'https://xxxxx@oXXX.ingest.sentry.io/YYY',
+  sentryDsn: '',
+
+  // Plausible: analytics privacy-first · https://plausible.io → adicione o domínio
+  //   plausibleDomain: 'sobasasas.com.br'
+  plausibleDomain: '',
 };

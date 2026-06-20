@@ -84,3 +84,44 @@ Painel do Registro.br → seu domínio → **Editar Zona / DNS** (DNS do Registr
 - [ ] Projeto Vercel próprio (nome diferente de `pitaco`)
 - [ ] Env vars próprias (Supabase novo, não o do Tacada)
 - [ ] `.env` não commitado
+
+---
+
+## 7. Observabilidade (Sentry + Plausible) — opcional, recomendado
+
+O app carrega ambos CONDICIONALMENTE — só ativam se você preencher os IDs em `config.js`. Por padrão ficam desligados (sem coleta nenhuma).
+
+### Sentry — erros em produção
+1. Crie conta gratuita em [sentry.io](https://sentry.io) (50k erros/mês grátis)
+2. **Create Project → Browser → JavaScript** (sem framework)
+3. Copie o **DSN** (formato: `https://xxx@oXXX.ingest.sentry.io/YYY`)
+4. Cole em `config.js`:
+   ```js
+   sentryDsn: 'https://xxx@oXXX.ingest.sentry.io/YYY',
+   ```
+5. Commit + push. Em ~1 min está rodando.
+
+**Configuração de privacidade já embarcada** (em `js/observabilidade.js`):
+- `tracesSampleRate: 0.1` — 10% das sessões com trace de performance
+- `replaysSessionSampleRate: 0` — NÃO grava sessões normais (privacidade)
+- `replaysOnErrorSampleRate: 0.5` — grava 50% das sessões em que houve erro
+- `beforeSend` — redige `token=` e `code=` das URLs antes de enviar
+
+### Plausible — analytics privacy-first
+1. Crie conta em [plausible.io](https://plausible.io) (US$ 9/mês após trial 30d, ou self-host grátis)
+2. **+ Add a website** → domínio `sobasasas.com.br`
+3. Cole em `config.js`:
+   ```js
+   plausibleDomain: 'sobasasas.com.br',
+   ```
+4. Commit + push.
+
+**Sem cookies. Sem consent banner.** Compatível com LGPD/GDPR sem precisar de aviso. Mostra: pageviews, origens, devices, conversões.
+
+### Eventos custom (opcional)
+Depois de ativar Plausible, dá pra rastrear ações específicas:
+```js
+plausible('trial_iniciado', { props: { plano: 'mensal' } });
+plausible('anjo_revelado',  { props: { coro: 'Serafins' } });
+plausible('presente_comprado');
+```
