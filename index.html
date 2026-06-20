@@ -23,15 +23,18 @@
     --tinta:#2C2C2A; --tinta-suave:#555350; --linha:rgba(186,117,23,0.14);
   }
   *{ -webkit-tap-highlight-color:transparent; box-sizing:border-box; }
-  html,body{ margin:0; height:100%; background:var(--branco); color:var(--tinta);
-    font-family:'Manrope',system-ui,sans-serif; overscroll-behavior:none; }
+  html,body{ margin:0; height:100%; min-height:100dvh; background:var(--branco); color:var(--tinta);
+    font-family:'Manrope',system-ui,sans-serif; overscroll-behavior:none;
+    -webkit-font-smoothing:antialiased; }
+  /* iOS Safari: garante que o app preencha toda a viewport (incluindo notch e barra inferior) */
+  body{ width:100vw; overflow-x:hidden; }
   .serif{ font-family:'Playfair Display',serif; letter-spacing:.01em; }
   .serif-soft{ font-family:'Cormorant Garamond',serif; }
   .screen{ position:fixed; inset:0; display:flex; flex-direction:column;
     opacity:0; visibility:hidden; pointer-events:none; transform:translateY(6px);
-    transition:opacity .7s ease, transform .7s ease, visibility 0s linear .7s; overflow-y:auto; }
+    transition:opacity .25s ease, transform .25s ease, visibility 0s linear .25s; overflow-y:auto; }
   .screen.active{ opacity:1; visibility:visible; pointer-events:auto; transform:none;
-    transition:opacity .7s ease, transform .7s ease, visibility 0s; }
+    transition:opacity .25s ease, transform .25s ease, visibility 0s; }
   .pad{ padding:max(env(safe-area-inset-top),24px) 26px max(env(safe-area-inset-bottom),24px); }
 
   /* halo de luz que respira */
@@ -829,7 +832,7 @@
   <div class="halo" style="top:30px; width:340px; height:340px"></div>
   <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; z-index:1">
     <p class="serif-soft" style="font-size:15px; color:var(--ouro); margin:0; letter-spacing:.02em">Antes do santuário se abrir</p>
-    <h2 class="serif" style="font-size:30px; margin:12px 0 8px; font-weight:400; line-height:1.15; max-width:360px">Como você chega hoje?</h2>
+    <h2 class="serif" style="font-size:30px; margin:12px 0 8px; font-weight:400; line-height:1.15; max-width:360px">Como você está se sentindo hoje?</h2>
     <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:var(--tinta); margin:0 0 30px; max-width:340px; line-height:1.55">Seu anjo já está aqui. Diga pra ele o que você traz no peito — o resto, ele cuida.</p>
 
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%; max-width:360px">
@@ -2404,6 +2407,24 @@ document.addEventListener('visibilitychange', function(){
 
 let homeReady=false;
 function initHome(){
+  // Defesa: se o usuário está autenticado mas não tem perfil carregado,
+  // tenta recarregar do Supabase. Se falhar, manda pro cadastro pra não
+  // mostrar um home "genérico" sem dados.
+  if(window._userId && (!window._perfil || !window._perfil.anjo_n) && window.saaAuth){
+    window.saaAuth.client.from('users').select('nome,anjo_n,anjo_nome,plano').eq('id', window._userId).maybeSingle()
+      .then(function(res){
+        if(res && res.data && res.data.nome && res.data.anjo_n){
+          window._nome = res.data.nome;
+          window._anjo = res.data.anjo_nome;
+          window._perfil = { nome: res.data.nome, anjo_n: res.data.anjo_n, anjo_nome: res.data.anjo_nome };
+          if(res.data.plano && res.data.plano !== 'free') window._plano = res.data.plano;
+          renderizarAltarHome();  // re-renderiza com os dados certos
+        } else {
+          // Perfil incompleto — manda pro cadastro pra completar
+          show('s-cadastro');
+        }
+      }).catch(function(){});
+  }
   renderizarAltarHome();
   carregarVelasColetivo();
   atualizarAnjoHora();
@@ -3971,7 +3992,12 @@ function escolherAcolhimento(k){
   // referência ao anjo já revelado (se houver)
   var ref = window._anjo ? ('Com '+window._anjo+' ao seu lado.') : '';
   document.getElementById('fp-anjo-ref').textContent = ref;
-  try{ localStorage.setItem('saa_emocao_inicial', k); }catch(_){}
+  try{
+    localStorage.setItem('saa_emocao_inicial', k);
+    // Marca o mood check-in como feito hoje pra NÃO repetir a mesma pergunta
+    // no mesmo dia (o usuário acabou de responder a emoção dele agora).
+    localStorage.setItem('saa_mood_last', new Date().toISOString().slice(0,10));
+  }catch(_){}
   show('s-primeira-pratica');
 }
 function acaoPrimeiraPratica(){
