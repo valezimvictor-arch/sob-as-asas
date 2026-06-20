@@ -3699,6 +3699,23 @@ async function enviarMagicLink(){
   var email=(document.getElementById('in-email').value||'').trim();
   var msg=document.getElementById('login-msg');
   if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ msg.textContent='Digite um e-mail válido.'; return; }
+
+  // Rate limit local: 1 OTP por email a cada 60s — protege contra spam e
+  // rate limit do Supabase (que daria erro feio sem isso).
+  try{
+    var chave = 'saa_otp_ts_' + email.toLowerCase();
+    var ultimo = parseInt(sessionStorage.getItem(chave)||'0', 10);
+    var agora = Date.now();
+    if(ultimo && (agora - ultimo) < 60000){
+      var faltam = Math.ceil((60000 - (agora - ultimo))/1000);
+      msg.textContent = 'Aguarde '+faltam+'s antes de pedir outro código pra esse email.';
+      msg.style.color = '#C0392B';
+      return;
+    }
+    sessionStorage.setItem(chave, String(agora));
+  }catch(_){}
+
+  msg.style.color = '';
   msg.textContent=''; buzz();
   window._loginEmail = email;
   var btn=document.getElementById('login-btn'); var prog=document.getElementById('login-prog'); var lab=document.getElementById('login-btn-label');

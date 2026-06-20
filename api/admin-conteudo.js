@@ -29,6 +29,9 @@ export default async function handler(req, res) {
 
     if (b.action === 'criar') {
       if (!b.titulo || !b.formato) return res.status(400).json({ ok: false, error: 'titulo e formato são obrigatórios' });
+      // Anti-DoS: limita tamanho de campos textuais (proteção independente do body limit da Vercel)
+      if (typeof b.titulo === 'string' && b.titulo.length > 300) return res.status(413).json({ ok: false, error: 'titulo excede 300 caracteres' });
+      if (typeof b.corpo === 'string' && b.corpo.length > 50000) return res.status(413).json({ ok: false, error: 'corpo excede 50000 caracteres' });
       const row = {
         titulo: b.titulo,
         formato: b.formato,                 // 'audio' | 'video' | 'texto' | 'salmo'

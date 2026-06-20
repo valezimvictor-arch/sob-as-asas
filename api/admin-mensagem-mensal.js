@@ -37,6 +37,9 @@ export default async function handler(req, res) {
           return res.status(400).json({ ok: false, error: `Campo obrigatório: ${k}` });
         }
       }
+      // Anti-DoS: limites de tamanho
+      if (typeof b.titulo === 'string' && b.titulo.length > 300) return res.status(413).json({ ok: false, error: 'titulo excede 300 caracteres' });
+      if (typeof b.texto === 'string' && b.texto.length > 100000) return res.status(413).json({ ok: false, error: 'texto excede 100000 caracteres' });
       const linha = {
         anjo_n: Number(b.anjo_n),
         mes: Number(b.mes),

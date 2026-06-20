@@ -15,6 +15,10 @@ export default async function handler(req, res) {
   if (!nome || !/^\d{4}-\d{2}-\d{2}$/.test(nascimento || '')) {
     return res.status(400).json({ ok: false, error: 'Informe nome e nascimento (YYYY-MM-DD).' });
   }
+  // Anti-DoS: limita tamanho do nome
+  if (typeof nome === 'string' && nome.length > 120) {
+    return res.status(413).json({ ok: false, error: 'Nome muito longo.' });
+  }
 
   let anjo;
   try { anjo = anjoRegente(nascimento); }

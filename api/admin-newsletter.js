@@ -27,6 +27,12 @@ export default async function handler(req, res) {
     for (const k of requeridos) {
       if (!b[k]) return res.status(400).json({ ok: false, error: `Campo obrigatório: ${k}` });
     }
+    // Anti-DoS: limites de tamanho (qualquer campo textual capado em 50KB)
+    for (const k of ['anjo_nome','anjo_mensagem','monica_quote','pratica_titulo','pratica_passos','subject','preheader']) {
+      if (typeof b[k] === 'string' && b[k].length > 50000) {
+        return res.status(413).json({ ok: false, error: `${k} excede 50000 caracteres` });
+      }
+    }
     const linha = {
       semana_de: b.semana_de || new Date().toISOString().slice(0, 10),
       publicado: !!b.publicado,
