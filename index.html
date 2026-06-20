@@ -999,14 +999,39 @@
         <span style="color:var(--ouro); font-size:20px; flex-shrink:0">›</span>
       </div>
 
-      <!-- 1b. CONHECER MEU ANJO EM 7 DIAS (mini-jornada de descoberta) -->
-      <div id="home-ja-card" class="card" style="display:none; margin-top:10px; padding:16px; align-items:center; gap:14px; cursor:pointer; background:linear-gradient(90deg, var(--puro), rgba(250,243,228,.6))" onclick="openJornadaAnjo()">
-        <div style="width:46px;height:46px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:22px">📿</div>
-        <div style="flex:1; min-width:0">
-          <p style="margin:0; font-weight:600">Conheça seu anjo em 7 dias</p>
-          <p id="home-ja-sub" style="margin:2px 0 0; font-size:12px; color:var(--tinta-suave); line-height:1.4">Uma mensagem curta por dia, descobrindo seu anjo a fundo</p>
+      <!-- 1b. CONHECER MEU ANJO EM 7 DIAS — destaque alto pra novo usuário -->
+      <div id="home-ja-card" class="card" style="display:none; margin-top:14px; padding:20px 18px; cursor:pointer; background:linear-gradient(135deg, rgba(246,200,104,.20), rgba(239,159,39,.12) 60%, rgba(186,117,23,.06)); border:1px solid rgba(186,117,23,.24); border-radius:18px" onclick="openJornadaAnjo()">
+        <div style="display:flex; align-items:center; gap:14px">
+          <div style="width:58px; height:58px; border-radius:14px; background:linear-gradient(135deg, #F6C868, #BA7517); display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0; box-shadow:0 4px 14px rgba(186,117,23,.28)">📿</div>
+          <div style="flex:1; min-width:0">
+            <p style="margin:0; font-size:10.5px; letter-spacing:.18em; color:var(--ouro); text-transform:uppercase; font-weight:600">Comece por aqui</p>
+            <p class="serif" style="margin:3px 0 2px; font-size:19px; color:var(--tinta); font-weight:500; line-height:1.2">Conheça seu anjo em 7 dias</p>
+            <p id="home-ja-sub" style="margin:0; font-size:13px; color:var(--ouro); line-height:1.4; font-style:italic; font-family:'Cormorant Garamond',serif">uma mensagem curta por dia · ~2 min</p>
+          </div>
+          <span style="color:var(--ouro); font-size:22px; flex-shrink:0">›</span>
         </div>
-        <span style="color:var(--ouro); font-size:20px">›</span>
+        <div id="home-ja-progresso" style="display:none; margin-top:12px; padding-top:12px; border-top:1px solid rgba(186,117,23,.18)">
+          <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--ouro); letter-spacing:.05em">
+            <span id="home-ja-progresso-texto">—</span>
+            <span id="home-ja-progresso-pct" style="font-weight:600">—</span>
+          </div>
+          <div style="height:4px; background:rgba(186,117,23,.14); border-radius:99px; margin-top:6px; overflow:hidden">
+            <div id="home-ja-progresso-barra" style="height:100%; width:0%; background:linear-gradient(90deg, var(--ouro-claro), var(--ouro)); transition:width .5s"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1c. PRIMEIRA MENSAGEM MENSAL pré-paywall — só pra free/trial -->
+      <div id="home-mm-preview" class="card" style="display:none; margin-top:12px; padding:16px 18px; cursor:pointer; background:#fff; border:1px solid var(--linha); border-radius:14px" onclick="openPaywall('mm-preview')">
+        <div style="display:flex; align-items:center; gap:12px">
+          <div style="width:46px; height:46px; border-radius:50%; background:var(--ouro-bg); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0">📜</div>
+          <div style="flex:1; min-width:0">
+            <p style="margin:0; font-size:10px; letter-spacing:.16em; color:var(--ouro); text-transform:uppercase; font-weight:600">Carta exclusiva da Monica</p>
+            <p style="margin:3px 0 2px; font-size:15.5px; color:var(--tinta); font-weight:600; line-height:1.25">Sua 1ª mensagem mensal</p>
+            <p id="home-mm-preview-sub" style="margin:0; font-size:12.5px; color:var(--tinta-suave); line-height:1.4">—</p>
+          </div>
+          <span style="color:var(--ouro); font-size:20px; flex-shrink:0">›</span>
+        </div>
       </div>
 
       <!-- 1d. EVENTO ESPECIAL (Novena dos Anjos da Guarda 29/set–7/out, Anjos da Humanidade etc) -->
@@ -2151,6 +2176,7 @@ function initHome(){
   renderizarAltarHome();
   carregarVelasColetivo();
   atualizarHomeJornadaCard();
+  atualizarHomeMMPreview();
   atualizarHomeDormirCard();
   atualizarHomeEventoCard();
   carregarMensagemMensal();
@@ -3556,15 +3582,57 @@ function atualizarHomeJornadaCard(){
   var el = document.getElementById('home-ja-card'); if(!el) return;
   var s = _jaEstado();
   var sub = document.getElementById('home-ja-sub');
+  var prog = document.getElementById('home-ja-progresso');
   if(s.completa){ el.style.display = 'none'; return; }
-  el.style.display = 'flex';
+  el.style.display = 'block';  // mudou: agora é block (era flex)
+
+  // Estado 1: ainda não começou
   if(s.dia === 1 && !s.feitoHoje) {
-    if(sub) sub.textContent = 'Uma mensagem curta por dia, descobrindo seu anjo a fundo';
-  } else if(s.feitoHoje) {
-    if(sub) sub.textContent = 'Dia '+s.dia+' concluído — volte amanhã';
-  } else {
-    if(sub) sub.textContent = 'Próximo: Dia '+s.dia+' de 7';
+    if(sub) sub.textContent = 'uma mensagem curta por dia · ~2 min';
+    if(prog) prog.style.display = 'none';
+    return;
   }
+  // Estados 2-3: em andamento — mostra progresso
+  if(prog){
+    prog.style.display = 'block';
+    var diaAtual = s.feitoHoje ? s.dia : (s.dia - 1);  // último completado
+    var pct = Math.min(100, Math.round((diaAtual / 7) * 100));
+    var elT = document.getElementById('home-ja-progresso-texto');
+    var elP = document.getElementById('home-ja-progresso-pct');
+    var elB = document.getElementById('home-ja-progresso-barra');
+    if(elT) elT.textContent = s.feitoHoje ? ('Dia '+s.dia+' concluído') : ('Dia '+s.dia+' de 7 te espera');
+    if(elP) elP.textContent = pct + '%';
+    if(elB) elB.style.width = pct + '%';
+  }
+  if(sub) sub.textContent = s.feitoHoje ? 'volte amanhã pra continuar' : 'continue de onde parou';
+}
+
+// Card pré-paywall: "Sua 1ª mensagem mensal sai em X dias"
+function atualizarHomeMMPreview(){
+  var el = document.getElementById('home-mm-preview'); if(!el) return;
+  // Só pra free/trial — pago já vê a mensagem mensal de verdade
+  if(window._plano && window._plano !== 'free' && window._plano !== 'trial'){
+    el.style.display = 'none';
+    return;
+  }
+  // Calcula dias até o próximo dia 1º
+  var hoje = new Date();
+  var dia = hoje.getDate();
+  var proximoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 1);
+  var diasFalta = Math.ceil((proximoMes - hoje) / 86400000);
+
+  var sub = document.getElementById('home-mm-preview-sub');
+  if(sub){
+    var anjo = window._anjo || 'seu anjo';
+    if(diasFalta <= 1){
+      sub.textContent = 'Sai amanhã, dia 1º. Uma carta exclusiva de '+anjo+' pra você.';
+    } else if(diasFalta <= 3){
+      sub.textContent = 'Em '+diasFalta+' dias. Uma carta de '+anjo+' chega aqui no 1º do mês.';
+    } else {
+      sub.textContent = 'Em '+diasFalta+' dias. Toda 1ª do mês, '+anjo+' te escreve aqui.';
+    }
+  }
+  el.style.display = 'block';
 }
 
 // "Antes de dormir" — card só aparece à noite (>=20h)
