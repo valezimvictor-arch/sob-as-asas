@@ -980,7 +980,14 @@
       </div>
 
       <!-- Mensagem do dia (auto-gerada pelo GeradorTextos) -->
-      <div id="home-msg-dia" class="card" style="display:none; margin-top:14px; padding:16px 18px; background:linear-gradient(180deg, rgba(250,243,228,.55), #FBF6E8); border:1px solid var(--linha); border-radius:14px">
+      <!-- ░░ ZONA GRATUITA ░░
+           Sinaliza claramente que parte do app é livre pra sempre.
+           Postura editorial anti-mercantilismo: "os anjos não cobram." -->
+      <div style="margin-top:22px; padding:14px 12px 0; border-top:1px dashed rgba(186,117,23,.22)">
+        <p style="margin:0 0 12px; font-size:10.5px; letter-spacing:.22em; color:var(--ouro); text-transform:uppercase; font-weight:600; text-align:center">Pra todos · sempre</p>
+      </div>
+
+      <div id="home-msg-dia" class="card" style="display:none; margin-top:4px; padding:16px 18px; background:linear-gradient(180deg, rgba(250,243,228,.55), #FBF6E8); border:1px solid var(--linha); border-radius:14px">
         <p style="margin:0 0 6px; font-size:10.5px; letter-spacing:.18em; color:var(--ouro); text-transform:uppercase; font-weight:600">Mensagem de hoje</p>
         <p id="home-msg-dia-texto" class="serif" style="margin:0; font-size:16px; line-height:1.55; color:var(--tinta); font-family:'Cormorant Garamond','EB Garamond',Georgia,serif; font-style:italic">—</p>
       </div>
@@ -1006,6 +1013,8 @@
         </div>
         <span style="color:var(--ouro); font-size:18px">▸</span>
       </button>
+
+      <p style="margin:14px 0 22px; padding:0 16px; font-size:11px; color:var(--tinta-suave); text-align:center; line-height:1.6; font-style:italic; font-family:'Cormorant Garamond',serif; opacity:.9">"Estes ficam gratuitos pra sempre, com ou sem assinatura.<br>Os anjos não cobram." — Monica</p>
 
       <button class="card" style="margin-top:10px; padding:14px 16px; display:flex; align-items:center; gap:12px; width:100%; cursor:pointer; background:#fff; border:1px solid var(--linha); border-radius:14px; text-align:left" onclick="abrirIndicar()">
         <div style="width:38px; height:38px; border-radius:50%; background:var(--ouro-bg); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0">🪽</div>
