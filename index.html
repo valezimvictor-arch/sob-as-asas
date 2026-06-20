@@ -862,6 +862,14 @@
         </div>
       </div>
 
+      <!-- Trial countdown — só aparece pra usuário em trial -->
+      <button id="trial-countdown" type="button" onclick="openPaywall('trial-countdown')"
+              style="display:none; width:100%; margin:0 0 12px; padding:10px 14px; background:linear-gradient(90deg, rgba(246,200,104,.20), rgba(239,159,39,.15)); border:1px solid rgba(186,117,23,.32); border-radius:14px; text-align:left; cursor:pointer; font-family:inherit; color:inherit; display:flex; align-items:center; gap:10px">
+        <span style="font-size:18px">🎁</span>
+        <span id="trial-countdown-texto" style="flex:1; font-size:13.5px; line-height:1.45; color:var(--tinta)">—</span>
+        <span style="color:var(--ouro); font-size:16px">▸</span>
+      </button>
+
       <!-- ░░ ALTAR CENTRAL — V1 "sob a presença de" ░░ -->
       <div id="altar-home" class="altar">
         <p id="home-saud" class="altar-saud">Boa noite</p>
@@ -2568,8 +2576,47 @@ async function addGratidao(){
   try{ var n=parseInt(localStorage.getItem('saa_grat_n')||'0',10)+1; localStorage.setItem('saa_grat_n', String(n)); }catch(_){}
 }
 // ── home dinâmica: salmo do dia + mensagem da semana (do Supabase) ──
+// Mostra "X dias grátis restantes" pro usuário em trial. Some pra plano pago ou free.
+async function atualizarTrialCountdown(){
+  var btn = document.getElementById('trial-countdown');
+  if(!btn) return;
+  // Pré-condições: tem que estar em trial (set pelo webhook do Stripe)
+  if(!window.saaAuth || !window._userId || window._plano !== 'trial'){
+    btn.style.display = 'none';
+    return;
+  }
+  try{
+    var r = await window.saaAuth.client.from('assinaturas')
+      .select('periodo_fim, status')
+      .eq('user_id', window._userId)
+      .maybeSingle();
+    if(r.error || !r.data || !r.data.periodo_fim){ btn.style.display='none'; return; }
+    if(r.data.status && r.data.status !== 'trialing'){ btn.style.display='none'; return; }
+
+    var fim = new Date(r.data.periodo_fim);
+    var agora = new Date();
+    var diff = Math.ceil((fim - agora) / 86400000);  // ceil pra mostrar 7 no primeiro dia
+    if(diff < 0){ btn.style.display='none'; return; }
+
+    var texto;
+    if(diff === 0){
+      texto = '<strong>Último dia grátis.</strong> Mantenha a Monica do seu lado por R$ 19,90/mês.';
+    } else if(diff <= 2){
+      texto = '<strong>'+diff+(diff===1?' dia':' dias')+' grátis restantes.</strong> Continue sob as asas — toque pra escolher seu plano.';
+    } else {
+      texto = 'Você está com <strong>'+diff+' dias grátis</strong> restantes do plano dos Anjos.';
+    }
+    var elTxt = document.getElementById('trial-countdown-texto');
+    if(elTxt) elTxt.innerHTML = texto;
+    btn.style.display = 'flex';
+  }catch(e){
+    btn.style.display = 'none';
+  }
+}
+
 async function carregarHome(){
   if(!window.saaAuth) return;
+  atualizarTrialCountdown();  // fire-and-forget
   try{
     var hoje=new Date().toISOString().slice(0,10);
     var rs=await window.saaAuth.client.from('conteudos').select('titulo,formato,colecao,duracao_seg,media_url,corpo').eq('publicado',true).or('data_pub.is.null,data_pub.lte.'+hoje).order('data_pub',{ascending:false});

@@ -161,7 +161,16 @@
   .monica-meta div p{ margin:0; }
   .monica-meta .nome{ font-weight:600; font-size:14.5px; color:var(--tinta); }
   .monica-meta .sub{ font-size:12px; color:var(--suave); margin-top:2px; }
-  .monica-redes{ display:flex; gap:14px; margin-top:14px; font-size:12.5px; color:var(--suave); }
+  .monica-bio{ margin:18px 0 0; font-size:14.5px; color:var(--tinta); line-height:1.65; }
+  .monica-bio em{ color:var(--ouro); font-style:italic; }
+  .monica-bio strong{ color:var(--ouro); font-weight:600; }
+  .monica-numeros{ display:flex; justify-content:space-around; gap:8px; margin:22px 0 6px; padding:18px 8px; background:linear-gradient(180deg, rgba(250,243,228,.55), rgba(250,243,228,.85)); border-radius:14px; border:1px solid var(--linha); text-align:center; }
+  .monica-numeros div{ flex:1; }
+  .monica-numeros strong{ display:block; font-family:'Playfair Display',serif; font-weight:500; font-size:24px; color:var(--ouro); line-height:1; }
+  .monica-numeros span{ display:block; font-size:11px; color:var(--suave); letter-spacing:.04em; margin-top:6px; line-height:1.3; }
+  .monica-redes{ display:flex; flex-wrap:wrap; gap:14px; margin-top:18px; font-size:12.5px; color:var(--suave); }
+  .monica-redes a{ color:var(--suave); text-decoration:none; border-bottom:1px solid transparent; transition:border-color .2s; }
+  .monica-redes a:hover{ border-bottom-color:var(--ouro); }
   .monica-redes strong{ color:var(--tinta); font-weight:500; }
 
   /* Depoimentos / prova social leve (textos genuínos, sem nome inventado) */
@@ -225,19 +234,27 @@
     <div class="pilar"><div class="ic">✨</div><div class="t">O Milagre do mês</div><div class="d">Uma história escolhida e realizada</div></div>
   </div>
 
-  <!-- Monica -->
+  <!-- Quem é a Monica -->
   <div class="monica">
     <p class="monica-quote">"Anjos não atendem por sorteio. Eles atendem por presença. Esse app é o lugar onde a presença vira hábito."</p>
     <div class="monica-meta">
       <div class="monica-circle">MB</div>
       <div>
         <p class="nome">Monica Buonfiglio</p>
-        <p class="sub">Autora de <em>Anjos Cabalísticos</em> · 30 anos de jornada · ~1 milhão de seguidores</p>
+        <p class="sub">Pioneira da angeologia cabalística no Brasil</p>
       </div>
     </div>
+    <p class="monica-bio">Monica Buonfiglio publicou <em>Anjos Cabalísticos</em> em 1995 — o primeiro livro brasileiro a apresentar os 72 nomes para o grande público. Vendeu mais de 1,5 milhão de exemplares ao longo de duas décadas, com presença consolidada em TV, rádio e palestras pelo país. <strong>Sob as Asas</strong> é o seu retorno ao ofício depois de 30 anos guiando milhares — agora num formato que cabe no bolso de quem precisa.</p>
+
+    <div class="monica-numeros">
+      <div><strong>30+</strong><span>anos com os anjos</span></div>
+      <div><strong>1,5M+</strong><span>livros vendidos</span></div>
+      <div><strong>72</strong><span>nomes na tradição</span></div>
+    </div>
+
     <div class="monica-redes">
-      <span><strong>@monicadosanjos72</strong></span>
-      <span>YouTube · Spotify · TV</span>
+      <a href="https://www.instagram.com/monicadosanjos72/" target="_blank" rel="noopener"><strong>@monicadosanjos72</strong> · Instagram</a>
+      <a href="https://www.youtube.com/@monicabuonfiglio" target="_blank" rel="noopener">YouTube</a>
     </div>
   </div>
 
