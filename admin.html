@@ -71,7 +71,8 @@
   <div id="painel" class="hide">
     <div class="tabs">
       <button class="tab on" id="tab-painel" onclick="aba('painel')">📊 Painel</button>
-      <button class="tab" id="tab-conteudo" onclick="aba('conteudo')">📜 Conteúdos</button>
+      <button class="tab" id="tab-roteiro" onclick="aba('roteiro')">📥 Roteiro Monica</button>
+      <button class="tab" id="tab-conteudo" onclick="aba('conteudo')">📜 Conteúdos (avançado)</button>
       <button class="tab" id="tab-milagre" onclick="aba('milagre')">✨ Milagre</button>
       <button class="tab" id="tab-leads" onclick="aba('leads')">📩 Leads</button>
       <button class="tab" id="tab-usuarios" onclick="aba('usuarios')">👥 Usuários</button>
@@ -102,6 +103,26 @@
         </div>
         <div id="funil"></div>
       </div>
+    </div>
+
+    <!-- ░░ ROTEIRO MONICA (checklist por semana) ░░ -->
+    <div id="sec-roteiro" class="hide">
+      <div class="nota">📥 <strong>Roteiro de gravação da Monica</strong> — checklist organizada por semana. Cada linha tem o nome exato do arquivo e o botão de upload. Pegue o arquivo gravado, renomeie como indicado e clique em "Enviar". Status: ✓ enviado · ⏳ pendente.</div>
+
+      <div class="card" style="margin-bottom:18px">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap">
+          <div>
+            <h3 style="font-family:'Playfair Display',serif; font-weight:400; font-size:18px; margin:0">Progresso geral</h3>
+            <p id="roteiro-resumo" style="margin:4px 0 0; font-size:13px; color:var(--suave)">Carregando…</p>
+          </div>
+          <button class="btn-sec" onclick="carregarRoteiro()">↻ Atualizar</button>
+        </div>
+        <div style="background:#F0E5C7; border-radius:99px; height:8px; margin-top:14px; overflow:hidden">
+          <div id="roteiro-barra" style="height:100%; width:0%; background:linear-gradient(90deg, var(--ouro-claro), var(--ouro)); transition:width .4s"></div>
+        </div>
+      </div>
+
+      <div id="roteiro-blocos"></div>
     </div>
 
     <!-- ░░ CONTEÚDOS ░░ -->
@@ -291,18 +312,193 @@ function salvarChave(){ KEY=document.getElementById('adminkey').value.trim(); if
 function entrar(){ document.getElementById('auth').classList.add('hide'); document.getElementById('painel').classList.remove('hide'); recarregar(); }
 function recarregar(){ carregarMetricas(); carregarConteudos(); carregarMilagre(); carregarLeads(); }
 function aba(qual){
-  ['painel','conteudo','milagre','leads','usuarios','newsletter','mensal'].forEach(function(q){
+  ['painel','roteiro','conteudo','milagre','leads','usuarios','newsletter','mensal'].forEach(function(q){
     document.getElementById('sec-'+q).classList.toggle('hide', q!==qual);
     document.getElementById('tab-'+q).classList.toggle('on', q===qual);
   });
   if(qual==='newsletter') carregarNewsletter();
   if(qual==='usuarios') carregarUsuarios();
+  if(qual==='roteiro') carregarRoteiro();
   if(qual==='mensal'){
     var hoje=new Date();
     if(!document.getElementById('mm-mes').value) document.getElementById('mm-mes').value = hoje.getMonth()+1;
     if(!document.getElementById('mm-ano').value) document.getElementById('mm-ano').value = hoje.getFullYear();
     carregarMensagensMensais();
   }
+}
+
+// ── Roteiro Monica (checklist por semana) ──
+var ROTEIRO_DADOS = null;
+var ROTEIRO_CONTEUDOS = []; // o que já foi enviado, vindo da API
+
+async function carregarRoteiro(){
+  var blocosEl = document.getElementById('roteiro-blocos');
+  blocosEl.innerHTML = '<p class="vazio">Carregando roteiro…</p>';
+
+  // 1) Carrega o roteiro estático (lista de arquivos esperados)
+  if(!ROTEIRO_DADOS){
+    try{
+      var r = await fetch('/data/roteiro-monica.json');
+      ROTEIRO_DADOS = await r.json();
+    }catch(e){
+      blocosEl.innerHTML = '<p class="vazio" style="color:#C0392B">Erro ao carregar /data/roteiro-monica.json</p>';
+      return;
+    }
+  }
+
+  // 2) Carrega o que já foi enviado pra cruzar status
+  try{
+    var rc = await fetch('/api/admin-conteudo',{headers:{'x-admin-key':KEY}});
+    if(rc.ok){ var j = await rc.json(); ROTEIRO_CONTEUDOS = j.conteudos || []; }
+  }catch(e){ ROTEIRO_CONTEUDOS = []; }
+
+  renderizarRoteiro();
+}
+
+function _roteiroStatusItem(item){
+  // Encontra um conteúdo já enviado que case com o título exato ou nome de arquivo
+  for(var i=0;i<ROTEIRO_CONTEUDOS.length;i++){
+    var c = ROTEIRO_CONTEUDOS[i];
+    if(c.titulo === item.titulo) return c;
+    if(c.media_url && c.media_url.indexOf(item.nome_arquivo) !== -1) return c;
+  }
+  return null;
+}
+
+function renderizarRoteiro(){
+  var html = '';
+  var totalEsperado = 0, totalEnviado = 0;
+
+  for(var b=0; b<ROTEIRO_DADOS.blocos.length; b++){
+    var bloco = ROTEIRO_DADOS.blocos[b];
+    html += '<div class="card" style="margin-bottom:16px; padding:0; overflow:hidden">';
+    html += '<div style="padding:14px 18px; background:var(--ouro-bg); border-bottom:1px solid rgba(186,117,23,.18)">';
+    html += '<h3 style="font-family:\'Playfair Display\',serif; font-weight:500; font-size:17px; margin:0; color:var(--ouro)">'+esc(bloco.rotulo)+'</h3>';
+    if(bloco.descricao) html += '<p style="margin:4px 0 0; font-size:13px; color:var(--suave); line-height:1.5">'+esc(bloco.descricao)+'</p>';
+    html += '</div>';
+
+    for(var s=0; s<bloco.semanas.length; s++){
+      var sem = bloco.semanas[s];
+      html += '<div style="padding:14px 18px; border-bottom:1px solid rgba(186,117,23,.10)">';
+      html += '<p style="margin:0 0 10px; font-size:14px; font-weight:600; color:var(--tinta)">'+esc(sem.rotulo)+'</p>';
+      if(sem.nota) html += '<p style="margin:0 0 12px; font-size:12px; color:var(--suave); font-style:italic; line-height:1.5">'+esc(sem.nota)+'</p>';
+
+      // Itens explícitos
+      if(sem.itens && sem.itens.length){
+        for(var i=0; i<sem.itens.length; i++){
+          var it = sem.itens[i];
+          it._colecao = it.colecao_override || sem.colecao;
+          totalEsperado++;
+          var enviado = _roteiroStatusItem(it);
+          if(enviado) totalEnviado++;
+          html += _roteiroLinhaHTML(it, b, s, i, enviado);
+        }
+      }
+
+      // Bloco auto-gerado pros 72 anjos
+      if(sem.colecao === '72_anjos' && bloco.auto_gerado_72){
+        html += '<details style="margin-top:8px"><summary style="cursor:pointer; font-size:13px; color:var(--ouro); padding:8px 0">▸ Expandir lista dos 72 anjos</summary>';
+        html += '<div style="margin-top:10px">';
+        var nomes72 = _nomes72Anjos();
+        for(var n=0; n<nomes72.length; n++){
+          var slug = nomes72[n].toLowerCase().replace(/[^a-z0-9]+/g,'-');
+          var num = String(n+1).padStart(2,'0');
+          var it72 = {
+            nome_arquivo: 'anjo-'+num+'-'+slug+'.mp3',
+            titulo: 'Anjo '+(n+1)+' — '+nomes72[n],
+            formato: 'audio',
+            _colecao: '72_anjos',
+            anjo_n: n+1,
+            duracao_min: 3.5
+          };
+          totalEsperado++;
+          var en72 = _roteiroStatusItem(it72);
+          if(en72) totalEnviado++;
+          html += _roteiroLinhaHTML(it72, b, s, 1000+n, en72);
+        }
+        html += '</div></details>';
+      }
+
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+
+  document.getElementById('roteiro-blocos').innerHTML = html;
+  document.getElementById('roteiro-resumo').textContent = totalEnviado + ' de ' + totalEsperado + ' arquivos enviados';
+  var pct = totalEsperado ? Math.round((totalEnviado/totalEsperado)*100) : 0;
+  document.getElementById('roteiro-barra').style.width = pct + '%';
+}
+
+function _roteiroLinhaHTML(it, b, s, i, enviado){
+  var statusChip = enviado
+    ? '<span class="tag" style="background:#E8F5E9; color:#1B5E20; border-color:#A5D6A7">✓ enviado</span>'
+    : '<span class="tag off">⏳ pendente</span>';
+  var inputId = 'rot-file-'+b+'-'+s+'-'+i;
+  var btnLabel = enviado ? 'Substituir' : ('Enviar '+(it.formato==='video'?'vídeo':'áudio'));
+  var btnClass = enviado ? 'btn-sec' : 'btn';
+  var dur = it.duracao_min ? ('~'+it.duracao_min+' min · ') : '';
+
+  return ''
+    + '<div style="display:flex; align-items:center; gap:12px; padding:10px 0; border-top:1px solid rgba(186,117,23,.08); flex-wrap:wrap">'
+    +   '<div style="flex:1; min-width:220px">'
+    +     '<div style="font-weight:500; font-size:14px; color:var(--tinta)">'+esc(it.titulo)+'</div>'
+    +     '<div style="font-size:11.5px; color:var(--suave); margin-top:2px; font-family:Menlo,monospace">'+esc(it.nome_arquivo)+'</div>'
+    +     '<div style="font-size:11px; color:var(--suave); margin-top:2px">'+dur+esc(it.formato==='video'?'Vídeo MP4 (1080p vertical)':'Áudio MP3 192kbps')+'</div>'
+    +   '</div>'
+    +   statusChip
+    +   '<input type="file" id="'+inputId+'" accept="'+(it.formato==='video'?'video/*':'audio/*')+'" style="display:none" '
+    +     'onchange="enviarRoteiroArquivo(this, '+JSON.stringify({nome_arquivo:it.nome_arquivo,titulo:it.titulo,formato:it.formato,colecao:it._colecao,dia_jornada:it.dia_jornada||null,anjo_n:it.anjo_n||null,duracao_min:it.duracao_min||null,sentimentos:it.sentimentos||[],premium:it.premium!==false}).replace(/"/g,'&quot;')+')" />'
+    +   '<button class="'+btnClass+'" style="white-space:nowrap" onclick="document.getElementById(\''+inputId+'\').click()">'+btnLabel+'</button>'
+    + '</div>';
+}
+
+async function enviarRoteiroArquivo(input, meta){
+  if(typeof meta === 'string'){ try{ meta = JSON.parse(meta.replace(/&quot;/g,'"')); }catch(e){ meta={}; } }
+  var f = input.files[0]; if(!f) return;
+
+  // Avisa se o nome do arquivo não confere com o esperado
+  if(f.name !== meta.nome_arquivo){
+    if(!confirm('O arquivo "'+f.name+'" tem nome diferente do esperado ("'+meta.nome_arquivo+'"). Continuar mesmo assim?')){
+      input.value = ''; return;
+    }
+  }
+
+  var btn = input.nextElementSibling;
+  var btnTxtOriginal = btn ? btn.textContent : null;
+  if(btn){ btn.disabled = true; btn.textContent = 'Enviando…'; }
+
+  try{
+    var media_url = await subirArquivo(f);
+    var body = {
+      action: 'criar',
+      titulo: meta.titulo,
+      formato: meta.formato,
+      colecao: meta.colecao,
+      media_url: media_url,
+      duracao_seg: meta.duracao_min ? Math.round(meta.duracao_min*60) : null,
+      sentimentos: meta.sentimentos || [],
+      dia_jornada: meta.dia_jornada || null,
+      anjo_n: meta.anjo_n || null,
+      premium: meta.premium !== false,
+      publicado: true,
+      data_pub: null
+    };
+    var r = await fetch('/api/admin-conteudo',{method:'POST',headers:{'Content-Type':'application/json','x-admin-key':KEY},body:JSON.stringify(body)});
+    var j = await r.json();
+    if(!j.ok) throw new Error(j.error||'falha');
+    // Recarrega lista pra atualizar status
+    await carregarRoteiro();
+  }catch(e){
+    alert('Erro ao enviar: '+(e.message||e));
+    if(btn){ btn.disabled = false; btn.textContent = btnTxtOriginal || 'Enviar'; }
+  }
+  input.value = '';
+}
+
+// Nomes dos 72 anjos (mesma ordem do data/anjos-conteudo.json)
+function _nomes72Anjos(){
+  return ['Vehuiah','Jeliel','Sitael','Elemiah','Mahasiah','Lelahel','Achaiah','Cahethel','Haziel','Aladiah','Laoviah','Hahaiah','Yesalel','Mebahel','Hariel','Hacamiah','Lahuviah','Caliel','Leuviah','Pahaliah','Nelchael','Yeiaiel','Melahel','Hahuiah','Nith-Haiah','Haaiah','Yeratel','Seheiah','Reiyel','Omael','Lecabel','Vasariah','Yehuiah','Lehahiah','Chavakhiah','Menadel','Aniel','Haamiah','Rehael','Yeiazel','Hahahel','Mikael','Veuliah','Yelaiah','Sealiah','Ariel','Asaliah','Mihael','Vehuel','Daniel','Hahasiah','Imamiah','Nanael','Nithael','Mebahiah','Poyel','Nemamiah','Yeialel','Harahel','Mitzrael','Umabel','Iah-hel','Anauel','Mehiel','Damabiah','Manakel','Eyael','Habuhiah','Rochel','Jabamiah','Haiaiel','Mumiah'];
 }
 
 // ── Mensagens Mensais (admin) ──
@@ -706,7 +902,7 @@ function iniciais(n){ return (n||'?').split(' ').map(function(p){return p[0];}).
 function val(id){ return (document.getElementById(id).value||'').trim(); }
 
 // ── CONTEÚDOS ──
-var COL_LABEL={salmo_diario:'Salmo Diário',mensagem_semana:'Mensagem da semana','72_anjos':'Os 72 Anjos',para_dormir:'Para dormir',prosperidade:'Prosperidade',protecao:'Proteção',conhecer_anjo:'Conhecer seu anjo'};
+var COL_LABEL={salmo_diario:'Salmo Diário',mensagem_semana:'Mensagem da semana','72_anjos':'Os 72 Anjos',para_dormir:'Para dormir',prosperidade:'Prosperidade',protecao:'Proteção',conhecer_anjo:'Conhecer seu anjo',magia_velas:'Magia das Velas',novena:'Novena dos Anjos',bencao:'Bênçãos de 30s'};
 function toggleJornadaCampos(){
   var col = val('c-colecao');
   document.getElementById('c-jornada-row').style.display = (col==='conhecer_anjo') ? 'flex' : 'none';
