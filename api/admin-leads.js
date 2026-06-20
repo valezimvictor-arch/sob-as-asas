@@ -2,9 +2,10 @@
 // Protegido por ADMIN_KEY.
 
 import { supabase } from './_lib/supabase.js';
+import { adminKeyValida } from './_lib/adminAuth.js';
 
 export default async function handler(req, res) {
-  if (!(req.headers['x-admin-key'] && req.headers['x-admin-key'] === process.env.ADMIN_KEY)) {
+  if (!adminKeyValida(req)) {
     return res.status(401).json({ ok: false, error: 'Não autorizado' });
   }
 

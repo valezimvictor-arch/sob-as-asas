@@ -9,9 +9,10 @@
 // POST /api/admin-milagre { action:'publicar', milagreId }
 
 import { supabase } from './_lib/supabase.js';
+import { adminKeyValida } from './_lib/adminAuth.js';
 
 function authorized(req) {
-  return req.headers['x-admin-key'] && req.headers['x-admin-key'] === process.env.ADMIN_KEY;
+  return adminKeyValida(req);
 }
 
 export default async function handler(req, res) {

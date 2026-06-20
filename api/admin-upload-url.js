@@ -4,11 +4,12 @@
 // subir vídeos/áudios grandes. Protegido por ADMIN_KEY; o segredo fica no servidor.
 
 import { supabase } from './_lib/supabase.js';
+import { adminKeyValida } from './_lib/adminAuth.js';
 
 const BUCKET = 'conteudos';
 
 export default async function handler(req, res) {
-  if (!(req.headers['x-admin-key'] && req.headers['x-admin-key'] === process.env.ADMIN_KEY)) {
+  if (!adminKeyValida(req)) {
     return res.status(401).json({ ok: false, error: 'Não autorizado' });
   }
   if (req.method !== 'POST') return res.status(405).end();

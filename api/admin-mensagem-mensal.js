@@ -8,8 +8,9 @@
 // POST /api/admin-mensagem-mensal {action:'excluir', id}
 
 import { supabase } from './_lib/supabase.js';
+import { adminKeyValida } from './_lib/adminAuth.js';
 
-function ok(req){ return req.headers['x-admin-key'] && req.headers['x-admin-key'] === process.env.ADMIN_KEY; }
+function ok(req){ return adminKeyValida(req); }
 
 export default async function handler(req, res) {
   if (!ok(req)) return res.status(401).json({ ok: false, error: 'Não autorizado' });

@@ -2,9 +2,10 @@
 // Protegido por ADMIN_KEY.
 
 import { supabase } from './_lib/supabase.js';
+import { adminKeyValida } from './_lib/adminAuth.js';
 
 export default async function handler(req, res) {
-  if (req.headers['x-admin-key'] !== process.env.ADMIN_KEY) {
+  if (!adminKeyValida(req)) {
     return res.status(401).json({ ok: false, error: 'Não autorizado' });
   }
   const dias = Math.min(60, Math.max(7, Number(req.query.dias) || 30));

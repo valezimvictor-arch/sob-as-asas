@@ -2,6 +2,7 @@
 // Protegido por ADMIN_KEY.
 
 import { supabase } from './_lib/supabase.js';
+import { adminKeyValida } from './_lib/adminAuth.js';
 
 const PRECO = { mensal: 19.90, anual: 149 / 12 }; // MRR equivalente (R$ 12,42/mês no anual)
 
@@ -13,7 +14,7 @@ async function count(tabela, filtro) {
 }
 
 export default async function handler(req, res) {
-  if (!(req.headers['x-admin-key'] && req.headers['x-admin-key'] === process.env.ADMIN_KEY)) {
+  if (!adminKeyValida(req)) {
     return res.status(401).json({ ok: false, error: 'Não autorizado' });
   }
 
