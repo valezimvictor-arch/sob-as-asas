@@ -1908,11 +1908,30 @@ function openPaywall(ctx){
   openModal('paywall'); buzz();
 }
 function closePaywall(){ closeModal('paywall'); }
+// Espera até `timeoutMs` pelo script do Supabase terminar de carregar.
+// Resolve true se carregou, false se estourou o timeout.
+function _aguardarSaaAuth(timeoutMs){
+  timeoutMs = timeoutMs || 6000;
+  return new Promise(function(resolve){
+    if(window.saaAuth) return resolve(true);
+    var ini = Date.now();
+    var iv = setInterval(function(){
+      if(window.saaAuth){ clearInterval(iv); resolve(true); }
+      else if(Date.now()-ini > timeoutMs){ clearInterval(iv); resolve(false); }
+    }, 120);
+  });
+}
+
 async function iniciarAssinatura(plano){
   console.log('[iniciarAssinatura] plano=', plano, 'userId=', window._userId, 'saaAuth=', !!window.saaAuth);
+  // Espera o script terminar de carregar (race condition após redirect do Stripe)
   if(!window.saaAuth){
-    toast('Configuração do Supabase não carregou. Recarrega a página.');
-    return;
+    toast('Carregando… um instante 🪽');
+    var ok = await _aguardarSaaAuth();
+    if(!ok){
+      toast('Configuração não carregou. Recarrega a página (Cmd+Shift+R).');
+      return;
+    }
   }
   if(!window._userId){
     toast('Você precisa estar logada(o) para assinar. Abrindo login…');
