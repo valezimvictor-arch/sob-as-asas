@@ -633,6 +633,54 @@
   </div>
 </section>
 
+<!-- ░░ ANJO DA HORA (humanidade — universal, gratuito) ░░ -->
+<section id="s-anjo-hora" class="screen">
+  <div style="flex:1; overflow-y:auto" class="pad">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+
+    <p style="font-size:11px; letter-spacing:.18em; color:var(--ouro); text-transform:uppercase; font-weight:600; margin:8px 0 4px">Anjo da humanidade</p>
+    <h2 class="serif" style="font-size:26px; margin:0 0 6px; font-weight:400">Quem rege agora</h2>
+    <p style="color:var(--tinta-suave); font-size:13.5px; margin:0 0 18px; line-height:1.6">Cada um dos 72 anjos rege 20 minutos do dia. Naquele intervalo, ele se inclina sobre <em>toda a humanidade</em> — não só sobre quem é regido por ele. É um portão coletivo. Aberto. <strong>Sempre gratuito.</strong></p>
+
+    <!-- Card do anjo do momento (atualiza a cada minuto) -->
+    <div class="card" style="padding:22px; background:var(--ouro-bg); border-color:transparent; text-align:center">
+      <div style="font-size:34px">⏳</div>
+      <p id="ahn-horario" style="margin:8px 0 4px; font-size:13px; color:var(--ouro); letter-spacing:.06em">—</p>
+      <p id="ahn-nome" class="serif" style="margin:6px 0 4px; font-size:34px; color:var(--tinta); font-weight:500; line-height:1.1">—</p>
+      <p id="ahn-dom" style="margin:0 0 6px; font-style:italic; font-family:'Cormorant Garamond',serif; font-size:17px; color:var(--ouro)">—</p>
+      <p id="ahn-coro" style="margin:8px 0 0; font-size:12px; color:var(--tinta-suave); letter-spacing:.04em">—</p>
+    </div>
+
+    <p id="ahn-afirmacao" class="serif" style="margin:18px auto; max-width:380px; text-align:center; font-style:italic; font-family:'Cormorant Garamond',serif; font-size:17px; color:var(--tinta); line-height:1.55">—</p>
+
+    <!-- Anjo da Humanidade do MEU nascimento -->
+    <div style="margin-top:30px; padding-top:24px; border-top:1px solid var(--linha)">
+      <h3 class="serif" style="font-size:20px; margin:0 0 6px; font-weight:400">Seu anjo da humanidade</h3>
+      <p style="color:var(--tinta-suave); font-size:13px; margin:0 0 16px; line-height:1.6">Que anjo regia a humanidade no instante exato em que você nasceu? Diga a hora do seu nascimento — Monica vai te dizer.</p>
+
+      <div id="ahn-form" style="display:block">
+        <p class="label" style="display:block; margin-bottom:6px">Hora de nascimento (HH:MM)</p>
+        <input id="ahn-input" class="campo" type="time" placeholder="14:30" style="margin-bottom:10px" />
+        <button class="btn-ouro" onclick="calcularAnjoHumanidade()">Descobrir meu anjo da humanidade</button>
+        <p style="margin:10px 0 0; font-size:11.5px; color:var(--tinta-suave); line-height:1.55; opacity:.85">Se não souber a hora exata, use o melhor que você lembrar. A aproximação serve — o que importa é a sua presença.</p>
+      </div>
+
+      <div id="ahn-resultado" style="display:none">
+        <div class="card" style="padding:22px; background:#fff; border:1px solid var(--linha); text-align:center; margin-top:10px">
+          <p style="font-size:11px; letter-spacing:.18em; color:var(--ouro); text-transform:uppercase; font-weight:600; margin:0 0 6px">No seu nascimento regia</p>
+          <p id="ahn-meu-nome" class="serif" style="margin:6px 0 4px; font-size:30px; color:var(--tinta); font-weight:500">—</p>
+          <p id="ahn-meu-dom" style="margin:0 0 8px; font-style:italic; font-family:'Cormorant Garamond',serif; font-size:16px; color:var(--ouro)">—</p>
+          <p id="ahn-meu-coro" style="margin:0; font-size:12px; color:var(--tinta-suave); letter-spacing:.04em">—</p>
+          <p id="ahn-meu-faixa" style="margin:10px 0 0; font-size:11.5px; color:var(--tinta-suave)">—</p>
+        </div>
+        <button class="btn-ghost" style="margin-top:12px" onclick="document.getElementById('ahn-resultado').style.display='none';document.getElementById('ahn-form').style.display='block';">Calcular outra hora</button>
+      </div>
+    </div>
+
+    <p style="margin:24px auto 0; padding:12px 16px; max-width:340px; text-align:center; font-size:11px; color:var(--tinta-suave); line-height:1.55; opacity:.85; border-top:1px solid rgba(186,117,23,.12)">Conteúdo autoral de Monica Buonfiglio. Uso pessoal apenas — não reproduza.</p>
+  </div>
+</section>
+
 <!-- ░░ INDICAR ░░ -->
 <section id="s-indicar" class="screen">
   <div style="flex:1; overflow-y:auto" class="pad">
@@ -936,6 +984,17 @@
         <p style="margin:0 0 6px; font-size:10.5px; letter-spacing:.18em; color:var(--ouro); text-transform:uppercase; font-weight:600">Mensagem de hoje</p>
         <p id="home-msg-dia-texto" class="serif" style="margin:0; font-size:16px; line-height:1.55; color:var(--tinta); font-family:'Cormorant Garamond','EB Garamond',Georgia,serif; font-style:italic">—</p>
       </div>
+
+      <!-- Anjo da Hora (humanidade) — universal, atualiza a cada 20 min, GRATUITO pra todos -->
+      <button id="home-anjo-hora" class="card" style="margin-top:14px; padding:14px 16px; display:flex; align-items:center; gap:12px; width:100%; cursor:pointer; background:#fff; border:1px solid var(--linha); border-radius:14px; text-align:left" onclick="abrirAnjoHora()">
+        <div style="width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg, rgba(246,200,104,.45), rgba(186,117,23,.18)); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(186,117,23,.18)">⏳</div>
+        <div style="flex:1; min-width:0">
+          <p style="margin:0; font-size:10px; letter-spacing:.16em; color:var(--ouro); text-transform:uppercase; font-weight:600">Anjo da humanidade — agora</p>
+          <p id="home-anjo-hora-nome" class="serif" style="margin:3px 0 0; font-size:18px; color:var(--tinta); font-weight:500">—</p>
+          <p id="home-anjo-hora-sub" style="margin:1px 0 0; font-size:11.5px; color:var(--tinta-suave); line-height:1.35">—</p>
+        </div>
+        <span style="color:var(--ouro); font-size:18px">▸</span>
+      </button>
 
       <!-- velas acesas hoje (presença coletiva) -->
       <!-- Bênção rápida (30s) — pura presença, sem ritual -->
@@ -1994,6 +2053,96 @@ ANJOS.forEach(function(a){ a[3].forEach(function(dm){ INDICE[dm[1]*100+dm[0]]={n
 var ANJOS_HUMANIDADE={ n:0, nome:'Anjos da Humanidade', atributo:'Uma data rara e sagrada — você tem um papel fundamental.', coro:null, humanidade:true, datas:[[31,5],[12,8],[24,10],[5,1],[19,3]] };
 function anjoRegente(m,d){ return INDICE[m*100+d] || ANJOS_HUMANIDADE; }
 
+// ── Anjo da Hora (humanidade) ──
+// Cada anjo rege 20 minutos do dia em sequência, 24h cobertas pelos 72.
+// Anjo 1 (Vehuiah): 00:00–00:20 · Anjo 2 (Jeliel): 00:20–00:40 · ... · Anjo 72 (Mumiah): 23:40–24:00
+// Universal: a presença daquele anjo se inclina sobre TODA A HUMANIDADE naquele intervalo.
+function anjoDaHora(dataHora){
+  var d = dataHora || new Date();
+  var totalMin = d.getHours() * 60 + d.getMinutes();
+  var n = Math.floor(totalMin / 20) + 1;
+  return Math.max(1, Math.min(72, n));
+}
+// Calcula o anjo da humanidade no momento de nascimento (a partir de "HH:MM").
+function anjoDaHumanidadeNascimento(horaStr){
+  if(!horaStr) return null;
+  var m = String(horaStr).match(/^(\d{1,2}):(\d{2})$/);
+  if(!m) return null;
+  var hh = Math.min(23, Math.max(0, parseInt(m[1],10)));
+  var mm = Math.min(59, Math.max(0, parseInt(m[2],10)));
+  var d = new Date(); d.setHours(hh, mm, 0, 0);
+  return anjoDaHora(d);
+}
+// Atualiza o card do home com o anjo da hora atual.
+async function atualizarAnjoHora(){
+  var card = document.getElementById('home-anjo-hora'); if(!card) return;
+  var n = anjoDaHora();
+  var dados = await carregarAnjosRicos();
+  var a = dados && dados[String(n)];
+  if(!a){ card.style.display='none'; return; }
+  var elN = document.getElementById('home-anjo-hora-nome');
+  var elS = document.getElementById('home-anjo-hora-sub');
+  if(elN) elN.textContent = a.nome;
+  if(elS) elS.textContent = a.horario + ' · anjo ' + (a.dom_principal||'').toLowerCase().split(/[\s,]+/).slice(0,3).join(' ');
+  card.style.display = 'flex';
+}
+// Re-render a cada 30s pra capturar a virada dos 20 min
+setInterval(function(){
+  var ativa = document.querySelector('#s-home.active');
+  if(ativa) atualizarAnjoHora();
+  var anjoHoraAtiva = document.querySelector('#s-anjo-hora.active');
+  if(anjoHoraAtiva) preencherTelaAnjoHora();
+}, 30000);
+
+async function abrirAnjoHora(){
+  show('s-anjo-hora');
+  preencherTelaAnjoHora();
+  // reset form se já tinha resultado mostrado
+  document.getElementById('ahn-resultado').style.display = 'none';
+  document.getElementById('ahn-form').style.display = 'block';
+  // pré-preenche se já calculou antes
+  try{
+    var saved = localStorage.getItem('saa_hora_nascimento');
+    if(saved && /^\d{2}:\d{2}$/.test(saved)){
+      document.getElementById('ahn-input').value = saved;
+    }
+  }catch(_){}
+}
+async function preencherTelaAnjoHora(){
+  var n = anjoDaHora();
+  var dados = await carregarAnjosRicos();
+  var a = dados && dados[String(n)];
+  if(!a) return;
+  document.getElementById('ahn-horario').textContent = a.horario;
+  document.getElementById('ahn-nome').textContent = a.nome;
+  document.getElementById('ahn-dom').textContent = a.dom_principal || '';
+  document.getElementById('ahn-coro').textContent = 'Coro dos ' + (a.coro || '');
+  document.getElementById('ahn-afirmacao').textContent = '"' + (a.afirmacao || '') + '"';
+}
+async function calcularAnjoHumanidade(){
+  var hora = (document.getElementById('ahn-input').value || '').trim();
+  if(!/^\d{2}:\d{2}$/.test(hora)){
+    toast('Digite a hora no formato HH:MM (ex: 14:30)');
+    return;
+  }
+  var n = anjoDaHumanidadeNascimento(hora);
+  if(!n){ toast('Hora inválida'); return; }
+  var dados = await carregarAnjosRicos();
+  var a = dados && dados[String(n)];
+  if(!a){ toast('Não consegui carregar os dados. Tente em alguns segundos.'); return; }
+
+  document.getElementById('ahn-meu-nome').textContent = a.nome;
+  document.getElementById('ahn-meu-dom').textContent = a.dom_principal || '';
+  document.getElementById('ahn-meu-coro').textContent = 'Coro dos ' + (a.coro || '');
+  document.getElementById('ahn-meu-faixa').textContent = 'Regia o intervalo ' + a.horario + ' quando você chegou';
+  document.getElementById('ahn-form').style.display = 'none';
+  document.getElementById('ahn-resultado').style.display = 'block';
+  buzz(); chime();
+  // Persiste no perfil do usuário pra próximas aberturas
+  try{ localStorage.setItem('saa_hora_nascimento', hora); }catch(_){}
+  try{ if(window.plausible) window.plausible('anjo_humanidade_calculado', { props: { coro: a.coro || '' } }); }catch(_){}
+}
+
 // ── navegação entre telas ──
 function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -2183,6 +2332,7 @@ let homeReady=false;
 function initHome(){
   renderizarAltarHome();
   carregarVelasColetivo();
+  atualizarAnjoHora();
   atualizarHomeJornadaCard();
   atualizarHomeMMPreview();
   atualizarHomeDormirCard();
