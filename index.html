@@ -4539,14 +4539,30 @@ function abrirRitual(periodo){
 }
 
 // ── Meu Anjo (detalhe) — carrega de /data/anjos-conteudo.json ──
+// Pré-carregado no boot pra evitar "—" placeholder no primeiro render do home.
 window._anjosRicos = null;
+window._anjosRicosPromise = null;
 async function carregarAnjosRicos(){
   if(window._anjosRicos) return window._anjosRicos;
-  try{
-    var r = await fetch('/data/anjos-conteudo.json');
-    if(r.ok){ window._anjosRicos = await r.json(); }
-  }catch(e){}
-  return window._anjosRicos;
+  // Se já tem uma request em curso, reusa (evita N requests paralelas)
+  if(window._anjosRicosPromise) return window._anjosRicosPromise;
+  window._anjosRicosPromise = (async function(){
+    try{
+      var r = await fetch('/data/anjos-conteudo.json');
+      if(r.ok){ window._anjosRicos = await r.json(); }
+    }catch(e){}
+    return window._anjosRicos;
+  })();
+  return window._anjosRicosPromise;
+}
+// Boot-time prefetch: dispara o fetch o quanto antes pra dados já estarem
+// em memória quando o usuário chegar no home (não vê mais placeholders "—")
+if(typeof document !== 'undefined'){
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ carregarAnjosRicos(); });
+  } else {
+    carregarAnjosRicos();
+  }
 }
 function _setMA(id, val, opt){
   var el=document.getElementById(id); if(!el) return;
