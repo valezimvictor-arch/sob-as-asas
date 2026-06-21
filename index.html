@@ -2008,15 +2008,44 @@
 
 <!-- modal: respiração guiada 4-7-8 -->
 <!-- Modal: Bênção de 30 segundos -->
-<div id="modal-bencao" role="dialog" aria-modal="true" aria-label="Bênção de 30 segundos" style="position:fixed; inset:0; z-index:72; display:none; background:radial-gradient(ellipse at center, rgba(186,117,23,.85) 0%, rgba(44,44,42,.92) 65%, rgba(20,18,14,.95) 100%); align-items:center; justify-content:center">
-  <div style="position:relative; width:100%; max-width:520px; padding:40px 28px; display:flex; flex-direction:column; align-items:center; text-align:center; color:#FBFAF7">
-    <div id="bencao-halo" style="position:absolute; top:6%; width:280px; height:280px; border-radius:50%; background:radial-gradient(circle, rgba(255,235,180,.5) 0%, rgba(255,235,180,0) 70%); animation:respira 3.5s ease-in-out infinite; pointer-events:none"></div>
-    <div style="font-size:42px; position:relative; z-index:1">🕊️</div>
-    <p id="bencao-titulo" class="serif-soft" style="font-size:15px; color:#F6D38A; margin:14px 0 0; letter-spacing:.16em; text-transform:uppercase; font-style:normal; position:relative; z-index:1">Sua bênção</p>
-    <p id="bencao-texto" class="serif" style="font-size:24px; line-height:1.45; margin:18px 0 0; max-width:380px; font-weight:400; position:relative; z-index:1">—</p>
+<div id="modal-bencao" role="dialog" aria-modal="true" aria-label="Bênção de 30 segundos" style="position:fixed; inset:0; z-index:72; display:none; background:#0F0C08; align-items:center; justify-content:center">
+  <!-- Halo dourado central, sutil, contemplativo (não sunset) -->
+  <div id="bencao-halo" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:520px; height:520px; max-width:90vw; max-height:90vw; border-radius:50%; background:radial-gradient(circle, rgba(239,159,39,.22) 0%, rgba(186,117,23,.08) 40%, transparent 70%); animation:bencao-respira 5s ease-in-out infinite; pointer-events:none; filter:blur(2px)"></div>
+  <!-- Filigrana estrelada quase imperceptível ao fundo -->
+  <div style="position:absolute; inset:0; background-image:radial-gradient(circle at 18% 22%, rgba(246,200,104,.05) 1px, transparent 2px), radial-gradient(circle at 78% 64%, rgba(246,200,104,.04) 1px, transparent 2px), radial-gradient(circle at 42% 84%, rgba(246,200,104,.06) 1px, transparent 2px), radial-gradient(circle at 88% 14%, rgba(246,200,104,.05) 1px, transparent 2px); background-size: 140px 140px, 180px 180px, 110px 110px, 220px 220px; opacity:.7; pointer-events:none"></div>
+
+  <div style="position:relative; width:100%; max-width:520px; padding:40px 32px; display:flex; flex-direction:column; align-items:center; text-align:center; color:#F6EDD5">
+    <!-- Sigilo refinado em ouro pálido (substitui pomba+halo confuso) -->
+    <svg viewBox="0 0 80 80" style="width:64px; height:64px; opacity:.85; animation:respira-sigilo 6s ease-in-out infinite" aria-hidden="true">
+      <defs>
+        <linearGradient id="bnc-ouro" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#F6C868"/>
+          <stop offset="100%" stop-color="#BA7517"/>
+        </linearGradient>
+      </defs>
+      <circle cx="40" cy="40" r="30" fill="none" stroke="url(#bnc-ouro)" stroke-width=".8" opacity=".5"/>
+      <circle cx="40" cy="40" r="24" fill="none" stroke="url(#bnc-ouro)" stroke-width=".5" stroke-dasharray="1 2" opacity=".6"/>
+      <g stroke="url(#bnc-ouro)" stroke-width=".8" fill="none" opacity=".85">
+        <path d="M40 14 L40 40 L46 26 Z"/>
+        <path d="M66 40 L40 40 L54 46 Z"/>
+        <path d="M40 66 L40 40 L34 54 Z"/>
+        <path d="M14 40 L40 40 L26 34 Z"/>
+      </g>
+      <circle cx="40" cy="40" r="3" fill="#F6C868" opacity=".9"/>
+    </svg>
+
+    <p id="bencao-titulo" class="serif-soft" style="font-size:12.5px; color:#D89A2C; margin:18px 0 0; letter-spacing:.24em; text-transform:uppercase; font-style:normal; font-weight:600">Sua bênção</p>
+
+    <p id="bencao-texto" class="serif" style="font-size:23px; line-height:1.55; margin:22px 0 0; max-width:380px; font-weight:400; color:#FAF3E4; letter-spacing:.005em">—</p>
+
     <audio id="bencao-audio" style="display:none"></audio>
-    <p id="bencao-rodape" class="serif-soft" style="font-size:14px; color:#F6D38A; margin:30px 0 0; font-style:italic; position:relative; z-index:1">Sob as asas</p>
-    <button onclick="fecharBencao()" style="margin-top:34px; background:none; border:1px solid rgba(251,250,247,.3); color:#FBFAF7; border-radius:12px; padding:10px 24px; font:inherit; font-size:14px; cursor:pointer; position:relative; z-index:1">Encerrar</button>
+
+    <!-- Filete dourado fino — divisor poético -->
+    <div style="width:48px; height:1px; background:linear-gradient(90deg, transparent, #D89A2C, transparent); margin:34px 0 18px"></div>
+
+    <p id="bencao-rodape" class="serif-soft" style="font-size:13.5px; color:#D89A2C; margin:0; font-style:italic; letter-spacing:.02em">Sob as asas</p>
+
+    <button onclick="fecharBencao()" style="margin-top:44px; background:transparent; border:1px solid rgba(216,154,44,.4); color:#F6EDD5; border-radius:99px; padding:11px 36px; font:inherit; font-size:13.5px; letter-spacing:.05em; cursor:pointer; transition:border-color .25s ease, background .25s ease">Encerrar</button>
   </div>
 </div>
 
@@ -2125,8 +2154,7 @@
     </button>
     <p style="text-align:center; font-size:11.5px; color:var(--tinta-suave); margin:8px 0 0; letter-spacing:.01em">sem cartão pra começar · cancele em 1 clique</p>
     <button onclick="closePaywall()" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;width:100%;margin-top:14px">Agora não</button>
-    <button onclick="abrirTempoDeGraca()" style="background:none;border:none;color:var(--ouro);font-size:13.5px;width:100%;margin-top:10px;font-style:italic;font-family:'Cormorant Garamond',serif;text-decoration:underline;text-underline-offset:3px">Não posso pagar agora</button>
-    <p style="text-align:center; font-size:11px; color:var(--tinta-suave); margin:10px 0 0">A candidatura ao Milagre do mês é sempre gratuita.</p>
+    <p style="text-align:center; font-size:11px; color:var(--tinta-suave); margin:14px 0 0">A candidatura ao Milagre do mês é sempre gratuita.</p>
   </div>
 </div>
 
@@ -3487,7 +3515,11 @@ function _codigoIndicacao(){
 function abrirIndicar(){
   var codigo = _codigoIndicacao();
   if(!codigo){
-    toast('Termine seu cadastro primeiro pra ganhar seu link.');
+    // Usuário fez revelação mas não criou conta — direciona pro login
+    toast('Salve seu santuário primeiro pra ganhar seu link de convite.');
+    setTimeout(function(){
+      if(window.saaAuth){ resetLoginUI(); show('s-login'); }
+    }, 1400);
     return;
   }
   var link = 'https://sobasasas.com.br/?ref=' + codigo;
