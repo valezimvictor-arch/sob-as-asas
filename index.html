@@ -446,7 +446,38 @@
   <div id="rv-clarao" class="clarao"></div>
   <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center">
     <p class="reveal-fade serif-soft" id="rv-intro" style="font-size:19px; color:var(--ouro)">O seu anjo da guarda é…</p>
-    <div class="reveal-anjo" id="rv-anjo" style="margin:18px 0">
+
+    <!-- Sigilo cabalístico (mesmo SVG do altar — continuidade visual reveal→home) -->
+    <svg class="reveal-fade" id="rv-sigilo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:108px; height:108px; margin:18px 0 6px; animation:respira-sigilo 6s ease-in-out infinite">
+      <defs>
+        <radialGradient id="rv-halo" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#F6C868" stop-opacity=".7"/><stop offset="60%" stop-color="#EF9F27" stop-opacity=".2"/><stop offset="100%" stop-color="#BA7517" stop-opacity="0"/></radialGradient>
+        <linearGradient id="rv-ouro1" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#F6C868"/><stop offset="50%" stop-color="#D89A2C"/><stop offset="100%" stop-color="#7C4E0F"/></linearGradient>
+        <linearGradient id="rv-ouro2" x1="0" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#EF9F27"/><stop offset="100%" stop-color="#BA7517"/></linearGradient>
+      </defs>
+      <circle cx="50" cy="50" r="48" fill="url(#rv-halo)"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="url(#rv-ouro1)" stroke-width="1.2"/>
+      <circle cx="50" cy="50" r="34" fill="none" stroke="url(#rv-ouro2)" stroke-width=".5" stroke-dasharray="1 2.5"/>
+      <g class="altar-sigilo-rotate">
+        <g stroke="url(#rv-ouro1)" stroke-width="1" fill="none" opacity=".9">
+          <path d="M50 18 Q56 32 50 50 Q44 32 50 18 Z"/>
+          <path d="M82 50 Q68 56 50 50 Q68 44 82 50 Z"/>
+          <path d="M50 82 Q44 68 50 50 Q56 68 50 82 Z"/>
+          <path d="M18 50 Q32 44 50 50 Q32 56 18 50 Z"/>
+          <path d="M73 27 Q63 36 50 50 Q63 36 73 27 Z" opacity=".5"/>
+          <path d="M73 73 Q63 64 50 50 Q63 64 73 73 Z" opacity=".5"/>
+          <path d="M27 73 Q37 64 50 50 Q37 64 27 73 Z" opacity=".5"/>
+          <path d="M27 27 Q37 36 50 50 Q37 36 27 27 Z" opacity=".5"/>
+        </g>
+      </g>
+      <g transform="translate(50,50)">
+        <polygon points="0,-14 12,7 -12,7" fill="none" stroke="url(#rv-ouro2)" stroke-width="1" opacity=".65"/>
+        <polygon points="0,14 12,-7 -12,-7" fill="none" stroke="url(#rv-ouro2)" stroke-width="1" opacity=".65"/>
+        <circle r="7" fill="#FBF6E8" stroke="url(#rv-ouro1)" stroke-width=".8"/>
+        <text x="0" y="3.5" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="11" font-weight="500" fill="#7C4E0F" id="rv-sigilo-num">—</text>
+      </g>
+    </svg>
+
+    <div class="reveal-anjo" id="rv-anjo" style="margin:6px 0">
       <div style="font-size:13px; letter-spacing:.18em; color:var(--ouro); text-transform:uppercase" id="rv-num">Anjo 55</div>
       <h1 class="serif" id="rv-nome" style="font-size:48px; margin:6px 0 0; color:var(--tinta)">Mebahiah</h1>
       <div class="serif-soft" id="rv-coro" style="font-size:18px; color:var(--ouro); margin-top:4px">Coro dos Principados</div>
@@ -2275,6 +2306,9 @@ function revelar(){
 
   const anjo=anjoRegente(m,d);
   const dias=anjo.datas.map(function(dm){return dm[0]+' '+MESES[dm[1]-1];}).join(' · ');
+  // Sigilo: popula o número do anjo no centro (ou esconde se humanidade)
+  var elSigNum = document.getElementById('rv-sigilo-num');
+  var elSigilo = document.getElementById('rv-sigilo');
   if(anjo.humanidade){
     document.getElementById('rv-intro').textContent='';
     document.getElementById('rv-num').textContent='';
@@ -2282,6 +2316,7 @@ function revelar(){
     document.getElementById('rv-coro').textContent='';
     document.getElementById('rv-attr').textContent='Você nasceu numa data muito especial e tem um papel fundamental. Não há um único anjo regente — você escolhe, entre os 72, aquele que mais ressoa com você.';
     document.getElementById('rv-faixa').textContent='Datas dos Anjos da Humanidade: '+dias;
+    if(elSigilo) elSigilo.style.display = 'none';
   } else {
     document.getElementById('rv-intro').textContent='O seu anjo da guarda é…';
     document.getElementById('rv-num').textContent='Anjo '+anjo.n;
@@ -2289,6 +2324,8 @@ function revelar(){
     document.getElementById('rv-coro').textContent='Coro dos '+anjo.coro;
     document.getElementById('rv-attr').textContent=anjo.atributo;
     document.getElementById('rv-faixa').textContent='Reina nos dias: '+dias;
+    if(elSigilo) elSigilo.style.display = '';
+    if(elSigNum) elSigNum.textContent = anjo.n;
   }
   window._anjo=anjo.nome;
   window._perfil={ nome:window._nome, nascimento:(y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0')), anjo_n:anjo.n, anjo_nome:anjo.nome };
