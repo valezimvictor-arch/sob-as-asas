@@ -992,9 +992,9 @@
         </div>
       </div>
 
-      <!-- Trial countdown — só aparece pra usuário em trial -->
+      <!-- Trial countdown — só aparece pra usuário em trial (JS controla display) -->
       <button id="trial-countdown" type="button" onclick="openPaywall('trial-countdown')"
-              style="display:none; width:100%; margin:0 0 12px; padding:10px 14px; background:linear-gradient(90deg, rgba(246,200,104,.20), rgba(239,159,39,.15)); border:1px solid rgba(186,117,23,.32); border-radius:14px; text-align:left; cursor:pointer; font-family:inherit; color:inherit; display:flex; align-items:center; gap:10px">
+              style="display:none; width:100%; margin:0 0 12px; padding:10px 14px; background:linear-gradient(90deg, rgba(246,200,104,.20), rgba(239,159,39,.15)); border:1px solid rgba(186,117,23,.32); border-radius:14px; text-align:left; cursor:pointer; font-family:inherit; color:inherit; align-items:center; gap:10px">
         <span style="font-size:18px">🎁</span>
         <span id="trial-countdown-texto" style="flex:1; font-size:13.5px; line-height:1.45; color:var(--tinta)">—</span>
         <span style="color:var(--ouro); font-size:16px">▸</span>
@@ -2817,36 +2817,56 @@ function _aguardarSaaAuth(timeoutMs){
 
 async function iniciarAssinatura(plano){
   console.log('[Sob as Asas] iniciarAssinatura chamada com plano=', plano);
+  // Feedback visual imediato no botão pra usuário saber que o clique pegou
+  var btn = document.querySelector('#paywall .btn-ouro');
+  var btnLabel = document.getElementById('paywall-btn-label');
+  var labelOriginal = btnLabel ? btnLabel.textContent : 'Começar 7 dias grátis';
+  function setBtnLoading(){ if(btn){ btn.disabled = true; btn.style.opacity = '.75'; } if(btnLabel) btnLabel.textContent = 'Abrindo o checkout…'; }
+  function resetBtn(){ if(btn){ btn.disabled = false; btn.style.opacity = ''; } if(btnLabel) btnLabel.textContent = labelOriginal; }
+
+  setBtnLoading();
+
   // Espera o script terminar de carregar (race condition após redirect do Stripe)
   if(!window.saaAuth){
-    toast('Carregando… um instante 🪽');
     var ok = await _aguardarSaaAuth();
     if(!ok){
-      toast('Configuração não carregou. Recarrega a página (Cmd+Shift+R).');
+      resetBtn();
+      alert('A configuração do Supabase não carregou. Recarrega a página (puxa de cima pra baixo) e tenta de novo.');
       return;
     }
   }
   if(!window._userId){
-    toast('Você precisa estar logada(o) para assinar. Abrindo login…');
-    setTimeout(function(){ closePaywall(); entrarSantuario(); }, 1500);
+    resetBtn();
+    alert('Pra assinar você precisa estar logada. Vamos te levar pra tela de login.');
+    closePaywall();
+    if(window.saaAuth){ resetLoginUI(); show('s-login'); }
     return;
   }
-  toast('Abrindo o checkout seguro…');
+
   try{
     var ref = localStorage.getItem('saa_ref_origem') || '';
     var r=await fetch('/api/create-checkout',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ userId:window._userId, plano:plano, email:window._email||'', ref:ref }) });
-    var j=await r.json();
+    var j;
+    try{ j = await r.json(); }catch(_){ j = null; }
+
     if(j && j.ok && j.url){
-      // Plausible: marco do funil — checkout aberto
       try{ if(window.plausible) window.plausible('trial_iniciado', { props: { plano: plano, indicado: ref ? 'sim' : 'nao' } }); }catch(_){}
       window.location.href = j.url;
-    } else {
-      var msg = (j && j.error) ? j.error : ('Erro HTTP '+r.status);
-      toast('Falha no checkout: '+msg);
-      console.error('[iniciarAssinatura] resposta inválida:', j);
+      return;
     }
+
+    // Falhou — feedback INEQUÍVOCO (alert, não toast)
+    resetBtn();
+    var detalhe = (j && j.error) ? j.error : ('HTTP '+r.status+' '+(r.statusText||''));
+    var diagnostico = '';
+    if(r.status === 400) diagnostico = '\n\nProvavelmente o plano "'+plano+'" não está configurado no Vercel (env var STRIPE_PRICE_'+plano.toUpperCase()+' vazia ou errada).';
+    else if(r.status === 500) diagnostico = '\n\nFalha no servidor — pode ser chave do Stripe inválida ou Price ID errado.';
+    else if(r.status === 405) diagnostico = '\n\nEndpoint não aceitou POST. Pode estar com cache antigo — recarrega a página.';
+    alert('Não consegui abrir o checkout do Stripe.\n\nDetalhe técnico: '+detalhe+diagnostico+'\n\nMe manda esse erro pro Victor.');
+    console.error('[iniciarAssinatura] resposta inválida:', { status: r.status, j: j });
   }catch(e){
-    toast('Erro de rede ao abrir checkout: '+e.message);
+    resetBtn();
+    alert('Erro de rede ao abrir o checkout: '+e.message+'\n\nVerifique sua conexão e tente de novo.');
     console.error('[iniciarAssinatura] exceção:', e);
   }
 }
