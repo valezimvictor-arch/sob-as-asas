@@ -32,6 +32,24 @@ export default async function handler(req, res) {
     return res.status(400).send('Webhook Error: ' + e.message);
   }
 
+  // ── Idempotência: já processamos este event.id antes? ──
+  // Stripe retenta eventos quando o endpoint demora >20s ou retorna 5xx.
+  // Sem essa checagem, retries criam duplicatas (cobrar 2x, etc).
+  try {
+    const { data: existente } = await supabase
+      .from('stripe_events')
+      .select('id')
+      .eq('id', event.id)
+      .maybeSingle();
+    if (existente) {
+      // Já processado — retorna 200 pra Stripe parar de retentar
+      return res.status(200).json({ received: true, duplicate: true });
+    }
+  } catch (e) {
+    // Se a tabela ainda não existe, segue (não bloqueia o webhook).
+    // Pra ativar idempotência: rodar MIGRACAO_STRIPE_EVENTS.sql no Supabase.
+  }
+
   try {
     if (event.type === 'checkout.session.completed') {
       const s = event.data.object;
@@ -61,6 +79,20 @@ export default async function handler(req, res) {
     }
   } catch (e) {
     console.error('[stripe-webhook]', e?.message);
+    // Em caso de erro no processamento, NÃO marca como processado —
+    // o Stripe retenta e a próxima tentativa pode ter sucesso.
+    return res.status(500).json({ error: 'processing failed' });
+  }
+
+  // Marca como processado pra evitar reprocessamento em retries.
+  try {
+    await supabase.from('stripe_events').insert({
+      id: event.id,
+      tipo: event.type,
+      payload: null,  // não guarda payload por padrão (privacidade). Trocar pra event se precisar debugar.
+    });
+  } catch (_) {
+    // tabela pode não existir ainda; ok ignorar (event ainda foi processado)
   }
 
   return res.status(200).json({ received: true });
