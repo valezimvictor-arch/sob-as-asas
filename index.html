@@ -145,9 +145,15 @@
     padding:12px 8px max(env(safe-area-inset-bottom),12px); background:rgba(251,250,247,.92);
     backdrop-filter:blur(10px); border-top:1px solid var(--linha); }
   .nav button{ background:none; border:none; display:flex; flex-direction:column; align-items:center;
-    gap:3px; color:var(--tinta-suave); font-size:11px; flex:1; }
+    gap:3px; color:var(--tinta-suave); font-size:11px; flex:1; position:relative; transition:color .25s ease; }
   .nav button.sel{ color:var(--ouro); }
-  .nav svg{ width:24px; height:24px; }
+  /* Indicador animado: traço dourado embaixo do ícone selecionado */
+  .nav button::after{ content:''; position:absolute; bottom:-6px; left:50%;
+    width:0; height:2px; background:var(--ouro); border-radius:99px;
+    transform:translateX(-50%); transition:width .3s cubic-bezier(.4,0,.2,1); }
+  .nav button.sel::after{ width:24px; }
+  .nav svg{ width:24px; height:24px; transition:transform .25s ease; }
+  .nav button.sel svg{ transform:translateY(-1px); }
   .fade-in{ animation:fadeIn .6s ease both; }
   @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
   .hide{ display:none !important; }
@@ -249,6 +255,37 @@
   .altar-streak-rotulo{ font-size:11px; color:#7C4E0F; letter-spacing:.12em; text-transform:uppercase; font-weight:600; }
   .altar-streak-n{ font-family:'Playfair Display',serif; font-size:19px; font-weight:500; color:#5A3A06; line-height:1; }
   .altar-streak-sub{ font-size:11px; color:#7C4E0F; letter-spacing:.06em; text-transform:uppercase; font-weight:500; }
+
+  /* Celebração de marco — burst dourado sobre o chip da streak */
+  .streak-burst{
+    position:absolute; top:-8px; right:-8px; padding:14px 18px; min-width:220px;
+    background:linear-gradient(135deg, #FBF6E8 0%, #FAF3E4 100%);
+    border:2px solid var(--ouro-claro); border-radius:18px;
+    box-shadow:0 14px 40px rgba(186,117,23,.32), 0 0 60px rgba(239,159,39,.22);
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    pointer-events:none; z-index:10;
+    animation:streak-burst 3.5s cubic-bezier(.34,1.56,.64,1) forwards;
+    transform-origin:top right;
+  }
+  .streak-burst::before{
+    content:'✦'; position:absolute; top:-12px; left:50%; transform:translateX(-50%);
+    color:var(--ouro-claro); font-size:24px;
+    animation:streak-spark 1.6s ease-out infinite;
+  }
+  .streak-burst-titulo{ font-family:'Playfair Display',serif; font-size:14.5px; color:var(--ouro); font-weight:500; letter-spacing:.01em; }
+  .streak-burst-num{ font-family:'Playfair Display',serif; font-size:26px; color:#5A3A06; font-weight:500; line-height:1; }
+  .streak-burst-num::after{ content:' dias'; font-size:13px; color:var(--tinta-suave); font-weight:400; }
+  @keyframes streak-burst{
+    0%   { opacity:0; transform:scale(.6) translateY(-10px); }
+    15%  { opacity:1; transform:scale(1.08) translateY(0); }
+    25%  { transform:scale(1); }
+    80%  { opacity:1; transform:scale(1); }
+    100% { opacity:0; transform:scale(.94) translateY(-6px); }
+  }
+  @keyframes streak-spark{
+    0%,100%{ opacity:.7; transform:translateX(-50%) scale(1); }
+    50%   { opacity:1;  transform:translateX(-50%) scale(1.3); }
+  }
 
   .altar{
     position:relative; padding:24px 22px 28px; border-radius:22px;
@@ -397,7 +434,8 @@
     </p>
     <div style="width:100%; max-width:320px; margin-top:40px">
       <button class="btn-ouro" onclick="goCadastro()">Revelar meu anjo da guarda</button>
-      <button class="btn-ghost" style="margin-top:12px" onclick="entrarSantuario()">Entrar com meu e-mail</button>
+      <p style="margin:8px 0 14px; font-size:12px; color:var(--tinta-suave); text-align:center; letter-spacing:.02em">grátis · em 1 minuto · sem cartão</p>
+      <button class="btn-ghost" onclick="entrarSantuario()">Já tenho conta</button>
     </div>
   </div>
 </section>
@@ -2060,8 +2098,19 @@
       <div style="font-size:30px">🪽</div>
       <p style="margin:0; font-size:10px; letter-spacing:.16em; color:var(--ouro); text-transform:uppercase; font-weight:600">Plano dos Anjos</p>
       <h3 class="serif" style="font-size:24px; margin:6px 0 0">Sua jornada completa</h3>
-      <p id="paywall-ctx" style="color:var(--tinta-suave); font-size:14px; margin:8px 0 0; line-height:1.5">Biblioteca inteira, salmos, séries e rituais completos da Monica.</p>
+      <p id="paywall-ctx" style="color:var(--tinta-suave); font-size:14px; margin:8px 0 0; line-height:1.5">Esta é uma das práticas premium do Plano dos Anjos. Comece grátis por 7 dias.</p>
     </div>
+
+    <!-- O que está incluído -->
+    <ul style="list-style:none; padding:0; margin:18px 0 0; font-size:13.5px; line-height:1.5; color:var(--tinta)">
+      <li style="padding:5px 0; display:flex; gap:8px"><span style="color:var(--ouro); font-weight:700">✓</span>Mensagem diária do seu anjo (na voz da Monica)</li>
+      <li style="padding:5px 0; display:flex; gap:8px"><span style="color:var(--ouro); font-weight:700">✓</span>Carta mensal exclusiva pro seu anjo</li>
+      <li style="padding:5px 0; display:flex; gap:8px"><span style="color:var(--ouro); font-weight:700">✓</span>72 áudios — um por anjo cabalístico</li>
+      <li style="padding:5px 0; display:flex; gap:8px"><span style="color:var(--ouro); font-weight:700">✓</span>Magia das Velas, Novena dos Anjos, Para Dormir</li>
+      <li style="padding:5px 0; display:flex; gap:8px"><span style="color:var(--ouro); font-weight:700">✓</span>Compatibilidade Angelical com quem você ama</li>
+      <li style="padding:5px 0; display:flex; gap:8px"><span style="color:var(--ouro); font-weight:700">✓</span>Biblioteca completa da Monica</li>
+    </ul>
+
     <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px">
       <div id="paywall-card-anual" class="card paywall-plano selecionado" style="padding:14px 16px; display:flex; align-items:center; gap:12px" onclick="selecionarPlano('anual')">
         <div style="flex:1"><p style="margin:0; font-weight:600">Anual</p><p style="margin:0; font-size:12px; color:var(--tinta-suave)">R$ 149/ano · R$ 12,42/mês</p></div>
@@ -2074,8 +2123,9 @@
     <button class="btn-ouro" style="margin-top:16px" onclick="iniciarAssinatura(window._planoSelecionado||'anual')">
       <span id="paywall-btn-label">Começar 7 dias grátis · Anual</span>
     </button>
-    <button onclick="closePaywall()" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;width:100%;margin-top:12px">Agora não</button>
-    <button onclick="abrirTempoDeGraca()" style="background:none;border:none;color:var(--ouro);font-size:13px;width:100%;margin-top:8px;font-style:italic;font-family:'Cormorant Garamond',serif;text-decoration:underline;text-underline-offset:3px">Não posso pagar agora</button>
+    <p style="text-align:center; font-size:11.5px; color:var(--tinta-suave); margin:8px 0 0; letter-spacing:.01em">sem cartão pra começar · cancele em 1 clique</p>
+    <button onclick="closePaywall()" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;width:100%;margin-top:14px">Agora não</button>
+    <button onclick="abrirTempoDeGraca()" style="background:none;border:none;color:var(--ouro);font-size:13.5px;width:100%;margin-top:10px;font-style:italic;font-family:'Cormorant Garamond',serif;text-decoration:underline;text-underline-offset:3px">Não posso pagar agora</button>
     <p style="text-align:center; font-size:11px; color:var(--tinta-suave); margin:10px 0 0">A candidatura ao Milagre do mês é sempre gratuita.</p>
   </div>
 </div>
@@ -2364,8 +2414,27 @@ function registrarPresenca(){
     var ontem=new Date(Date.now()-86400000).toISOString().slice(0,10);
     n=(last===ontem)? n+1 : 1;
     localStorage.setItem('saa_streak_last',hoje); localStorage.setItem('saa_streak_n',String(n));
+    // Celebração de marco: 7, 30, 72, 100, 365 dias
+    var marcos = { 7:'Primeira semana', 30:'Um mês de presença', 72:'Passou por todos os anjos', 100:'A travessia', 365:'Um ano sob as asas' };
+    if(marcos[n]){ setTimeout(function(){ celebrarMarco(n, marcos[n]); }, 1200); }
     return n;
   }catch(e){ return parseInt((localStorage.getItem&&localStorage.getItem('saa_streak_n'))||'1',10)||1; }
+}
+
+// Burst dourado discreto sobre o chip da streak ao bater marco simbólico.
+// Não interrompe a prática — é só um "piscar" celebratório que se dissolve.
+function celebrarMarco(n, titulo){
+  try{
+    var chip = document.querySelector('.altar-streak');
+    if(!chip) return;
+    var burst = document.createElement('div');
+    burst.className = 'streak-burst';
+    burst.innerHTML = '<span class="streak-burst-titulo">'+titulo+'</span><span class="streak-burst-num">'+n+'</span>';
+    chip.appendChild(burst);
+    chime();
+    setTimeout(function(){ if(burst && burst.parentNode){ burst.parentNode.removeChild(burst); } }, 3500);
+    try{ if(window.plausible) window.plausible('marco_atingido', { props: { dias: n, titulo: titulo } }); }catch(_){}
+  }catch(_){}
 }
 // ── Altar Home (V1 + modo noite automático) ──
 async function renderizarAltarHome(){
@@ -2686,7 +2755,7 @@ function renderBib(){
   if(vazio) vazio.style.display = (totalRender===0 && _bibFiltro) ? 'block' : 'none';
 }
 function openPaywall(ctx){
-  if(ctx) document.getElementById('paywall-ctx').textContent='“'+ctx+'” faz parte do plano. Desbloqueie toda a biblioteca da Monica.';
+  if(ctx) document.getElementById('paywall-ctx').textContent='“'+ctx+'” é uma das práticas premium. Comece grátis por 7 dias.';
   openModal('paywall'); buzz();
 }
 function closePaywall(){ closeModal('paywall'); }
