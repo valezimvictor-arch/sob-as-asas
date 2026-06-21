@@ -9,6 +9,16 @@
 
 import Stripe from 'stripe';
 import { supabase } from './_lib/supabase.js';
+import { enviarEmail } from './_lib/resend.js';
+import { emailPresenteHtml } from './_lib/presenteEmail.js';
+
+// Gera código de resgate único: PRES-A1B2-C3D4 (10 chars úteis, fácil de digitar)
+function gerarCodigoPresente() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sem 0/O/1/I/Z pra evitar confusão
+  let r = '';
+  for (let i = 0; i < 8; i++) r += chars[Math.floor(Math.random() * chars.length)];
+  return 'PRES-' + r.slice(0, 4) + '-' + r.slice(4, 8);
+}
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -53,14 +63,80 @@ export default async function handler(req, res) {
   try {
     if (event.type === 'checkout.session.completed') {
       const s = event.data.object;
-      const userId = s.client_reference_id || (s.metadata && s.metadata.userId);
-      const plano = (s.metadata && s.metadata.plano) || 'mensal';
-      if (userId) {
-        await supabase.from('assinaturas').upsert({
-          user_id: userId, stripe_customer_id: s.customer, stripe_subscription_id: s.subscription,
-          plano, status: 'trialing', atualizado_em: new Date().toISOString(),
-        }, { onConflict: 'user_id' });
-        await supabase.from('users').update({ plano: 'trial' }).eq('id', userId);
+      const meta = s.metadata || {};
+
+      // ── PRESENTE (one-time payment) ──
+      if (meta.tipo === 'presente_anual' && s.mode === 'payment') {
+        // Pega metadata do payment_intent (que tem todos os campos do presente)
+        let piMeta = meta;
+        if (s.payment_intent) {
+          try {
+            const pi = await stripe.paymentIntents.retrieve(s.payment_intent);
+            if (pi && pi.metadata) piMeta = pi.metadata;
+          } catch (_) {}
+        }
+
+        const codigo = gerarCodigoPresente();
+        const link = `https://sobasasas.com.br/resgatar?codigo=${encodeURIComponent(codigo)}`;
+        const linhaPresente = {
+          codigo,
+          stripe_session_id: s.id,
+          stripe_payment_intent_id: s.payment_intent,
+          valor_centavos: s.amount_total || 14900,
+          de_nome: piMeta.de_nome || '',
+          de_email: piMeta.de_email || s.customer_email || '',
+          para_nome: piMeta.para_nome || '',
+          para_email: piMeta.para_email || meta.para_email || '',
+          mensagem: piMeta.mensagem || null,
+          data_envio: piMeta.data_envio || null,
+        };
+
+        // Insere no banco
+        const { error: dbErr } = await supabase.from('presentes').insert(linhaPresente);
+        if (dbErr) {
+          console.error('[stripe-webhook] erro ao inserir presente:', dbErr.message);
+          // Não retorna 500 — Stripe não tem o que retentar pra esse erro
+        }
+
+        // Decide se manda email agora ou agenda (cron diário lida com os agendados)
+        const enviarAgora = !linhaPresente.data_envio ||
+          new Date(linhaPresente.data_envio) <= new Date();
+
+        if (enviarAgora && linhaPresente.para_email) {
+          try {
+            await enviarEmail({
+              to: linhaPresente.para_email,
+              subject: `${linhaPresente.de_nome} preparou um presente pra você 🕊️`,
+              html: emailPresenteHtml({
+                paraNome: linhaPresente.para_nome,
+                deNome: linhaPresente.de_nome,
+                mensagem: linhaPresente.mensagem,
+                codigo,
+                link,
+              }),
+              replyTo: 'contato@sobasasas.com.br',
+            });
+            await supabase
+              .from('presentes')
+              .update({ status: 'email_enviado', email_enviado_em: new Date().toISOString() })
+              .eq('codigo', codigo);
+          } catch (e) {
+            console.error('[stripe-webhook] erro ao enviar email do presente:', e?.message);
+          }
+        }
+        // Done com o caso presente — não cair no fluxo de assinatura
+        // (segue pra marcação de processado no fim)
+      } else {
+        // ── ASSINATURA (recorrente) — fluxo original ──
+        const userId = s.client_reference_id || meta.userId;
+        const plano = meta.plano || 'mensal';
+        if (userId) {
+          await supabase.from('assinaturas').upsert({
+            user_id: userId, stripe_customer_id: s.customer, stripe_subscription_id: s.subscription,
+            plano, status: 'trialing', atualizado_em: new Date().toISOString(),
+          }, { onConflict: 'user_id' });
+          await supabase.from('users').update({ plano: 'trial' }).eq('id', userId);
+        }
       }
     } else if (event.type === 'customer.subscription.updated' || event.type === 'customer.subscription.deleted') {
       const sub = event.data.object;
