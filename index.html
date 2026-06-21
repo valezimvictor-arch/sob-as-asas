@@ -2409,7 +2409,12 @@ function revelar(){
   window._perfil={ nome:window._nome, nascimento:(y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0')), anjo_n:anjo.n, anjo_nome:anjo.nome };
   // PII (nome, nascimento) fica em sessionStorage — limpo ao fechar abas,
   // não persiste no dispositivo. Só persiste no Supabase (autenticado).
-  try{ sessionStorage.setItem('saa_pending', JSON.stringify(window._perfil)); }catch(e){}
+  // Persiste em localStorage pra sobreviver à mudança de aba/janela do magic link
+  // do email. TTL de 60 min: se o usuário abandonar, expira sozinho.
+  try{
+    localStorage.setItem('saa_pending', JSON.stringify(window._perfil));
+    localStorage.setItem('saa_pending_ts', String(Date.now()));
+  }catch(e){}
   if(window._userId) persistirPerfil(window._userId);  // já logado → grava o perfil na hora
 
   // Plausible: marco do funil — anjo revelado
@@ -4283,7 +4288,7 @@ async function verificarCodigo(){
 function persistirPerfil(userId){
   if(!window.saaAuth || !window._perfil || !userId) return;
   window.saaAuth.salvarPerfil({ userId:userId, nome:window._perfil.nome, nascimento:window._perfil.nascimento, ritual_horario:'morning' })
-    .then(function(){ try{ sessionStorage.removeItem('saa_pending'); localStorage.removeItem('saa_pending'); }catch(e){} })
+    .then(function(){ try{ sessionStorage.removeItem('saa_pending'); localStorage.removeItem('saa_pending'); localStorage.removeItem('saa_pending_ts'); }catch(e){} })
     .catch(function(){});
 }
 async function aoLogar(session){
@@ -4294,11 +4299,24 @@ async function aoLogar(session){
   window._aoLogarRodando = true;
   window._userId = session.user.id;
   window._email = session.user.email || '';
-  // Lê do sessionStorage (PII não persiste no dispositivo) — com fallback pra
-  // localStorage por compatibilidade com versões anteriores (será migrado adiante).
+  // Lê o perfil pendente (salvo durante o cadastro). Usa localStorage pra
+  // sobreviver à mudança de aba/janela quando o usuário clica no magic link
+  // do email. TTL de 60 min — se passou disso, considera abandonado e descarta.
   var pend=null;
-  try{ pend=JSON.parse(sessionStorage.getItem('saa_pending')||'null'); }catch(e){}
-  if(!pend){ try{ pend=JSON.parse(localStorage.getItem('saa_pending')||'null'); localStorage.removeItem('saa_pending'); }catch(e){} }
+  try{
+    var raw = localStorage.getItem('saa_pending');
+    var ts = parseInt(localStorage.getItem('saa_pending_ts')||'0', 10);
+    var idade = ts ? (Date.now() - ts) : Infinity;
+    if(raw && idade < 60 * 60 * 1000){  // < 60 min
+      pend = JSON.parse(raw);
+    } else if(raw){
+      // expirado — limpa
+      localStorage.removeItem('saa_pending');
+      localStorage.removeItem('saa_pending_ts');
+    }
+  }catch(e){}
+  // Fallback: lê de sessionStorage por compatibilidade com versões antigas
+  if(!pend){ try{ pend=JSON.parse(sessionStorage.getItem('saa_pending')||'null'); }catch(e){} }
   // ação pendente do acolhimento (escolhida antes do magic link)
   function _executarAcaoPendente(){
     try{
