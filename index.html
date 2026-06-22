@@ -233,28 +233,33 @@
   .altar-topbar{
     display:flex; align-items:center; justify-content:space-between;
     gap:12px; margin-bottom:14px;
+    padding:4px 2px;
+    border-bottom:1px solid var(--linha);
+    padding-bottom:14px;
   }
+  /* Avatar: ícone discreto de "asa" em vez de engrenagem mecânica */
   .altar-avatar{
-    /* Área de toque ≥44px (WCAG) — visual interno permanece menor */
-    width:44px; height:44px; border-radius:50%;
-    background:linear-gradient(180deg,#F6E1B0,#E8B967);
+    width:42px; height:42px; border-radius:50%;
+    background:transparent; border:1px solid var(--linha);
     display:flex; align-items:center; justify-content:center;
-    color:#5A3A06; font-size:16px;
+    color:var(--ouro);
     cursor:pointer; flex-shrink:0;
-    box-shadow:0 1px 6px rgba(186,117,23,.18);
-    transition:transform .15s;
+    transition:background .2s ease, border-color .2s ease, transform .15s;
   }
+  .altar-avatar:hover{ background:var(--ouro-bg); border-color:var(--ouro-claro); }
   .altar-avatar:active{ transform:scale(.92); }
+  .altar-avatar svg{ width:20px; height:20px; }
   .altar-streak{
     display:flex; align-items:baseline; gap:7px;
-    background:var(--ouro-bg); border-radius:99px;
-    padding:10px 16px; cursor:pointer; min-height:44px;
-    transition:transform .15s;
+    background:transparent; border:1px solid var(--linha); border-radius:99px;
+    padding:8px 14px; cursor:pointer; min-height:42px;
+    transition:background .2s ease, border-color .2s ease, transform .15s;
   }
+  .altar-streak:hover{ background:var(--ouro-bg); border-color:var(--ouro-claro); }
   .altar-streak:active{ transform:scale(.97); }
-  .altar-streak-rotulo{ font-size:11px; color:#7C4E0F; letter-spacing:.12em; text-transform:uppercase; font-weight:600; }
-  .altar-streak-n{ font-family:'Playfair Display',serif; font-size:19px; font-weight:500; color:#5A3A06; line-height:1; }
-  .altar-streak-sub{ font-size:11px; color:#7C4E0F; letter-spacing:.06em; text-transform:uppercase; font-weight:500; }
+  .altar-streak-rotulo{ font-size:10.5px; color:var(--ouro); letter-spacing:.14em; text-transform:uppercase; font-weight:600; }
+  .altar-streak-n{ font-family:'Playfair Display',serif; font-size:18px; font-weight:500; color:var(--tinta); line-height:1; }
+  .altar-streak-sub{ font-size:10.5px; color:var(--ouro); letter-spacing:.06em; text-transform:uppercase; font-weight:500; }
 
   /* Celebração de marco — burst dourado sobre o chip da streak */
   .streak-burst{
@@ -710,9 +715,9 @@
   <div style="flex:1; overflow-y:auto" class="pad">
     <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
 
-    <p style="font-size:11px; letter-spacing:.18em; color:var(--ouro); text-transform:uppercase; font-weight:600; margin:8px 0 4px">Anjo da humanidade</p>
+    <p style="font-size:11px; letter-spacing:.18em; color:var(--ouro); text-transform:uppercase; font-weight:600; margin:8px 0 4px">Anjo deste momento</p>
     <h2 class="serif" style="font-size:26px; margin:0 0 6px; font-weight:400">Quem rege agora</h2>
-    <p style="color:var(--tinta-suave); font-size:13.5px; margin:0 0 18px; line-height:1.6">Cada um dos 72 anjos rege 20 minutos do dia. Naquele intervalo, ele se inclina sobre <em>toda a humanidade</em> — não só sobre quem é regido por ele. É um portão coletivo. Aberto. <strong>Sempre gratuito.</strong></p>
+    <p style="color:var(--tinta-suave); font-size:13.5px; margin:0 0 18px; line-height:1.6">Cada um dos 72 anjos rege 20 minutos do dia, em sequência. Naquele intervalo, ele se inclina mais perto — você pode invocá-lo, ouvir o salmo, pedir o que precisa. É um portão coletivo. Aberto. <strong>Sempre gratuito.</strong></p>
 
     <!-- Card do anjo do momento (atualiza a cada minuto) -->
     <div class="card" style="padding:22px; background:var(--ouro-bg); border-color:transparent; text-align:center">
@@ -982,9 +987,12 @@
 
       <!-- Topbar mini: settings + streak (acesso preservado, presença mínima) -->
       <div class="altar-topbar">
-        <div id="home-avatar" class="altar-avatar" onclick="openAjustes()" title="Ajustes e conta" aria-label="Ajustes e conta">
-          <span aria-hidden="true">⚙</span>
-        </div>
+        <button id="home-avatar" class="altar-avatar" onclick="openAjustes()" title="Ajustes e conta" aria-label="Ajustes e conta">
+          <!-- Três linhas horizontais — menu refinado, sem "engrenagem mecânica" -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+            <path d="M5 7h14M5 12h14M5 17h10"/>
+          </svg>
+        </button>
         <div class="streak-chip altar-streak" onclick="openMedalhas()" title="Suas medalhas e marcos">
           <span class="altar-streak-rotulo">Dia</span>
           <span id="home-streak" class="altar-streak-n">1</span>
@@ -1068,7 +1076,7 @@
       <button id="home-anjo-hora" class="card" style="margin-top:14px; padding:14px 16px; display:flex; align-items:center; gap:12px; width:100%; cursor:pointer; background:#fff; border:1px solid var(--linha); border-radius:14px; text-align:left" onclick="abrirAnjoHora()">
         <div style="width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg, rgba(246,200,104,.45), rgba(186,117,23,.18)); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(186,117,23,.18)">⏳</div>
         <div style="flex:1; min-width:0">
-          <p style="margin:0; font-size:10px; letter-spacing:.16em; color:var(--ouro); text-transform:uppercase; font-weight:600">Anjo da humanidade — agora</p>
+          <p style="margin:0; font-size:10px; letter-spacing:.16em; color:var(--ouro); text-transform:uppercase; font-weight:600">Anjo deste momento</p>
           <p id="home-anjo-hora-nome" class="serif" style="margin:3px 0 0; font-size:18px; color:var(--tinta); font-weight:500">—</p>
           <p id="home-anjo-hora-sub" style="margin:1px 0 0; font-size:11.5px; color:var(--tinta-suave); line-height:1.35">—</p>
         </div>
@@ -2335,7 +2343,12 @@ function show(id){
   const el=document.getElementById(id);
   if(!el){ console.warn('[show] tela inexistente:', id); return; }
   el.classList.add('active'); el.scrollTop=0;
-  if(id==='s-home') initHome();
+  if(id==='s-home'){
+    initHome();
+    // Safety re-render: defeita race conditions (DOM tardio, transição opacity).
+    // Se o primeiro render pegou _perfil vazio, este segundo encontra os dados certos.
+    setTimeout(initHome, 200);
+  }
   // se saiu de tela de vela, encerra o timer (progresso permanece no localStorage)
   if(typeof CHAMA_TELAS!=='undefined' && !CHAMA_TELAS[id]) pararChamaCrescente();
   buzz();
