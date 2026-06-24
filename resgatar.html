@@ -132,8 +132,11 @@ async function resgatar(){
     return;
   }
   if(!nome){ erro.textContent = 'Informe seu nome.'; return; }
-  if(!dia || !mes || !ano || dia<1 || dia>31 || mes<1 || mes>12 || ano<1900 || ano>new Date().getFullYear()){
-    erro.textContent = 'Data de nascimento inválida.'; return;
+  // Valida data real (rejeita 31/04, 29/02 em ano não-bissexto, etc)
+  if(!dia || !mes || !ano){ erro.textContent = 'Preencha dia, mês e ano.'; return; }
+  var _dt = new Date(ano, mes-1, dia);
+  if(_dt.getFullYear()!==ano || _dt.getMonth()!==mes-1 || _dt.getDate()!==dia || ano<1900 || ano>new Date().getFullYear()){
+    erro.textContent = 'Essa data não existe. Confira o dia, mês e ano.'; return;
   }
   var nascimento = ano + '-' + String(mes).padStart(2,'0') + '-' + String(dia).padStart(2,'0');
 

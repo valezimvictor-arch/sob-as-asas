@@ -512,11 +512,25 @@
     <p style="font-size:15px; color:var(--tinta-suave); line-height:1.6; margin:18px 0 0; max-width:280px">
       Sua prática diária com os anjos da guarda, ao lado de Monica Buonfiglio.
     </p>
-    <div style="width:100%; max-width:320px; margin-top:40px">
-      <button class="btn-ouro" onclick="goCadastro()">Revelar meu anjo da guarda</button>
-      <p style="margin:8px 0 14px; font-size:12px; color:var(--tinta-suave); text-align:center; letter-spacing:.02em">grátis · em 1 minuto · sem cartão</p>
-      <button class="btn-ghost" onclick="entrarSantuario()">Já tenho conta</button>
+    <div style="width:100%; max-width:340px; margin-top:40px">
+      <button class="btn-ouro" onclick="goCadastro()">Conhecer meu anjo da guarda</button>
+      <p style="margin:10px 0 16px; font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-size:15px; color:var(--ouro); text-align:center; line-height:1.5">Seu anjo te aguarda. Leva o tempo de uma respiração.</p>
+      <button class="btn-secundario" style="font-size:var(--text-md); font-weight:600" onclick="entrarSantuario()">Já tenho conta</button>
     </div>
+
+    <!-- Rodapé jurídico discreto -->
+    <footer style="position:absolute; left:0; right:0; bottom:max(20px, env(safe-area-inset-bottom)); padding:0 26px; text-align:center;">
+      <p style="margin:0 0 4px; font-size:11px; color:var(--tinta-suave); line-height:1.5">
+        © <span id="welcome-ano">2026</span> Monica Buonfiglio · <strong style="font-weight:600">LVSV Ventures</strong> · CNPJ 66.981.310/0001-42
+      </p>
+      <p style="margin:0; font-size:11px; color:var(--tinta-suave); line-height:1.5">
+        <a href="/termos" target="_blank" rel="noopener" style="color:var(--ouro); text-decoration:none">Termos</a>
+        <span style="opacity:.5; margin:0 6px">·</span>
+        <a href="/privacidade" target="_blank" rel="noopener" style="color:var(--ouro); text-decoration:none">Privacidade</a>
+        <span style="opacity:.5; margin:0 6px">·</span>
+        Dados protegidos pela LGPD
+      </p>
+    </footer>
   </div>
 </section>
 
@@ -2458,12 +2472,20 @@ document.addEventListener('keydown', function(e){
 function goCadastro(){ show('s-cadastro'); setTimeout(()=>document.getElementById('in-nome').focus(),400); }
 
 // ── revelação do anjo ──
+// Valida data real (rejeita 31/04, 29/02 em ano não-bissexto, etc).
+function _dataValida(d, m, y){
+  if(!(d>=1 && d<=31) || !(m>=1 && m<=12) || !(y>=1900 && y<=new Date().getFullYear())) return false;
+  var dt = new Date(y, m-1, d);
+  // Date(y,m,d) "rola" datas inválidas (ex: 31/02 → 03/03). Comparamos pra detectar.
+  return dt.getFullYear()===y && dt.getMonth()===m-1 && dt.getDate()===d;
+}
+
 function revelar(){
   const nome=document.getElementById('in-nome').value.trim();
   const d=+document.getElementById('in-dia').value, m=+document.getElementById('in-mes').value, y=+document.getElementById('in-ano').value;
   const erro=document.getElementById('cad-erro');
   if(!nome){ erro.textContent='Como o anjo deve te chamar?'; return; }
-  if(!(d>=1&&d<=31)||!(m>=1&&m<=12)||!(y>=1900&&y<=new Date().getFullYear())){ erro.textContent='Confira sua data de nascimento.'; return; }
+  if(!_dataValida(d, m, y)){ erro.textContent='Essa data não existe. Confira o dia, mês e ano.'; return; }
   var consent=document.getElementById('in-consent');
   if(consent && !consent.checked){ erro.textContent='Marque o consentimento para continuar.'; return; }
   try{ localStorage.setItem('saa_consent_lgpd', new Date().toISOString()); }catch(_){}
@@ -3604,12 +3626,42 @@ document.addEventListener('DOMContentLoaded', function(){
       localStorage.setItem('saa_ref_origem', ref);
       try{ if(window.plausible) window.plausible('chegou_por_indicacao', { props: { ref: ref } }); }catch(_){}
     }
-    // Volta do Stripe com sucesso → marca conversão
+    // Volta do Stripe com sucesso → marca conversão + atualiza plano local.
+    // O webhook do Stripe atualiza users.plano no banco, mas pode demorar
+    // alguns segundos. Aqui setamos otimisticamente _plano='trial' pra UX
+    // imediata, e disparamos refetch quando aoLogar completar.
     if(qs.get('assinatura') === 'ok'){
       try{ if(window.plausible) window.plausible('assinatura_concluida'); }catch(_){}
+      window._plano = 'trial';  // otimista — webhook confirma em segundos
+      // Toast acolhedor — usuária acabou de pagar
+      try{
+        setTimeout(function(){ toast('Bem-vinda! Seu trial começou. 🪽'); }, 800);
+      }catch(_){}
+      // Refetch real do plano em 5s (webhook deve ter processado)
+      setTimeout(function(){
+        if(window.saaAuth && window._userId){
+          window.saaAuth.client.from('users').select('plano').eq('id', window._userId).maybeSingle()
+            .then(function(r){
+              if(r && r.data && r.data.plano) window._plano = r.data.plano;
+              if(typeof atualizarTrialCountdown==='function') atualizarTrialCountdown();
+            }).catch(function(){});
+        }
+      }, 5000);
+      // Limpa o ?assinatura=ok da URL pra não disparar de novo em refresh
+      try{
+        var u = new URL(window.location);
+        u.searchParams.delete('assinatura');
+        u.searchParams.delete('session_id');
+        history.replaceState({}, '', u.toString());
+      }catch(_){}
     }
     if(qs.get('assinatura') === 'cancelada'){
       try{ if(window.plausible) window.plausible('assinatura_cancelada_checkout'); }catch(_){}
+      try{
+        var u = new URL(window.location);
+        u.searchParams.delete('assinatura');
+        history.replaceState({}, '', u.toString());
+      }catch(_){}
     }
   }catch(_){}
 });
@@ -3803,9 +3855,7 @@ async function calcularCompatibilidade(){
   var y=+document.getElementById('compat-ano').value;
   var erro=document.getElementById('compat-erro');
   if(!nome){ erro.textContent='Diga quem é a outra pessoa.'; return; }
-  if(!(d>=1&&d<=31)||!(m>=1&&m<=12)||!(y>=1900&&y<=new Date().getFullYear())){
-    erro.textContent='Confira a data de nascimento.'; return;
-  }
+  if(!_dataValida(d, m, y)){ erro.textContent='Essa data não existe. Confira o dia, mês e ano.'; return; }
   erro.textContent='';
   var meuN = window._perfil && window._perfil.anjo_n;
   if(!meuN && window._anjo){
@@ -4373,7 +4423,17 @@ async function verificarCodigo(){
       ultimoErro = r.error;
     }catch(e){ ultimoErro = e; }
   }
-  msg.textContent = 'Código inválido ou expirado. Peça um novo.';
+  // Distingue tipo de erro pra dar feedback útil:
+  var msgErro = (ultimoErro && (ultimoErro.message || '')).toLowerCase();
+  if(msgErro.includes('expired') || msgErro.includes('expir')){
+    msg.textContent = 'Esse código já expirou. Toque em "Pedir outro" pra receber um novo.';
+  } else if(msgErro.includes('invalid') || msgErro.includes('inválid')){
+    msg.textContent = 'Esse código está incorreto. Confira os 6 dígitos no email.';
+  } else if(msgErro.includes('rate') || msgErro.includes('many')){
+    msg.textContent = 'Muitas tentativas. Aguarde 1 minuto antes de tentar de novo.';
+  } else {
+    msg.textContent = 'Não consegui validar esse código. Peça um novo.';
+  }
   msg.style.color = '#C0392B';
 }
 // chamado quando o usuário volta autenticado (clicou no link mágico)
