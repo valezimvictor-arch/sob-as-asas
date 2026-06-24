@@ -4202,11 +4202,15 @@ function resetLoginUI(){ document.getElementById('login-form').style.display='bl
 function entrarSantuario(){
   // Já logado E com perfil completo → home direto
   if(window._userId && window._nome && window._anjo){ show('s-home'); return; }
-  // Sessão ativa mas perfil não foi completado → vai pro cadastro
-  if(window._userId){ show('s-cadastro'); setTimeout(function(){var i=document.getElementById('in-nome'); if(i) i.focus();},400); return; }
-  // Não logado → tela de login
-  if(window.saaAuth){ resetLoginUI(); show('s-login'); setTimeout(function(){var i=document.getElementById('in-email'); if(i) i.focus();},450); }
-  else { show('s-home'); }  // modo demo (sem Supabase configurado)
+  // SEM Supabase configurado → modo demo
+  if(!window.saaAuth){ show('s-home'); return; }
+  // TODOS os outros casos (não logado, sessão sem perfil, dados carregando)
+  // → vai pra LOGIN. A tela de login que decide o que fazer depois:
+  //   - se já estiver logado, aoLogar redireciona quando dados chegarem
+  //   - se não, o usuário digita o email e recebe o código
+  resetLoginUI();
+  show('s-login');
+  setTimeout(function(){ var i=document.getElementById('in-email'); if(i) i.focus(); }, 450);
 }
 async function enviarMagicLink(){
   var email=(document.getElementById('in-email').value||'').trim();
@@ -4346,6 +4350,7 @@ async function aoLogar(session){
     window._nome=pend.nome; window._anjo=pend.anjo_nome; window._perfil=pend;
     persistirPerfil(session.user.id);
     window._aoLogarFeito = true; window._aoLogarRodando = false;
+    try{ window.dispatchEvent(new Event('saa-profile-ready')); }catch(_){}
     show('s-home'); _executarAcaoPendente(); return;
   }
   // sem perfil pendente → verifica se o usuário já tem perfil salvo (retorno)
@@ -4356,6 +4361,7 @@ async function aoLogar(session){
       window._perfil={ nome:res.data.nome, anjo_n:res.data.anjo_n, anjo_nome:res.data.anjo_nome };
       if(res.data.plano && res.data.plano!=='free') window._plano=res.data.plano;
       window._aoLogarFeito = true; window._aoLogarRodando = false;
+    try{ window.dispatchEvent(new Event('saa-profile-ready')); }catch(_){}
     show('s-home'); _executarAcaoPendente(); return;
     }
   }catch(e){}
@@ -5128,7 +5134,8 @@ function renderLoja(){
 spawnLuzes('welcome-luzes',14); spawnLuzes('reveal-luzes',22);
 
 // Se já existe sessão Supabase no storage local, redireciona direto pra home
-// (sem mostrar a tela de boas-vindas)
+// (sem mostrar a tela de boas-vindas). Mas ESPERA o Supabase carregar antes
+// de mostrar a home — senão a home aparece em branco (sem _userId, _anjo).
 (function(){
   function temSessaoStored(){
     try{
@@ -5139,8 +5146,39 @@ spawnLuzes('welcome-luzes',14); spawnLuzes('reveal-luzes',22);
       return !!(v && v.length>20);
     }catch(e){ return false; }
   }
-  if(temSessaoStored()){ show('s-home'); }
+  if(!temSessaoStored()) return;
+
+  // Há sessão guardada. Aguarda saaAuth carregar (Supabase JS) com timeout de 3s.
+  // Quando carregar, aoLogar dispara via onAuthStateChange e mostra a home com
+  // os dados certos. Se travar (rede ruim), mostra a welcome após 3s.
+  var inicio = Date.now();
+  function aguardar(){
+    if(window.saaAuth && window._userId){
+      // aoLogar já rodou e populou tudo — show('s-home') aqui ou já foi chamado
+      // por aoLogar. Não duplica.
+      return;
+    }
+    if(window.saaAuth){
+      // Supabase carregou mas aoLogar ainda não terminou. getSession dispara
+      // onAuthStateChange que chama aoLogar.
+      try{ window.saaAuth.client.auth.getSession(); }catch(_){}
+    }
+    if(Date.now() - inicio > 3000){
+      // Timeout — fallback pra welcome (usuário pode fazer login manualmente)
+      return;
+    }
+    setTimeout(aguardar, 100);
+  }
+  aguardar();
 })();
+
+// Após aoLogar completar com sucesso, garante que home está renderizada com
+// os dados certos. É um net de segurança caso o usuário esteja na home mas
+// o profile ainda não tenha chegado quando initHome rodou.
+window.addEventListener('saa-profile-ready', function(){
+  var homeAtiva = document.querySelector('#s-home.active');
+  if(homeAtiva && typeof initHome === 'function') initHome();
+});
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js').catch(()=>{}); }
 </script>
 </body>
