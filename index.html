@@ -17,10 +17,58 @@
 <script type="module" src="/js/geradorTextos.js?v=1"></script>
 <style>
   :root{
+    /* ── Paleta ───────────────────────────────────────────────── */
     --branco:#FBFAF7; --branco-puro:#FFFFFF;
     --ouro:#BA7517; --ouro-claro:#EF9F27; --ouro-suave:#F3E6CC; --ouro-bg:#FAF3E4;
+    --ouro-escuro:#7C4E0F;
     --celeste:#378ADD; --celeste-bg:#EAF2FB;
     --tinta:#2C2C2A; --tinta-suave:#555350; --linha:rgba(186,117,23,0.14);
+    --erro:#C0392B; --sucesso:#1E8449;
+
+    /* ── Tipografia (escala harmônica) ─────────────────────────── */
+    --text-xs: 11px;    /* labels MAIÚSCULAS, hints */
+    --text-sm: 13px;    /* sublinhas, metadados */
+    --text-base: 15px;  /* corpo */
+    --text-md: 16px;    /* corpo enfático, inputs (≥16px evita zoom iOS) */
+    --text-lg: 18px;    /* destaque inline */
+    --text-xl: 20px;    /* subtítulos */
+    --text-2xl: 24px;   /* h3 */
+    --text-3xl: 28px;   /* h2 */
+    --text-4xl: 34px;   /* h1 */
+    --text-5xl: 44px;   /* hero (altar) */
+
+    /* ── Espaçamento (sistema 4pt) ─────────────────────────────── */
+    --sp-1: 4px;
+    --sp-2: 8px;
+    --sp-3: 12px;
+    --sp-4: 16px;
+    --sp-5: 20px;
+    --sp-6: 24px;
+    --sp-7: 32px;
+    --sp-8: 40px;
+    --sp-9: 56px;
+
+    /* ── Border radius (sistema progressivo) ───────────────────── */
+    --r-sm: 8px;     /* badges, chips pequenos */
+    --r-md: 12px;    /* inputs, badges grandes */
+    --r-lg: 16px;    /* botões */
+    --r-xl: 20px;    /* cards */
+    --r-2xl: 24px;   /* modais, altar */
+    --r-full: 9999px;
+
+    /* ── Sombras (sistema escalonado) ──────────────────────────── */
+    --sh-sm: 0 1px 3px rgba(186,117,23,.08);
+    --sh-md: 0 2px 10px rgba(186,117,23,.14);
+    --sh-lg: 0 6px 22px rgba(186,117,23,.22);
+    --sh-xl: 0 14px 40px rgba(186,117,23,.28);
+
+    /* ── Tempos de transição (sistema unificado) ───────────────── */
+    --t-fast: 150ms;
+    --t-base: 250ms;
+    --t-slow: 400ms;
+    --t-screen: 250ms;
+    --ease-out: cubic-bezier(.4, 0, .2, 1);
+    --ease-in-out: cubic-bezier(.4, 0, .2, 1);
   }
   *{ -webkit-tap-highlight-color:transparent; box-sizing:border-box; }
   html,body{ margin:0; height:100%; min-height:100dvh; background:var(--branco); color:var(--tinta);
@@ -51,24 +99,51 @@
     animation:sobe linear infinite; }
   @keyframes sobe{ 0%{ transform:translateY(0) scale(.6); opacity:0;} 12%{opacity:.8;} 100%{ transform:translateY(-105vh) scale(1); opacity:0;} }
 
+  /* ── Botões (sistema de 3 tiers) ─────────────────────────────── */
   .btn-ouro{ background:linear-gradient(180deg,#F6C868,#D89A2C); color:#5A3A06;
-    border:none; border-radius:16px; padding:16px; font-weight:600; font-size:16px;
-    width:100%; min-height:48px; box-shadow:0 6px 22px rgba(186,117,23,.28); transition:transform .15s, box-shadow .2s; }
+    border:none; border-radius:var(--r-lg); padding:var(--sp-4); font-weight:600; font-size:var(--text-md);
+    width:100%; min-height:48px; box-shadow:var(--sh-lg);
+    transition:transform var(--t-fast) var(--ease-out), box-shadow var(--t-base) var(--ease-out);
+    font-family:inherit; cursor:pointer; }
   .btn-ouro:active{ transform:scale(.975); box-shadow:0 3px 12px rgba(186,117,23,.22); }
-  .btn-ouro:focus-visible, .btn-ghost:focus-visible{ outline:3px solid var(--ouro-claro); outline-offset:2px; }
+  .btn-ouro:disabled{ opacity:.55; cursor:not-allowed; }
+
+  /* Secundário: pelet de igual peso, sem gradient — pra ações de mesma importância */
+  .btn-secundario{ background:var(--branco-puro); border:1.5px solid var(--ouro-claro); color:var(--ouro);
+    border-radius:var(--r-lg); padding:calc(var(--sp-4) - 1.5px); font-weight:600; font-size:var(--text-md);
+    width:100%; min-height:48px;
+    transition:background var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
+    font-family:inherit; cursor:pointer; }
+  .btn-secundario:active{ background:var(--ouro-bg); transform:scale(.975); }
+  .btn-secundario:disabled{ opacity:.55; cursor:not-allowed; }
+
+  /* Ghost: contorno suave, pra ações terciárias */
   .btn-ghost{ background:transparent; border:1px solid var(--linha); color:var(--ouro);
-    border-radius:16px; padding:15px; font-weight:500; width:100%; min-height:48px; }
-  /* Foco visível em qualquer elemento interativo — acessibilidade pra teclado */
+    border-radius:var(--r-lg); padding:calc(var(--sp-4) - 1px); font-weight:500; font-size:var(--text-md);
+    width:100%; min-height:48px;
+    transition:background var(--t-fast) var(--ease-out);
+    font-family:inherit; cursor:pointer; }
+  .btn-ghost:active{ background:var(--ouro-bg); }
+
+  /* Foco visível pra teclado — acessibilidade */
   a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{
     outline:3px solid var(--ouro-claro); outline-offset:2px; border-radius:4px;
   }
+
+  /* ── Inputs (font-size 16px = nunca dá zoom no iOS) ───────────── */
   .campo{ width:100%; background:var(--branco-puro); border:1px solid var(--linha);
-    border-radius:14px; padding:14px 16px; font-size:16px; color:var(--tinta); outline:none;
-    transition:border-color .2s, box-shadow .2s; }
+    border-radius:var(--r-md); padding:var(--sp-4); font-size:var(--text-md);
+    color:var(--tinta); outline:none; font-family:inherit;
+    transition:border-color var(--t-fast) var(--ease-out), box-shadow var(--t-fast) var(--ease-out); }
   .campo:focus{ border-color:var(--ouro-claro); box-shadow:0 0 0 4px rgba(239,159,39,.12); }
-  .label{ font-size:12px; letter-spacing:.06em; color:var(--tinta-suave); text-transform:uppercase; }
-  .card{ background:var(--branco-puro); border:1px solid var(--linha); border-radius:20px; transition:transform .15s ease, box-shadow .2s ease; }
-  .card:active{ transform:scale(.985); box-shadow:0 6px 22px rgba(186,117,23,.10); }
+  .campo:disabled{ opacity:.55; cursor:not-allowed; }
+
+  .label{ font-size:var(--text-xs); letter-spacing:.06em; color:var(--tinta-suave); text-transform:uppercase; font-weight:500; }
+
+  /* ── Cards ────────────────────────────────────────────────────── */
+  .card{ background:var(--branco-puro); border:1px solid var(--linha); border-radius:var(--r-xl);
+    transition:transform var(--t-fast) var(--ease-out), box-shadow var(--t-base) var(--ease-out); }
+  .card:active{ transform:scale(.985); box-shadow:var(--sh-md); }
   .screen::-webkit-scrollbar{ display:none } .screen{ scrollbar-width:none }
   .pad>div.fade-in,.pad>.card.fade-in{ animation:fadeIn .55s ease both; }
   /* Reduz só animações decorativas — modais, fades de tela e feedbacks essenciais permanecem. */

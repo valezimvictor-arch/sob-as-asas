@@ -16,7 +16,7 @@
 }
 *{box-sizing:border-box}
 body{margin:0; font-family:'Manrope',-apple-system,sans-serif; background:var(--bg); color:var(--tinta); line-height:1.6;}
-.wrap{max-width:520px; margin:0 auto; padding:32px 22px 80px;}
+.wrap{max-width:520px; margin:0 auto; padding:max(32px, env(safe-area-inset-top)) 22px max(80px, calc(env(safe-area-inset-bottom) + 32px));}
 .brand{text-align:center; font-family:'Playfair Display',serif; font-size:22px; color:var(--ouro);}
 .brand-sub{text-align:center; font-family:'EB Garamond',serif; font-style:italic; font-size:13px; color:var(--suave); margin-top:2px;}
 .hero{text-align:center; margin:28px 0;}
