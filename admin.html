@@ -243,6 +243,42 @@
   .sentchip{ display:inline-flex; align-items:center; gap:6px; background:var(--puro); border:1px solid var(--linha); border-radius:999px; padding:6px 12px; font-size:12.5px; color:var(--tinta); cursor:pointer; }
   .sentchip input{ width:auto; margin:0; accent-color:var(--ouro); }
   .sentchip:has(input:checked){ background:var(--ouro-bg); color:#854F0B; border-color:transparent; }
+
+  /* ── Skeleton loader pros cards de métrica (Stripe-like) ── */
+  .skeleton-bar{
+    background:linear-gradient(90deg, #F1EEE6 0%, #F8F5EC 50%, #F1EEE6 100%);
+    background-size:200% 100%; border-radius:6px;
+    animation:skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+  @keyframes skeleton-shimmer{
+    0%{ background-position:200% 0; }
+    100%{ background-position:-200% 0; }
+  }
+
+  /* Chip "última sincronização" no header */
+  .sync-chip{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:5px 10px; background:#F8F5EC; border:1px solid var(--linha);
+    border-radius:99px; font-size:11.5px; color:var(--suave);
+    font-variant-numeric:tabular-nums;
+  }
+  .sync-chip .pulse{
+    width:6px; height:6px; border-radius:50%; background:#16A34A;
+    box-shadow:0 0 0 0 rgba(22,163,74,.55);
+    animation:sync-pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes sync-pulse{
+    0%, 100%{ box-shadow:0 0 0 0 rgba(22,163,74,.45); }
+    50%{ box-shadow:0 0 0 5px rgba(22,163,74,0); }
+  }
+  .sync-chip.stale .pulse{ background:#D97706; }
+  .sync-chip.stale .pulse{ animation:none; }
+
+  /* Separador visual entre grupos de tabs */
+  .tabs .tab-sep{
+    width:1px; background:var(--linha); margin:8px 4px; align-self:stretch;
+    flex-shrink:0;
+  }
 </style>
 </head>
 <body>
@@ -259,7 +295,11 @@
         <p class="sub">Painel administrativo</p>
       </div>
     </div>
-    <div style="display:flex; gap:8px">
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
+      <span id="sync-chip" class="sync-chip" title="Última atualização dos dados">
+        <span class="pulse"></span>
+        <span id="sync-chip-texto">sincronizando…</span>
+      </span>
       <button class="btn-sec" onclick="recarregar()">Atualizar</button>
       <button class="btn-sec" onclick="sairAdmin()" title="Sair do admin">Sair</button>
     </div>
@@ -331,17 +371,18 @@
   </div>
 
   <div id="painel" class="hide">
-    <div class="tabs">
+    <div class="tabs" role="tablist">
       <button class="tab on" id="tab-painel" onclick="aba('painel')">Painel</button>
+      <button class="tab" id="tab-usuarios" onclick="aba('usuarios')">Usuários</button>
+      <button class="tab" id="tab-leads" onclick="aba('leads')">Leads</button>
+      <button class="tab" id="tab-triagem" onclick="aba('triagem')">Atendimento</button>
+      <button class="tab" id="tab-agentes" onclick="aba('agentes')">Agentes</button>
+      <div class="tab-sep" aria-hidden="true"></div>
       <button class="tab" id="tab-roteiro" onclick="aba('roteiro')">Roteiro Monica</button>
       <button class="tab" id="tab-conteudo" onclick="aba('conteudo')">Conteúdos</button>
       <button class="tab" id="tab-mensal" onclick="aba('mensal')">Mensagem Mensal</button>
       <button class="tab" id="tab-newsletter" onclick="aba('newsletter')">Newsletter</button>
       <button class="tab" id="tab-milagre" onclick="aba('milagre')">Milagre</button>
-      <button class="tab" id="tab-usuarios" onclick="aba('usuarios')">Usuários</button>
-      <button class="tab" id="tab-leads" onclick="aba('leads')">Leads</button>
-      <button class="tab" id="tab-triagem" onclick="aba('triagem')">Atendimento</button>
-      <button class="tab" id="tab-agentes" onclick="aba('agentes')">Agentes</button>
     </div>
 
     <!-- ░░ PAINEL ░░ -->
@@ -1298,11 +1339,35 @@ async function enviarAgora(){
 }
 function nlMsg(t,cor){ var el=document.getElementById('nl-msg'); el.textContent=t; el.style.color='#'+cor; }
 var DEMO_MET={usuarios:128,novos7d:23,assinantes:41,trials:12,mrr:1020,arr:12240,pedidos:67,candidatos:9,conteudos:11,gratidoes:54,leads:340};
+function _skeletonCard(hero){
+  var hH = hero ? '34px' : '30px';
+  return '<div class="metric'+(hero?' hero':'')+'">'
+       + '<div class="skeleton-bar" style="height:11px; width:50%"></div>'
+       + '<div class="skeleton-bar" style="height:'+hH+'; width:65%; margin:10px 0 6px"></div>'
+       + '<div class="skeleton-bar" style="height:10px; width:75%"></div>'
+       + '</div>';
+}
+function _setSyncChip(estado, ts){
+  var chip = document.getElementById('sync-chip');
+  var texto = document.getElementById('sync-chip-texto');
+  if(!chip || !texto) return;
+  if(estado === 'sincronizando'){ chip.classList.remove('stale'); texto.textContent = 'sincronizando…'; return; }
+  if(estado === 'ok'){
+    chip.classList.remove('stale');
+    var d = ts ? new Date(ts) : new Date();
+    var hh = String(d.getHours()).padStart(2,'0'), mm = String(d.getMinutes()).padStart(2,'0');
+    texto.textContent = 'sincronizado · '+hh+':'+mm;
+  } else {
+    chip.classList.add('stale');
+    texto.textContent = 'dados de demonstração';
+  }
+}
 async function carregarMetricas(){
   var elHero = document.getElementById('metricas-hero');
   var elSec = document.getElementById('metricas-sec');
-  if(elHero) elHero.innerHTML = '<p class="vazio" style="grid-column:1/-1">Carregando…</p>';
-  if(elSec) elSec.innerHTML = '';
+  _setSyncChip('sincronizando');
+  if(elHero) elHero.innerHTML = _skeletonCard(true)+_skeletonCard(true)+_skeletonCard(true)+_skeletonCard(true);
+  if(elSec) elSec.innerHTML = _skeletonCard(false)+_skeletonCard(false)+_skeletonCard(false)+_skeletonCard(false);
 
   var m=null, demo=false;
   try{ var r=await fetch('/api/admin-metrics',{headers:{'x-admin-key':KEY}}); if(r.ok){ var j=await r.json(); m=j.metricas; } }catch(e){}
@@ -1342,6 +1407,7 @@ async function carregarMetricas(){
 
   renderFunil(m);
   carregarLeadsStats();
+  _setSyncChip(demo ? 'demo' : 'ok');
 }
 
 async function carregarLeadsStats(){

@@ -63,8 +63,11 @@ h1{font-family:'Playfair Display',serif; font-weight:500; font-size:30px; margin
   <span class="label">Seu código de resgate</span>
   <input id="rg-codigo" class="campo" type="text" placeholder="PRES-XXXX-XXXX" autocomplete="off" autocapitalize="characters" />
 
-  <span class="label">Seu nome (como gostaria de ser chamada)</span>
-  <input id="rg-nome" class="campo" type="text" placeholder="Maria" />
+  <span class="label">Nome completo</span>
+  <input id="rg-nome" class="campo" type="text" placeholder="Maria Silva" autocomplete="name" />
+
+  <span class="label">WhatsApp (com DDD)</span>
+  <input id="rg-whatsapp" class="campo" type="tel" inputmode="tel" placeholder="(11) 90000-0000" autocomplete="tel" />
 
   <span class="label">Sua data de nascimento</span>
   <div class="row">
@@ -73,12 +76,25 @@ h1{font-family:'Playfair Display',serif; font-weight:500; font-size:30px; margin
     <div><input id="rg-ano" class="campo" inputmode="numeric" maxlength="4" placeholder="Ano" style="text-align:center"></div>
   </div>
 
+  <span class="label">Crie uma senha</span>
+  <div style="position:relative">
+    <input id="rg-senha" class="campo" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres" style="padding-right:62px" />
+    <button type="button" id="rg-senha-toggle" style="position:absolute; right:8px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:var(--ouro); font-size:12px; padding:8px 10px; cursor:pointer; font-weight:500">mostrar</button>
+  </div>
+  <div id="rg-forca" style="display:flex; gap:4px; margin-top:8px; height:4px">
+    <div class="fb" style="flex:1; background:var(--linha); border-radius:2px"></div>
+    <div class="fb" style="flex:1; background:var(--linha); border-radius:2px"></div>
+    <div class="fb" style="flex:1; background:var(--linha); border-radius:2px"></div>
+    <div class="fb" style="flex:1; background:var(--linha); border-radius:2px"></div>
+  </div>
+  <p id="rg-dica" style="font-size:11.5px; color:var(--suave); margin:6px 0 0; min-height:14px"></p>
+
   <p id="rg-erro" class="erro"></p>
   <button id="rg-btn" class="btn" onclick="resgatar()">Abrir meu santuário</button>
 
   <p class="aviso">
-    🔐 Vamos enviar um <strong>link mágico</strong> pro email cadastrado por quem te presenteou.
-    Não precisa criar senha — é só clicar no link e o santuário se abre.
+    🔐 Sua senha protege seu santuário. O e-mail cadastrado por quem te presenteou já está no nosso sistema —
+    você vai entrar com ele e sua senha sempre que quiser voltar.
   </p>
 </div>
 
@@ -90,11 +106,11 @@ h1{font-family:'Playfair Display',serif; font-weight:500; font-size:30px; margin
     <p class="anjo-nome" id="ok-anjo-nome">—</p>
     <p style="margin:0 0 18px; font-family:'EB Garamond',serif; font-style:italic; font-size:16px; color:var(--ouro)" id="ok-anjo-num"></p>
     <p style="margin:0; font-size:14.5px; color:var(--tinta); line-height:1.65">
-      Seu santuário está aberto. Em alguns segundos, <strong>um link de entrada</strong> vai chegar no seu email <strong id="ok-email"></strong>.
-      Clique nele pra entrar.
+      Seu santuário está aberto. Sua conta foi criada com o e-mail <strong id="ok-email"></strong>.
+      Entre com seu e-mail e a senha que você acabou de criar.
     </p>
   </div>
-  <a href="/" class="btn" style="text-decoration:none">Ir pro Sob as Asas</a>
+  <a href="/" class="btn" style="text-decoration:none">Entrar no Sob as Asas</a>
 </div>
 
 <div class="rodape">
@@ -116,14 +132,62 @@ h1{font-family:'Playfair Display',serif; font-weight:500; font-size:30px; margin
   // Uppercase automático no campo código
   var c = document.getElementById('rg-codigo');
   if(c){ c.addEventListener('input', function(){ c.value = c.value.toUpperCase(); }); }
+
+  // Máscara WhatsApp
+  var w = document.getElementById('rg-whatsapp');
+  if(w){
+    w.addEventListener('input', function(){
+      var v = w.value.replace(/\D/g,'').slice(0,11);
+      if(v.length<=2) w.value = v.length ? '('+v : '';
+      else if(v.length<=6) w.value = '('+v.slice(0,2)+') '+v.slice(2);
+      else if(v.length<=10) w.value = '('+v.slice(0,2)+') '+v.slice(2,6)+'-'+v.slice(6);
+      else w.value = '('+v.slice(0,2)+') '+v.slice(2,7)+'-'+v.slice(7);
+    });
+  }
+
+  // Toggle mostrar/ocultar senha
+  var sBtn = document.getElementById('rg-senha-toggle');
+  if(sBtn){
+    sBtn.addEventListener('click', function(){
+      var i = document.getElementById('rg-senha');
+      if(i.type==='password'){ i.type='text'; sBtn.textContent='ocultar'; }
+      else { i.type='password'; sBtn.textContent='mostrar'; }
+    });
+  }
+
+  // Indicador de força
+  var s = document.getElementById('rg-senha');
+  if(s){
+    s.addEventListener('input', function(){
+      var f = forcaSenha(s.value);
+      var bars = document.querySelectorAll('#rg-forca .fb');
+      var cores = ['#E74C3C','#E67E22','#27AE60','#1E8449'];
+      bars.forEach(function(b,idx){ b.style.background = idx < f.nivel ? cores[Math.min(f.nivel-1,3)] : 'var(--linha)'; });
+      document.getElementById('rg-dica').textContent = s.value ? f.dica : '';
+    });
+  }
 })();
+
+function forcaSenha(s){
+  if(!s) return {nivel:0, dica:''};
+  var n=0;
+  if(s.length>=8) n++;
+  if(s.length>=12) n++;
+  if(/[a-z]/.test(s) && /[A-Z]/.test(s)) n++;
+  if(/\d/.test(s) && /[^a-zA-Z0-9]/.test(s)) n++;
+  if(/\d/.test(s) && !/[^a-zA-Z0-9]/.test(s)) n = Math.max(n, Math.min(n+1,3));
+  var dicas = ['Muito frágil — adicione mais letras','Razoável — adicione números ou símbolo','Boa senha','Senha forte 🔒'];
+  return { nivel: Math.min(n,4), dica: n>0 ? dicas[Math.min(n-1,3)] : '' };
+}
 
 async function resgatar(){
   var codigo = (document.getElementById('rg-codigo').value || '').trim().toUpperCase();
   var nome = (document.getElementById('rg-nome').value || '').trim();
+  var whatsapp = (document.getElementById('rg-whatsapp').value || '').replace(/\D/g,'');
   var dia = parseInt(document.getElementById('rg-dia').value || '0', 10);
   var mes = parseInt(document.getElementById('rg-mes').value || '0', 10);
   var ano = parseInt(document.getElementById('rg-ano').value || '0', 10);
+  var senha = document.getElementById('rg-senha').value || '';
   var erro = document.getElementById('rg-erro');
   erro.textContent = '';
 
@@ -131,13 +195,16 @@ async function resgatar(){
     erro.textContent = 'Código inválido. Verifique no email que você recebeu (formato PRES-XXXX-XXXX).';
     return;
   }
-  if(!nome){ erro.textContent = 'Informe seu nome.'; return; }
+  if(!nome || nome.length < 2){ erro.textContent = 'Informe seu nome completo.'; return; }
+  if(whatsapp.length < 10 || whatsapp.length > 11){ erro.textContent = 'WhatsApp incompleto. Use DDD + número.'; return; }
   // Valida data real (rejeita 31/04, 29/02 em ano não-bissexto, etc)
   if(!dia || !mes || !ano){ erro.textContent = 'Preencha dia, mês e ano.'; return; }
   var _dt = new Date(ano, mes-1, dia);
   if(_dt.getFullYear()!==ano || _dt.getMonth()!==mes-1 || _dt.getDate()!==dia || ano<1900 || ano>new Date().getFullYear()){
     erro.textContent = 'Essa data não existe. Confira o dia, mês e ano.'; return;
   }
+  if(senha.length < 8){ erro.textContent = 'A senha precisa ter pelo menos 8 caracteres.'; return; }
+  if(forcaSenha(senha).nivel < 2){ erro.textContent = 'Senha muito frágil. Misture letras e números.'; return; }
   var nascimento = ano + '-' + String(mes).padStart(2,'0') + '-' + String(dia).padStart(2,'0');
 
   var btn = document.getElementById('rg-btn');
@@ -147,7 +214,7 @@ async function resgatar(){
     var r = await fetch('/api/resgatar-presente', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ codigo: codigo, nome: nome, nascimento: nascimento }),
+      body: JSON.stringify({ codigo: codigo, nome: nome, whatsapp: whatsapp, nascimento: nascimento, senha: senha }),
     });
     var j = await r.json();
 

@@ -1141,6 +1141,69 @@
   </div>
 </section>
 
+<!-- ░░ CONFIRMA E-MAIL (pós-signup quando Supabase exige confirmação) ░░ -->
+<section id="s-confirma-email" class="screen">
+  <div class="halo" style="top:-80px; width:240px; height:240px"></div>
+  <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; justify-content:center; text-align:center">
+    <div style="font-size:42px">✉️</div>
+    <h2 class="serif" style="font-size:28px; margin:10px 0 0; font-weight:400">Falta só confirmar</h2>
+    <p style="color:var(--tinta-suave); font-size:14px; margin:14px 0 6px; line-height:1.6">
+      Enviamos um link de confirmação para<br/>
+      <span id="confirma-email-end" style="color:var(--ouro); font-weight:500">—</span>
+    </p>
+    <p style="color:var(--tinta-suave); font-size:13px; margin:14px 24px 0; line-height:1.65">
+      Abra o e-mail e clique em <strong style="color:var(--tinta)">"Confirmar meu cadastro"</strong>. Aí seu anjo te aguarda no santuário.
+    </p>
+
+    <div style="margin-top:30px; padding:18px; background:var(--ouro-bg); border-radius:14px; border:1px solid rgba(186,117,23,.18); text-align:left">
+      <p style="margin:0 0 8px; font-size:13px; font-weight:600; color:#5A3A06">Não chegou em 1 minuto?</p>
+      <ul style="margin:0; padding-left:18px; font-size:12.5px; color:#854F0B; line-height:1.7">
+        <li>Confira o spam ou promoções</li>
+        <li>Confirme se o e-mail está certo</li>
+        <li><button onclick="reenviarConfirmacao()" style="background:none;border:none;color:var(--ouro);font:inherit;cursor:pointer;padding:0;text-decoration:underline">Reenviar o link</button></li>
+      </ul>
+    </div>
+    <p id="confirma-msg" style="font-size:13px; min-height:18px; margin:14px 0 0; color:var(--tinta-suave)"></p>
+
+    <p style="text-align:center; font-size:12.5px; color:var(--tinta-suave); margin:24px 0 0; line-height:1.6">
+      <a href="javascript:void(0)" onclick="show('s-login')" style="color:var(--ouro); text-decoration:none">Já confirmei · Fazer login</a>
+    </p>
+  </div>
+</section>
+
+<!-- ░░ RECOVERY — redefinir senha após link do e-mail ░░ -->
+<section id="s-recovery" class="screen">
+  <div class="halo" style="top:-80px; width:240px; height:240px"></div>
+  <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; justify-content:center">
+    <div style="text-align:center">
+      <div style="font-size:38px">🔑</div>
+      <h2 class="serif" style="font-size:28px; margin:10px 0 0; font-weight:400">Defina sua nova senha</h2>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:10px 24px 0; line-height:1.6">Escolha uma senha que você lembre — ela protege seu santuário.</p>
+    </div>
+
+    <div style="margin-top:26px">
+      <span class="label">Nova senha</span>
+      <div style="position:relative; margin-top:6px">
+        <input id="in-senha-nova" class="campo" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres" style="padding-right:60px" />
+        <button type="button" onclick="toggleSenha('in-senha-nova', this)" style="position:absolute; right:6px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:var(--ouro); font-size:12px; padding:8px 10px; cursor:pointer; font-weight:500">mostrar</button>
+      </div>
+      <div id="forca-senha-nova" style="display:flex; gap:4px; margin-top:8px; height:4px">
+        <div class="fb" style="flex:1; background:var(--linha); border-radius:2px"></div>
+        <div class="fb" style="flex:1; background:var(--linha); border-radius:2px"></div>
+        <div class="fb" style="flex:1; background:var(--linha); border-radius:2px"></div>
+        <div class="fb" style="flex:1; background:var(--linha); border-radius:2px"></div>
+      </div>
+      <p id="forca-dica-nova" style="font-size:11.5px; color:var(--tinta-suave); margin:6px 0 0; min-height:14px"></p>
+
+      <span class="label" style="display:block; margin-top:16px">Confirme a senha</span>
+      <input id="in-senha-confirma" class="campo" type="password" autocomplete="new-password" placeholder="Digite de novo" style="margin-top:6px" onkeydown="if(event.key==='Enter') redefinirSenha()" />
+
+      <p id="recovery-msg" style="color:#C0392B; font-size:13px; min-height:16px; margin:12px 0 0"></p>
+      <button class="btn-ouro" style="margin-top:6px" onclick="redefinirSenha()">Salvar nova senha</button>
+    </div>
+  </div>
+</section>
+
 <!-- ░░ 4. HOME ░░ -->
 <section id="s-home" class="screen">
   <div style="flex:1; overflow-y:auto" class="pad">
@@ -2115,6 +2178,49 @@
       <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:14px 0"><span style="color:var(--tinta-suave); font-size:14px">Plano</span><b id="aj-plano" style="font-weight:500">Gratuito</b></div>
     </div>
 
+    <p class="label" style="display:block; margin:22px 0 8px">Segurança</p>
+    <div class="card" style="padding:4px 18px">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 0">
+        <div style="flex:1">
+          <p style="margin:0; font-weight:500" id="aj-senha-rotulo">Senha do santuário</p>
+          <p style="margin:2px 0 0; font-size:12px; color:var(--tinta-suave)" id="aj-senha-sub">Carregando…</p>
+        </div>
+        <button id="aj-senha-btn" class="btn-ghost" style="padding:8px 14px" onclick="abrirSenhaModal()">—</button>
+      </div>
+    </div>
+
+    <!-- Modal criar/alterar senha -->
+    <div id="senha-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:1100; align-items:center; justify-content:center; padding:20px">
+      <div style="background:var(--branco-puro); border-radius:18px; padding:24px 22px; max-width:380px; width:100%; box-shadow:var(--sh-xl)">
+        <h3 class="serif" id="senha-modal-titulo" style="margin:0; font-size:22px; font-weight:400">Criar uma senha</h3>
+        <p id="senha-modal-sub" style="margin:6px 0 18px; font-size:13px; color:var(--tinta-suave); line-height:1.55">Defina uma senha pra entrar sem precisar do código por e-mail.</p>
+
+        <div id="senha-atual-bloco" style="display:none">
+          <span class="label">Senha atual</span>
+          <input id="in-senha-atual" class="campo" type="password" autocomplete="current-password" placeholder="Senha atual" style="margin-top:6px" />
+        </div>
+
+        <span class="label" style="display:block; margin-top:14px">Nova senha</span>
+        <div style="position:relative; margin-top:6px">
+          <input id="in-senha-set" class="campo" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres" style="padding-right:60px" />
+          <button type="button" onclick="toggleSenha('in-senha-set', this)" style="position:absolute; right:6px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:var(--ouro); font-size:12px; padding:8px 10px; cursor:pointer; font-weight:500">mostrar</button>
+        </div>
+        <div id="forca-senha-set" style="display:flex; gap:4px; margin-top:8px; height:4px">
+          <div class="fb" style="flex:1; background:var(--linha); border-radius:2px"></div>
+          <div class="fb" style="flex:1; background:var(--linha); border-radius:2px"></div>
+          <div class="fb" style="flex:1; background:var(--linha); border-radius:2px"></div>
+          <div class="fb" style="flex:1; background:var(--linha); border-radius:2px"></div>
+        </div>
+        <p id="forca-dica-set" style="font-size:11.5px; color:var(--tinta-suave); margin:6px 0 0; min-height:14px"></p>
+
+        <p id="senha-modal-msg" style="color:#C0392B; font-size:13px; min-height:16px; margin:12px 0 0"></p>
+        <div style="display:flex; gap:10px; margin-top:6px">
+          <button class="btn-secundario" style="flex:1" onclick="fecharSenhaModal()">Cancelar</button>
+          <button class="btn-ouro" style="flex:2" onclick="salvarSenha()" id="senha-modal-ok">Salvar</button>
+        </div>
+      </div>
+    </div>
+
     <p class="label" style="display:block; margin:22px 0 8px">Ritual diário</p>
     <div class="card" style="padding:4px 18px">
       <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 0; border-bottom:1px solid var(--linha)">
@@ -2682,12 +2788,36 @@ async function criarConta(){
     }
 
     var userId = r.data && r.data.user && r.data.user.id;
+    var sessao = r.data && r.data.session;
     if(!userId){
       return falhar('Cadastro pendente — verifique seu e-mail pra confirmar e tentar de novo.');
     }
     window._userId = userId;
     window._email = email;
     window._nome = nome.split(' ')[0];
+    window._temSenha = true;
+
+    // Se Supabase exige confirmação de email (sessão vem null), vai pra
+    // tela "verifique seu e-mail" em vez de seguir pro reveal.
+    if(!sessao){
+      window._emailPendenteConfirm = email;
+      // Guarda dados pendentes pra usar depois da confirmação
+      try{
+        var anjoTmp = anjoRegente(m, d);
+        sessionStorage.setItem('saa_pending_profile', JSON.stringify({
+          nome:nome, email:email, whatsapp:whatsapp,
+          nascimento: y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0'),
+          anjo_n: anjoTmp.n, anjo_nome: anjoTmp.nome,
+          aceita_newsletter: !!(newsletter && newsletter.checked)
+        }));
+      }catch(_){}
+      try{ localStorage.setItem('saa_consent_lgpd', new Date().toISOString()); }catch(_){}
+      reset();
+      var el = document.getElementById('confirma-email-end');
+      if(el) el.textContent = email;
+      show('s-confirma-email');
+      return;
+    }
 
     // 2) Calcula anjo regente
     var anjo = anjoRegente(m, d);
@@ -4674,6 +4804,181 @@ async function esqueciSenha(){
   }
 }
 
+// ── Reenvio de link de confirmação (pós-signup) ──
+async function reenviarConfirmacao(){
+  var msg = document.getElementById('confirma-msg');
+  var email = (window._emailPendenteConfirm || '').trim().toLowerCase();
+  msg.style.color = 'var(--tinta-suave)';
+  if(!email){ msg.textContent = 'Volte e refaça o cadastro.'; return; }
+  if(!window.saaAuth){ msg.textContent = 'Aguarde um instante…'; return; }
+  msg.textContent = 'Reenviando…';
+  try{
+    var r = await window.saaAuth.client.auth.resend({ type:'signup', email: email });
+    if(r && r.error){
+      msg.style.color = '#C0392B';
+      var m = (r.error.message||'').toLowerCase();
+      if(m.includes('rate') || m.includes('many')) msg.textContent = 'Aguarde 1 minuto antes de pedir de novo.';
+      else if(m.includes('already') || m.includes('confirmed')) { msg.style.color = '#1E8449'; msg.textContent = 'E-mail já confirmado — vai pro login.'; }
+      else msg.textContent = r.error.message;
+    } else {
+      msg.style.color = '#1E8449';
+      msg.textContent = 'Reenviado. Confira sua caixa em 1 minuto.';
+    }
+  }catch(e){
+    msg.style.color = '#C0392B';
+    msg.textContent = 'Sem conexão. Tente em alguns segundos.';
+  }
+}
+
+// ── Redefinir senha (tela s-recovery) ──
+async function redefinirSenha(){
+  var senha = document.getElementById('in-senha-nova').value || '';
+  var confirma = document.getElementById('in-senha-confirma').value || '';
+  var msg = document.getElementById('recovery-msg');
+  msg.style.color = '#C0392B';
+  msg.textContent = '';
+  if(senha.length < 8){ msg.textContent = 'Senha precisa ter pelo menos 8 caracteres.'; return; }
+  if(_forcaSenha(senha).nivel < 2){ msg.textContent = 'Senha muito frágil. Misture letras e números.'; return; }
+  if(senha !== confirma){ msg.textContent = 'As duas senhas precisam ser iguais.'; return; }
+  if(!window.saaAuth){ msg.textContent = 'Aguarde um instante…'; return; }
+
+  var btn = document.querySelector('#s-recovery .btn-ouro');
+  if(btn){ btn.disabled = true; btn.textContent = 'Salvando…'; }
+  try{
+    var r = await window.saaAuth.client.auth.updateUser({ password: senha });
+    if(r.error){
+      msg.textContent = 'Não consegui salvar: ' + r.error.message;
+      if(btn){ btn.disabled = false; btn.textContent = 'Salvar nova senha'; }
+      return;
+    }
+    // Limpa hash de recovery e segue
+    try{ history.replaceState(null, '', location.pathname); }catch(_){}
+    toast('Senha redefinida. Bem-vindo de volta. 🪽');
+    chime();
+    // Já tem sessão (Supabase mantém após updateUser em recovery) → vai pra home
+    try{
+      var s = await window.saaAuth.client.auth.getSession();
+      if(s && s.data && s.data.session){ await aoLogar(s.data.session); }
+      else { show('s-login'); }
+    }catch(_){ show('s-login'); }
+  }catch(e){
+    msg.textContent = 'Erro inesperado. Tente em alguns segundos.';
+    if(btn){ btn.disabled = false; btn.textContent = 'Salvar nova senha'; }
+  }
+}
+
+// Liga indicador de força ao input da tela recovery (idempotente)
+function _setupRecoveryInput(){
+  var i = document.getElementById('in-senha-nova');
+  if(!i || i._wired) return;
+  i._wired = true;
+  i.addEventListener('input', function(){
+    var f = _forcaSenha(i.value);
+    var bars = document.querySelectorAll('#forca-senha-nova .fb');
+    var cores = ['#E74C3C','#E67E22','#27AE60','#1E8449'];
+    bars.forEach(function(b,idx){ b.style.background = idx < f.nivel ? cores[Math.min(f.nivel-1,3)] : 'var(--linha)'; });
+    var dica = document.getElementById('forca-dica-nova');
+    if(dica) dica.textContent = i.value ? f.dica : '';
+  });
+}
+
+// ── Senha modal (Ajustes → Segurança) ──
+function abrirSenhaModal(){
+  var modal = document.getElementById('senha-modal');
+  if(!modal) return;
+  var jaTem = !!(window._temSenha);
+  document.getElementById('senha-modal-titulo').textContent = jaTem ? 'Alterar senha' : 'Criar uma senha';
+  document.getElementById('senha-modal-sub').textContent = jaTem
+    ? 'Mantenha sua conta protegida com uma senha forte.'
+    : 'Defina uma senha pra entrar sem precisar do código por e-mail.';
+  document.getElementById('senha-atual-bloco').style.display = jaTem ? 'block' : 'none';
+  document.getElementById('senha-modal-msg').textContent = '';
+  ['in-senha-atual','in-senha-set'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  document.querySelectorAll('#forca-senha-set .fb').forEach(function(b){ b.style.background='var(--linha)'; });
+  document.getElementById('forca-dica-set').textContent = '';
+  modal.style.display = 'flex';
+  // Liga força
+  var i = document.getElementById('in-senha-set');
+  if(i && !i._wired){
+    i._wired = true;
+    i.addEventListener('input', function(){
+      var f = _forcaSenha(i.value);
+      var bars = document.querySelectorAll('#forca-senha-set .fb');
+      var cores = ['#E74C3C','#E67E22','#27AE60','#1E8449'];
+      bars.forEach(function(b,idx){ b.style.background = idx < f.nivel ? cores[Math.min(f.nivel-1,3)] : 'var(--linha)'; });
+      var dica = document.getElementById('forca-dica-set');
+      if(dica) dica.textContent = i.value ? f.dica : '';
+    });
+  }
+}
+
+function fecharSenhaModal(){
+  var m = document.getElementById('senha-modal'); if(m) m.style.display = 'none';
+}
+
+async function salvarSenha(){
+  var msg = document.getElementById('senha-modal-msg');
+  var btn = document.getElementById('senha-modal-ok');
+  var nova = document.getElementById('in-senha-set').value || '';
+  var atual = document.getElementById('in-senha-atual').value || '';
+  var jaTem = !!(window._temSenha);
+  msg.style.color = '#C0392B';
+  msg.textContent = '';
+
+  if(nova.length < 8){ msg.textContent = 'Senha precisa ter pelo menos 8 caracteres.'; return; }
+  if(_forcaSenha(nova).nivel < 2){ msg.textContent = 'Senha muito frágil. Misture letras e números.'; return; }
+  if(!window.saaAuth || !window._userId){ msg.textContent = 'Faça login primeiro.'; return; }
+
+  btn.disabled = true; btn.textContent = 'Salvando…';
+  try{
+    // Se já tem senha, valida a atual fazendo signIn (Supabase não tem checagem direta)
+    if(jaTem){
+      if(!atual){ msg.textContent = 'Digite sua senha atual.'; btn.disabled=false; btn.textContent='Salvar'; return; }
+      var email = window._email || (window._perfil && window._perfil.email);
+      if(!email){
+        var u = await window.saaAuth.client.auth.getUser();
+        email = u && u.data && u.data.user && u.data.user.email;
+      }
+      var check = await window.saaAuth.client.auth.signInWithPassword({ email: email, password: atual });
+      if(check.error){
+        msg.textContent = 'Senha atual incorreta.';
+        btn.disabled = false; btn.textContent = 'Salvar';
+        return;
+      }
+    }
+    var r = await window.saaAuth.client.auth.updateUser({ password: nova });
+    if(r.error){
+      msg.textContent = 'Não consegui salvar: ' + r.error.message;
+      btn.disabled = false; btn.textContent = 'Salvar';
+      return;
+    }
+    window._temSenha = true;
+    _atualizarSenhaUI();
+    fecharSenhaModal();
+    toast(jaTem ? 'Senha alterada. 🔒' : 'Senha criada — agora você entra sem código. 🔒');
+  }catch(e){
+    msg.textContent = 'Erro inesperado. Tente em alguns segundos.';
+    btn.disabled = false; btn.textContent = 'Salvar';
+  }
+}
+
+// Atualiza linha "Senha do santuário" em Ajustes
+function _atualizarSenhaUI(){
+  var rotulo = document.getElementById('aj-senha-rotulo');
+  var sub = document.getElementById('aj-senha-sub');
+  var btn = document.getElementById('aj-senha-btn');
+  if(!rotulo) return;
+  if(window._temSenha){
+    rotulo.textContent = 'Senha do santuário';
+    sub.textContent = 'Definida — você entra com e-mail e senha.';
+    btn.textContent = 'Alterar';
+  } else {
+    rotulo.textContent = 'Criar uma senha';
+    sub.textContent = 'Hoje você entra só com link no e-mail. Crie uma senha pra entrar direto.';
+    btn.textContent = 'Criar';
+  }
+}
+
 async function enviarMagicLink(){
   var email=(document.getElementById('in-email').value||'').trim();
   var msg=document.getElementById('login-msg');
@@ -4863,8 +5168,50 @@ window.saaAuth = null;
       }
     };
     // volta do link mágico → entra autenticado e salva o perfil pendente
-    sb.auth.getSession().then(function(res){ if(res && res.data && res.data.session) aoLogar(res.data.session); }).catch(function(){});
-    sb.auth.onAuthStateChange(function(_e, session){ if(session && session.user) aoLogar(session); });
+    // Detecta recovery (hash type=recovery ou query ?recuperar=1) ANTES de aoLogar.
+    function _ehRecovery(){
+      try{
+        var h = (location.hash||'') + ' ' + (location.search||'');
+        return /type=recovery|recuperar=1/i.test(h);
+      }catch(_){ return false; }
+    }
+    sb.auth.getSession().then(function(res){
+      if(res && res.data && res.data.session){
+        if(_ehRecovery()){ _setupRecoveryInput(); show('s-recovery'); return; }
+        aoLogar(res.data.session);
+      }
+    }).catch(function(){});
+    sb.auth.onAuthStateChange(function(evento, session){
+      if(evento === 'PASSWORD_RECOVERY'){
+        _setupRecoveryInput();
+        show('s-recovery');
+        return;
+      }
+      if(session && session.user){
+        if(_ehRecovery()){ _setupRecoveryInput(); show('s-recovery'); return; }
+        // Pós-confirmação de email: usa perfil pendente do sessionStorage
+        try{
+          var raw = sessionStorage.getItem('saa_pending_profile');
+          if(raw){
+            var p = JSON.parse(raw);
+            sb.from('users').upsert({
+              id: session.user.id, email: p.email, nome: p.nome, nome_completo: p.nome,
+              whatsapp: p.whatsapp, nascimento: p.nascimento,
+              anjo_n: p.anjo_n, anjo_nome: p.anjo_nome,
+              aceita_newsletter: !!p.aceita_newsletter,
+              consent_lgpd_em: new Date().toISOString()
+            }, { onConflict:'id' }).then(function(){}, function(){});
+            if(p.aceita_newsletter){
+              sb.from('leads').upsert({ email:p.email, nome_completo:p.nome, whatsapp:p.whatsapp,
+                origem:'cadastro_app', opt_in:true, opt_in_em: new Date().toISOString() },
+                { onConflict:'email' }).then(function(){}, function(){});
+            }
+            sessionStorage.removeItem('saa_pending_profile');
+          }
+        }catch(_){}
+        aoLogar(session);
+      }
+    });
     carregarBiblioteca();  // popula a biblioteca a partir do banco, se houver conteúdo
   };
   s.onerror=function(){ console.warn('[Sob as Asas] supabase-js não carregou; seguindo em modo demo.'); };
@@ -5126,9 +5473,24 @@ function entrarPratica(){
 }
 
 // ── Ajustes ──
-function openAjustes(){
+async function openAjustes(){
   document.getElementById('aj-nome').textContent = window._nome || 'Visitante';
   document.getElementById('aj-email').textContent = window._email || 'Sem conta';
+  // Detecta se conta tem senha (heurística: providers do user). Quem fez signUp
+  // tem provider "email" + has_password=true; quem só usou magic-link aparece
+  // sem senha. updateUser({password}) cria a senha pra esses.
+  try{
+    if(window.saaAuth && window._userId){
+      var u = await window.saaAuth.client.auth.getUser();
+      var meta = u && u.data && u.data.user && u.data.user.user_metadata;
+      var amr = u && u.data && u.data.user && u.data.user.amr;
+      window._email = window._email || (u && u.data && u.data.user && u.data.user.email);
+      // Supabase não expõe "has_password" direto — usamos provider list
+      var ids = (u && u.data && u.data.user && u.data.user.identities) || [];
+      window._temSenha = ids.some(function(i){ return i.provider === 'email'; }) && !!(meta && meta.password_set !== false);
+    }
+  }catch(_){}
+  _atualizarSenhaUI();
   document.getElementById('aj-avatar').textContent = (window._nome||'•').trim().charAt(0).toUpperCase();
   document.getElementById('aj-anjo').textContent = window._anjo || '—';
   var n=document.getElementById('aj-nasc');
