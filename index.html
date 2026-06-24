@@ -3387,20 +3387,15 @@ async function iniciarAssinatura(plano){
 
   setBtnLoading();
 
-  // Espera o script terminar de carregar (race condition após redirect do Stripe)
-  if(!window.saaAuth){
-    var ok = await _aguardarSaaAuth();
-    if(!ok){
-      resetBtn();
-      alert('A configuração do Supabase não carregou. Recarrega a página (puxa de cima pra baixo) e tenta de novo.');
-      return;
-    }
-  }
+  // O checkout só precisa de _userId/_email — não depende do supabase-js carregado.
+  // Se o usuário caiu aqui logado (_userId existe), seguimos mesmo que saaAuth
+  // ainda não tenha hidratado (rede ruim, SW cache stale, CDN intermitente).
   if(!window._userId){
     resetBtn();
+    // Sem userId logado — manda pra login
     alert('Pra assinar você precisa estar logada. Vamos te levar pra tela de login.');
     closePaywall();
-    if(window.saaAuth){ resetLoginUI(); show('s-login'); }
+    resetLoginUI(); show('s-login');
     return;
   }
 
@@ -5266,9 +5261,29 @@ window.saaAuth = null;
 (function(){
   var c = window.SAA_CONFIG || {};
   if(!c.url || !c.anon) return;  // sem chaves → modo demo, app funciona igual
-  var s=document.createElement('script');
-  s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
-  s.onload=function(){
+
+  // Carregamento resiliente: jsdelivr → unpkg (fallback). Se ambos falharem,
+  // app segue funcionando com features que não dependem de saaAuth (paywall
+  // já não precisa, por exemplo). Senão, ficaria offline pra sempre.
+  var FONTES = [
+    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js',
+    'https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.min.js',
+  ];
+  var tentativa = 0;
+  function carregar(){
+    var s=document.createElement('script');
+    s.src = FONTES[tentativa];
+    s.crossOrigin = 'anonymous';
+    s.onerror = function(){
+      console.warn('[saaAuth] fonte falhou:', s.src);
+      try{ if(window.Sentry) window.Sentry.addBreadcrumb({ category:'auth', message:'supabase-js cdn falhou: '+s.src, level:'warning' }); }catch(_){}
+      tentativa++;
+      if(tentativa < FONTES.length){ carregar(); return; }
+      console.warn('[Sob as Asas] supabase-js não carregou; seguindo em modo demo.');
+      try{ if(window.Sentry) window.Sentry.captureMessage('supabase-js falhou em todos CDNs', 'error'); }catch(_){}
+      try{ window.dispatchEvent(new Event('saa-supabase-fail')); }catch(_){}
+    };
+    s.onload=function(){
     var sb = window.supabase.createClient(c.url, c.anon);
     window.saaAuth = {
       client: sb,
@@ -5327,9 +5342,10 @@ window.saaAuth = null;
       }
     });
     carregarBiblioteca();  // popula a biblioteca a partir do banco, se houver conteúdo
-  };
-  s.onerror=function(){ console.warn('[Sob as Asas] supabase-js não carregou; seguindo em modo demo.'); };
-  document.head.appendChild(s);
+    };
+    document.head.appendChild(s);
+  }
+  carregar();
 })();
 
 // ── partículas de luz ──

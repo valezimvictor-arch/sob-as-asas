@@ -2,11 +2,29 @@
 // Strategy: network-first para HTML (sempre fresco), cache-first para assets.
 // A cada deploy, suba o número da versão (v0.1 → v0.2...) para disparar o
 // banner "Nova versão disponível".
-const CACHE = 'sobasasas-v0.50';
+const CACHE = 'sobasasas-v0.51';
 const ASSETS = ['/manifest.json', '/asa-icon.svg', '/js/geradorTextos.js', '/js/observabilidade.js'];
+// Scripts de terceiros que o app depende em runtime — pré-cacheados de forma
+// best-effort (não bloqueia o install se algum falhar). Garante que recovery /
+// paywall / login continuam funcionando offline ou em rede ruim.
+const ASSETS_BEST_EFFORT = [
+  'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js',
+];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+  e.waitUntil(
+    caches.open(CACHE).then(c => {
+      // Assets críticos: bloqueia install se falhar (sinaliza que algo grave aconteceu)
+      const critico = c.addAll(ASSETS);
+      // Best-effort: tenta cachear cada um, mas não bloqueia
+      const opcional = Promise.allSettled(
+        ASSETS_BEST_EFFORT.map(url =>
+          fetch(url, { mode: 'cors' }).then(r => r.ok ? c.put(url, r) : null).catch(() => null)
+        )
+      );
+      return Promise.all([critico, opcional]);
+    })
+  );
 });
 
 self.addEventListener('message', e => {
