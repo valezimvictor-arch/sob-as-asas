@@ -212,6 +212,7 @@
       <button class="tab" id="tab-newsletter" onclick="aba('newsletter')">✉️ Newsletter</button>
       <button class="tab" id="tab-mensal" onclick="aba('mensal')">📜 Mensagem Mensal</button>
       <button class="tab" id="tab-triagem" onclick="aba('triagem')">🪽 Atendimento</button>
+      <button class="tab" id="tab-agentes" onclick="aba('agentes')">🤖 Agentes</button>
     </div>
 
     <!-- ░░ PAINEL ░░ -->
@@ -448,6 +449,75 @@
       </div>
     </div>
 
+    <!-- ░░ AGENTES (testar manualmente sem terminal) ░░ -->
+    <div id="sec-agentes" class="hide">
+      <div class="nota">🤖 <strong>Agentes operacionais</strong> — 5 agentes que rodam automaticamente em horários definidos. Aqui você pode disparar cada um manualmente pra testar. Cada um aparece com a programação automática + um botão "Rodar agora".</div>
+
+      <div id="agente-sentinela" class="card" style="padding:18px; margin-bottom:12px">
+        <div style="display:flex; align-items:flex-start; gap:14px">
+          <div style="font-size:28px; line-height:1">🛡️</div>
+          <div style="flex:1; min-width:0">
+            <p style="margin:0 0 4px; font-weight:600; font-size:15px">Sentinela 24/7</p>
+            <p style="margin:0 0 10px; font-size:13px; color:var(--suave); line-height:1.55">Verifica 7 endpoints críticos (homepage, landing, presente, resgatar, APIs). Alerta por email se 2 checks consecutivos falharem. <strong>Roda a cada 1 hora.</strong></p>
+            <button class="btn-sec" onclick="rodarAgente('sentinela', this)" style="font-size:13px">▶ Rodar agora</button>
+            <p class="agente-msg" style="margin:8px 0 0; font-size:12.5px; min-height:16px"></p>
+          </div>
+        </div>
+      </div>
+
+      <div id="agente-pulse" class="card" style="padding:18px; margin-bottom:12px">
+        <div style="display:flex; align-items:flex-start; gap:14px">
+          <div style="font-size:28px; line-height:1">📊</div>
+          <div style="flex:1; min-width:0">
+            <p style="margin:0 0 4px; font-weight:600; font-size:15px">Pulse Diário</p>
+            <p style="margin:0 0 10px; font-size:13px; color:var(--suave); line-height:1.55">Email matinal com métricas das últimas 24h: cadastros, trials, assinaturas, presentes + comparação com semana anterior + sugestão acionável. <strong>Roda todo dia 8h BRT.</strong></p>
+            <button class="btn-sec" onclick="rodarAgente('pulse-diario', this)" style="font-size:13px">▶ Rodar agora</button>
+            <p class="agente-msg" style="margin:8px 0 0; font-size:12.5px; min-height:16px"></p>
+          </div>
+        </div>
+      </div>
+
+      <div id="agente-newsletter" class="card" style="padding:18px; margin-bottom:12px">
+        <div style="display:flex; align-items:flex-start; gap:14px">
+          <div style="font-size:28px; line-height:1">📝</div>
+          <div style="flex:1; min-width:0">
+            <p style="margin:0 0 4px; font-weight:600; font-size:15px">Newsletter Drafter</p>
+            <p style="margin:0 0 10px; font-size:13px; color:var(--suave); line-height:1.55">Rascunha a Carta dos Anjos da semana usando o anjo rotacional + GeradorTextos. Salva em 'newsletters' (status=rascunho). Você revisa em ✉️ Newsletter. <strong>Roda toda sexta 17h BRT.</strong></p>
+            <button class="btn-sec" onclick="rodarAgente('newsletter-draft', this)" style="font-size:13px">▶ Rodar agora</button>
+            <p class="agente-msg" style="margin:8px 0 0; font-size:12.5px; min-height:16px"></p>
+          </div>
+        </div>
+      </div>
+
+      <div id="agente-instagram" class="card" style="padding:18px; margin-bottom:12px">
+        <div style="display:flex; align-items:flex-start; gap:14px">
+          <div style="font-size:28px; line-height:1">📱</div>
+          <div style="flex:1; min-width:0">
+            <p style="margin:0 0 4px; font-weight:600; font-size:15px">Instagram Drafter</p>
+            <p style="margin:0 0 10px; font-size:13px; color:var(--suave); line-height:1.55">Sugere copy + visual pra post no Instagram. 3 estilos rotacionais (quote, convite, pergunta-revelação). Email pra Monica/equipe gráfica criar a arte. <strong>Roda seg/qua/sex 9h BRT.</strong></p>
+            <button class="btn-sec" onclick="rodarAgente('instagram-drafter', this)" style="font-size:13px">▶ Rodar agora</button>
+            <p class="agente-msg" style="margin:8px 0 0; font-size:12.5px; min-height:16px"></p>
+          </div>
+        </div>
+      </div>
+
+      <div id="agente-presentes" class="card" style="padding:18px; margin-bottom:12px">
+        <div style="display:flex; align-items:flex-start; gap:14px">
+          <div style="font-size:28px; line-height:1">🎁</div>
+          <div style="flex:1; min-width:0">
+            <p style="margin:0 0 4px; font-weight:600; font-size:15px">Presentes Agendados</p>
+            <p style="margin:0 0 10px; font-size:13px; color:var(--suave); line-height:1.55">Envia emails de presentes cuja data_envio chegou hoje. Quem comprou um presente agendado pra 5 dias no futuro, recebe automático nesse dia. <strong>Roda todo dia 11h30 BRT.</strong></p>
+            <button class="btn-sec" onclick="rodarAgente('presentes-agendados', this)" style="font-size:13px">▶ Rodar agora</button>
+            <p class="agente-msg" style="margin:8px 0 0; font-size:12.5px; min-height:16px"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:14px 18px; margin-top:18px; background:var(--ouro-bg); border-color:transparent">
+        <p style="margin:0; font-size:12.5px; color:#854F0B; line-height:1.6"><strong>💡 Dica:</strong> os agentes rodam sozinhos nos horários acima. Use estes botões só pra teste ou se quiser disparar algo fora do horário (ex: testar como ficou a newsletter antes de sexta).</p>
+      </div>
+    </div>
+
     <!-- ░░ LEADS ░░ -->
     <div id="sec-leads" class="hide">
       <div class="nota">📩 Pessoas que demonstraram interesse: viagens (Israel, Caminhos de São Miguel) e cadastros da landing. Os dados (nome / telefone) vêm no próprio campo origem quando foi via formulário do app.</div>
@@ -516,7 +586,7 @@ function sairAdmin(){
 }
 function recarregar(){ carregarMetricas(); carregarConteudos(); carregarMilagre(); carregarLeads(); }
 function aba(qual){
-  ['painel','roteiro','conteudo','milagre','leads','usuarios','newsletter','mensal','triagem'].forEach(function(q){
+  ['painel','roteiro','conteudo','milagre','leads','usuarios','newsletter','mensal','triagem','agentes'].forEach(function(q){
     var sec = document.getElementById('sec-'+q);
     var tab = document.getElementById('tab-'+q);
     if(sec) sec.classList.toggle('hide', q!==qual);
@@ -585,6 +655,46 @@ function resetTriagem(){
   document.getElementById('tg-resultado').style.display = 'none';
   document.getElementById('tg-msg').textContent = '';
   document.getElementById('tg-input').focus();
+}
+
+// ── Disparar agente manualmente (sem terminal) ──
+async function rodarAgente(slug, btn){
+  var msgEl = btn.parentElement.querySelector('.agente-msg');
+  var labelOriginal = btn.textContent;
+  btn.disabled = true; btn.textContent = '⏳ Rodando…';
+  msgEl.textContent = '';
+  msgEl.style.color = 'var(--suave)';
+  try{
+    var r = await fetch('/api/cron-'+slug, { headers: { 'x-admin-key': KEY } });
+    var j = await r.json().catch(function(){ return {}; });
+    if(r.ok && j.ok !== false){
+      msgEl.style.color = '#1E8449';
+      var detalhe = '';
+      if(slug === 'sentinela'){
+        var ok = (j.resultados||[]).filter(function(x){ return x.ok; }).length;
+        var falhas = (j.resultados||[]).filter(function(x){ return !x.ok; }).length;
+        detalhe = ' · '+ok+' OK, '+falhas+' falhas';
+        if(j.alertou) detalhe += ' (alerta enviado por email)';
+      } else if(slug === 'pulse-diario'){
+        detalhe = ' · email enviado · '+(j.cadastros||0)+' cadastros, '+(j.trials||0)+' trials, '+(j.assinaturas||0)+' assinaturas';
+      } else if(slug === 'newsletter-draft'){
+        detalhe = j.ja_existia ? ' · rascunho da semana já existia' : ' · rascunho criado pro anjo '+(j.anjo||'?');
+      } else if(slug === 'instagram-drafter'){
+        detalhe = ' · email enviado · anjo: '+(j.anjo||'?');
+      } else if(slug === 'presentes-agendados'){
+        detalhe = ' · '+(j.enviados||0)+' email(s) enviado(s)';
+        if(j.falhas) detalhe += ', '+j.falhas+' falhas';
+      }
+      msgEl.textContent = '✓ Rodou com sucesso'+detalhe;
+    } else {
+      msgEl.style.color = '#C0392B';
+      msgEl.textContent = '✗ Falhou: '+(j.error || j.erro || 'HTTP '+r.status);
+    }
+  }catch(e){
+    msgEl.style.color = '#C0392B';
+    msgEl.textContent = '✗ Erro de rede: '+e.message;
+  }
+  btn.disabled = false; btn.textContent = labelOriginal;
 }
 
 // ── Roteiro Monica (checklist por semana) ──
