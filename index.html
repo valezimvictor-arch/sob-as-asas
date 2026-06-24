@@ -84,6 +84,19 @@
     overflow-y:auto; will-change:opacity, transform; }
   .screen.active{ opacity:1; visibility:visible; pointer-events:auto; transform:translateY(0) scale(1);
     transition:opacity .35s cubic-bezier(.4,0,.2,1), transform .5s cubic-bezier(.34,1.06,.42,1), visibility 0s; }
+  /* App mobile-first: em telas largas (desktop), centraliza num "casulo" de
+     420px com sombra suave nos lados pra continuar parecendo um santuário,
+     não um dashboard. Mobile fica inalterado (inset:0). */
+  @media (min-width: 720px){
+    body{ background:radial-gradient(circle at 50% 0%, rgba(186,117,23,.10), transparent 60%), #1A140A; }
+    .screen{ left:50%; right:auto; width:420px; transform:translateX(-50%) translateY(12px) scale(.992);
+      box-shadow:0 0 60px rgba(0,0,0,.35), 0 0 0 1px rgba(186,117,23,.15);
+      background-clip:padding-box; }
+    .screen.active{ transform:translateX(-50%) translateY(0) scale(1); }
+    /* Overlays full-screen (onboarding, error fallback) precisam centralizar
+       o conteúdo também — não os deixa colados na borda */
+    #onb-overlay, #err-fallback{ left:50%; right:auto; width:420px; transform:translateX(-50%); }
+  }
   /* Telas devocionais (reveal + acolhimento) entram com um respiro mais lento */
   #s-reveal, #s-acolhimento{
     transition:opacity .6s cubic-bezier(.4,0,.2,1), transform .7s cubic-bezier(.34,1.06,.42,1), visibility 0s linear .7s;
@@ -912,30 +925,6 @@
     </div>
 
     <p id="ahn-afirmacao" class="serif" style="margin:18px auto; max-width:380px; text-align:center; font-style:italic; font-family:'Cormorant Garamond',serif; font-size:17px; color:var(--tinta); line-height:1.55">—</p>
-
-    <!-- Anjo da Humanidade do MEU nascimento -->
-    <div style="margin-top:30px; padding-top:24px; border-top:1px solid var(--linha)">
-      <h3 class="serif" style="font-size:20px; margin:0 0 6px; font-weight:400">Seu anjo da humanidade</h3>
-      <p style="color:var(--tinta-suave); font-size:13px; margin:0 0 16px; line-height:1.6">Que anjo regia a humanidade no instante exato em que você nasceu? Diga a hora do seu nascimento — Monica vai te dizer.</p>
-
-      <div id="ahn-form" style="display:block">
-        <p class="label" style="display:block; margin-bottom:6px">Hora de nascimento (HH:MM)</p>
-        <input id="ahn-input" class="campo" type="time" placeholder="14:30" style="margin-bottom:10px" />
-        <button class="btn-ouro" onclick="calcularAnjoHumanidade()">Descobrir meu anjo da humanidade</button>
-        <p style="margin:10px 0 0; font-size:11.5px; color:var(--tinta-suave); line-height:1.55; opacity:.85">Se não souber a hora exata, use o melhor que você lembrar. A aproximação serve — o que importa é a sua presença.</p>
-      </div>
-
-      <div id="ahn-resultado" style="display:none">
-        <div class="card" style="padding:22px; background:#fff; border:1px solid var(--linha); text-align:center; margin-top:10px">
-          <p style="font-size:11px; letter-spacing:.18em; color:var(--ouro); text-transform:uppercase; font-weight:600; margin:0 0 6px">No seu nascimento regia</p>
-          <p id="ahn-meu-nome" class="serif" style="margin:6px 0 4px; font-size:30px; color:var(--tinta); font-weight:500">—</p>
-          <p id="ahn-meu-dom" style="margin:0 0 8px; font-style:italic; font-family:'Cormorant Garamond',serif; font-size:16px; color:var(--ouro)">—</p>
-          <p id="ahn-meu-coro" style="margin:0; font-size:12px; color:var(--tinta-suave); letter-spacing:.04em">—</p>
-          <p id="ahn-meu-faixa" style="margin:10px 0 0; font-size:11.5px; color:var(--tinta-suave)">—</p>
-        </div>
-        <button class="btn-ghost" style="margin-top:12px" onclick="document.getElementById('ahn-resultado').style.display='none';document.getElementById('ahn-form').style.display='block';">Calcular outra hora</button>
-      </div>
-    </div>
 
     <p style="margin:24px auto 0; padding:12px 16px; max-width:340px; text-align:center; font-size:11px; color:var(--tinta-suave); line-height:1.55; opacity:.85; border-top:1px solid rgba(186,117,23,.12)">Conteúdo autoral de Monica Buonfiglio. Uso pessoal apenas — não reproduza.</p>
   </div>
@@ -2569,16 +2558,6 @@ setInterval(function(){
 async function abrirAnjoHora(){
   show('s-anjo-hora');
   preencherTelaAnjoHora();
-  // reset form se já tinha resultado mostrado
-  document.getElementById('ahn-resultado').style.display = 'none';
-  document.getElementById('ahn-form').style.display = 'block';
-  // pré-preenche se já calculou antes
-  try{
-    var saved = localStorage.getItem('saa_hora_nascimento');
-    if(saved && /^\d{2}:\d{2}$/.test(saved)){
-      document.getElementById('ahn-input').value = saved;
-    }
-  }catch(_){}
 }
 async function preencherTelaAnjoHora(){
   var n = anjoDaHora();
