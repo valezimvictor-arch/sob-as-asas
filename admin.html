@@ -79,6 +79,7 @@
       <button class="tab" id="tab-usuarios" onclick="aba('usuarios')">👥 Usuários</button>
       <button class="tab" id="tab-newsletter" onclick="aba('newsletter')">✉️ Newsletter</button>
       <button class="tab" id="tab-mensal" onclick="aba('mensal')">📜 Mensagem Mensal</button>
+      <button class="tab" id="tab-triagem" onclick="aba('triagem')">🪽 Atendimento</button>
     </div>
 
     <!-- ░░ PAINEL ░░ -->
@@ -288,6 +289,33 @@
       </div>
     </div>
 
+    <!-- ░░ ATENDIMENTO (triagem de emails) ░░ -->
+    <div id="sec-triagem" class="hide">
+      <div class="nota">🪽 <strong>Atendimento Helper</strong> — cola aqui o texto de um email que chegou em contato@sobasasas.com.br. O agente classifica e rascunha uma resposta no tom da marca. Você revisa, ajusta se quiser, copia e cola no Zoho. Reduz 80% do tempo de inbox.</div>
+      <div class="card">
+        <label class="f">Texto do email recebido</label>
+        <textarea id="tg-input" rows="10" placeholder="Cole aqui o texto integral do email (do 'Olá' até o 'Atenciosamente, fulana')..." style="font-family:inherit"></textarea>
+        <button class="btn" id="tg-btn" style="margin-top:12px" onclick="rascunharResposta()">Classificar e rascunhar resposta</button>
+        <p class="msg" id="tg-msg"></p>
+      </div>
+
+      <div id="tg-resultado" style="display:none; margin-top:18px">
+        <div class="card">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px">
+            <span id="tg-categoria-badge" style="display:inline-block; padding:4px 12px; background:var(--ouro-bg); color:var(--ouro); border-radius:99px; font-size:12px; letter-spacing:.04em; font-weight:600">—</span>
+            <span id="tg-nome-detectado" style="font-size:13px; color:var(--suave)"></span>
+          </div>
+          <label class="f">Rascunho de resposta (edite se quiser)</label>
+          <textarea id="tg-rascunho" rows="14" style="font-family:inherit; line-height:1.6"></textarea>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px">
+            <button class="btn" onclick="copiarRascunho()">📋 Copiar texto</button>
+            <button class="btn-sec" onclick="resetTriagem()">↺ Nova triagem</button>
+          </div>
+          <p style="margin:14px 0 0; font-size:12.5px; color:var(--suave); line-height:1.55"><strong>Instrução:</strong> <span id="tg-instrucao">—</span></p>
+        </div>
+      </div>
+    </div>
+
     <!-- ░░ LEADS ░░ -->
     <div id="sec-leads" class="hide">
       <div class="nota">📩 Pessoas que demonstraram interesse: viagens (Israel, Caminhos de São Miguel) e cadastros da landing. Os dados (nome / telefone) vêm no próprio campo origem quando foi via formulário do app.</div>
@@ -313,9 +341,11 @@ function salvarChave(){ KEY=document.getElementById('adminkey').value.trim(); if
 function entrar(){ document.getElementById('auth').classList.add('hide'); document.getElementById('painel').classList.remove('hide'); recarregar(); }
 function recarregar(){ carregarMetricas(); carregarConteudos(); carregarMilagre(); carregarLeads(); }
 function aba(qual){
-  ['painel','roteiro','conteudo','milagre','leads','usuarios','newsletter','mensal'].forEach(function(q){
-    document.getElementById('sec-'+q).classList.toggle('hide', q!==qual);
-    document.getElementById('tab-'+q).classList.toggle('on', q===qual);
+  ['painel','roteiro','conteudo','milagre','leads','usuarios','newsletter','mensal','triagem'].forEach(function(q){
+    var sec = document.getElementById('sec-'+q);
+    var tab = document.getElementById('tab-'+q);
+    if(sec) sec.classList.toggle('hide', q!==qual);
+    if(tab) tab.classList.toggle('on', q===qual);
   });
   if(qual==='newsletter') carregarNewsletter();
   if(qual==='usuarios') carregarUsuarios();
@@ -326,6 +356,60 @@ function aba(qual){
     if(!document.getElementById('mm-ano').value) document.getElementById('mm-ano').value = hoje.getFullYear();
     carregarMensagensMensais();
   }
+}
+
+// ── Atendimento Helper (triagem de emails) ──
+async function rascunharResposta(){
+  var texto = (document.getElementById('tg-input').value || '').trim();
+  var msg = document.getElementById('tg-msg');
+  var btn = document.getElementById('tg-btn');
+  msg.textContent = '';
+  if(!texto || texto.length < 10){
+    msg.style.color = '#C0392B'; msg.textContent = 'Cole o texto do email (mínimo 10 caracteres).'; return;
+  }
+  btn.disabled = true; btn.textContent = 'Classificando…';
+  try{
+    var r = await fetch('/api/admin-triagem-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': KEY },
+      body: JSON.stringify({ emailRecebido: texto })
+    });
+    var j = await r.json();
+    if(!j.ok){ throw new Error(j.error || 'falha'); }
+    // Mostra resultado
+    var cores = { espiritual:'#BA7517', suporte_tecnico:'#378ADD', comercial:'#1E8449', spam:'#C0392B' };
+    var icones = { espiritual:'🕊️', suporte_tecnico:'🛠️', comercial:'💼', spam:'🗑️' };
+    var badge = document.getElementById('tg-categoria-badge');
+    badge.textContent = (icones[j.categoria]||'') + ' ' + j.rotulo;
+    badge.style.color = cores[j.categoria] || 'var(--ouro)';
+    badge.style.background = (cores[j.categoria] || '#FAF3E4') + '22';
+    document.getElementById('tg-nome-detectado').textContent = j.nome_detectado ? ('De: ' + j.nome_detectado) : '';
+    document.getElementById('tg-rascunho').value = j.rascunho_resposta || '(spam — sem resposta)';
+    document.getElementById('tg-instrucao').textContent = j.instrucao;
+    document.getElementById('tg-resultado').style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Classificar e rascunhar resposta';
+  }catch(e){
+    msg.style.color = '#C0392B'; msg.textContent = 'Erro: ' + (e.message||e);
+    btn.disabled = false; btn.textContent = 'Classificar e rascunhar resposta';
+  }
+}
+async function copiarRascunho(){
+  var txt = document.getElementById('tg-rascunho').value || '';
+  try{
+    await navigator.clipboard.writeText(txt);
+    var msg = document.getElementById('tg-msg');
+    msg.style.color = '#1E8449'; msg.textContent = 'Copiado! Cole no Zoho.';
+    setTimeout(function(){ msg.textContent = ''; }, 3000);
+  }catch(e){
+    alert('Não consegui copiar automaticamente. Selecione o texto manualmente.');
+  }
+}
+function resetTriagem(){
+  document.getElementById('tg-input').value = '';
+  document.getElementById('tg-rascunho').value = '';
+  document.getElementById('tg-resultado').style.display = 'none';
+  document.getElementById('tg-msg').textContent = '';
+  document.getElementById('tg-input').focus();
 }
 
 // ── Roteiro Monica (checklist por semana) ──
