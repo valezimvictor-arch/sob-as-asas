@@ -534,37 +534,85 @@
   </div>
 </section>
 
-<!-- ░░ 2. CADASTRO ░░ -->
+<!-- ░░ 2. CADASTRO COMPLETO ░░ -->
 <section id="s-cadastro" class="screen">
-  <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column">
+  <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; overflow-y:auto">
     <button onclick="show('s-welcome')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+
     <div style="margin-top:14px">
-      <h2 class="serif" style="font-size:28px; margin:0">Quem é você</h2>
-      <p style="color:var(--tinta-suave); font-size:14px; margin:8px 0 0">Para encontrarmos seu anjo regente.</p>
+      <h2 class="serif" style="font-size:28px; margin:0; font-weight:400">Crie seu santuário</h2>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:8px 0 0; line-height:1.55">Suas informações ficam protegidas. Em 1 minuto, você descobre quem cuida de você.</p>
     </div>
-    <div style="margin-top:30px; display:flex; flex-direction:column; gap:20px">
+
+    <div style="margin-top:24px; display:flex; flex-direction:column; gap:14px">
+      <!-- Nome completo -->
       <div>
-        <span class="label">Seu nome</span>
-        <input id="in-nome" class="campo" style="margin-top:8px" placeholder="Como o anjo te chama" />
+        <span class="label">Nome completo</span>
+        <input id="in-nome" class="campo" style="margin-top:6px" placeholder="Como você se chama" autocomplete="name" />
       </div>
+
+      <!-- Email -->
+      <div>
+        <span class="label">E-mail</span>
+        <input id="in-email-cad" class="campo" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" style="margin-top:6px" placeholder="voce@email.com" />
+      </div>
+
+      <!-- WhatsApp -->
+      <div>
+        <span class="label">WhatsApp (com DDD)</span>
+        <input id="in-whatsapp" class="campo" type="tel" inputmode="tel" autocomplete="tel" style="margin-top:6px" placeholder="(11) 90000-0000" maxlength="16" />
+      </div>
+
+      <!-- Data de nascimento -->
       <div>
         <span class="label">Data de nascimento</span>
-        <div style="display:flex; gap:10px; margin-top:8px">
+        <p style="margin:4px 0 6px; font-size:11.5px; color:var(--tinta-suave); font-style:italic; font-family:'Cormorant Garamond',serif">Pra encontrarmos seu anjo regente</p>
+        <div style="display:flex; gap:10px">
           <input id="in-dia" class="campo" inputmode="numeric" maxlength="2" placeholder="Dia" style="text-align:center; flex:1; min-width:0" />
           <input id="in-mes" class="campo" inputmode="numeric" maxlength="2" placeholder="Mês" style="text-align:center; flex:1; min-width:0" />
           <input id="in-ano" class="campo" inputmode="numeric" maxlength="4" placeholder="Ano" style="text-align:center; flex:1.4; min-width:0" />
         </div>
       </div>
-      <p id="cad-erro" style="color:#C0392B; font-size:13px; min-height:16px; margin:0"></p>
+
+      <!-- Senha -->
+      <div>
+        <span class="label">Crie uma senha</span>
+        <div style="position:relative; margin-top:6px">
+          <input id="in-senha" class="campo" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres" style="padding-right:60px" />
+          <button type="button" onclick="toggleSenha('in-senha', this)" style="position:absolute; right:6px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:var(--ouro); font-size:12px; padding:8px 10px; cursor:pointer; font-weight:500">mostrar</button>
+        </div>
+        <div id="senha-forca" style="display:none; margin-top:6px">
+          <div style="display:flex; gap:3px; height:3px">
+            <div id="senha-barra-1" style="flex:1; background:#E5E7EB; border-radius:2px; transition:background .25s"></div>
+            <div id="senha-barra-2" style="flex:1; background:#E5E7EB; border-radius:2px; transition:background .25s"></div>
+            <div id="senha-barra-3" style="flex:1; background:#E5E7EB; border-radius:2px; transition:background .25s"></div>
+            <div id="senha-barra-4" style="flex:1; background:#E5E7EB; border-radius:2px; transition:background .25s"></div>
+          </div>
+          <p id="senha-dica" style="margin:6px 0 0; font-size:11.5px; color:var(--tinta-suave); line-height:1.4">—</p>
+        </div>
+      </div>
+
+      <p id="cad-erro" style="color:#C0392B; font-size:13px; min-height:16px; margin:4px 0 0"></p>
     </div>
-    <div style="margin-top:auto; padding-top:24px">
-      <label for="in-consent" style="display:flex; align-items:flex-start; gap:10px; padding:14px 16px; background:var(--ouro-bg); border-radius:14px; font-size:12.5px; color:var(--tinta); line-height:1.55; cursor:pointer">
-        <input id="in-consent" type="checkbox" style="margin-top:3px; flex-shrink:0; accent-color:var(--ouro)" />
-        <span>Autorizo o uso da minha data de nascimento para o cálculo do anjo regente e leio a <a href="/privacidade" target="_blank" style="color:var(--ouro); font-weight:500">Política de Privacidade</a>. Ciente de que envolve <strong>dado pessoal sensível</strong> (LGPD art. 11).</span>
+
+    <div style="margin-top:20px; padding-top:18px; border-top:1px solid var(--linha); display:flex; flex-direction:column; gap:10px">
+      <!-- Consentimento LGPD -->
+      <label for="in-consent" style="display:flex; align-items:flex-start; gap:10px; cursor:pointer">
+        <input id="in-consent" type="checkbox" style="margin-top:3px; flex-shrink:0; accent-color:var(--ouro); width:16px; height:16px" />
+        <span style="font-size:12.5px; color:var(--tinta); line-height:1.55">Concordo com os <a href="/termos" target="_blank" style="color:var(--ouro); text-decoration:none">Termos de Uso</a> e a <a href="/privacidade" target="_blank" style="color:var(--ouro); text-decoration:none">Política de Privacidade</a>, ciente de que minha data de nascimento é tratada como <strong style="font-weight:600">dado pessoal sensível</strong> (LGPD art. 11) para o cálculo do anjo regente.</span>
       </label>
-      <button class="btn-ouro" style="margin-top:14px" onclick="revelar()">✦ Revelar meu anjo da guarda</button>
-      <p style="text-align:center; font-size:11px; color:var(--tinta-suave); margin:14px 0 0; line-height:1.6">
-        7 dias por nossa conta, depois R$ 19,90/mês.<br/>Cancele quando quiser.
+
+      <!-- Opt-in newsletter (opcional) -->
+      <label for="in-newsletter" style="display:flex; align-items:flex-start; gap:10px; cursor:pointer">
+        <input id="in-newsletter" type="checkbox" checked style="margin-top:3px; flex-shrink:0; accent-color:var(--ouro); width:16px; height:16px" />
+        <span style="font-size:12.5px; color:var(--tinta-suave); line-height:1.55">Quero receber a <strong style="font-weight:600; color:var(--ouro)">Carta dos Anjos</strong> aos sábados (e poder cancelar quando quiser).</span>
+      </label>
+    </div>
+
+    <div style="margin-top:20px">
+      <button class="btn-ouro" onclick="criarConta()">Criar minha conta · Revelar meu anjo</button>
+      <p style="text-align:center; font-size:12px; color:var(--tinta-suave); margin:14px 0 0; line-height:1.65">
+        Já tem conta? <a href="javascript:void(0)" onclick="entrarSantuario()" style="color:var(--ouro); font-weight:500; text-decoration:none">Fazer login</a>
       </p>
     </div>
   </div>
@@ -1032,17 +1080,42 @@
   <div class="halo" style="top:-90px; width:240px; height:240px"></div>
   <div class="pad" style="position:relative; flex:1; display:flex; flex-direction:column; justify-content:center">
     <div id="login-form">
-      <h2 class="serif" style="font-size:28px; margin:0; text-align:center">Salve seu santuário</h2>
-      <p style="color:var(--tinta-suave); font-size:14px; margin:10px 0 0; text-align:center; line-height:1.6">Vamos te enviar um código por e-mail.<br/>Sem senha — é só digitar e entrar.</p>
+      <h2 class="serif" style="font-size:28px; margin:0; text-align:center; font-weight:400">Entre no seu santuário</h2>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:10px 0 0; text-align:center; line-height:1.6">Use seu e-mail e senha pra entrar.</p>
+
       <div style="margin-top:26px">
-        <span class="label">Seu e-mail</span>
-        <input id="in-email" class="campo" type="email" inputmode="email" placeholder="voce@email.com" style="margin-top:8px" />
-        <p id="login-msg" style="color:#C0392B; font-size:13px; min-height:16px; margin:8px 0 0"></p>
-        <button id="login-btn" class="btn-ouro" style="margin-top:8px; position:relative; overflow:hidden" onclick="enviarMagicLink()">
-          <span id="login-btn-label">Receber meu código de entrada</span>
+        <span class="label">E-mail</span>
+        <input id="in-email" class="campo" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="voce@email.com" style="margin-top:6px" />
+
+        <span class="label" style="display:block; margin-top:16px">Senha</span>
+        <div style="position:relative; margin-top:6px">
+          <input id="in-senha-login" class="campo" type="password" autocomplete="current-password" placeholder="Sua senha" style="padding-right:60px" onkeydown="if(event.key==='Enter'){event.preventDefault(); entrarComSenha();}" />
+          <button type="button" onclick="toggleSenha('in-senha-login', this)" style="position:absolute; right:6px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:var(--ouro); font-size:12px; padding:8px 10px; cursor:pointer; font-weight:500">mostrar</button>
+        </div>
+
+        <p id="login-msg" style="color:#C0392B; font-size:13px; min-height:16px; margin:10px 0 0"></p>
+
+        <button id="login-btn" class="btn-ouro" style="margin-top:6px; position:relative; overflow:hidden" onclick="entrarComSenha()">
+          <span id="login-btn-label">Entrar</span>
           <div id="login-prog" style="position:absolute; left:0; bottom:0; height:3px; width:0%; background:rgba(90,58,6,.85); transition:width .35s ease"></div>
         </button>
-        <button class="btn-ghost" style="margin-top:12px" onclick="show('s-home')">Entrar sem conta por agora</button>
+
+        <p style="text-align:center; font-size:12.5px; color:var(--tinta-suave); margin:14px 0 0; line-height:1.6">
+          <a href="javascript:void(0)" onclick="esqueciSenha()" style="color:var(--ouro); text-decoration:none">Esqueci minha senha</a>
+        </p>
+
+        <!-- Divisor + opção magic link como alternativa -->
+        <div style="margin:22px 0 14px; display:flex; align-items:center; gap:10px">
+          <div style="flex:1; height:1px; background:var(--linha)"></div>
+          <span style="font-size:11px; color:var(--tinta-suave); letter-spacing:.1em; text-transform:uppercase">ou</span>
+          <div style="flex:1; height:1px; background:var(--linha)"></div>
+        </div>
+
+        <button class="btn-secundario" onclick="enviarMagicLink()" style="font-weight:500">Entrar com código por e-mail</button>
+
+        <p style="text-align:center; font-size:12.5px; color:var(--tinta-suave); margin:16px 0 0; line-height:1.6">
+          Não tem conta? <a href="javascript:void(0)" onclick="goCadastro()" style="color:var(--ouro); font-weight:500; text-decoration:none">Criar agora</a>
+        </p>
       </div>
     </div>
     <div id="login-enviado" style="display:none; text-align:center">
@@ -2469,7 +2542,13 @@ document.addEventListener('keydown', function(e){
     closeModal(top);
   }
 });
-function goCadastro(){ show('s-cadastro'); setTimeout(()=>document.getElementById('in-nome').focus(),400); }
+function goCadastro(){
+  show('s-cadastro');
+  setTimeout(function(){
+    if(typeof _setupCadastroInputs === 'function') _setupCadastroInputs();
+    var nomeInput = document.getElementById('in-nome'); if(nomeInput) nomeInput.focus();
+  }, 400);
+}
 
 // ── revelação do anjo ──
 // Valida data real (rejeita 31/04, 29/02 em ano não-bissexto, etc).
@@ -2480,8 +2559,194 @@ function _dataValida(d, m, y){
   return dt.getFullYear()===y && dt.getMonth()===m-1 && dt.getDate()===d;
 }
 
+// ── Helpers de UX do cadastro ──
+function toggleSenha(inputId, btn){
+  var i = document.getElementById(inputId);
+  if(!i) return;
+  if(i.type === 'password'){ i.type = 'text'; if(btn) btn.textContent = 'ocultar'; }
+  else { i.type = 'password'; if(btn) btn.textContent = 'mostrar'; }
+}
+
+function _forcaSenha(s){
+  if(!s) return { nivel:0, dica:'—' };
+  var n = 0;
+  if(s.length >= 8) n++;
+  if(/[A-Z]/.test(s) && /[a-z]/.test(s)) n++;
+  if(/[0-9]/.test(s)) n++;
+  if(/[^A-Za-z0-9]/.test(s) && s.length >= 10) n++;
+  var dicas = ['—', 'Frágil — fica fácil de adivinhar', 'Razoável — pode melhorar', 'Boa', 'Forte'];
+  return { nivel:n, dica:dicas[n] };
+}
+
+function _mascararWhatsapp(v){
+  v = (v || '').replace(/\D/g, '').slice(0, 11);
+  if(v.length <= 2) return v;
+  if(v.length <= 7) return '(' + v.slice(0,2) + ') ' + v.slice(2);
+  return '(' + v.slice(0,2) + ') ' + v.slice(2,7) + '-' + v.slice(7);
+}
+
+// Liga máscara + força de senha quando a tela de cadastro abre
+function _setupCadastroInputs(){
+  var wpp = document.getElementById('in-whatsapp');
+  if(wpp && !wpp._listenerOn){
+    wpp.addEventListener('input', function(){ wpp.value = _mascararWhatsapp(wpp.value); });
+    wpp._listenerOn = true;
+  }
+  var sen = document.getElementById('in-senha');
+  if(sen && !sen._listenerOn){
+    sen.addEventListener('input', function(){
+      var forca = _forcaSenha(sen.value);
+      var bloco = document.getElementById('senha-forca');
+      if(bloco){
+        bloco.style.display = sen.value ? 'block' : 'none';
+        for(var i=1; i<=4; i++){
+          var b = document.getElementById('senha-barra-'+i);
+          if(!b) continue;
+          if(i <= forca.nivel){
+            var cor = forca.nivel === 1 ? '#EF4444' : forca.nivel === 2 ? '#F59E0B' : forca.nivel === 3 ? '#10B981' : '#059669';
+            b.style.background = cor;
+          } else {
+            b.style.background = '#E5E7EB';
+          }
+        }
+        var dica = document.getElementById('senha-dica');
+        if(dica) dica.textContent = forca.dica;
+      }
+    });
+    sen._listenerOn = true;
+  }
+}
+
+// Cria conta completa: signUp no Supabase + perfil na tabela users + calcula anjo + reveal
+async function criarConta(){
+  var btn = document.querySelector('#s-cadastro .btn-ouro');
+  var erro = document.getElementById('cad-erro');
+  var labelOriginal = btn ? btn.textContent : 'Criar minha conta · Revelar meu anjo';
+  function setLoading(){ if(btn){ btn.disabled = true; btn.textContent = 'Criando seu santuário…'; btn.style.opacity = '.85'; } }
+  function reset(){ if(btn){ btn.disabled = false; btn.textContent = labelOriginal; btn.style.opacity = ''; } }
+  function falhar(msg){ erro.textContent = msg; reset(); }
+
+  // ── Coleta ──
+  var nome = (document.getElementById('in-nome').value || '').trim();
+  var email = (document.getElementById('in-email-cad').value || '').trim().toLowerCase();
+  var whatsapp = (document.getElementById('in-whatsapp').value || '').replace(/\D/g, '');
+  var d = +document.getElementById('in-dia').value;
+  var m = +document.getElementById('in-mes').value;
+  var y = +document.getElementById('in-ano').value;
+  var senha = document.getElementById('in-senha').value || '';
+  var consent = document.getElementById('in-consent');
+  var newsletter = document.getElementById('in-newsletter');
+
+  // ── Validações ──
+  erro.textContent = '';
+  if(!nome || nome.length < 2){ return falhar('Diga seu nome completo.'); }
+  if(!/^.+@.+\..+$/.test(email)){ return falhar('E-mail inválido. Verifique.'); }
+  if(whatsapp.length < 10 || whatsapp.length > 11){ return falhar('WhatsApp incompleto. Use DDD + número.'); }
+  if(!_dataValida(d, m, y)){ return falhar('Essa data não existe. Confira o dia, mês e ano.'); }
+  if(senha.length < 8){ return falhar('A senha precisa ter pelo menos 8 caracteres.'); }
+  if(_forcaSenha(senha).nivel < 2){ return falhar('Senha muito frágil. Misture letras e números.'); }
+  if(consent && !consent.checked){ return falhar('Marque o consentimento dos Termos pra continuar.'); }
+
+  setLoading();
+
+  // ── Modo demo (sem Supabase) — segue só local ──
+  if(!window.saaAuth){
+    try{ localStorage.setItem('saa_consent_lgpd', new Date().toISOString()); }catch(_){}
+    window._nome = nome.split(' ')[0];
+    window._perfil = { nome:nome, email:email, whatsapp:whatsapp,
+      nascimento: y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0') };
+    return _revelarAnjoLocal(d, m);
+  }
+
+  // ── Modo Supabase ──
+  try{
+    // 1) Cria conta com email + senha
+    var r = await window.saaAuth.client.auth.signUp({
+      email: email,
+      password: senha,
+      options: {
+        emailRedirectTo: location.origin,
+        data: { nome: nome, whatsapp: whatsapp }
+      }
+    });
+
+    if(r.error){
+      var msg = (r.error.message || '').toLowerCase();
+      if(msg.includes('already') || msg.includes('exists') || msg.includes('registered')){
+        return falhar('Este e-mail já tem conta. Clique em "Fazer login" abaixo.');
+      }
+      if(msg.includes('weak') || msg.includes('password')){
+        return falhar('A senha é muito fraca pelo sistema. Tente uma combinação diferente.');
+      }
+      return falhar('Não consegui criar: ' + r.error.message);
+    }
+
+    var userId = r.data && r.data.user && r.data.user.id;
+    if(!userId){
+      return falhar('Cadastro pendente — verifique seu e-mail pra confirmar e tentar de novo.');
+    }
+    window._userId = userId;
+    window._email = email;
+    window._nome = nome.split(' ')[0];
+
+    // 2) Calcula anjo regente
+    var anjo = anjoRegente(m, d);
+    var nascimentoIso = y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+
+    // 3) Upsert perfil na tabela users (whatsapp + nome completo + flags)
+    try{
+      await window.saaAuth.client.from('users').upsert({
+        id: userId,
+        email: email,
+        nome: nome,
+        nome_completo: nome,
+        whatsapp: whatsapp,
+        nascimento: nascimentoIso,
+        anjo_n: anjo.n,
+        anjo_nome: anjo.nome,
+        aceita_newsletter: !!(newsletter && newsletter.checked),
+        consent_lgpd_em: new Date().toISOString(),
+      }, { onConflict: 'id' });
+    }catch(e){
+      console.warn('[criarConta] upsert users:', e && e.message);
+    }
+
+    // 4) Adiciona na lista de leads (newsletter opt-in)
+    if(newsletter && newsletter.checked){
+      try{
+        await window.saaAuth.client.from('leads').upsert({
+          email: email,
+          nome_completo: nome,
+          whatsapp: whatsapp,
+          origem: 'cadastro_app',
+          opt_in: true,
+          opt_in_em: new Date().toISOString(),
+        }, { onConflict: 'email' });
+      }catch(_){}
+    }
+
+    try{ localStorage.setItem('saa_consent_lgpd', new Date().toISOString()); }catch(_){}
+    try{ if(window.plausible) window.plausible('conta_criada', { props: { coro: anjo.coro || '' } }); }catch(_){}
+
+    // 5) Vai pra revelação (revelar() lê os campos já preenchidos e
+    //    renderiza tudo — animação estrela cadente + reveal do anjo)
+    revelar();
+    reset();
+
+  }catch(e){
+    console.error('[criarConta] exceção:', e);
+    falhar('Erro inesperado: ' + (e && e.message || 'tente de novo em alguns segundos.'));
+  }
+}
+
+// Modo demo (sem Supabase) — chama revelar() direto.
+function _revelarAnjoLocal(d, m){
+  revelar();
+}
+
+// revelar() — renderiza a tela de revelação. Lê do form de cadastro.
 function revelar(){
-  const nome=document.getElementById('in-nome').value.trim();
+  const nome=(document.getElementById('in-nome').value||'').trim();
   const d=+document.getElementById('in-dia').value, m=+document.getElementById('in-mes').value, y=+document.getElementById('in-ano').value;
   const erro=document.getElementById('cad-erro');
   if(!nome){ erro.textContent='Como o anjo deve te chamar?'; return; }
@@ -4337,6 +4602,78 @@ function entrarSantuario(){
   show('s-login');
   setTimeout(function(){ var i=document.getElementById('in-email'); if(i) i.focus(); }, 450);
 }
+// ── Login com email + senha ──
+async function entrarComSenha(){
+  var email = (document.getElementById('in-email').value || '').trim().toLowerCase();
+  var senha = document.getElementById('in-senha-login').value || '';
+  var msg = document.getElementById('login-msg');
+  var btn = document.getElementById('login-btn');
+  var label = document.getElementById('login-btn-label');
+
+  msg.textContent = '';
+  if(!/^.+@.+\..+$/.test(email)){ msg.textContent = 'Digite um e-mail válido.'; return; }
+  if(!senha){ msg.textContent = 'Digite sua senha.'; return; }
+  if(!window.saaAuth){
+    msg.textContent = 'Sistema ainda carregando. Aguarde 2 segundos e tente de novo.';
+    return;
+  }
+
+  btn.disabled = true; btn.style.opacity = '.85';
+  if(label) label.textContent = 'Entrando…';
+
+  try{
+    var r = await window.saaAuth.client.auth.signInWithPassword({ email: email, password: senha });
+    if(r.error){
+      var m = (r.error.message || '').toLowerCase();
+      if(m.includes('invalid') || m.includes('credentials')){
+        msg.textContent = 'E-mail ou senha incorretos. Verifique e tente de novo.';
+      } else if(m.includes('email not confirmed') || m.includes('confirm')){
+        msg.textContent = 'Confirme seu e-mail antes de entrar. Verifique sua caixa.';
+      } else if(m.includes('rate') || m.includes('many')){
+        msg.textContent = 'Muitas tentativas. Aguarde 1 minuto.';
+      } else {
+        msg.textContent = 'Não consegui entrar: ' + r.error.message;
+      }
+      btn.disabled = false; btn.style.opacity = '';
+      if(label) label.textContent = 'Entrar';
+      return;
+    }
+    // Sucesso — aoLogar dispara via onAuthStateChange ou chamamos direto
+    if(label) label.textContent = 'Entrou ✓';
+    chime();
+    var session = r.data && r.data.session;
+    if(session && session.user){
+      try{ await aoLogar(session); }catch(_){}
+    }
+  }catch(e){
+    msg.textContent = 'Erro de rede. Tente novamente em alguns segundos.';
+    btn.disabled = false; btn.style.opacity = '';
+    if(label) label.textContent = 'Entrar';
+  }
+}
+
+async function esqueciSenha(){
+  var email = (document.getElementById('in-email').value || '').trim().toLowerCase();
+  var msg = document.getElementById('login-msg');
+  if(!/^.+@.+\..+$/.test(email)){
+    msg.style.color = '#C0392B';
+    msg.textContent = 'Digite seu e-mail acima primeiro pra recuperarmos sua senha.';
+    document.getElementById('in-email').focus();
+    return;
+  }
+  if(!window.saaAuth){ msg.textContent = 'Aguarde um instante e tente de novo.'; return; }
+  try{
+    await window.saaAuth.client.auth.resetPasswordForEmail(email, {
+      redirectTo: location.origin + '/?recuperar=1'
+    });
+    msg.style.color = '#1E8449';
+    msg.textContent = 'Enviamos um link de recuperação pra ' + email + '. Confira sua caixa.';
+  }catch(e){
+    msg.style.color = '#C0392B';
+    msg.textContent = 'Não consegui enviar agora. Tente em alguns segundos.';
+  }
+}
+
 async function enviarMagicLink(){
   var email=(document.getElementById('in-email').value||'').trim();
   var msg=document.getElementById('login-msg');
