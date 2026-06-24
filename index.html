@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <script src="/config.js?v=1"></script>
-<script src="/js/observabilidade.js?v=1"></script>
+<script src="/js/observabilidade.js?v=2"></script>
 <script type="module" src="/js/geradorTextos.js?v=1"></script>
 <style>
   :root{
@@ -79,10 +79,25 @@
   .serif{ font-family:'Playfair Display',serif; letter-spacing:.01em; }
   .serif-soft{ font-family:'Cormorant Garamond',serif; }
   .screen{ position:fixed; inset:0; display:flex; flex-direction:column;
-    opacity:0; visibility:hidden; pointer-events:none; transform:translateY(6px);
-    transition:opacity .25s ease, transform .25s ease, visibility 0s linear .25s; overflow-y:auto; }
-  .screen.active{ opacity:1; visibility:visible; pointer-events:auto; transform:none;
-    transition:opacity .25s ease, transform .25s ease, visibility 0s; }
+    opacity:0; visibility:hidden; pointer-events:none; transform:translateY(12px) scale(.992);
+    transition:opacity .32s cubic-bezier(.4,0,.2,1), transform .42s cubic-bezier(.34,1.06,.42,1), visibility 0s linear .42s;
+    overflow-y:auto; will-change:opacity, transform; }
+  .screen.active{ opacity:1; visibility:visible; pointer-events:auto; transform:translateY(0) scale(1);
+    transition:opacity .35s cubic-bezier(.4,0,.2,1), transform .5s cubic-bezier(.34,1.06,.42,1), visibility 0s; }
+  /* Telas devocionais (reveal + acolhimento) entram com um respiro mais lento */
+  #s-reveal, #s-acolhimento{
+    transition:opacity .6s cubic-bezier(.4,0,.2,1), transform .7s cubic-bezier(.34,1.06,.42,1), visibility 0s linear .7s;
+  }
+  #s-reveal.active, #s-acolhimento.active{
+    transition:opacity .6s cubic-bezier(.4,0,.2,1), transform .7s cubic-bezier(.34,1.06,.42,1), visibility 0s;
+  }
+  /* Respeita usuários que pediram menos animação no SO */
+  @media (prefers-reduced-motion:reduce){
+    .screen, .screen.active, #s-reveal, #s-reveal.active, #s-acolhimento, #s-acolhimento.active{
+      transition:opacity .15s linear, visibility 0s !important;
+      transform:none !important;
+    }
+  }
   .pad{ padding:max(env(safe-area-inset-top),24px) 26px max(env(safe-area-inset-bottom),24px); }
 
   /* halo de luz que respira */
@@ -670,6 +685,37 @@
     </div>
   </div>
 </section>
+
+<!-- ░░ ONBOARDING — tour pós-revelação (4 passos, só na 1ª vez) ░░ -->
+<div id="onb-overlay" style="display:none; position:fixed; inset:0; z-index:1200; background:linear-gradient(180deg, rgba(28,22,12,.78), rgba(28,22,12,.94)); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); padding:max(env(safe-area-inset-top),24px) 24px max(env(safe-area-inset-bottom),24px); display:none; flex-direction:column; align-items:center; justify-content:flex-end;">
+  <!-- Pular -->
+  <button id="onb-skip" onclick="onboardingPular()" style="position:absolute; top:calc(env(safe-area-inset-top) + 16px); right:18px; background:transparent; border:none; color:rgba(255,250,240,.65); font:inherit; font-size:13px; padding:8px 12px; cursor:pointer; letter-spacing:.04em;">Pular</button>
+
+  <div id="onb-cards" style="width:100%; max-width:380px; margin:0 auto; flex:1; display:flex; align-items:center; justify-content:center;">
+    <!-- card único, conteúdo trocado por JS -->
+    <div id="onb-card" style="background:#FBF6E8; border-radius:24px; padding:34px 28px 28px; width:100%; box-shadow:0 30px 80px rgba(0,0,0,.45); position:relative; min-height:340px; display:flex; flex-direction:column; transition:opacity .35s ease, transform .35s ease;">
+      <div id="onb-icone" style="font-size:46px; line-height:1; margin-bottom:18px">🪽</div>
+      <h2 id="onb-titulo" class="serif" style="font-size:26px; font-weight:400; color:var(--tinta); margin:0 0 12px; line-height:1.2; letter-spacing:.005em">—</h2>
+      <p id="onb-texto" style="font-size:15px; color:var(--tinta-suave); line-height:1.65; margin:0 0 auto; font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-size:17px">—</p>
+
+      <!-- Indicadores + ação -->
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:24px">
+        <div id="onb-dots" style="display:flex; gap:6px"></div>
+        <button id="onb-next" onclick="onboardingProximo()" class="btn-ouro" style="width:auto; min-height:42px; padding:10px 22px; font-size:14px; box-shadow:0 6px 18px rgba(186,117,23,.30)">Próximo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ░░ ERROR BOUNDARY — tela de fallback divina ░░ -->
+<div id="err-fallback" style="display:none; position:fixed; inset:0; z-index:9999; background:var(--ouro-bg); flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:max(env(safe-area-inset-top),32px) 28px max(env(safe-area-inset-bottom),32px);">
+  <div style="font-size:50px; margin-bottom:14px">🕊️</div>
+  <h2 class="serif" style="font-size:26px; font-weight:400; color:var(--tinta); margin:0 0 10px">Algo desviou seu altar</h2>
+  <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:var(--ouro); margin:0 0 20px; max-width:300px; line-height:1.55">A luz voltou. Recarregue para entrar de novo.</p>
+  <p id="err-detalhe" style="font-size:12px; color:var(--tinta-suave); max-width:300px; line-height:1.5; opacity:.7; margin:0 0 24px; font-family:'Manrope',sans-serif;"></p>
+  <button class="btn-ouro" style="max-width:280px" onclick="location.reload()">Recarregar santuário</button>
+  <button class="btn-ghost" style="max-width:280px; margin-top:12px" onclick="document.getElementById('err-fallback').style.display='none'">Tentar continuar</button>
+</div>
 
 <!-- ░░ SOBRE A MONICA — página de autoridade ░░ -->
 <section id="s-monica" class="screen">
@@ -2616,6 +2662,11 @@ function show(id){
     // Safety re-render: defeita race conditions (DOM tardio, transição opacity).
     // Se o primeiro render pegou _perfil vazio, este segundo encontra os dados certos.
     setTimeout(initHome, 200);
+    // Onboarding: dispara só na primeira vez que o usuário chega na home
+    // depois de revelado o anjo. localStorage.saa_onboarding_done previne repetir.
+    if(window._anjo){
+      setTimeout(function(){ try{ iniciarOnboarding(); }catch(_){} }, 600);
+    }
   }
   // se saiu de tela de vela, encerra o timer (progresso permanece no localStorage)
   if(typeof CHAMA_TELAS!=='undefined' && !CHAMA_TELAS[id]) pararChamaCrescente();
@@ -4677,6 +4728,69 @@ function continuarAposReveal(){
   // mostra acolhimento só uma vez — depois disso, vai direto pro santuário
   try{ if(localStorage.getItem('saa_acolhimento_done')==='1'){ entrarSantuario(); return; } }catch(_){}
   show('s-acolhimento');
+}
+
+// ── Onboarding pós-revelação (4 cards, dispara após acolhimento ou direto na home) ──
+var _onbPasso = 0;
+function _onbPassos(){
+  var anjo = window._anjo || 'seu anjo';
+  return [
+    { icone:'🪽', titulo:'Bem-vindo ao seu santuário',
+      texto:'Este é o lugar onde '+anjo+' te encontra todos os dias. Sua presença basta.' },
+    { icone:'✨', titulo:'O sigilo respira com você',
+      texto:'No altar, o símbolo de '+anjo+' pulsa no ritmo de uma respiração calma. Toque nele quando precisar pausar o mundo.' },
+    { icone:'🕯️', titulo:'Seu primeiro ritual',
+      texto:'Acenda a chama da gratidão, escreva um pedido no Livro de Intenções, ou peça a bênção de 30 segundos — tudo está ao alcance.' },
+    { icone:'🤍', titulo:'A Monica te acompanha',
+      texto:'Mais de 30 anos de estudo dos anjos chegam aqui em mensagens, áudios e o ritual diário. Você não está sozinho.' },
+  ];
+}
+function iniciarOnboarding(){
+  try{ if(localStorage.getItem('saa_onboarding_done')==='1') return false; }catch(_){}
+  _onbPasso = 0;
+  var ov = document.getElementById('onb-overlay');
+  if(!ov) return false;
+  ov.style.display = 'flex';
+  _onbRender();
+  try{ if(window.plausible) window.plausible('onboarding_inicio'); }catch(_){}
+  return true;
+}
+function _onbRender(){
+  var passos = _onbPassos();
+  var p = passos[_onbPasso];
+  var card = document.getElementById('onb-card');
+  if(card){ card.style.opacity = '0'; card.style.transform = 'translateY(8px)'; }
+  setTimeout(function(){
+    document.getElementById('onb-icone').textContent = p.icone;
+    document.getElementById('onb-titulo').textContent = p.titulo;
+    document.getElementById('onb-texto').textContent = p.texto;
+    document.getElementById('onb-next').textContent = (_onbPasso === passos.length - 1) ? 'Entrar no santuário' : 'Próximo';
+    // dots
+    var dots = document.getElementById('onb-dots');
+    if(dots){
+      dots.innerHTML = passos.map(function(_, i){
+        var sel = i === _onbPasso;
+        return '<span style="width:'+(sel?20:6)+'px; height:6px; border-radius:99px; background:'+(sel?'var(--ouro)':'rgba(28,22,12,.18)')+'; transition:width .3s ease, background .3s ease"></span>';
+      }).join('');
+    }
+    if(card){ card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }
+  }, 180);
+}
+function onboardingProximo(){
+  var total = _onbPassos().length;
+  if(_onbPasso < total - 1){
+    _onbPasso++; _onbRender();
+    try{ if(window.plausible) window.plausible('onboarding_passo', { props:{ passo:_onbPasso+1 } }); }catch(_){}
+    return;
+  }
+  onboardingFim('completado');
+}
+function onboardingPular(){ onboardingFim('pulado'); }
+function onboardingFim(motivo){
+  try{ localStorage.setItem('saa_onboarding_done', '1'); }catch(_){}
+  var ov = document.getElementById('onb-overlay');
+  if(ov){ ov.style.opacity = '0'; ov.style.transition = 'opacity .35s ease'; setTimeout(function(){ ov.style.display = 'none'; ov.style.opacity = ''; ov.style.transition = ''; }, 350); }
+  try{ if(window.plausible) window.plausible('onboarding_fim', { props:{ motivo:motivo, passo_final:_onbPasso+1 } }); }catch(_){}
 }
 function escolherAcolhimento(k){
   _acolhAtual = k;

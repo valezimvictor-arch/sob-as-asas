@@ -42,6 +42,57 @@
     document.head.appendChild(s);
   }
 
+  // ── Error boundary global ───────────────────────────────────────────
+  // Captura erros JS não-tratados e exibe a tela de fallback. Threshold:
+  // só mostra após 2 erros em 5s, ou 1 erro "catastrófico" (referência nula
+  // em função do core). Evita ofuscar erros menores que não quebram a UX.
+  var _errBuf = [];
+  function _ehErroCritico(msg){
+    if(!msg) return false;
+    var m = String(msg).toLowerCase();
+    return /cannot read prop|undefined is not a func|null is not an obj|syntaxerror|out of memory/.test(m);
+  }
+  function _mostrarFallback(detalhe){
+    try{
+      var el = document.getElementById('err-fallback');
+      if(!el) return; // sem o elemento, deixa silencioso
+      if(el.style.display === 'flex') return; // já visível
+      el.style.display = 'flex';
+      var d = document.getElementById('err-detalhe');
+      if(d && detalhe){
+        // só mostra detalhe em dev — produção fica em branco (anti-vazamento)
+        var dev = location.hostname.indexOf('localhost') >= 0 || location.hostname.indexOf('127.0.0.1') >= 0;
+        d.textContent = dev ? detalhe : '';
+      }
+    }catch(_){}
+  }
+  function _registrarErro(msg, source){
+    var agora = Date.now();
+    _errBuf = _errBuf.filter(function(t){ return agora - t < 5000; });
+    _errBuf.push(agora);
+    if(_ehErroCritico(msg) || _errBuf.length >= 2){
+      _mostrarFallback(msg + (source ? ' · '+source : ''));
+    }
+  }
+  window.addEventListener('error', function(e){
+    if(e && e.error){ _registrarErro(e.message, e.filename ? (e.filename.split('/').pop()+':'+e.lineno) : ''); }
+  });
+  window.addEventListener('unhandledrejection', function(e){
+    var reason = (e && e.reason) || {};
+    var msg = reason.message || String(reason);
+    // Promises de fetch falhando não devem mostrar fallback (rede do usuário)
+    if(/Failed to fetch|NetworkError|aborted/i.test(msg)) return;
+    _registrarErro(msg, 'promise');
+  });
+  // Helper pra manual reporting (ex.: em catch blocks)
+  window.saaReportErr = function(err, contexto){
+    var msg = (err && err.message) || String(err);
+    if(window.Sentry && window.Sentry.captureException){
+      try{ window.Sentry.captureException(err, { tags: { contexto: contexto || 'manual' } }); }catch(_){}
+    }
+    _registrarErro(msg, contexto);
+  };
+
   // ── Plausible (analytics privacy-first) ─────────────────────────────
   if (cfg.plausibleDomain) {
     var p = document.createElement('script');
