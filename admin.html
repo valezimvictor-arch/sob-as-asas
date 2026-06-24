@@ -10,9 +10,78 @@
 <script src="/config.js?v=2"></script>
 <script src="/js/observabilidade.js?v=1"></script>
 <style>
-  :root{ --branco:#FBFAF7; --puro:#fff; --ouro:#BA7517; --ouro-bg:#FAF3E4; --celeste:#378ADD; --celeste-bg:#EAF2FB; --tinta:#2C2C2A; --suave:#6B6A63; --linha:rgba(186,117,23,.16); }
+  :root{ --branco:#FBFAF7; --puro:#fff; --ouro:#BA7517; --ouro-claro:#EF9F27; --ouro-bg:#FAF3E4; --celeste:#378ADD; --celeste-bg:#EAF2FB; --tinta:#2C2C2A; --suave:#6B6A63; --linha:rgba(186,117,23,.16); }
   *{box-sizing:border-box}
-  body{ margin:0; background:var(--branco); color:var(--tinta); font-family:'Manrope',system-ui,sans-serif; }
+  body{ margin:0; background:var(--branco); color:var(--tinta); font-family:'Manrope',system-ui,sans-serif; min-height:100dvh; }
+  body.no-auth { background:
+    radial-gradient(circle at 50% -10%, rgba(239,159,39,.18), transparent 60%),
+    radial-gradient(circle at 90% 110%, rgba(186,117,23,.10), transparent 50%),
+    var(--branco);
+  }
+  /* Default: tudo escondido até JS decidir (no-auth ou authed) — evita flash */
+  .wrap > header,
+  #painel,
+  #auth-screen { display:none; }
+  body.no-auth #auth-screen { display:flex; }
+  body.authed .wrap > header { display:flex; }
+  body.authed #painel { display:block; }
+
+  /* ── Tela de login do admin (mesmo padrão do welcome do app) ── */
+  #auth-screen{
+    position:fixed; inset:0; flex-direction:column; align-items:center; justify-content:center;
+    padding:max(24px, env(safe-area-inset-top)) 26px max(40px, env(safe-area-inset-bottom));
+    text-align:center;
+  }
+  #auth-screen .auth-sigilo{
+    width:84px; height:84px; margin-bottom:18px;
+    animation:respira-sigilo 6s ease-in-out infinite;
+  }
+  @keyframes respira-sigilo{
+    0%, 100%{ transform:scale(1); filter:drop-shadow(0 2px 14px rgba(186,117,23,.22)); }
+    50%{ transform:scale(1.035); filter:drop-shadow(0 4px 22px rgba(239,159,39,.36)); }
+  }
+  #auth-screen h1{
+    font-family:'Playfair Display',Georgia,serif; font-weight:500;
+    font-size:36px; color:var(--tinta); margin:0 0 4px; letter-spacing:.005em;
+  }
+  #auth-screen .auth-sub{
+    font-family:'Cormorant Garamond',Georgia,serif; font-style:italic;
+    font-size:17px; color:var(--ouro); margin:0 0 6px;
+  }
+  #auth-screen .auth-rotulo{
+    font-size:11px; letter-spacing:.22em; color:var(--ouro); text-transform:uppercase;
+    font-weight:600; margin:18px 0 24px;
+  }
+  #auth-screen .auth-form{
+    width:100%; max-width:340px; display:flex; flex-direction:column; gap:12px;
+  }
+  #auth-screen .auth-input{
+    width:100%; background:var(--puro); border:1px solid var(--linha);
+    border-radius:14px; padding:16px; font-size:16px; color:var(--tinta);
+    text-align:center; letter-spacing:.05em; outline:none; font-family:inherit;
+    transition:border-color .25s ease, box-shadow .25s ease;
+  }
+  #auth-screen .auth-input:focus{ border-color:var(--ouro-claro); box-shadow:0 0 0 4px rgba(239,159,39,.12); }
+  #auth-screen .auth-btn{
+    background:linear-gradient(180deg,#F6C868,#D89A2C); color:#5A3A06;
+    border:none; border-radius:16px; padding:16px; font-weight:600; font-size:16px;
+    width:100%; min-height:50px; cursor:pointer;
+    box-shadow:0 6px 22px rgba(186,117,23,.22);
+    transition:transform .15s ease, box-shadow .25s ease;
+    font-family:inherit;
+  }
+  #auth-screen .auth-btn:active{ transform:scale(.975); box-shadow:0 3px 12px rgba(186,117,23,.18); }
+  #auth-screen .auth-hint{
+    font-size:12px; color:var(--suave); margin-top:14px; line-height:1.55;
+    font-family:'Cormorant Garamond',Georgia,serif; font-style:italic;
+  }
+  #auth-screen .auth-footer{
+    position:absolute; left:0; right:0; bottom:max(20px, env(safe-area-inset-bottom));
+    padding:0 26px; text-align:center;
+    font-size:11px; color:var(--suave); line-height:1.55;
+  }
+  #auth-screen .auth-footer strong{ font-weight:600; }
+  #auth-erro{ color:#C0392B; font-size:13px; min-height:18px; margin-top:6px; }
   .serif{ font-family:'Playfair Display',serif; }
   .wrap{ max-width:780px; margin:0 auto; padding:28px 20px 60px; }
   header{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
@@ -61,12 +130,75 @@
       <div class="dot">🪽</div>
       <div><h1 class="serif">Admin · Sob as Asas</h1><p class="sub">Conteúdo e curadoria do Milagre</p></div>
     </div>
-    <button class="btn-sec" onclick="recarregar()">↻ Atualizar</button>
+    <div style="display:flex; gap:8px">
+      <button class="btn-sec" onclick="recarregar()">↻ Atualizar</button>
+      <button class="btn-sec" onclick="sairAdmin()" style="color:var(--suave); border-color:var(--linha)" title="Sair do admin">↩ Sair</button>
+    </div>
   </header>
 
-  <div id="auth" class="keybar">
-    <input type="password" id="adminkey" placeholder="Chave de admin (ADMIN_KEY)" />
-    <button class="btn" onclick="salvarChave()">Entrar</button>
+  <!-- ░░ TELA DE LOGIN ADMIN (estética igual ao welcome do app) ░░ -->
+  <div id="auth-screen">
+    <!-- Sigilo cabalístico — mesma identidade visual do altar do app -->
+    <svg class="auth-sigilo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <radialGradient id="auth-halo" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#F6C868" stop-opacity=".55"/>
+          <stop offset="60%" stop-color="#EF9F27" stop-opacity=".15"/>
+          <stop offset="100%" stop-color="#BA7517" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="auth-ouro1" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#F6C868"/>
+          <stop offset="50%" stop-color="#D89A2C"/>
+          <stop offset="100%" stop-color="#7C4E0F"/>
+        </linearGradient>
+        <linearGradient id="auth-ouro2" x1="0" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#EF9F27"/>
+          <stop offset="100%" stop-color="#BA7517"/>
+        </linearGradient>
+      </defs>
+      <circle cx="50" cy="50" r="48" fill="url(#auth-halo)"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="url(#auth-ouro1)" stroke-width="1.2"/>
+      <circle cx="50" cy="50" r="34" fill="none" stroke="url(#auth-ouro2)" stroke-width=".5" stroke-dasharray="1 2.5"/>
+      <g stroke="url(#auth-ouro1)" stroke-width="1" fill="none" opacity=".85">
+        <path d="M50 18 Q56 32 50 50 Q44 32 50 18 Z"/>
+        <path d="M82 50 Q68 56 50 50 Q68 44 82 50 Z"/>
+        <path d="M50 82 Q44 68 50 50 Q56 68 50 82 Z"/>
+        <path d="M18 50 Q32 44 50 50 Q32 56 18 50 Z"/>
+        <path d="M73 27 Q63 36 50 50 Q63 36 73 27 Z" opacity=".5"/>
+        <path d="M73 73 Q63 64 50 50 Q63 64 73 73 Z" opacity=".5"/>
+        <path d="M27 73 Q37 64 50 50 Q37 64 27 73 Z" opacity=".5"/>
+        <path d="M27 27 Q37 36 50 50 Q37 36 27 27 Z" opacity=".5"/>
+      </g>
+      <g transform="translate(50,50)">
+        <polygon points="0,-14 12,7 -12,7" fill="none" stroke="url(#auth-ouro2)" stroke-width="1" opacity=".6"/>
+        <polygon points="0,14 12,-7 -12,-7" fill="none" stroke="url(#auth-ouro2)" stroke-width="1" opacity=".6"/>
+        <circle r="5" fill="#FBF6E8" stroke="url(#auth-ouro1)" stroke-width=".8"/>
+      </g>
+    </svg>
+
+    <h1>Sob as Asas</h1>
+    <p class="auth-sub">painel de curadoria</p>
+    <p class="auth-rotulo">Acesso reservado</p>
+
+    <form class="auth-form" onsubmit="event.preventDefault(); salvarChave();">
+      <input
+        type="password"
+        id="adminkey"
+        class="auth-input"
+        placeholder="Sua chave de acesso"
+        autocomplete="current-password"
+        autocapitalize="off"
+        spellcheck="false"
+      />
+      <button type="submit" class="auth-btn">Entrar no painel</button>
+      <p id="auth-erro"></p>
+    </form>
+
+    <p class="auth-hint">Esta área é restrita à equipe Sob as Asas.<br>Se você é um usuário, <a href="/" style="color:var(--ouro); text-decoration:none">volte ao app</a>.</p>
+
+    <div class="auth-footer">
+      © Monica Buonfiglio · <strong>LVSV Ventures Participações Ltda.</strong> · CNPJ 66.981.310/0001-42
+    </div>
   </div>
 
   <div id="painel" class="hide">
@@ -337,8 +469,51 @@ var KEY = sessionStorage.getItem('saa_admin_key') || '';
 var sb = null;
 (function(){ try{ var c=window.SAA_CONFIG||{}; if(c.url && c.anon && window.supabase){ sb = window.supabase.createClient(c.url, c.anon); } }catch(e){} })();
 
-function salvarChave(){ KEY=document.getElementById('adminkey').value.trim(); if(KEY){ sessionStorage.setItem('saa_admin_key',KEY); entrar(); } }
-function entrar(){ document.getElementById('auth').classList.add('hide'); document.getElementById('painel').classList.remove('hide'); recarregar(); }
+function salvarChave(){
+  var v = (document.getElementById('adminkey').value || '').trim();
+  var erroEl = document.getElementById('auth-erro');
+  if(!v){
+    if(erroEl) erroEl.textContent = 'Digite sua chave de acesso.';
+    return;
+  }
+  // Valida a chave antes de entrar (chama um endpoint admin com a key)
+  fetch('/api/admin-metrics', { headers: { 'x-admin-key': v } })
+    .then(function(r){
+      if(r.ok){
+        KEY = v;
+        sessionStorage.setItem('saa_admin_key', KEY);
+        if(erroEl) erroEl.textContent = '';
+        entrar();
+      } else if(r.status === 401){
+        if(erroEl) erroEl.textContent = 'Chave incorreta. Tente de novo.';
+        document.getElementById('adminkey').focus();
+        document.getElementById('adminkey').select();
+      } else {
+        // Outras falhas: ainda tenta entrar (talvez o endpoint esteja off mas a chave é válida)
+        KEY = v;
+        sessionStorage.setItem('saa_admin_key', KEY);
+        entrar();
+      }
+    })
+    .catch(function(){
+      // Sem rede: deixa entrar otimisticamente
+      KEY = v;
+      sessionStorage.setItem('saa_admin_key', KEY);
+      entrar();
+    });
+}
+function entrar(){
+  document.body.classList.remove('no-auth');
+  document.body.classList.add('authed');
+  recarregar();
+}
+function sairAdmin(){
+  KEY = '';
+  try{ sessionStorage.removeItem('saa_admin_key'); }catch(_){}
+  document.body.classList.remove('authed');
+  document.body.classList.add('no-auth');
+  var input = document.getElementById('adminkey'); if(input){ input.value=''; input.focus(); }
+}
 function recarregar(){ carregarMetricas(); carregarConteudos(); carregarMilagre(); carregarLeads(); }
 function aba(qual){
   ['painel','roteiro','conteudo','milagre','leads','usuarios','newsletter','mensal','triagem'].forEach(function(q){
@@ -1165,7 +1340,13 @@ function exportarLeadsCSV(){
   var a=document.createElement('a'); a.href=url; a.download='sob-as-asas-leads.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
 }
 
-if(KEY) entrar();
+// Boot: se já tem chave salva → entra direto. Senão mostra tela de login.
+if(KEY){
+  entrar();
+} else {
+  document.body.classList.add('no-auth');
+  setTimeout(function(){ var i=document.getElementById('adminkey'); if(i) i.focus(); }, 200);
+}
 </script>
 </body>
 </html>
