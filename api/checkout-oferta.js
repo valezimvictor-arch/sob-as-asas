@@ -24,17 +24,42 @@ export default async function handler(req, res) {
   if (!userId) return res.status(401).json({ ok: false, error: 'Faça login pra ofertar.' });
 
   try {
-    // Já tem oferta ativa?
+    // Já tem oferta ativa? (1ª barreira: nosso banco)
     const { data: existing } = await supabase
       .from('users').select('email, oferta_ativa').eq('id', userId).maybeSingle();
     if (existing?.oferta_ativa) {
       return res.status(409).json({ ok: false, error: 'Você já é Mantenedora ativa. Obrigada pela presença.' });
     }
 
+    // 2ª barreira (fecha a janela de duplo-checkout): reusa o customer no
+    // Stripe e checa se já há uma assinatura de oferta ativa lá — mesmo que o
+    // webhook ainda não tenha atualizado nosso banco. Stripe é a fonte de
+    // verdade; sem isso, dois cliques rápidos criavam 2 assinaturas.
+    let customerId;
+    if (existing?.email) {
+      try {
+        const found = await stripe.customers.list({ email: existing.email, limit: 1 });
+        if (found.data.length) {
+          customerId = found.data[0].id;
+          const subs = await stripe.subscriptions.list({ customer: customerId, status: 'all', limit: 20 });
+          const jaTem = subs.data.some(s =>
+            ['active', 'trialing', 'past_due', 'unpaid'].includes(s.status) &&
+            s.metadata && s.metadata.tipo === 'oferta'
+          );
+          if (jaTem) {
+            return res.status(409).json({ ok: false, error: 'Você já tem uma oferta ativa. Obrigada pela presença.' });
+          }
+        }
+      } catch (e) {
+        // Falha na checagem de duplicidade não deve bloquear a oferta nova.
+        console.warn('[checkout-oferta] dedupe Stripe:', e?.message);
+      }
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       line_items: [{ price: PRICE_OFERTA, quantity: 1 }],
-      customer_email: existing?.email || undefined,
+      ...(customerId ? { customer: customerId } : { customer_email: existing?.email || undefined }),
       client_reference_id: userId,
       subscription_data: {
         metadata: {

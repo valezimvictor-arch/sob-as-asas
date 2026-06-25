@@ -146,11 +146,14 @@ export default async function handler(req, res) {
               status: 'ativa',
               cancelada_em: null,
             }, { onConflict: 'user_id' });
-            await supabase.from('users').update({
-              oferta_ativa: true,
-              oferta_desde: new Date().toISOString(),
-              oferta_stripe_sub_id: s.subscription,
-            }).eq('id', userId);
+            // oferta_desde é estável: só na 1ª ativação. Sem isso, redeliveries
+            // do webhook ou re-assinaturas reescreviam a data e a antiguidade
+            // exibida ("Mantenedora desde X") saltava pra hoje.
+            const { data: uAtual } = await supabase
+              .from('users').select('oferta_desde').eq('id', userId).maybeSingle();
+            const patch = { oferta_ativa: true, oferta_stripe_sub_id: s.subscription };
+            if (!uAtual || !uAtual.oferta_desde) patch.oferta_desde = new Date().toISOString();
+            await supabase.from('users').update(patch).eq('id', userId);
           }
           // Não cai no fluxo de assinatura premium — oferta é separada
         } else {

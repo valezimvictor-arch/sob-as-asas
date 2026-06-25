@@ -2508,6 +2508,7 @@
             <p style="margin:6px 0 0; font-size:12.5px; color:var(--tinta-suave); line-height:1.5; font-family:'Cormorant Garamond',serif; font-style:italic">Obrigada. Sua presença mantém a chama desta casa acesa pra todos.</p>
           </div>
         </div>
+        <p id="aj-mant-aviso" style="display:none; margin:12px 0 0; padding:10px 12px; border-radius:10px; background:rgba(186,117,23,.10); border:1px solid rgba(186,117,23,.22); font-size:12px; color:var(--ouro-escuro); line-height:1.5"></p>
         <button class="btn-ghost" style="margin-top:14px; font-size:12.5px; color:var(--tinta-suave); border-color:var(--linha)" onclick="encerrarOferta()">Encerrar oferta</button>
       </div>
     </div>
@@ -5080,6 +5081,27 @@ document.addEventListener('DOMContentLoaded', function(){
         history.replaceState({}, '', u.toString());
       }catch(_){}
     }
+    // Volta do checkout da Oferta dos Mantenedores
+    if(qs.get('oferta') === 'ok'){
+      try{ if(window.plausible) window.plausible('oferta_concluida'); }catch(_){}
+      try{ localStorage.removeItem('saa_oferta_cancelando'); }catch(_){}
+      setTimeout(function(){ try{ toast('Bem-vinda, Mantenedora. Sua presença mantém a chama. 🤍'); }catch(_){} }, 800);
+      // O webhook ativa em alguns segundos — atualiza o card de Ajustes depois.
+      setTimeout(function(){ if(typeof _carregarStatusOferta==='function') _carregarStatusOferta(); }, 5000);
+      try{
+        var uo = new URL(window.location);
+        uo.searchParams.delete('oferta');
+        history.replaceState({}, '', uo.toString());
+      }catch(_){}
+    }
+    if(qs.get('oferta') === 'cancelada'){
+      try{ if(window.plausible) window.plausible('oferta_checkout_cancelado'); }catch(_){}
+      try{
+        var uc = new URL(window.location);
+        uc.searchParams.delete('oferta');
+        history.replaceState({}, '', uc.toString());
+      }catch(_){}
+    }
   }catch(_){}
 });
 
@@ -5329,46 +5351,80 @@ async function abrirOferta(){
   }catch(e){ alert('Erro de rede. Tente em alguns segundos.'); }
 }
 
+// (usa o MESES_PT já declarado acima — capitalizado; aplicamos toLowerCase
+//  nos textos da Oferta que pedem minúsculo, p.ex. "desde janeiro")
 async function encerrarOferta(){
-  if(!confirm('Encerrar sua oferta mensal?\n\nA cobrança para no fim do ciclo atual. Você continua com tudo o que tem — nada muda nas suas práticas.')) return;
   if(!window.saaAuth || !window._userId){ return; }
+  if(!confirm('Encerrar sua oferta mensal?\n\nA cobrança para no fim do ciclo atual — você continua Mantenedora até lá, sem nova cobrança.')) return;
   try{
-    // Busca subscription_id no banco e cancela via Stripe customer portal
-    var r = await window.saaAuth.client.from('mantenedores')
-      .select('stripe_subscription_id').eq('user_id', window._userId).maybeSingle();
-    if(!r.data || !r.data.stripe_subscription_id){
-      alert('Não encontrei sua oferta ativa. Entre em contato pra gente resolver: contato@sobasasas.com.br');
+    var sessao = await window.saaAuth.client.auth.getSession();
+    var token = sessao && sessao.data && sessao.data.session ? sessao.data.session.access_token : '';
+    var r = await fetch('/api/cancel-oferta', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+token }
+    });
+    var j = await r.json();
+    if(!j.ok){
+      alert('Não consegui encerrar: ' + (j.error || 'erro desconhecido') + '\n\nSe persistir, fale com contato@sobasasas.com.br.');
       return;
     }
-    // Sinaliza intenção — o cancelamento real precisa ser via Stripe portal
-    // ou um endpoint próprio. Por enquanto: mostra mensagem amigável + email.
-    alert('Pra encerrar sua oferta, mande um email pra contato@sobasasas.com.br ou cancele direto pelo Stripe (link no recibo). Em segundos a chama deixa de ser cobrada.\n\nObrigada por ter sustentado a casa.');
-    try{ if(window.plausible) window.plausible('oferta_encerramento_pedido'); }catch(_){}
+    try{ localStorage.setItem('saa_oferta_cancelando', '1'); }catch(_){}
+    try{ if(window.plausible) window.plausible('oferta_encerrada'); }catch(_){}
+    var ateData = '';
+    if(j.periodo_fim){
+      try{ var d = new Date(j.periodo_fim); ateData = ' Você segue Mantenedora até ' + d.getDate() + ' de ' + MESES_PT[d.getMonth()].toLowerCase() + '.'; }catch(_){}
+    }
+    alert('Pronto — sua oferta foi encerrada.' + ateData + '\n\nObrigada por ter sustentado a casa. 🤍');
+    _carregarStatusOferta();
   }catch(e){ alert('Erro de conexão. Tente em alguns segundos.'); }
 }
 
 async function _carregarStatusOferta(){
   if(!window.saaAuth || !window._userId) return;
   try{
-    var r = await window.saaAuth.client.from('users')
-      .select('oferta_ativa, oferta_desde').eq('id', window._userId).maybeSingle();
-    var ativa = r && r.data && r.data.oferta_ativa;
+    // Fonte de verdade do status é a tabela mantenedores (sincronizada pelo
+    // webhook do Stripe). users.oferta_ativa sozinho não distingue 'pausada'.
+    var r = await window.saaAuth.client.from('mantenedores')
+      .select('status, iniciada_em').eq('user_id', window._userId).maybeSingle();
+    var status = r && r.data ? r.data.status : null;
     var pend = document.getElementById('aj-mant-pendente');
     var act = document.getElementById('aj-mant-ativa');
+    var aviso = document.getElementById('aj-mant-aviso');
     if(!pend || !act) return;
-    if(ativa){
+
+    if(status === 'ativa' || status === 'pausada'){
       pend.style.display = 'none';
       act.style.display = 'block';
-      if(r.data.oferta_desde){
-        var d = new Date(r.data.oferta_desde);
-        var meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
-        document.getElementById('aj-mant-desde').textContent = 'Desde ' + meses[d.getMonth()] + ' de ' + d.getFullYear();
-      } else {
-        document.getElementById('aj-mant-desde').textContent = 'Oferta em curso';
+      var desdeEl = document.getElementById('aj-mant-desde');
+      if(desdeEl){
+        if(r.data.iniciada_em){
+          var d = new Date(r.data.iniciada_em);
+          desdeEl.textContent = 'Desde ' + MESES_PT[d.getMonth()].toLowerCase() + ' de ' + d.getFullYear();
+        } else {
+          desdeEl.textContent = 'Oferta em curso';
+        }
+      }
+      if(aviso){
+        if(status === 'pausada'){
+          aviso.style.display = 'block';
+          aviso.textContent = '⚠ Pagamento não confirmado — sua oferta está pausada. Atualize o cartão pelo recibo do Stripe pra manter a chama acesa.';
+        } else {
+          var cancelando = false;
+          try{ cancelando = localStorage.getItem('saa_oferta_cancelando') === '1'; }catch(_){}
+          if(cancelando){
+            aviso.style.display = 'block';
+            aviso.textContent = 'Cancelamento agendado — você segue Mantenedora até o fim do ciclo atual.';
+          } else {
+            aviso.style.display = 'none';
+          }
+        }
       }
     } else {
+      // pendente / cancelada / sem registro → card de convite
       pend.style.display = 'block';
       act.style.display = 'none';
+      if(aviso) aviso.style.display = 'none';
+      try{ localStorage.removeItem('saa_oferta_cancelando'); }catch(_){}
     }
   }catch(_){}
 }
