@@ -3723,8 +3723,12 @@ function registrarPresenca(){
     var n=parseInt(localStorage.getItem('saa_streak_n')||'0',10);
     if(last===hoje) return n;
 
-    var hojeDt = new Date(); var lastDt = last ? new Date(last) : null;
-    var diasFalta = lastDt ? Math.round((hojeDt - lastDt) / 86400000) - 1 : 0;
+    // Diferença em DIAS-CALENDÁRIO inteiros. Ambas as datas parseadas do
+    // mesmo jeito ("YYYY-MM-DD" => meia-noite UTC); usar new Date() (hora
+    // local) aqui fazia dias consecutivos arredondarem pra 2 à tarde no
+    // Brasil (UTC-3), gastando perdão indevidamente todo dia.
+    var lastDt = last ? new Date(last) : null;
+    var diasFalta = lastDt ? Math.round((new Date(hoje) - lastDt) / 86400000) - 1 : 0;
     var mesAtual = hoje.slice(0,7);
 
     // Lê estado de perdões deste mês

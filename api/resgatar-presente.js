@@ -77,11 +77,14 @@ export default async function handler(req, res) {
         if (/already (registered|exists)/i.test(errUser.message || '')) {
           jaExistia = true;
         } else {
+          // Falha real (senha fraca, rate limit, etc): não consome o presente.
           console.warn('[resgatar] createUser:', errUser.message);
+          return res.status(502).json({ ok: false, error: 'Não consegui criar sua conta agora. Tente em alguns minutos.' });
         }
       }
     } catch (e) {
-      // se admin API falhar (provedor diferente), continua
+      console.warn('[resgatar] createUser exception:', e?.message);
+      return res.status(502).json({ ok: false, error: 'Não consegui criar sua conta agora. Tente em alguns minutos.' });
     }
 
     // 4) Se já existia, localiza o ID — SEM tocar na senha.
@@ -90,13 +93,24 @@ export default async function handler(req, res) {
     //    senha aqui seria account takeover trivial. A pessoa entra com a senha
     //    que já usa; o presente apenas adiciona a cortesia anual.
     if (!userId) {
+      const alvo = email.toLowerCase();
       try {
-        const { data: listed } = await supabase.auth.admin.listUsers({ page: 1, perPage: 200 });
-        if (listed && listed.users) {
-          const found = listed.users.find(u => (u.email || '').toLowerCase() === email.toLowerCase());
+        // Pagina até achar — listUsers traz no máx. 200 por página, então
+        // olhar só a página 1 perdia contas além das 200 primeiras.
+        for (let page = 1; page <= 25 && !userId; page++) {
+          const { data: listed, error: errList } = await supabase.auth.admin.listUsers({ page, perPage: 200 });
+          if (errList) break;
+          const users = (listed && listed.users) || [];
+          const found = users.find(u => (u.email || '').toLowerCase() === alvo);
           if (found) { userId = found.id; jaExistia = true; }
+          if (users.length < 200) break; // última página
         }
-      } catch (_) {}
+      } catch (e) { console.warn('[resgatar] listUsers:', e?.message); }
+    }
+
+    // Sem ID resolvido → NÃO consome o presente; deixa retentável.
+    if (!userId) {
+      return res.status(409).json({ ok: false, error: 'Não consegui vincular este presente à sua conta. Fale com contato@sobasasas.com.br.' });
     }
 
     // 5) Aplica a cortesia. Conta nova: cria o perfil completo. Conta que já
