@@ -90,6 +90,7 @@
   @media (min-width: 720px){
     body{ background:radial-gradient(circle at 50% 0%, rgba(186,117,23,.10), transparent 60%), #1A140A; }
     .screen{ left:50%; right:auto; width:420px; transform:translateX(-50%) translateY(12px) scale(.992);
+      background:var(--branco); /* casulo claro — sem isso o #1A140A do body vazava pelo frame transparente */
       box-shadow:0 0 60px rgba(0,0,0,.35), 0 0 0 1px rgba(186,117,23,.15);
       background-clip:padding-box; }
     .screen.active{ transform:translateX(-50%) translateY(0) scale(1); }
