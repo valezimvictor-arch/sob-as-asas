@@ -136,25 +136,23 @@ export default async function handler(req, res) {
           } catch (_) {}
         }
 
-        // ── VELA PERMANENTE — subscription dedicada a 1 pedido ──
-        if (subMeta.tipo === 'vela_permanente') {
+        // ── OFERTA DOS MANTENEDORES — contribuição voluntária a nível de user ──
+        if (subMeta.tipo === 'oferta') {
           const userId = subMeta.userId;
-          const pedidoId = subMeta.pedidoId;
-          if (userId && pedidoId) {
-            await supabase.from('velas_permanentes').upsert({
+          if (userId) {
+            await supabase.from('mantenedores').upsert({
               user_id: userId,
-              pedido_id: pedidoId,
               stripe_subscription_id: s.subscription,
               status: 'ativa',
-            }, { onConflict: 'pedido_id,user_id' });
-            await supabase.from('pedidos').update({
-              vela_permanente_ativa: true,
-              vela_permanente_desde: new Date().toISOString(),
-              vela_permanente_stripe_sub_id: s.subscription,
-              publico: true, // vela permanente automaticamente vira pública (faz sentido)
-            }).eq('id', pedidoId);
+              cancelada_em: null,
+            }, { onConflict: 'user_id' });
+            await supabase.from('users').update({
+              oferta_ativa: true,
+              oferta_desde: new Date().toISOString(),
+              oferta_stripe_sub_id: s.subscription,
+            }).eq('id', userId);
           }
-          // Não cai no fluxo de assinatura — vela permanente é separada
+          // Não cai no fluxo de assinatura premium — oferta é separada
         } else {
           // ── ASSINATURA (recorrente) — fluxo original ──
           const userId = s.client_reference_id || meta.userId;
@@ -174,18 +172,19 @@ export default async function handler(req, res) {
       const userId = meta.userId;
       const status = sub.status;
 
-      // ── Vela permanente: trata status separadamente ──
-      if (meta.tipo === 'vela_permanente' && meta.pedidoId) {
-        const novoStatusVela = (status === 'active' || status === 'trialing') ? 'ativa'
-                              : (status === 'past_due' || status === 'unpaid') ? 'pausada'
-                              : 'cancelada';
-        await supabase.from('velas_permanentes').upsert({
-          user_id: userId, pedido_id: meta.pedidoId, stripe_subscription_id: sub.id,
-          status: novoStatusVela,
-          cancelada_em: novoStatusVela === 'cancelada' ? new Date().toISOString() : null,
-        }, { onConflict: 'pedido_id,user_id' });
-        const velaAtiva = novoStatusVela === 'ativa';
-        await supabase.from('pedidos').update({ vela_permanente_ativa: velaAtiva }).eq('id', meta.pedidoId);
+      // ── Oferta dos Mantenedores: trata status separadamente ──
+      if (meta.tipo === 'oferta' && userId) {
+        const novoStatus = (status === 'active' || status === 'trialing') ? 'ativa'
+                          : (status === 'past_due' || status === 'unpaid') ? 'pausada'
+                          : 'cancelada';
+        await supabase.from('mantenedores').upsert({
+          user_id: userId, stripe_subscription_id: sub.id,
+          status: novoStatus,
+          cancelada_em: novoStatus === 'cancelada' ? new Date().toISOString() : null,
+        }, { onConflict: 'user_id' });
+        await supabase.from('users').update({
+          oferta_ativa: novoStatus === 'ativa',
+        }).eq('id', userId);
       } else {
         // Assinatura normal — fluxo original
         const plano = meta.plano || null;

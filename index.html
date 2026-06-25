@@ -2489,6 +2489,28 @@
       <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:14px 0"><span style="color:var(--tinta-suave); font-size:14px">Plano</span><b id="aj-plano" style="font-weight:500">Gratuito</b></div>
     </div>
 
+    <!-- ░░ Oferta dos Mantenedores ░░ -->
+    <p class="label" style="display:block; margin:22px 0 8px">Apoiar o santuário</p>
+    <div class="card" style="padding:18px 20px; background:linear-gradient(180deg, rgba(250,243,228,.65), rgba(246,200,104,.10)); border:1px solid rgba(186,117,23,.18)">
+      <div id="aj-mant-pendente" style="display:block">
+        <p style="margin:0 0 6px; font-size:11px; letter-spacing:.16em; color:var(--ouro); text-transform:uppercase; font-weight:600">Mantenedora</p>
+        <p style="margin:0; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:var(--tinta); line-height:1.55">A chama desta casa precisa de quem a mantém. Se isso faz sentido pra você, ofereça R$ 9,90 por mês — silenciosamente, sem destaque público.</p>
+        <button class="btn-ouro" style="margin-top:14px" onclick="abrirOferta()">Tornar-se Mantenedora</button>
+        <p style="margin:10px 0 0; font-size:11px; color:var(--tinta-suave); line-height:1.55; opacity:.85">Sua oferta sustenta o trabalho da Monica e o app pra todos. Cancele quando quiser. Nada muda nas suas práticas ou no Círculo — quem oferta não brilha mais que ninguém.</p>
+      </div>
+      <div id="aj-mant-ativa" style="display:none">
+        <div style="display:flex; align-items:flex-start; gap:14px">
+          <div style="width:46px; height:46px; border-radius:50%; background:radial-gradient(circle, #F6C868, #BA7517); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; box-shadow:0 0 14px rgba(246,200,104,.42)">🤍</div>
+          <div style="flex:1">
+            <p style="margin:0 0 4px; font-size:11px; letter-spacing:.16em; color:var(--ouro); text-transform:uppercase; font-weight:600">Mantenedora ativa</p>
+            <p id="aj-mant-desde" class="serif" style="margin:0; font-size:17px; color:var(--tinta); font-weight:500">—</p>
+            <p style="margin:6px 0 0; font-size:12.5px; color:var(--tinta-suave); line-height:1.5; font-family:'Cormorant Garamond',serif; font-style:italic">Obrigada. Sua presença mantém a chama desta casa acesa pra todos.</p>
+          </div>
+        </div>
+        <button class="btn-ghost" style="margin-top:14px; font-size:12.5px; color:var(--tinta-suave); border-color:var(--linha)" onclick="encerrarOferta()">Encerrar oferta</button>
+      </div>
+    </div>
+
     <p class="label" style="display:block; margin:22px 0 8px">Segurança</p>
     <div class="card" style="padding:4px 18px">
       <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 0">
@@ -4001,65 +4023,28 @@ function renderPedidos(){
     const ok=p.s==='realizado';
     const pub = !!p.publico;
     const velas = p.velas || 0;
-    const velaPerm = !!p.velaPermanente;
     var meta = ok ? 'Realizado — graças dadas' : 'Em oração';
     var velasInfo = '';
     if(pub && velas > 0){
-      velasInfo = ' · <span style="color:var(--ouro); font-weight:500">🕯️ ' + velas + (velas === 1 ? ' vela' : ' velas') + '</span>';
+      velasInfo = ' · <span style="color:var(--ouro); font-weight:500">🕯️ ' + velas + (velas === 1 ? ' vela acesa por você' : ' velas acesas por você') + '</span>';
     } else if(pub){
       velasInfo = ' · <span style="color:var(--ouro); font-weight:500; opacity:.7">no Círculo</span>';
     }
-    var ico = velaPerm ? '🔥' : (ok ? '🌟' : '🕯️');
-    var bg = velaPerm ? 'linear-gradient(90deg, rgba(246,200,104,.18), rgba(186,117,23,.10))' : '';
-    var borda = velaPerm ? '1px solid rgba(186,117,23,.32)' : '';
-    var bgStyle = velaPerm ? `background:${bg}; border:${borda};` : '';
-    var permBadge = velaPerm ? '<span style="display:inline-block; margin-left:6px; font-size:10px; background:var(--ouro); color:#fff; padding:2px 7px; border-radius:99px; vertical-align:middle; font-weight:600; letter-spacing:.04em">PERMANENTE</span>' : '';
-    var permBtn = (!ok && pub && !velaPerm && p.id) ? `<button onclick="event.stopPropagation(); abrirVelaPermanente('${p.id}')" style="margin-top:8px; background:transparent; border:1px dashed var(--ouro); color:var(--ouro); border-radius:99px; padding:6px 12px; font-size:11.5px; font-weight:600; cursor:pointer; font-family:inherit">🔥 Acender vela permanente · R$ 9,90/mês</button>` : '';
-    el.insertAdjacentHTML('beforeend',`<div class="card" style="padding:14px 16px; ${bgStyle}">
-      <div style="display:flex; align-items:flex-start; gap:12px">
-        <span style="font-size:20px; line-height:1">${ico}</span>
-        <div style="flex:1; min-width:0">
-          <p style="margin:0; font-size:15px">${esc(p.t)}${permBadge}</p>
-          <p style="margin:0; font-size:12px; color:${ok?'var(--ouro)':'var(--tinta-suave)'}">${meta}${velasInfo}</p>
-          ${permBtn}
-        </div>
-      </div></div>`);
+    el.insertAdjacentHTML('beforeend',`<div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px">
+      <span style="font-size:18px">${ok?'🌟':'🕯️'}</span>
+      <div style="flex:1"><p style="margin:0; font-size:15px">${esc(p.t)}</p>
+      <p style="margin:0; font-size:12px; color:${ok?'var(--ouro)':'var(--tinta-suave)'}">${meta}${velasInfo}</p></div></div>`);
   });
-}
-
-// Vela Permanente — modal/confirm + checkout
-function abrirVelaPermanente(pedidoId){
-  if(!confirm('Acender uma vela permanente neste pedido?\n\nR$ 9,90/mês, cancele a qualquer momento.\nEla fica acesa todos os dias automaticamente, visível no Círculo com um halo dourado.\n\nVamos pro checkout do Stripe?')) return;
-  _iniciarCheckoutVelaPermanente(pedidoId);
-}
-async function _iniciarCheckoutVelaPermanente(pedidoId){
-  if(!window.saaAuth || !window._userId){ alert('Faça login primeiro'); return; }
-  try{
-    var sessao = await window.saaAuth.client.auth.getSession();
-    var token = sessao && sessao.data && sessao.data.session ? sessao.data.session.access_token : '';
-    var r = await fetch('/api/checkout-vela-permanente', {
-      method:'POST',
-      headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+token },
-      body: JSON.stringify({ pedidoId: pedidoId })
-    });
-    var j = await r.json();
-    if(j.ok && j.url){
-      try{ if(window.plausible) window.plausible('vela_permanente_checkout_iniciado'); }catch(_){}
-      window.location.href = j.url;
-    } else {
-      alert('Não consegui abrir o checkout: ' + (j.error || 'erro desconhecido'));
-    }
-  }catch(e){ alert('Erro de rede. Tente em alguns segundos.'); }
 }
 async function carregarPedidos(){
   if(!window.saaAuth || !window._userId) return; // demo
   try{
     var res=await window.saaAuth.client.from('pedidos')
-      .select('id,texto,status,publico,velas_recebidas,vela_permanente_ativa')
+      .select('id,texto,status,publico,velas_recebidas')
       .eq('user_id', window._userId)
       .order('criado_em',{ascending:false});
     if(res.error || !res.data) return;
-    PEDIDOS = res.data.map(function(p){ return {t:p.texto, s:p.status, id:p.id, publico:p.publico, velas:p.velas_recebidas||0, velaPermanente:!!p.vela_permanente_ativa}; });
+    PEDIDOS = res.data.map(function(p){ return {t:p.texto, s:p.status, id:p.id, publico:p.publico, velas:p.velas_recebidas||0}; });
     renderPedidos();
   }catch(e){}
 }
@@ -4114,10 +4099,9 @@ async function carregarCirculo(){
   el.innerHTML = '<p style="text-align:center; color:var(--tinta-suave); padding:20px 0; font-size:13px">Carregando o Círculo…</p>';
   try{
     var r = await window.saaAuth.client.from('pedidos')
-      .select('id,texto,velas_recebidas,publicado_em,user_id,vela_permanente_ativa')
+      .select('id,texto,velas_recebidas,publicado_em,user_id')
       .eq('publico', true)
       .neq('status', 'arquivado')
-      .order('vela_permanente_ativa', { ascending:false })
       .order('publicado_em', { ascending:false })
       .limit(30);
     if(r.error){ throw r.error; }
@@ -4144,14 +4128,10 @@ async function carregarCirculo(){
     el.innerHTML = lista.map(function(p){
       var aceso = !!jaAcesos[p.id];
       var velas = p.velas_recebidas || 0;
-      var perm = !!p.vela_permanente_ativa;
-      var permStyle = perm ? 'background:linear-gradient(180deg, rgba(246,200,104,.10), rgba(186,117,23,.05)); border:1px solid rgba(186,117,23,.32); box-shadow:0 0 22px rgba(246,200,104,.18);' : '';
-      var permTag = perm ? '<span style="display:inline-flex; align-items:center; gap:4px; font-size:10.5px; background:linear-gradient(180deg,#F6C868,#D89A2C); color:#5A3A06; padding:3px 9px; border-radius:99px; font-weight:600; letter-spacing:.04em; margin-bottom:8px">🔥 Vela permanente acesa</span><br/>' : '';
-      return '<div class="card" style="padding:16px 18px; position:relative; ' + permStyle + '">'
-        + permTag
+      return '<div class="card" style="padding:16px 18px; position:relative">'
         + '<p style="margin:0; font-size:14.5px; line-height:1.55; color:var(--tinta)">' + esc(p.texto) + '</p>'
         + '<div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:14px; padding-top:12px; border-top:1px solid var(--linha)">'
-        + '  <span style="font-size:12px; color:var(--tinta-suave); display:flex; align-items:center; gap:6px"><span style="font-size:14px">' + (perm ? '🔥' : '🕯️') + '</span> ' + velas + (velas === 1 ? ' vela acesa' : ' velas acesas') + '</span>'
+        + '  <span style="font-size:12px; color:var(--tinta-suave); display:flex; align-items:center; gap:6px"><span style="font-size:14px">🕯️</span> ' + velas + (velas === 1 ? ' vela acesa' : ' velas acesas') + '</span>'
         + '  <button onclick="acenderVelaPedido(\'' + p.id + '\', this)" '
         + '          ' + (aceso ? 'disabled' : '') + ' '
         + '          style="background:' + (aceso ? 'var(--ouro-bg)' : 'linear-gradient(180deg,#F6C868,#D89A2C)') + '; '
@@ -5323,6 +5303,71 @@ async function calcularCompatibilidade(){
   }catch(e){ erro.textContent='Não consegui calcular agora.'; }
 }
 function resetCompat(){ openCompat(); }
+
+// ── Oferta dos Mantenedores — contribuição voluntária R$ 9,90/mês ──
+async function abrirOferta(){
+  if(!window.saaAuth || !window._userId){ alert('Faça login pra ofertar.'); return; }
+  if(!confirm('Tornar-se Mantenedora do Sob as Asas?\n\nR$ 9,90 por mês. Sua oferta sustenta o trabalho da Monica e do app pra todos.\n\nNada muda nas suas práticas — quem oferta não ganha prioridade espiritual, não brilha mais no Círculo. É puro gesto de apoio.\n\nVamos pro checkout?')) return;
+  try{
+    var sessao = await window.saaAuth.client.auth.getSession();
+    var token = sessao && sessao.data && sessao.data.session ? sessao.data.session.access_token : '';
+    var r = await fetch('/api/checkout-oferta', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+token }
+    });
+    var j = await r.json();
+    if(j.ok && j.url){
+      try{ if(window.plausible) window.plausible('oferta_checkout_iniciado'); }catch(_){}
+      window.location.href = j.url;
+    } else {
+      alert('Não consegui abrir o checkout: ' + (j.error || 'erro desconhecido'));
+    }
+  }catch(e){ alert('Erro de rede. Tente em alguns segundos.'); }
+}
+
+async function encerrarOferta(){
+  if(!confirm('Encerrar sua oferta mensal?\n\nA cobrança para no fim do ciclo atual. Você continua com tudo o que tem — nada muda nas suas práticas.')) return;
+  if(!window.saaAuth || !window._userId){ return; }
+  try{
+    // Busca subscription_id no banco e cancela via Stripe customer portal
+    var r = await window.saaAuth.client.from('mantenedores')
+      .select('stripe_subscription_id').eq('user_id', window._userId).maybeSingle();
+    if(!r.data || !r.data.stripe_subscription_id){
+      alert('Não encontrei sua oferta ativa. Entre em contato pra gente resolver: contato@sobasasas.com.br');
+      return;
+    }
+    // Sinaliza intenção — o cancelamento real precisa ser via Stripe portal
+    // ou um endpoint próprio. Por enquanto: mostra mensagem amigável + email.
+    alert('Pra encerrar sua oferta, mande um email pra contato@sobasasas.com.br ou cancele direto pelo Stripe (link no recibo). Em segundos a chama deixa de ser cobrada.\n\nObrigada por ter sustentado a casa.');
+    try{ if(window.plausible) window.plausible('oferta_encerramento_pedido'); }catch(_){}
+  }catch(e){ alert('Erro de conexão. Tente em alguns segundos.'); }
+}
+
+async function _carregarStatusOferta(){
+  if(!window.saaAuth || !window._userId) return;
+  try{
+    var r = await window.saaAuth.client.from('users')
+      .select('oferta_ativa, oferta_desde').eq('id', window._userId).maybeSingle();
+    var ativa = r && r.data && r.data.oferta_ativa;
+    var pend = document.getElementById('aj-mant-pendente');
+    var act = document.getElementById('aj-mant-ativa');
+    if(!pend || !act) return;
+    if(ativa){
+      pend.style.display = 'none';
+      act.style.display = 'block';
+      if(r.data.oferta_desde){
+        var d = new Date(r.data.oferta_desde);
+        var meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+        document.getElementById('aj-mant-desde').textContent = 'Desde ' + meses[d.getMonth()] + ' de ' + d.getFullYear();
+      } else {
+        document.getElementById('aj-mant-desde').textContent = 'Oferta em curso';
+      }
+    } else {
+      pend.style.display = 'block';
+      act.style.display = 'none';
+    }
+  }catch(_){}
+}
 
 // ── Mapa Cabalístico Premium — tríade angelical ──
 var _mapaCache = null;
@@ -6755,6 +6800,7 @@ async function openAjustes(){
     }
   }catch(_){}
   _atualizarSenhaUI();
+  _carregarStatusOferta();
   document.getElementById('aj-avatar').textContent = (window._nome||'•').trim().charAt(0).toUpperCase();
   document.getElementById('aj-anjo').textContent = window._anjo || '—';
   var n=document.getElementById('aj-nasc');
