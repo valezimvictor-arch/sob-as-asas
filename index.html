@@ -810,17 +810,37 @@
 </section>
 
 <!-- ░░ MENSAGEM MENSAL DO SEU ANJO ░░ -->
-<section id="s-mensagem-mensal" class="screen" style="background:var(--ouro-bg)">
+<section id="s-mensagem-mensal" class="screen" style="background:linear-gradient(180deg, #F5E8C8 0%, #E8D5A6 100%)">
   <div style="flex:1; overflow-y:auto" class="pad">
-    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
-    <div style="text-align:center; margin-top:14px">
-      <p class="serif-soft" style="font-size:15px; color:var(--ouro); margin:0" id="mm-mesano">— de 2026</p>
-      <h2 id="mm-titulo" class="serif" style="font-size:30px; margin:8px 0 4px; font-weight:400">A mensagem do seu anjo</h2>
-      <p id="mm-anjo" style="font-size:13px; color:var(--tinta-suave); letter-spacing:.04em">—</p>
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:#7C4E0F;font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+
+    <!-- Envelope (1ª vez no mês) -->
+    <div id="mm-envelope" style="display:none; max-width:340px; margin:40px auto 30px; cursor:pointer" onclick="abrirEnvelopeCarta()">
+      <div style="position:relative; aspect-ratio:1.55/1; background:linear-gradient(180deg, #C9A36A 0%, #A07831 100%); border-radius:6px; box-shadow:0 10px 30px rgba(74,46,12,.32), inset 0 2px 4px rgba(255,250,240,.18); overflow:hidden">
+        <!-- Aba do envelope -->
+        <div id="mm-envelope-aba" style="position:absolute; top:0; left:0; right:0; height:55%; background:linear-gradient(180deg, #D4B279 0%, #A07831 100%); clip-path:polygon(0 0, 100% 0, 50% 100%); transform-origin:top center; transition:transform 1.1s cubic-bezier(.4,0,.2,1)"></div>
+        <!-- Selo -->
+        <div style="position:absolute; bottom:14px; right:14px; width:50px; height:50px; border-radius:50%; background:radial-gradient(circle, #BA7517, #5A3A06); display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,.35); color:#F6E1B0; font-family:'Playfair Display',serif; font-size:24px; font-weight:500">✦</div>
+        <!-- Centro -->
+        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#F6E1B0; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; padding:0 24px; text-align:center; opacity:.85">Toque pra abrir<br/>sua carta</div>
+      </div>
+      <p style="text-align:center; margin:18px 0 0; font-size:11px; color:#7C4E0F; letter-spacing:.16em; text-transform:uppercase; font-weight:600">Sua carta deste mês</p>
     </div>
-    <div id="mm-corpo" class="card" style="margin-top:22px; padding:24px 22px; background:var(--branco-puro); border-color:transparent">
-      <p id="mm-texto" style="margin:0; font-size:16px; color:var(--tinta); line-height:1.75; white-space:pre-wrap; font-family:'Cormorant Garamond',serif"></p>
+
+    <!-- Carta (revelada após envelope) -->
+    <div id="mm-carta-wrap" style="text-align:center; margin-top:14px">
+      <p class="serif-soft" style="font-size:15px; color:#7C4E0F; margin:0" id="mm-mesano">— de 2026</p>
+      <h2 id="mm-titulo" class="serif" style="font-size:30px; margin:8px 0 4px; font-weight:400; color:#3F2A0A">A mensagem do seu anjo</h2>
+      <p id="mm-anjo" style="font-size:13px; color:#7C4E0F; letter-spacing:.04em">—</p>
     </div>
+    <div id="mm-corpo" class="card" style="margin-top:22px; padding:30px 26px; background:#FBF2DA; border:1px solid rgba(186,117,23,.22); box-shadow:0 6px 28px rgba(124,78,15,.16), inset 0 0 0 1px rgba(255,250,240,.6); position:relative; border-radius:8px; background-image:radial-gradient(circle at 80% 20%, rgba(186,117,23,.05) 0%, transparent 40%), radial-gradient(circle at 20% 80%, rgba(186,117,23,.04) 0%, transparent 40%)">
+      <!-- Cantos manchados sutilmente — papel envelhecido -->
+      <div style="position:absolute; top:0; left:0; width:60px; height:60px; background:radial-gradient(circle at 0% 0%, rgba(124,78,15,.10) 0%, transparent 70%); pointer-events:none"></div>
+      <div style="position:absolute; bottom:0; right:0; width:60px; height:60px; background:radial-gradient(circle at 100% 100%, rgba(124,78,15,.08) 0%, transparent 70%); pointer-events:none"></div>
+      <p id="mm-texto" style="margin:0; font-size:17px; color:#3F2A0A; line-height:1.85; white-space:pre-wrap; font-family:'Cormorant Garamond',serif; letter-spacing:.005em"></p>
+      <p style="margin:22px 0 0; padding-top:16px; border-top:1px solid rgba(186,117,23,.18); font-size:13px; color:#7C4E0F; font-family:'Cormorant Garamond',serif; font-style:italic; text-align:right">— Monica Buonfiglio</p>
+    </div>
+    <button class="btn-ouro" style="margin-top:16px" onclick="compartilharCarta()">Compartilhar como story 🤍</button>
     <div id="mm-audio" style="display:none; margin-top:14px">
       <button class="btn-ouro" onclick="mmTocarAudio()">▶ Ouvir na voz da Monica</button>
     </div>
@@ -838,6 +858,52 @@
     </div>
     <button class="btn-ghost" style="margin-top:18px" onclick="show('s-home')">Voltar ao santuário</button>
     <p style="margin:22px auto 0; padding:12px 16px; max-width:340px; text-align:center; font-size:11px; color:var(--tinta-suave); line-height:1.55; opacity:.85; border-top:1px solid rgba(186,117,23,.12)">Conteúdo autoral de Monica Buonfiglio. Uso pessoal apenas — não reproduza. Lei 9.610/98.</p>
+  </div>
+</section>
+
+<!-- ░░ CAMINHOS — lista de jornadas guiadas de 7 dias ░░ -->
+<section id="s-caminhos" class="screen">
+  <div style="flex:1; overflow-y:auto" class="pad">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+    <div style="margin-top:6px">
+      <p style="margin:0; font-size:11px; letter-spacing:.18em; color:var(--ouro); text-transform:uppercase; font-weight:600">Caminhos da Monica</p>
+      <h2 class="serif" style="font-size:30px; margin:6px 0 6px; font-weight:400">Jornadas de 7 dias</h2>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 22px; line-height:1.6">Escolha o Caminho que ressoa com seu momento. Uma prática por dia, sob a presença de um anjo específico.</p>
+    </div>
+    <div id="caminhos-lista" style="display:flex; flex-direction:column; gap:14px"></div>
+    <p style="margin:30px 0 12px; padding-top:16px; border-top:1px solid var(--linha); font-size:11.5px; color:var(--tinta-suave); line-height:1.55; text-align:center">Em breve, na voz da Monica.<br>Os primeiros áudios chegam ainda neste mês.</p>
+  </div>
+</section>
+
+<!-- ░░ CAMINHO — leitura do dia ░░ -->
+<section id="s-caminho-dia" class="screen" style="background:linear-gradient(180deg, #FBF6E8 0%, #F5E8C8 100%)">
+  <div style="flex:1; overflow-y:auto" class="pad">
+    <button onclick="show('s-caminhos')" class="serif" style="background:none;border:none;color:#7C4E0F;font-size:14px;align-self:flex-start;margin-bottom:6px">← Caminhos</button>
+
+    <div style="text-align:center; margin-top:10px">
+      <p id="cd-caminho-titulo" style="margin:0; font-size:11px; letter-spacing:.18em; color:var(--ouro); text-transform:uppercase; font-weight:600">—</p>
+      <h2 id="cd-dia-titulo" class="serif" style="font-size:28px; margin:10px 0 4px; font-weight:400; color:#3F2A0A; line-height:1.25">—</h2>
+      <!-- Bolinhas de progresso -->
+      <div id="cd-dots" style="display:flex; gap:6px; justify-content:center; margin-top:12px"></div>
+    </div>
+
+    <div id="cd-corpo" class="card" style="margin-top:22px; padding:28px 24px; background:#FBF2DA; border:1px solid rgba(186,117,23,.22); border-radius:8px; box-shadow:0 6px 24px rgba(124,78,15,.12)">
+      <p id="cd-texto" style="margin:0; font-size:17px; color:#3F2A0A; line-height:1.85; white-space:pre-wrap; font-family:'Cormorant Garamond',serif; letter-spacing:.005em">—</p>
+    </div>
+
+    <div id="cd-audio-box" style="display:none; margin-top:14px">
+      <button class="btn-ouro" onclick="cdTocarAudio()">▶ Ouvir na voz da Monica</button>
+    </div>
+    <div id="cd-audio-pendente" style="display:none; margin-top:14px; padding:14px 18px; background:rgba(186,117,23,.08); border:1px dashed rgba(186,117,23,.32); border-radius:12px; text-align:center; color:#7C4E0F; font-size:13px; line-height:1.55">
+      <span style="font-size:18px; margin-right:6px">🎙️</span>Em breve, na voz da Monica
+    </div>
+
+    <div style="display:flex; gap:10px; margin-top:24px">
+      <button id="cd-btn-anterior" class="btn-ghost" style="flex:1" onclick="navegarDiaCaminho(-1)">← Dia anterior</button>
+      <button id="cd-btn-proximo" class="btn-ouro" style="flex:2" onclick="marcarDiaFeito()">Marcar como feito · próximo →</button>
+    </div>
+
+    <p id="cd-rodape" style="margin:24px auto 0; max-width:340px; text-align:center; font-size:11.5px; color:#7C4E0F; line-height:1.6; opacity:.8; font-family:'Cormorant Garamond',serif; font-style:italic">— Monica Buonfiglio</p>
   </div>
 </section>
 
@@ -1354,6 +1420,16 @@
         <span style="color:var(--ouro); font-size:18px">▸</span>
       </button>
 
+      <!-- Oração Profunda — 9 minutos sob a chama -->
+      <button id="home-oracao-btn" class="card" style="margin-top:10px; padding:14px 16px; display:flex; align-items:center; gap:12px; width:100%; cursor:pointer; background:linear-gradient(90deg, rgba(15,12,8,.96), rgba(124,78,15,.85)); border:1px solid rgba(186,117,23,.32); border-radius:14px; text-align:left; color:#FAF3E4" onclick="abrirOracaoProfunda()">
+        <div style="width:42px; height:42px; border-radius:50%; background:radial-gradient(circle, #F6C868 0%, #BA7517 70%); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; box-shadow:0 0 18px rgba(246,200,104,.45)">🕯️</div>
+        <div style="flex:1; min-width:0">
+          <p style="margin:0; font-weight:600; color:#FAF3E4; font-family:'Manrope', sans-serif">Oração Profunda</p>
+          <p style="margin:2px 0 0; font-size:12px; color:#D89A2C; font-family:'Cormorant Garamond', serif; font-style:italic">9 minutos · chama crescente, sino em três tempos</p>
+        </div>
+        <span style="color:#D89A2C; font-size:18px">▸</span>
+      </button>
+
       <p style="margin:14px 0 22px; padding:0 16px; font-size:11px; color:var(--tinta-suave); text-align:center; line-height:1.6; font-style:italic; font-family:'Cormorant Garamond',serif; opacity:.9">"Estes ficam gratuitos pra sempre, com ou sem assinatura.<br>Os anjos não cobram." — Monica</p>
 
       <button class="card" style="margin-top:10px; padding:14px 16px; display:flex; align-items:center; gap:12px; width:100%; cursor:pointer; background:#fff; border:1px solid var(--linha); border-radius:14px; text-align:left" onclick="abrirIndicar()">
@@ -1587,6 +1663,26 @@
         <div style="flex:1; min-width:0">
           <p id="home-mm-titulo" style="margin:0; font-weight:600; color:var(--tinta)">A mensagem do seu anjo este mês</p>
           <p id="home-mm-sub" style="margin:2px 0 0; font-size:12px; color:var(--ouro); line-height:1.4">Tocar para ler</p>
+        </div>
+        <span style="color:var(--ouro); font-size:20px">›</span>
+      </div>
+
+      <!-- 1f. CAMINHOS DA MONICA -->
+      <div id="home-caminho-em-curso" class="card" style="display:none; margin-top:10px; padding:16px; align-items:center; gap:14px; cursor:pointer; background:linear-gradient(90deg, rgba(15,12,8,.94), rgba(124,78,15,.86)); color:#FAF3E4; border-color:rgba(186,117,23,.32)">
+        <div id="home-caminho-emoji" style="width:46px;height:46px;border-radius:12px;background:radial-gradient(circle, rgba(246,200,104,.45), rgba(186,117,23,.2));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🪽</div>
+        <div style="flex:1; min-width:0">
+          <p style="margin:0; font-size:10.5px; letter-spacing:.16em; color:#D89A2C; text-transform:uppercase; font-weight:600">Caminho em curso</p>
+          <p id="home-caminho-titulo" style="margin:2px 0 0; font-weight:600; color:#FAF3E4">—</p>
+          <p id="home-caminho-progresso" style="margin:2px 0 0; font-size:12px; color:#D89A2C; line-height:1.4">—</p>
+        </div>
+        <span style="color:#D89A2C; font-size:20px">›</span>
+      </div>
+
+      <div id="home-caminhos-card" class="card" style="margin-top:10px; padding:16px; display:flex; align-items:center; gap:14px; cursor:pointer; background:linear-gradient(90deg, rgba(186,117,23,.05), rgba(239,159,39,.14)); border-color:rgba(186,117,23,.18)" onclick="abrirCaminhos()">
+        <div style="width:46px;height:46px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🛤️</div>
+        <div style="flex:1; min-width:0">
+          <p style="margin:0; font-weight:600; color:var(--tinta)">Caminhos da Monica</p>
+          <p style="margin:2px 0 0; font-size:12px; color:var(--ouro); line-height:1.4">Jornadas de 7 dias · acolhimento, ansiedade, prosperidade</p>
         </div>
         <span style="color:var(--ouro); font-size:20px">›</span>
       </div>
@@ -2383,6 +2479,75 @@
   </div>
 </div>
 
+<!-- ░░ ORAÇÃO PROFUNDA — 9 minutos sob a chama ░░ -->
+<div id="modal-oracao" role="dialog" aria-modal="true" aria-label="Oração profunda" style="position:fixed; inset:0; z-index:72; display:none; background:#0A0805; align-items:center; justify-content:center; overflow:hidden">
+  <!-- Halo respirando -->
+  <div id="op-halo" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:680px; height:680px; max-width:120vw; max-height:120vw; border-radius:50%; background:radial-gradient(circle, rgba(239,159,39,.18) 0%, rgba(186,117,23,.06) 40%, transparent 70%); animation:op-respira 6s ease-in-out infinite; pointer-events:none; filter:blur(3px)"></div>
+  <!-- Partículas subindo (mais lentas que o reveal — contemplativo) -->
+  <div id="op-particulas" style="position:absolute; inset:0; pointer-events:none; overflow:hidden"></div>
+
+  <div style="position:relative; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#FBFAF7; text-align:center; padding:max(env(safe-area-inset-top),32px) 28px max(env(safe-area-inset-bottom),32px); z-index:1">
+    <!-- Estado: PRONTO (antes de iniciar) -->
+    <div id="op-pronto" style="display:block">
+      <p class="serif-soft" style="font-size:12.5px; color:#D89A2C; margin:0 0 4px; letter-spacing:.24em; text-transform:uppercase; font-weight:600">Oração Profunda</p>
+      <h2 class="serif" style="font-size:38px; margin:18px 0 14px; font-weight:400; color:#FAF3E4; line-height:1.15; letter-spacing:.005em">9 minutos<br/>sob a chama</h2>
+      <p style="font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-size:18px; color:#F6EDD5; max-width:320px; line-height:1.55; margin:0 auto 30px; opacity:.85">A chama cresce a cada respiração. O sino soa em três tempos. Quando o último silêncio chega, você recebe o selo.</p>
+      <button class="btn-ouro" style="max-width:280px; margin:0 auto" onclick="iniciarOracaoProfunda()">Começar a oração</button>
+      <button onclick="fecharOracaoProfunda()" style="margin-top:18px; background:transparent; border:none; color:#D89A2C; font:inherit; font-size:13px; opacity:.7; cursor:pointer">Agora não</button>
+    </div>
+
+    <!-- Estado: EM ORAÇÃO -->
+    <div id="op-ativo" style="display:none">
+      <!-- Chama central -->
+      <div style="position:relative; width:160px; height:200px; margin:0 auto 28px">
+        <!-- Glow base -->
+        <div id="op-glow" style="position:absolute; bottom:14px; left:50%; transform:translateX(-50%); width:120px; height:120px; border-radius:50%; background:radial-gradient(circle, rgba(246,200,104,.55) 0%, rgba(239,159,39,.18) 50%, transparent 75%); filter:blur(8px); transition:width 1s ease, height 1s ease, opacity 1s ease"></div>
+        <!-- Chama desenhada -->
+        <svg id="op-chama" viewBox="0 0 100 130" style="position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:60px; height:78px; transition:width 1s ease, height 1s ease; filter:drop-shadow(0 0 18px rgba(246,200,104,.55))">
+          <defs>
+            <linearGradient id="op-chama-grad" x1="0" y1="100%" x2="0" y2="0%">
+              <stop offset="0%" stop-color="#7C4E0F" />
+              <stop offset="40%" stop-color="#EF9F27" />
+              <stop offset="80%" stop-color="#F6E1B0" />
+              <stop offset="100%" stop-color="#FFFAF0" />
+            </linearGradient>
+          </defs>
+          <path d="M50 130 Q15 95 30 60 Q40 80 42 65 Q44 35 50 0 Q56 35 58 65 Q60 80 70 60 Q85 95 50 130 Z"
+                fill="url(#op-chama-grad)">
+            <animate attributeName="d"
+              values="M50 130 Q15 95 30 60 Q40 80 42 65 Q44 35 50 0 Q56 35 58 65 Q60 80 70 60 Q85 95 50 130 Z;
+                      M50 130 Q12 95 28 55 Q40 78 44 62 Q48 30 50 0 Q52 30 56 62 Q60 78 72 55 Q88 95 50 130 Z;
+                      M50 130 Q15 95 30 60 Q40 80 42 65 Q44 35 50 0 Q56 35 58 65 Q60 80 70 60 Q85 95 50 130 Z"
+              dur="2.4s" repeatCount="indefinite" />
+          </path>
+        </svg>
+      </div>
+
+      <p id="op-fase" class="serif-soft" style="font-size:12.5px; color:#D89A2C; margin:0 0 6px; letter-spacing:.24em; text-transform:uppercase; font-weight:600">Começando</p>
+      <p id="op-frase" class="serif" style="font-size:24px; max-width:340px; margin:14px auto 0; line-height:1.45; color:#FAF3E4; font-weight:400; min-height:72px">Respire. Você chegou.</p>
+
+      <p id="op-tempo" class="serif" style="font-size:48px; font-variant-numeric:tabular-nums; margin:36px 0 12px; font-weight:300; color:#FAF3E4; letter-spacing:.02em">9:00</p>
+
+      <button onclick="encerrarOracaoCedo()" style="margin-top:18px; background:transparent; border:1px solid rgba(216,154,44,.35); color:#F6EDD5; border-radius:99px; padding:9px 26px; font:inherit; font-size:12.5px; letter-spacing:.05em; cursor:pointer; opacity:.75">Encerrar antes</button>
+    </div>
+
+    <!-- Estado: SELO (pós-término) -->
+    <div id="op-selo" style="display:none; text-align:center">
+      <div style="font-size:46px; margin-bottom:10px">🕊️</div>
+      <p class="serif-soft" style="font-size:12.5px; color:#D89A2C; margin:0 0 4px; letter-spacing:.24em; text-transform:uppercase; font-weight:600">Selo</p>
+      <h2 class="serif" style="font-size:30px; margin:14px 0 10px; font-weight:400; color:#FAF3E4; line-height:1.2">Sua oração foi recebida</h2>
+      <p id="op-selo-anjo" style="font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-size:17px; color:#F6EDD5; margin:0 0 28px; max-width:320px; line-height:1.55">—</p>
+      <button class="btn-ouro" style="max-width:280px; margin:0 auto" onclick="fecharOracaoProfunda()">Voltar ao santuário</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes op-respira{ 0%,100%{ opacity:.7; transform:translate(-50%,-50%) scale(.95);} 50%{ opacity:1; transform:translate(-50%,-50%) scale(1.05);} }
+  .op-luz{ position:absolute; bottom:-10px; width:4px; height:4px; border-radius:50%; background:#F6C868; opacity:0; filter:blur(.5px); animation:op-sobe linear infinite; }
+  @keyframes op-sobe{ 0%{ transform:translateY(0) scale(.5); opacity:0;} 15%{opacity:.7;} 100%{ transform:translateY(-110vh) scale(1); opacity:0;} }
+</style>
+
 <div id="modal-resp" role="dialog" aria-modal="true" aria-label="Respiração guiada com seu anjo" style="position:fixed; inset:0; z-index:70; display:none; background:rgba(20,18,14,.92); align-items:center; justify-content:center">
   <div style="position:relative; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#FBFAF7; text-align:center">
     <p id="resp-ciclo" class="serif-soft" style="font-size:13px; color:#EF9F27; letter-spacing:.2em; text-transform:uppercase; margin:0 0 32px">1 de 4</p>
@@ -2994,6 +3159,377 @@ function revelar(){
   setTimeout(()=>document.querySelectorAll('#rv-attr,#rv-faixa,#s-reveal .reveal-fade').forEach(e=>e.classList.add('on')),2100);
 }
 
+// ── Caminhos da Monica — jornadas de 7 dias ───────────────────────────
+var _caminhosCache = null;     // array de caminhos publicados
+var _progressoCache = {};      // {caminho_id: { dia_atual, ultimo_dia_feito, concluido_em }}
+var _caminhoAtual = null;      // {caminho, dia, conteudo}
+
+async function carregarCaminhos(){
+  if(!window.saaAuth) return [];
+  try{
+    var r = await window.saaAuth.client.from('caminhos')
+      .select('id,slug,titulo,subtitulo,descricao,cover_emoji,total_dias,ordem,premium')
+      .eq('publicado', true)
+      .order('ordem', { ascending:true });
+    if(r.error || !r.data) return [];
+    _caminhosCache = r.data;
+    // Carrega progresso do user
+    if(window._userId){
+      var p = await window.saaAuth.client.from('caminhos_progresso')
+        .select('caminho_id,dia_atual,ultimo_dia_feito,concluido_em')
+        .eq('user_id', window._userId);
+      if(p.data){ p.data.forEach(function(x){ _progressoCache[x.caminho_id] = x; }); }
+    }
+    return r.data;
+  }catch(e){ console.warn('[caminhos]', e); return []; }
+}
+
+async function abrirCaminhos(){
+  show('s-caminhos');
+  var el = document.getElementById('caminhos-lista');
+  el.innerHTML = '<p style="text-align:center; color:var(--tinta-suave); padding:30px 0">Carregando os Caminhos…</p>';
+  var caminhos = await carregarCaminhos();
+  if(!caminhos.length){
+    el.innerHTML = '<div style="text-align:center; padding:40px 20px; color:var(--tinta-suave)"><div style="font-size:34px; opacity:.5">🛤️</div><p class="serif" style="font-size:18px; color:var(--ouro); margin:14px 0 6px">Os Caminhos estão sendo preparados</p><p style="margin:0; font-family:\'Cormorant Garamond\',serif; font-style:italic; font-size:15px">Em breve, três jornadas guiadas pela Monica.</p></div>';
+    return;
+  }
+  el.innerHTML = caminhos.map(function(c){
+    var prog = _progressoCache[c.id];
+    var dia = prog ? (prog.dia_atual || 1) : 0;
+    var feito = prog && prog.ultimo_dia_feito || 0;
+    var concluido = prog && prog.concluido_em;
+    var statusBadge = '';
+    if(concluido){
+      statusBadge = '<span style="font-size:11px; background:var(--ouro); color:#fff; padding:3px 9px; border-radius:99px; font-weight:500">Concluído</span>';
+    } else if(prog){
+      statusBadge = '<span style="font-size:11px; background:var(--ouro-bg); color:var(--ouro); padding:3px 9px; border-radius:99px; font-weight:600">Dia ' + Math.min(dia, c.total_dias) + ' de ' + c.total_dias + '</span>';
+    } else {
+      statusBadge = '<span style="font-size:11px; color:var(--tinta-suave); letter-spacing:.06em">' + c.total_dias + ' dias</span>';
+    }
+    return '<button class="card" onclick="abrirCaminhoDetalhe(\'' + c.id + '\')" style="text-align:left; width:100%; cursor:pointer; padding:20px; background:#fff; border:1px solid var(--linha); border-radius:16px; font:inherit; transition:transform .15s ease, box-shadow .25s ease">'
+      + '<div style="display:flex; align-items:flex-start; gap:14px">'
+      + '  <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg, var(--ouro-bg), rgba(186,117,23,.18));display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">' + (c.cover_emoji || '🪽') + '</div>'
+      + '  <div style="flex:1; min-width:0">'
+      + '    <p class="serif" style="margin:0; font-size:19px; font-weight:500; color:var(--tinta); line-height:1.25">' + esc(c.titulo) + '</p>'
+      + '    <p style="margin:4px 0 8px; font-size:13px; color:var(--ouro); font-family:\'Cormorant Garamond\',serif; font-style:italic">' + esc(c.subtitulo || '') + '</p>'
+      + '    <div style="display:flex; align-items:center; justify-content:space-between; gap:10px">' + statusBadge + (c.premium && !(window._plano && window._plano !== 'free') ? '<span style="font-size:10px; background:rgba(186,117,23,.12); color:var(--ouro); padding:3px 9px; border-radius:99px; font-weight:600; letter-spacing:.04em">PLANO</span>' : '') + '</div>'
+      + '  </div>'
+      + '</div></button>';
+  }).join('');
+}
+
+async function abrirCaminhoDetalhe(caminhoId){
+  var c = (_caminhosCache || []).find(function(x){ return x.id === caminhoId; });
+  if(!c) return;
+  // Bloqueia se premium e free
+  if(c.premium && !(window._plano && window._plano !== 'free')){
+    openPaywall('caminho-' + c.slug);
+    return;
+  }
+  var prog = _progressoCache[c.id];
+  var dia = prog ? Math.min(prog.dia_atual || 1, c.total_dias) : 1;
+  // Se não tem progresso, cria
+  if(!prog && window._userId){
+    try{
+      var ins = await window.saaAuth.client.from('caminhos_progresso')
+        .insert({ user_id: window._userId, caminho_id: c.id, dia_atual: 1 })
+        .select('*').single();
+      if(ins.data) _progressoCache[c.id] = ins.data;
+      try{ if(window.plausible) window.plausible('caminho_iniciado', { props:{ slug:c.slug } }); }catch(_){}
+    }catch(_){}
+  }
+  await abrirDiaCaminho(c, dia);
+}
+
+async function abrirDiaCaminho(caminho, dia){
+  _caminhoAtual = { caminho: caminho, dia: dia, conteudo: null };
+  show('s-caminho-dia');
+  document.getElementById('cd-caminho-titulo').textContent = caminho.titulo + ' · Dia ' + dia + ' de ' + caminho.total_dias;
+  document.getElementById('cd-dia-titulo').textContent = 'Carregando…';
+  document.getElementById('cd-texto').textContent = '';
+
+  // Render dots
+  var dotsEl = document.getElementById('cd-dots');
+  var prog = _progressoCache[caminho.id];
+  var feito = (prog && prog.ultimo_dia_feito) || 0;
+  if(dotsEl){
+    var dots = '';
+    for(var i=1; i<=caminho.total_dias; i++){
+      var ativo = i === dia;
+      var ja = i <= feito;
+      var cor = ativo ? 'var(--ouro)' : (ja ? 'var(--ouro-claro)' : 'rgba(186,117,23,.22)');
+      var largura = ativo ? '20px' : '8px';
+      dots += '<span style="width:' + largura + '; height:8px; border-radius:99px; background:' + cor + '; transition:width .3s ease, background .3s ease"></span>';
+    }
+    dotsEl.innerHTML = dots;
+  }
+
+  // Atualiza botões
+  var btnAnt = document.getElementById('cd-btn-anterior');
+  var btnProx = document.getElementById('cd-btn-proximo');
+  if(btnAnt) btnAnt.disabled = dia <= 1;
+  if(btnProx){
+    btnProx.textContent = dia >= caminho.total_dias ? 'Concluir Caminho ✓' : 'Marcar como feito · próximo →';
+  }
+
+  // Busca o conteúdo do dia
+  try{
+    var r = await window.saaAuth.client.from('caminhos_dias')
+      .select('titulo,texto,audio_url,duracao_seg')
+      .eq('caminho_id', caminho.id)
+      .eq('dia', dia)
+      .maybeSingle();
+    if(r.error || !r.data){
+      document.getElementById('cd-dia-titulo').textContent = 'Conteúdo não encontrado';
+      return;
+    }
+    _caminhoAtual.conteudo = r.data;
+    document.getElementById('cd-dia-titulo').textContent = r.data.titulo;
+    document.getElementById('cd-texto').textContent = r.data.texto;
+    if(r.data.audio_url){
+      document.getElementById('cd-audio-box').style.display = 'block';
+      document.getElementById('cd-audio-pendente').style.display = 'none';
+    } else {
+      document.getElementById('cd-audio-box').style.display = 'none';
+      document.getElementById('cd-audio-pendente').style.display = 'block';
+    }
+  }catch(e){
+    document.getElementById('cd-dia-titulo').textContent = 'Não consegui carregar agora';
+    console.warn('[caminhoDia]', e);
+  }
+}
+
+function navegarDiaCaminho(delta){
+  if(!_caminhoAtual) return;
+  var c = _caminhoAtual.caminho;
+  var novoDia = _caminhoAtual.dia + delta;
+  if(novoDia < 1 || novoDia > c.total_dias) return;
+  abrirDiaCaminho(c, novoDia);
+}
+
+async function marcarDiaFeito(){
+  if(!_caminhoAtual || !window.saaAuth || !window._userId) return;
+  var c = _caminhoAtual.caminho;
+  var dia = _caminhoAtual.dia;
+  var prog = _progressoCache[c.id] || {};
+  var ultimoFeito = Math.max(prog.ultimo_dia_feito || 0, dia);
+  var proximoDia = Math.min(dia + 1, c.total_dias);
+  var ehUltimo = dia >= c.total_dias;
+
+  var update = {
+    ultimo_dia_feito: ultimoFeito,
+    dia_atual: ehUltimo ? c.total_dias : proximoDia,
+    ultimo_acesso_em: new Date().toISOString(),
+  };
+  if(ehUltimo) update.concluido_em = new Date().toISOString();
+
+  try{
+    await window.saaAuth.client.from('caminhos_progresso')
+      .update(update).eq('user_id', window._userId).eq('caminho_id', c.id);
+    Object.assign(_progressoCache[c.id] || {}, update);
+    if(!_progressoCache[c.id]) _progressoCache[c.id] = update;
+  }catch(_){}
+
+  chime(); buzz();
+  if(ehUltimo){
+    toast('Caminho concluído. 🤍 Você atravessou.');
+    try{ if(window.plausible) window.plausible('caminho_concluido', { props:{ slug:c.slug } }); }catch(_){}
+    setTimeout(function(){ show('s-caminhos'); }, 1200);
+  } else {
+    toast('Dia ' + dia + ' marcado. Caminho continua amanhã 🕯️');
+    try{ if(window.plausible) window.plausible('caminho_dia_feito', { props:{ slug:c.slug, dia:dia } }); }catch(_){}
+    setTimeout(function(){ abrirDiaCaminho(c, proximoDia); }, 800);
+  }
+}
+
+function cdTocarAudio(){
+  if(!_caminhoAtual || !_caminhoAtual.conteudo || !_caminhoAtual.conteudo.audio_url) return;
+  var d = _caminhoAtual.conteudo;
+  openPlayer({titulo: d.titulo, fmt:'Áudio · na voz da Monica', art:_caminhoAtual.caminho.cover_emoji || '🪽', dur: d.duracao_seg ? Math.round(d.duracao_seg/60)+' min' : '6 min'});
+}
+
+// Hook na home: mostra card "Caminho em curso" se houver
+async function _atualizarHomeCaminho(){
+  if(!window.saaAuth || !window._userId) return;
+  if(!_caminhosCache) await carregarCaminhos();
+  var emCurso = (_caminhosCache || []).find(function(c){
+    var p = _progressoCache[c.id]; return p && !p.concluido_em;
+  });
+  var card = document.getElementById('home-caminho-em-curso');
+  if(!card) return;
+  if(emCurso){
+    var p = _progressoCache[emCurso.id];
+    document.getElementById('home-caminho-emoji').textContent = emCurso.cover_emoji || '🛤️';
+    document.getElementById('home-caminho-titulo').textContent = emCurso.titulo;
+    document.getElementById('home-caminho-progresso').textContent = 'Dia ' + Math.min(p.dia_atual || 1, emCurso.total_dias) + ' de ' + emCurso.total_dias;
+    card.style.display = 'flex';
+    card.onclick = function(){ abrirCaminhoDetalhe(emCurso.id); };
+  } else {
+    card.style.display = 'none';
+  }
+}
+
+// ── Oração Profunda — ritual de 9 minutos sob a chama ─────────────────
+// 3 fases × 3 min cada. Sino discreto entre fases. Chama cresce a cada
+// minuto que passa. Selo final com data + anjo do momento.
+var _opTimer = null;
+var _opInicio = null;
+var _opEncerradoCedo = false;
+
+function abrirOracaoProfunda(){
+  var m = document.getElementById('modal-oracao'); if(!m) return;
+  document.getElementById('op-pronto').style.display = 'block';
+  document.getElementById('op-ativo').style.display = 'none';
+  document.getElementById('op-selo').style.display = 'none';
+  m.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  // Spawn de partículas leves
+  var p = document.getElementById('op-particulas');
+  if(p && !p.children.length){
+    for(var i=0; i<14; i++){
+      var s = document.createElement('div');
+      s.className = 'op-luz';
+      s.style.left = (Math.random()*100)+'%';
+      s.style.animationDuration = (9+Math.random()*7)+'s';
+      s.style.animationDelay = (Math.random()*9)+'s';
+      s.style.opacity = String(.3+Math.random()*.4);
+      var sz = (3+Math.random()*4);
+      s.style.width = s.style.height = sz+'px';
+      p.appendChild(s);
+    }
+  }
+  try{ if(window.plausible) window.plausible('oracao_profunda_abriu'); }catch(_){}
+}
+
+function fecharOracaoProfunda(){
+  pararOracaoProfunda();
+  var m = document.getElementById('modal-oracao'); if(!m) return;
+  m.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function pararOracaoProfunda(){
+  if(_opTimer){ clearInterval(_opTimer); _opTimer = null; }
+  _opInicio = null;
+}
+
+var OP_FASES = [
+  { ate: 540, nome:'Começando',   frases:[
+    'Respire. Você chegou.',
+    'O mundo pode esperar 9 minutos.',
+    'Sua presença basta.'
+  ]},
+  { ate: 360, nome:'Quietude',    frases:[
+    'A chama segue acesa por você.',
+    'O silêncio é uma forma de oração.',
+    'Você está sob as asas.'
+  ]},
+  { ate: 180, nome:'Profundidade', frases:[
+    'O que você guarda agora, o céu escuta.',
+    'Aqui dentro, há lugar pra tudo.',
+    'Seu anjo se inclina mais perto.'
+  ]},
+  { ate: 0,   nome:'Selo',         frases:['—'] },
+];
+
+function iniciarOracaoProfunda(){
+  document.getElementById('op-pronto').style.display = 'none';
+  document.getElementById('op-ativo').style.display = 'block';
+  _opEncerradoCedo = false;
+  _opInicio = Date.now();
+  var DURACAO_S = 9 * 60; // 540s
+  var ultimoSino = -1;
+  var ultimaFrase = -1;
+  var sinos = [540, 360, 180, 0]; // início (anuncia), 6min, 3min, 0min (fim)
+
+  chime(); buzz();
+
+  _opTimer = setInterval(function(){
+    var passados = Math.floor((Date.now() - _opInicio) / 1000);
+    var restante = Math.max(0, DURACAO_S - passados);
+
+    // Atualiza display de tempo
+    var mm = String(Math.floor(restante / 60)).padStart(2,'0');
+    var ss = String(restante % 60).padStart(2,'0');
+    var tempoEl = document.getElementById('op-tempo');
+    if(tempoEl) tempoEl.textContent = mm + ':' + ss;
+
+    // Cresce a chama proporcional ao tempo passado (60% → 100%)
+    var prog = passados / DURACAO_S;
+    var escala = 1 + prog * 0.75; // 1.0 → 1.75
+    var chama = document.getElementById('op-chama');
+    var glow = document.getElementById('op-glow');
+    if(chama){ chama.style.width = (60 * escala) + 'px'; chama.style.height = (78 * escala) + 'px'; }
+    if(glow){ var gs = 120 + prog * 80; glow.style.width = gs+'px'; glow.style.height = gs+'px'; }
+
+    // Fase + frase
+    var fase = OP_FASES.find(function(f){ return restante > f.ate; }) || OP_FASES[OP_FASES.length - 1];
+    var faseIdx = OP_FASES.indexOf(fase);
+    var faseEl = document.getElementById('op-fase');
+    if(faseEl && faseEl.textContent !== fase.nome) faseEl.textContent = fase.nome;
+    // Troca frase a cada ~60s dentro da fase
+    var fraseIdx = Math.floor((passados / 60) % (fase.frases.length || 1));
+    var fraseChave = faseIdx * 100 + fraseIdx;
+    if(fraseChave !== ultimaFrase){
+      ultimaFrase = fraseChave;
+      var fraseEl = document.getElementById('op-frase');
+      if(fraseEl){
+        fraseEl.style.transition = 'opacity .5s ease';
+        fraseEl.style.opacity = '0';
+        setTimeout(function(){
+          if(fraseEl) { fraseEl.textContent = fase.frases[fraseIdx] || fase.frases[0]; fraseEl.style.opacity = '1'; }
+        }, 500);
+      }
+    }
+
+    // Sino aos 540 (início — já tocou no chime), 360 (6→3min restantes), 180, 0
+    if(sinos.indexOf(restante) >= 0 && restante !== ultimoSino && restante !== DURACAO_S){
+      ultimoSino = restante;
+      chime();
+      buzz();
+    }
+
+    if(restante <= 0){
+      pararOracaoProfunda();
+      exibirSeloOracao(false);
+    }
+  }, 250); // 4x por segundo — UI fluida
+}
+
+function encerrarOracaoCedo(){
+  _opEncerradoCedo = true;
+  pararOracaoProfunda();
+  exibirSeloOracao(true);
+}
+
+function exibirSeloOracao(cedo){
+  document.getElementById('op-ativo').style.display = 'none';
+  var selo = document.getElementById('op-selo');
+  selo.style.display = 'block';
+  var anjo = window._anjo || 'Seu anjo';
+  var msg;
+  if(cedo){
+    msg = anjo + ' guardou sua chama acesa. Volte quando puder ficar mais.';
+  } else {
+    var d = new Date();
+    var dia = d.getDate(); var mes = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][d.getMonth()];
+    msg = anjo + ' esteve com você. ' + dia + ' de ' + mes + ' · ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+  }
+  document.getElementById('op-selo-anjo').textContent = msg;
+
+  chime(); buzz();
+
+  // Histórico local
+  try{
+    var hist = JSON.parse(localStorage.getItem('saa_oracao_historico') || '[]');
+    hist.unshift({ em: new Date().toISOString(), duracao_s: 540 - Math.max(0, Math.floor((Date.now()-_opInicio)/1000)), completo: !cedo });
+    if(hist.length > 50) hist.length = 50;
+    localStorage.setItem('saa_oracao_historico', JSON.stringify(hist));
+  }catch(_){}
+
+  try{ if(window.plausible) window.plausible('oracao_profunda_concluida', { props:{ encerrou_cedo:cedo ? 'sim' : 'nao' } }); }catch(_){}
+}
+
 // ── home ──
 // streak "dias sob as asas" — perdoador (não pune ausência).
 // Filosofia: este app é santuário, não Duolingo. Quem perdeu um dia
@@ -3214,6 +3750,7 @@ function initHome(){
     typeof carregarBiblioteca==='function' ? Promise.resolve().then(carregarBiblioteca).catch(function(e){console.warn('[initHome] biblioteca:',e);}) : null,
     typeof carregarPedidos==='function'    ? Promise.resolve().then(carregarPedidos).catch(function(e){console.warn('[initHome] pedidos:',e);})    : null,
     typeof carregarHome==='function'       ? Promise.resolve().then(carregarHome).catch(function(e){console.warn('[initHome] home:',e);})          : null,
+    typeof _atualizarHomeCaminho==='function' ? Promise.resolve().then(_atualizarHomeCaminho).catch(function(e){console.warn('[initHome] caminho:',e);}) : null,
   ]).catch(function(e){ console.warn('[initHome] erro geral:',e); });
 }
 
@@ -4113,12 +4650,29 @@ async function carregarMensagemMensal(){
 function openMensagemMensal(){
   var hoje = new Date();
   var mes = hoje.getMonth()+1, ano = hoje.getFullYear();
+  var mesChave = ano + '-' + String(mes).padStart(2,'0');
   document.getElementById('mm-mesano').textContent = MESES_PT[mes-1] + ' de ' + ano;
   document.getElementById('mm-anjo').textContent = (window._anjo || 'seu anjo').toUpperCase();
   document.getElementById('mm-corpo').style.display = 'none';
   document.getElementById('mm-audio').style.display = 'none';
   document.getElementById('mm-paywall').style.display = 'none';
   document.getElementById('mm-vazio').style.display = 'none';
+
+  // Envelope na 1ª abertura do mês — depois mostra a carta direto
+  var jaAbriu = false;
+  try{ jaAbriu = localStorage.getItem('saa_carta_aberta_em') === mesChave; }catch(_){}
+  var env = document.getElementById('mm-envelope');
+  var cartaWrap = document.getElementById('mm-carta-wrap');
+  if(_mmCache && !jaAbriu){
+    if(env) env.style.display = 'block';
+    if(cartaWrap) cartaWrap.style.display = 'none';
+    document.getElementById('mm-corpo').style.display = 'none';
+    var aba = document.getElementById('mm-envelope-aba');
+    if(aba) aba.style.transform = ''; // reset animação
+  } else {
+    if(env) env.style.display = 'none';
+    if(cartaWrap) cartaWrap.style.display = 'block';
+  }
   if(!_mmCache){
     document.getElementById('mm-vazio').style.display = 'block';
     document.getElementById('mm-titulo').textContent = 'Em breve';
@@ -4147,6 +4701,54 @@ function mmTocarAudio(){
   if(!_mmCache || !_mmCache.audio_url) return;
   var dur = _mmCache.duracao_seg ? Math.round(_mmCache.duracao_seg/60)+' min' : '5 min';
   openPlayer({titulo: _mmCache.titulo || 'Mensagem do mês', fmt:'Áudio · na voz da Monica', art:'📜', dur:dur});
+}
+
+// Envelope: abre com animação da aba subindo, depois revela a carta
+function abrirEnvelopeCarta(){
+  var aba = document.getElementById('mm-envelope-aba');
+  if(aba) aba.style.transform = 'rotateX(-180deg)';
+  chime(); buzz();
+  setTimeout(function(){
+    var env = document.getElementById('mm-envelope');
+    var cartaWrap = document.getElementById('mm-carta-wrap');
+    var corpo = document.getElementById('mm-corpo');
+    if(env) env.style.display = 'none';
+    if(cartaWrap) cartaWrap.style.display = 'block';
+    if(corpo){
+      corpo.style.display = 'block';
+      corpo.style.opacity = '0';
+      corpo.style.transform = 'translateY(20px)';
+      corpo.style.transition = 'opacity .8s ease, transform .8s cubic-bezier(.34,1.06,.42,1)';
+      requestAnimationFrame(function(){
+        corpo.style.opacity = '1';
+        corpo.style.transform = 'translateY(0)';
+      });
+    }
+    // Marca como aberta neste mês
+    try{
+      var hoje = new Date();
+      var mesChave = hoje.getFullYear() + '-' + String(hoje.getMonth()+1).padStart(2,'0');
+      localStorage.setItem('saa_carta_aberta_em', mesChave);
+    }catch(_){}
+    try{ if(window.plausible) window.plausible('carta_mensal_aberta'); }catch(_){}
+  }, 900);
+}
+
+// Compartilhar carta como story (Web Share API quando disponível)
+async function compartilharCarta(){
+  var anjo = (window._anjo || 'meu anjo');
+  var hoje = new Date();
+  var meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  var texto = 'Minha carta de ' + meses[hoje.getMonth()] + ' de ' + anjo + ' chegou no Sob as Asas. 🤍';
+  var url = location.origin + '/?ref=carta-' + (window._userId || '').slice(0,8);
+  if(navigator.share){
+    try{
+      await navigator.share({ title: 'Sob as Asas — Carta do mês', text: texto, url: url });
+      try{ if(window.plausible) window.plausible('carta_mensal_compartilhada'); }catch(_){}
+    }catch(_){ /* user cancelou — ok */ }
+  } else {
+    try{ await navigator.clipboard.writeText(texto + ' ' + url); toast('Texto copiado pro compartilhamento 📋'); }catch(_){ toast('Compartilhamento não disponível neste navegador'); }
+  }
 }
 
 // ── Mood check-in diário ──
