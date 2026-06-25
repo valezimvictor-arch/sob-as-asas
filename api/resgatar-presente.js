@@ -94,18 +94,28 @@ export default async function handler(req, res) {
     //    que já usa; o presente apenas adiciona a cortesia anual.
     if (!userId) {
       const alvo = email.toLowerCase();
+      // 1) Caminho rápido: procura direto em public.users por email (O(1) com
+      //    índice, case-insensitive). A maioria das contas tem linha aqui.
       try {
-        // Pagina até achar — listUsers traz no máx. 200 por página, então
-        // olhar só a página 1 perdia contas além das 200 primeiras.
-        for (let page = 1; page <= 25 && !userId; page++) {
-          const { data: listed, error: errList } = await supabase.auth.admin.listUsers({ page, perPage: 200 });
-          if (errList) break;
-          const users = (listed && listed.users) || [];
-          const found = users.find(u => (u.email || '').toLowerCase() === alvo);
-          if (found) { userId = found.id; jaExistia = true; }
-          if (users.length < 200) break; // última página
-        }
-      } catch (e) { console.warn('[resgatar] listUsers:', e?.message); }
+        const padrao = alvo.replace(/[%_\\]/g, '\\$&'); // neutraliza wildcards do ilike
+        const { data: urow } = await supabase
+          .from('users').select('id').ilike('email', padrao).limit(1).maybeSingle();
+        if (urow?.id) { userId = urow.id; jaExistia = true; }
+      } catch (_) {}
+      // 2) Fallback: conta existe no Auth mas sem linha em public.users —
+      //    pagina o Auth (até 25 páginas de 200).
+      if (!userId) {
+        try {
+          for (let page = 1; page <= 25 && !userId; page++) {
+            const { data: listed, error: errList } = await supabase.auth.admin.listUsers({ page, perPage: 200 });
+            if (errList) break;
+            const users = (listed && listed.users) || [];
+            const found = users.find(u => (u.email || '').toLowerCase() === alvo);
+            if (found) { userId = found.id; jaExistia = true; }
+            if (users.length < 200) break; // última página
+          }
+        } catch (e) { console.warn('[resgatar] listUsers:', e?.message); }
+      }
     }
 
     // Sem ID resolvido → NÃO consome o presente; deixa retentável.

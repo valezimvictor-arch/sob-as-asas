@@ -48,14 +48,29 @@ create table if not exists public.velas_pedidos (
 create index if not exists idx_velas_pedido on public.velas_pedidos(pedido_id);
 create index if not exists idx_velas_acendedor on public.velas_pedidos(acendedor_id, data_local desc);
 
--- Trigger que mantém velas_recebidas em sincronia
+-- Trigger que mantém velas_recebidas em sincronia.
+-- velas_recebidas = nº de PESSOAS distintas que oraram pelo pedido (não a
+-- soma de acendimentos). Como a UNIQUE é por (pedido, acendedor, DIA), a
+-- mesma pessoa renovando em dias diferentes geraria várias linhas; por isso
+-- só conta quando é a 1ª linha daquele acendedor naquele pedido, e só
+-- decrementa quando some a última linha dele.
 create or replace function bump_velas_recebidas()
 returns trigger as $$
 begin
   if TG_OP = 'INSERT' then
-    update public.pedidos set velas_recebidas = velas_recebidas + 1 where id = NEW.pedido_id;
+    if not exists (
+      select 1 from public.velas_pedidos
+      where pedido_id = NEW.pedido_id and acendedor_id = NEW.acendedor_id and id <> NEW.id
+    ) then
+      update public.pedidos set velas_recebidas = velas_recebidas + 1 where id = NEW.pedido_id;
+    end if;
   elsif TG_OP = 'DELETE' then
-    update public.pedidos set velas_recebidas = greatest(0, velas_recebidas - 1) where id = OLD.pedido_id;
+    if not exists (
+      select 1 from public.velas_pedidos
+      where pedido_id = OLD.pedido_id and acendedor_id = OLD.acendedor_id and id <> OLD.id
+    ) then
+      update public.pedidos set velas_recebidas = greatest(0, velas_recebidas - 1) where id = OLD.pedido_id;
+    end if;
   end if;
   return null;
 end;

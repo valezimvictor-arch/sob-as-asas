@@ -3720,7 +3720,11 @@ function exibirSeloOracao(cedo){
 // diz "voltei a guardar você desde aqui" (reset gracioso, não punitivo).
 function registrarPresenca(){
   try{
-    var hoje=new Date().toISOString().slice(0,10);
+    // Data-calendário no fuso LOCAL do dispositivo (não UTC). Com toISOString
+    // (UTC), à noite no Brasil (UTC-3) o "dia" virava cedo (21h já era o dia
+    // seguinte), então a prática da noite contava pro dia errado.
+    var _agora = new Date();
+    var hoje = _agora.getFullYear() + '-' + String(_agora.getMonth()+1).padStart(2,'0') + '-' + String(_agora.getDate()).padStart(2,'0');
     var last=localStorage.getItem('saa_streak_last');
     var n=parseInt(localStorage.getItem('saa_streak_n')||'0',10);
     if(last===hoje) return n;
@@ -4842,43 +4846,56 @@ function openMensagemMensal(){
   document.getElementById('mm-paywall').style.display = 'none';
   document.getElementById('mm-vazio').style.display = 'none';
 
-  // Envelope na 1ª abertura do mês — depois mostra a carta direto
   var jaAbriu = false;
   try{ jaAbriu = localStorage.getItem('saa_carta_aberta_em') === mesChave; }catch(_){}
   var env = document.getElementById('mm-envelope');
   var cartaWrap = document.getElementById('mm-carta-wrap');
-  if(_mmCache && !jaAbriu){
+
+  if(!_mmCache){
+    if(env) env.style.display = 'none';
+    if(cartaWrap) cartaWrap.style.display = 'block';
+    document.getElementById('mm-vazio').style.display = 'block';
+    document.getElementById('mm-titulo').textContent = 'Em breve';
+    show('s-mensagem-mensal');
+    return;
+  }
+
+  document.getElementById('mm-titulo').textContent = _mmCache.titulo || 'A mensagem do seu anjo';
+
+  // Estado LACRADO (1ª abertura do mês): mostra só o envelope. O corpo NÃO
+  // pode ser revelado aqui — quem revela é abrirEnvelopeCarta(). Antes o
+  // bloco premium setava mm-corpo:block e a carta vazava sob o envelope.
+  if(!jaAbriu){
     if(env) env.style.display = 'block';
     if(cartaWrap) cartaWrap.style.display = 'none';
-    document.getElementById('mm-corpo').style.display = 'none';
     var aba = document.getElementById('mm-envelope-aba');
     if(aba) aba.style.transform = ''; // reset animação
   } else {
     if(env) env.style.display = 'none';
     if(cartaWrap) cartaWrap.style.display = 'block';
-  }
-  if(!_mmCache){
-    document.getElementById('mm-vazio').style.display = 'block';
-    document.getElementById('mm-titulo').textContent = 'Em breve';
-  } else {
-    document.getElementById('mm-titulo').textContent = _mmCache.titulo || 'A mensagem do seu anjo';
-    var ehPremium = window._plano && window._plano !== 'free';
-    if(ehPremium){
-      document.getElementById('mm-corpo').style.display = 'block';
-      document.getElementById('mm-texto').textContent = _mmCache.texto;
-      if(_mmCache.audio_url){
-        document.getElementById('mm-audio').style.display = 'block';
-      }
-    } else {
-      // Teaser: 2 primeiros parágrafos + paywall
-      var trecho = (_mmCache.texto || '').split(/\n\n+/).slice(0,2).join('\n\n');
-      if(trecho.length > 350) trecho = trecho.slice(0, 350) + '…';
-      document.getElementById('mm-corpo').style.display = 'block';
-      document.getElementById('mm-texto').textContent = trecho + '\n\n[…]';
-      document.getElementById('mm-paywall').style.display = 'block';
-    }
+    _renderCorpoCarta();
   }
   show('s-mensagem-mensal');
+}
+
+// Renderiza corpo/áudio/paywall da carta conforme o plano. Chamado quando a
+// carta deve aparecer (já aberta no mês) ou ao abrir o envelope.
+function _renderCorpoCarta(){
+  if(!_mmCache) return;
+  var ehPremium = window._plano && window._plano !== 'free';
+  if(ehPremium){
+    document.getElementById('mm-corpo').style.display = 'block';
+    document.getElementById('mm-texto').textContent = _mmCache.texto;
+    document.getElementById('mm-audio').style.display = _mmCache.audio_url ? 'block' : 'none';
+    document.getElementById('mm-paywall').style.display = 'none';
+  } else {
+    // Teaser: 2 primeiros parágrafos + paywall
+    var trecho = (_mmCache.texto || '').split(/\n\n+/).slice(0,2).join('\n\n');
+    if(trecho.length > 350) trecho = trecho.slice(0, 350) + '…';
+    document.getElementById('mm-corpo').style.display = 'block';
+    document.getElementById('mm-texto').textContent = trecho + '\n\n[…]';
+    document.getElementById('mm-paywall').style.display = 'block';
+  }
 }
 
 function mmTocarAudio(){
@@ -4895,11 +4912,11 @@ function abrirEnvelopeCarta(){
   setTimeout(function(){
     var env = document.getElementById('mm-envelope');
     var cartaWrap = document.getElementById('mm-carta-wrap');
-    var corpo = document.getElementById('mm-corpo');
     if(env) env.style.display = 'none';
     if(cartaWrap) cartaWrap.style.display = 'block';
-    if(corpo){
-      corpo.style.display = 'block';
+    _renderCorpoCarta();
+    var corpo = document.getElementById('mm-corpo');
+    if(corpo && corpo.style.display !== 'none'){
       corpo.style.opacity = '0';
       corpo.style.transform = 'translateY(20px)';
       corpo.style.transition = 'opacity .8s ease, transform .8s cubic-bezier(.34,1.06,.42,1)';
