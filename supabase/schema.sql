@@ -135,6 +135,19 @@ alter table public.conteudos          enable row level security;
 -- Policies idempotentes (drop antes de create → pode re-rodar o schema sem erro).
 drop policy if exists "self_users"     on public.users;
 create policy "self_users"     on public.users        for all using (auth.uid() = id);
+-- RLS é row-level (não filtra coluna): self_users sozinho deixaria o cliente
+-- escrever QUALQUER coluna da própria linha, inclusive plano/oferta_* (= dar-se
+-- premium grátis). Restringe a escrita às colunas de perfil; billing só via
+-- service-role. (espelhado em MIGRACAO_HARDENING_2.sql para bancos existentes)
+revoke insert, update on public.users from authenticated, anon;
+grant insert (id, email, nome, nome_completo, whatsapp, nascimento, hora_nasc,
+              anjo_n, anjo_nome, ritual_horario, aceita_newsletter,
+              consent_lgpd_em, ultimo_acesso_em)
+  on public.users to authenticated;
+grant update (email, nome, nome_completo, whatsapp, nascimento, hora_nasc,
+              anjo_n, anjo_nome, ritual_horario, aceita_newsletter,
+              consent_lgpd_em, ultimo_acesso_em)
+  on public.users to authenticated;
 drop policy if exists "self_pedidos"   on public.pedidos;
 create policy "self_pedidos"   on public.pedidos      for all using (auth.uid() = user_id);
 drop policy if exists "self_push"      on public.push_subscriptions;

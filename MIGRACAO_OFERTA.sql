@@ -1,5 +1,9 @@
 -- Migração: Oferta dos Mantenedores — R$ 9,90/mês de contribuição voluntária
 --
+-- ⚠ ANTI-DRIFT (#12): a policy "mantenedores self" também é (re)definida em
+-- MIGRACAO_HARDENING.sql (o que roda em bancos já provisionados). Se editar
+-- uma, edite a outra.
+--
 -- Reframe ético (substitui MIGRACAO_VELA_PERMANENTE.sql):
 -- Antes: "Vela Permanente" destacava o pedido do pagante no Círculo, criando
 --        comunidade de dois andares (pagantes brilhavam mais).

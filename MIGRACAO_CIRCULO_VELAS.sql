@@ -1,5 +1,13 @@
 -- Migração: Círculo — usuários podem acender velas pelos pedidos dos outros.
 --
+-- ⚠ ANTI-DRIFT (#12): alguns objetos aqui também são (re)definidos nas
+-- migrações de hardening, que são o que roda em bancos JÁ provisionados.
+-- Se editar um destes, edite o espelho correspondente:
+--   • função circulo_feed() ............ MIGRACAO_HARDENING.sql
+--   • policy "vela inserir autenticado"  MIGRACAO_HARDENING.sql
+--   • policy "vela ler autenticado" ..... MIGRACAO_HARDENING_2.sql
+--   • trigger bump_velas_recebidas() .... MIGRACAO_VELAS_DISTINTAS.sql
+--
 -- Por quê: o pedido individual já existia. Agora cada um pode "amplificar" o
 -- pedido alheio acendendo uma vela. O autor vê quantas pessoas oraram pelo
 -- pedido dele — isso cria o vínculo de comunidade que mantém o usuário no
@@ -98,9 +106,12 @@ create policy "vela inserir autenticado" on public.velas_pedidos
     )
   );
 
+-- Cada usuário só lê as PRÓPRIAS velas (o que ele acendeu). A contagem
+-- pública vem de pedidos.velas_recebidas via circulo_feed(), não desta tabela.
+-- (também aplicado em bancos existentes por MIGRACAO_HARDENING_2.sql)
 drop policy if exists "vela ler autenticado" on public.velas_pedidos;
 create policy "vela ler autenticado" on public.velas_pedidos
-  for select using (auth.role() = 'authenticated');
+  for select using (acendedor_id = auth.uid());
 
 drop policy if exists "vela apagar autor" on public.velas_pedidos;
 create policy "vela apagar autor" on public.velas_pedidos
