@@ -127,30 +127,77 @@ export default async function handler(req, res) {
         // Done com o caso presente — não cair no fluxo de assinatura
         // (segue pra marcação de processado no fim)
       } else {
-        // ── ASSINATURA (recorrente) — fluxo original ──
-        const userId = s.client_reference_id || meta.userId;
-        const plano = meta.plano || 'mensal';
-        if (userId) {
-          await supabase.from('assinaturas').upsert({
-            user_id: userId, stripe_customer_id: s.customer, stripe_subscription_id: s.subscription,
-            plano, status: 'trialing', atualizado_em: new Date().toISOString(),
-          }, { onConflict: 'user_id' });
-          await supabase.from('users').update({ plano: 'trial' }).eq('id', userId);
+        // Subscription metadata (pega antes pra detectar o tipo)
+        let subMeta = meta;
+        if (s.subscription) {
+          try {
+            const sub = await stripe.subscriptions.retrieve(s.subscription);
+            if (sub && sub.metadata) subMeta = { ...meta, ...sub.metadata };
+          } catch (_) {}
+        }
+
+        // ── VELA PERMANENTE — subscription dedicada a 1 pedido ──
+        if (subMeta.tipo === 'vela_permanente') {
+          const userId = subMeta.userId;
+          const pedidoId = subMeta.pedidoId;
+          if (userId && pedidoId) {
+            await supabase.from('velas_permanentes').upsert({
+              user_id: userId,
+              pedido_id: pedidoId,
+              stripe_subscription_id: s.subscription,
+              status: 'ativa',
+            }, { onConflict: 'pedido_id,user_id' });
+            await supabase.from('pedidos').update({
+              vela_permanente_ativa: true,
+              vela_permanente_desde: new Date().toISOString(),
+              vela_permanente_stripe_sub_id: s.subscription,
+              publico: true, // vela permanente automaticamente vira pública (faz sentido)
+            }).eq('id', pedidoId);
+          }
+          // Não cai no fluxo de assinatura — vela permanente é separada
+        } else {
+          // ── ASSINATURA (recorrente) — fluxo original ──
+          const userId = s.client_reference_id || meta.userId;
+          const plano = meta.plano || 'mensal';
+          if (userId) {
+            await supabase.from('assinaturas').upsert({
+              user_id: userId, stripe_customer_id: s.customer, stripe_subscription_id: s.subscription,
+              plano, status: 'trialing', atualizado_em: new Date().toISOString(),
+            }, { onConflict: 'user_id' });
+            await supabase.from('users').update({ plano: 'trial' }).eq('id', userId);
+          }
         }
       }
     } else if (event.type === 'customer.subscription.updated' || event.type === 'customer.subscription.deleted') {
       const sub = event.data.object;
-      const userId = sub.metadata && sub.metadata.userId;
-      const plano = (sub.metadata && sub.metadata.plano) || null;
-      const status = sub.status; // active | trialing | past_due | canceled | ...
-      if (userId) {
-        await supabase.from('assinaturas').upsert({
-          user_id: userId, stripe_subscription_id: sub.id, status, plano,
-          periodo_fim: sub.current_period_end ? new Date(sub.current_period_end * 1000).toISOString() : null,
-          atualizado_em: new Date().toISOString(),
-        }, { onConflict: 'user_id' });
-        const planoUser = status === 'active' ? (plano || 'mensal') : (status === 'trialing' ? 'trial' : 'free');
-        await supabase.from('users').update({ plano: planoUser }).eq('id', userId);
+      const meta = sub.metadata || {};
+      const userId = meta.userId;
+      const status = sub.status;
+
+      // ── Vela permanente: trata status separadamente ──
+      if (meta.tipo === 'vela_permanente' && meta.pedidoId) {
+        const novoStatusVela = (status === 'active' || status === 'trialing') ? 'ativa'
+                              : (status === 'past_due' || status === 'unpaid') ? 'pausada'
+                              : 'cancelada';
+        await supabase.from('velas_permanentes').upsert({
+          user_id: userId, pedido_id: meta.pedidoId, stripe_subscription_id: sub.id,
+          status: novoStatusVela,
+          cancelada_em: novoStatusVela === 'cancelada' ? new Date().toISOString() : null,
+        }, { onConflict: 'pedido_id,user_id' });
+        const velaAtiva = novoStatusVela === 'ativa';
+        await supabase.from('pedidos').update({ vela_permanente_ativa: velaAtiva }).eq('id', meta.pedidoId);
+      } else {
+        // Assinatura normal — fluxo original
+        const plano = meta.plano || null;
+        if (userId) {
+          await supabase.from('assinaturas').upsert({
+            user_id: userId, stripe_subscription_id: sub.id, status, plano,
+            periodo_fim: sub.current_period_end ? new Date(sub.current_period_end * 1000).toISOString() : null,
+            atualizado_em: new Date().toISOString(),
+          }, { onConflict: 'user_id' });
+          const planoUser = status === 'active' ? (plano || 'mensal') : (status === 'trialing' ? 'trial' : 'free');
+          await supabase.from('users').update({ plano: planoUser }).eq('id', userId);
+        }
       }
     }
   } catch (e) {

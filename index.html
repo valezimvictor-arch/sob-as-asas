@@ -1037,6 +1037,142 @@
 </section>
 
 <!-- ░░ COMPATIBILIDADE ANGELICAL ░░ -->
+<!-- ░░ MAPA CABALÍSTICO — tríade angelical premium ░░ -->
+<section id="s-mapa" class="screen" style="background:linear-gradient(180deg, #0F0C08 0%, #1A140A 100%); color:#FAF3E4">
+  <div style="flex:1; overflow-y:auto" class="pad">
+    <button onclick="show('s-home')" style="background:none;border:none;color:#D89A2C;font-size:14px;align-self:flex-start;margin-bottom:12px; font-family:inherit; cursor:pointer">← voltar</button>
+
+    <!-- Loading -->
+    <div id="mapa-loading" style="text-align:center; padding:60px 0">
+      <div style="font-size:42px; opacity:.8; animation:respira-sigilo 4s ease-in-out infinite">✦</div>
+      <p style="margin:18px 0 0; font-family:'Cormorant Garamond',serif; font-style:italic; color:#D89A2C; font-size:16px">Lendo a tríade dos seus anjos…</p>
+    </div>
+
+    <!-- Resultado -->
+    <div id="mapa-resultado" style="display:none">
+      <div style="text-align:center; margin-top:6px">
+        <p style="margin:0; font-size:11px; letter-spacing:.22em; color:#D89A2C; text-transform:uppercase; font-weight:600">Mapa Cabalístico</p>
+        <h2 class="serif" style="font-size:30px; margin:14px 0 6px; font-weight:400; color:#FAF3E4; line-height:1.2">Sua tríade angelical</h2>
+        <p id="mapa-tipo" class="serif-soft" style="font-style:italic; font-size:16px; color:#D89A2C; margin:0">—</p>
+      </div>
+
+      <!-- 3 cards da tríade -->
+      <div style="margin-top:28px; display:flex; flex-direction:column; gap:14px">
+        <div class="card" style="padding:18px 20px; background:linear-gradient(180deg, rgba(246,200,104,.10), rgba(186,117,23,.04)); border:1px solid rgba(186,117,23,.32)">
+          <p style="margin:0; font-size:10.5px; letter-spacing:.18em; color:#D89A2C; text-transform:uppercase; font-weight:600">Anjo de nascimento · quem você é</p>
+          <p id="mapa-a1-nome" class="serif" style="font-size:26px; margin:8px 0 2px; font-weight:500; color:#FAF3E4">—</p>
+          <p id="mapa-a1-dom" class="serif-soft" style="font-style:italic; font-size:15px; color:#D89A2C; margin:0">—</p>
+          <p id="mapa-a1-coro" style="margin:6px 0 0; font-size:11px; color:#A88E5B; letter-spacing:.04em">—</p>
+        </div>
+
+        <div class="card" style="padding:18px 20px; background:linear-gradient(180deg, rgba(120,160,210,.08), rgba(55,138,221,.04)); border:1px solid rgba(120,160,210,.28)">
+          <p style="margin:0; font-size:10.5px; letter-spacing:.18em; color:#7AAEDD; text-transform:uppercase; font-weight:600">Anjo da humanidade · quem o mundo era quando você chegou</p>
+          <p id="mapa-a2-nome" class="serif" style="font-size:26px; margin:8px 0 2px; font-weight:500; color:#FAF3E4">—</p>
+          <p id="mapa-a2-dom" class="serif-soft" style="font-style:italic; font-size:15px; color:#7AAEDD; margin:0">—</p>
+          <p id="mapa-a2-coro" style="margin:6px 0 0; font-size:11px; color:#7AAEDD; letter-spacing:.04em; opacity:.75">—</p>
+        </div>
+
+        <div class="card" style="padding:18px 20px; background:linear-gradient(180deg, rgba(246,225,176,.10), rgba(246,200,104,.04)); border:1px solid rgba(246,225,176,.28)">
+          <p style="margin:0; font-size:10.5px; letter-spacing:.18em; color:#F6E1B0; text-transform:uppercase; font-weight:600">Anjo do momento · quem te abriga agora</p>
+          <p id="mapa-a3-nome" class="serif" style="font-size:26px; margin:8px 0 2px; font-weight:500; color:#FAF3E4">—</p>
+          <p id="mapa-a3-dom" class="serif-soft" style="font-style:italic; font-size:15px; color:#F6E1B0; margin:0">—</p>
+          <p id="mapa-a3-intervalo" style="margin:6px 0 0; font-size:11px; color:#F6E1B0; letter-spacing:.04em; opacity:.75">—</p>
+        </div>
+      </div>
+
+      <!-- Leitura -->
+      <div class="card" style="margin-top:22px; padding:20px 22px; background:rgba(15,12,8,.55); border:1px solid rgba(186,117,23,.22)">
+        <p style="margin:0 0 10px; font-size:10.5px; letter-spacing:.18em; color:#D89A2C; text-transform:uppercase; font-weight:600">A leitura da tríade</p>
+        <p id="mapa-leitura" class="serif-soft" style="margin:0; font-size:16px; color:#FAF3E4; line-height:1.7; font-style:italic">—</p>
+      </div>
+
+      <!-- Ritual -->
+      <div class="card" style="margin-top:14px; padding:20px 22px; background:rgba(15,12,8,.55); border:1px solid rgba(186,117,23,.22)">
+        <p style="margin:0 0 10px; font-size:10.5px; letter-spacing:.18em; color:#D89A2C; text-transform:uppercase; font-weight:600">Seu ritual da tríade</p>
+        <ol id="mapa-ritual" style="margin:0; padding-left:22px; color:#FAF3E4; font-size:15px; line-height:1.7"></ol>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:22px">
+        <button class="btn-secundario" style="flex:1; background:transparent; border:1px solid rgba(216,154,44,.45); color:#D89A2C" onclick="compartilharMapa()">Compartilhar 🤍</button>
+        <button class="btn-ouro" style="flex:1" onclick="show('s-home')">Voltar ao santuário</button>
+      </div>
+      <p style="margin:22px 0 0; padding:12px 16px; text-align:center; font-size:11.5px; color:#A88E5B; line-height:1.55; font-style:italic; font-family:'Cormorant Garamond',serif">"Cada alma é uma tríade de anjos. Conhecer os três é começar a se conhecer." — Monica</p>
+    </div>
+
+    <!-- Erro -->
+    <div id="mapa-erro" style="display:none; text-align:center; padding:40px 20px; color:#D89A2C">
+      <p style="margin:0; font-size:15px">—</p>
+      <button class="btn-secundario" style="margin-top:18px; max-width:240px; background:transparent; border:1px solid rgba(216,154,44,.45); color:#D89A2C" onclick="show('s-home')">Voltar ao santuário</button>
+    </div>
+  </div>
+</section>
+
+<!-- ░░ QUIZ RECONCILIAÇÃO — viral (inverso da compatibilidade) ░░ -->
+<section id="s-reconcilia" class="screen">
+  <div style="flex:1; overflow-y:auto" class="pad">
+    <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
+
+    <!-- Form -->
+    <div id="reconcilia-intro">
+      <p style="margin:0; font-size:11px; letter-spacing:.18em; color:var(--ouro); text-transform:uppercase; font-weight:600">Reconciliação angelical</p>
+      <h2 class="serif" style="font-size:26px; margin:6px 0 10px; font-weight:400">Que anjo pode reconciliar você com alguém?</h2>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:0 0 22px; line-height:1.6">Toda relação difícil tem um anjo que vê os dois lados. Pode ser sua sogra, seu chefe, sua irmã, um ex. Diga o vínculo e a data de nascimento dela — o céu aponta o ponto de encontro.</p>
+
+      <div class="card" style="padding:18px; background:var(--ouro-bg); border-color:transparent">
+        <p style="margin:0 0 4px; font-size:11px; letter-spacing:.16em; color:var(--ouro); text-transform:uppercase; font-weight:600">Seu anjo</p>
+        <p id="reconcilia-meu" class="serif" style="font-size:22px; margin:4px 0 0; color:var(--tinta); font-weight:500">—</p>
+      </div>
+
+      <p class="label" style="display:block; margin:22px 0 8px">Tipo de vínculo</p>
+      <select id="reconcilia-vinculo" class="campo">
+        <option value="familia">Família (mãe, pai, filho, irmão, sogra…)</option>
+        <option value="amor">Amor (parceira, ex, paixão)</option>
+        <option value="amizade">Amizade</option>
+        <option value="trabalho">Trabalho (chefe, colega, cliente)</option>
+        <option value="outro">Outro</option>
+      </select>
+
+      <p class="label" style="display:block; margin:18px 0 8px">Nome (só pra você lembrar)</p>
+      <input id="reconcilia-nome" class="campo" placeholder="Com quem você quer reconciliar?" />
+
+      <p class="label" style="display:block; margin:18px 0 8px">Data de nascimento dela</p>
+      <div style="display:flex; gap:10px">
+        <input id="reconcilia-dia" class="campo" inputmode="numeric" maxlength="2" placeholder="Dia" style="text-align:center; flex:1; min-width:0" />
+        <input id="reconcilia-mes" class="campo" inputmode="numeric" maxlength="2" placeholder="Mês" style="text-align:center; flex:1; min-width:0" />
+        <input id="reconcilia-ano" class="campo" inputmode="numeric" maxlength="4" placeholder="Ano" style="text-align:center; flex:1.4; min-width:0" />
+      </div>
+      <p id="reconcilia-erro" style="color:#C0392B; font-size:13px; min-height:16px; margin:8px 0 0"></p>
+      <button class="btn-ouro" style="margin-top:14px" onclick="calcularReconciliacao()">Descobrir o anjo da reconciliação</button>
+    </div>
+
+    <!-- Resultado -->
+    <div id="reconcilia-resultado" style="display:none">
+      <div style="text-align:center; margin-top:8px">
+        <p class="serif-soft" style="font-size:15px; color:var(--ouro); margin:0">O anjo que reconcilia vocês é</p>
+        <h2 id="reconcilia-anjo-nome" class="serif" style="font-size:42px; margin:14px 0 4px; font-weight:400; color:var(--tinta); line-height:1.1">—</h2>
+        <p id="reconcilia-anjo-dom" class="serif-soft" style="font-style:italic; font-size:18px; color:var(--ouro); margin:0 0 8px">—</p>
+        <p id="reconcilia-anjo-num" style="font-size:12px; color:var(--tinta-suave); letter-spacing:.06em">—</p>
+      </div>
+
+      <div class="card" style="padding:18px 20px; margin-top:22px; background:var(--branco-puro)">
+        <p style="margin:0 0 8px; font-size:11px; letter-spacing:.14em; color:var(--ouro); text-transform:uppercase; font-weight:600">A leitura</p>
+        <p id="reconcilia-leitura" style="margin:0; font-size:15px; color:var(--tinta); line-height:1.65"></p>
+      </div>
+
+      <div class="card" style="padding:18px 20px; margin-top:12px; background:var(--celeste-bg); border-color:transparent">
+        <p style="margin:0 0 10px; font-size:11px; letter-spacing:.14em; color:#1E5A99; text-transform:uppercase; font-weight:600">Ritual de 3 passos</p>
+        <ol id="reconcilia-ritual" style="margin:0; padding-left:20px; color:#1B3A5F; font-size:14.5px; line-height:1.65"></ol>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:18px">
+        <button class="btn-secundario" style="flex:1" onclick="resetReconciliacao()">Outra pessoa</button>
+        <button class="btn-ouro" style="flex:2" onclick="compartilharReconciliacao()">Compartilhar 🤍</button>
+      </div>
+      <p style="margin:22px 0 0; padding:10px 16px; background:rgba(186,117,23,.06); border-radius:10px; font-size:11.5px; color:var(--tinta-suave); text-align:center; line-height:1.55; font-style:italic; font-family:'Cormorant Garamond',serif">"A reconciliação começa antes da conversa. Ela mora no gesto de chamar o anjo certo." — Monica</p>
+    </div>
+  </div>
+</section>
+
 <section id="s-compat" class="screen">
   <div style="flex:1; overflow-y:auto" class="pad">
     <button onclick="show('s-home')" class="serif" style="background:none;border:none;color:var(--tinta-suave);font-size:14px;align-self:flex-start;margin-bottom:6px">← voltar</button>
@@ -1667,6 +1803,17 @@
         <span style="color:var(--ouro); font-size:20px">›</span>
       </div>
 
+      <!-- 1e2. MAPA CABALÍSTICO PREMIUM -->
+      <div class="card" style="margin-top:10px; padding:16px; display:flex; align-items:center; gap:14px; cursor:pointer; background:linear-gradient(90deg, rgba(15,12,8,.95), rgba(124,78,15,.82)); color:#FAF3E4; border-color:rgba(186,117,23,.32)" onclick="abrirMapa()">
+        <div style="width:46px;height:46px;border-radius:12px;background:radial-gradient(circle, rgba(246,200,104,.55), rgba(186,117,23,.18));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0; box-shadow:0 0 18px rgba(246,200,104,.35)">✦</div>
+        <div style="flex:1; min-width:0">
+          <p style="margin:0; font-size:10.5px; letter-spacing:.16em; color:#D89A2C; text-transform:uppercase; font-weight:600">Premium</p>
+          <p style="margin:2px 0 0; font-weight:600; color:#FAF3E4">Mapa Cabalístico</p>
+          <p style="margin:2px 0 0; font-size:12px; color:#D89A2C; line-height:1.4">Sua tríade de anjos · nascimento, humanidade, momento</p>
+        </div>
+        <span style="color:#D89A2C; font-size:20px">›</span>
+      </div>
+
       <!-- 1f. CAMINHOS DA MONICA -->
       <div id="home-caminho-em-curso" class="card" style="display:none; margin-top:10px; padding:16px; align-items:center; gap:14px; cursor:pointer; background:linear-gradient(90deg, rgba(15,12,8,.94), rgba(124,78,15,.86)); color:#FAF3E4; border-color:rgba(186,117,23,.32)">
         <div id="home-caminho-emoji" style="width:46px;height:46px;border-radius:12px;background:radial-gradient(circle, rgba(246,200,104,.45), rgba(186,117,23,.2));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🪽</div>
@@ -1693,6 +1840,16 @@
         <div style="flex:1">
           <p style="margin:0; font-weight:600">Compatibilidade angelical</p>
           <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">Veja como o seu anjo se relaciona com o de alguém querido</p>
+        </div>
+        <span style="color:var(--tinta-suave)">›</span>
+      </div>
+
+      <!-- 7a-b. RECONCILIAÇÃO ANGELICAL (viral) -->
+      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="openReconciliacao()">
+        <div style="width:42px;height:42px;border-radius:12px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🤍</div>
+        <div style="flex:1">
+          <p style="margin:0; font-weight:600">Reconciliação angelical</p>
+          <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">Que anjo reconcilia você com alguém difícil? Sogra, ex, chefe, irmã…</p>
         </div>
         <span style="color:var(--tinta-suave)">›</span>
       </div>
@@ -3844,28 +4001,65 @@ function renderPedidos(){
     const ok=p.s==='realizado';
     const pub = !!p.publico;
     const velas = p.velas || 0;
+    const velaPerm = !!p.velaPermanente;
     var meta = ok ? 'Realizado — graças dadas' : 'Em oração';
     var velasInfo = '';
     if(pub && velas > 0){
-      velasInfo = ' · <span style="color:var(--ouro); font-weight:500">🕯️ ' + velas + (velas === 1 ? ' vela acesa por você' : ' velas acesas por você') + '</span>';
+      velasInfo = ' · <span style="color:var(--ouro); font-weight:500">🕯️ ' + velas + (velas === 1 ? ' vela' : ' velas') + '</span>';
     } else if(pub){
       velasInfo = ' · <span style="color:var(--ouro); font-weight:500; opacity:.7">no Círculo</span>';
     }
-    el.insertAdjacentHTML('beforeend',`<div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px">
-      <span style="font-size:18px">${ok?'🌟':'🕯️'}</span>
-      <div style="flex:1"><p style="margin:0; font-size:15px">${esc(p.t)}</p>
-      <p style="margin:0; font-size:12px; color:${ok?'var(--ouro)':'var(--tinta-suave)'}">${meta}${velasInfo}</p></div></div>`);
+    var ico = velaPerm ? '🔥' : (ok ? '🌟' : '🕯️');
+    var bg = velaPerm ? 'linear-gradient(90deg, rgba(246,200,104,.18), rgba(186,117,23,.10))' : '';
+    var borda = velaPerm ? '1px solid rgba(186,117,23,.32)' : '';
+    var bgStyle = velaPerm ? `background:${bg}; border:${borda};` : '';
+    var permBadge = velaPerm ? '<span style="display:inline-block; margin-left:6px; font-size:10px; background:var(--ouro); color:#fff; padding:2px 7px; border-radius:99px; vertical-align:middle; font-weight:600; letter-spacing:.04em">PERMANENTE</span>' : '';
+    var permBtn = (!ok && pub && !velaPerm && p.id) ? `<button onclick="event.stopPropagation(); abrirVelaPermanente('${p.id}')" style="margin-top:8px; background:transparent; border:1px dashed var(--ouro); color:var(--ouro); border-radius:99px; padding:6px 12px; font-size:11.5px; font-weight:600; cursor:pointer; font-family:inherit">🔥 Acender vela permanente · R$ 9,90/mês</button>` : '';
+    el.insertAdjacentHTML('beforeend',`<div class="card" style="padding:14px 16px; ${bgStyle}">
+      <div style="display:flex; align-items:flex-start; gap:12px">
+        <span style="font-size:20px; line-height:1">${ico}</span>
+        <div style="flex:1; min-width:0">
+          <p style="margin:0; font-size:15px">${esc(p.t)}${permBadge}</p>
+          <p style="margin:0; font-size:12px; color:${ok?'var(--ouro)':'var(--tinta-suave)'}">${meta}${velasInfo}</p>
+          ${permBtn}
+        </div>
+      </div></div>`);
   });
+}
+
+// Vela Permanente — modal/confirm + checkout
+function abrirVelaPermanente(pedidoId){
+  if(!confirm('Acender uma vela permanente neste pedido?\n\nR$ 9,90/mês, cancele a qualquer momento.\nEla fica acesa todos os dias automaticamente, visível no Círculo com um halo dourado.\n\nVamos pro checkout do Stripe?')) return;
+  _iniciarCheckoutVelaPermanente(pedidoId);
+}
+async function _iniciarCheckoutVelaPermanente(pedidoId){
+  if(!window.saaAuth || !window._userId){ alert('Faça login primeiro'); return; }
+  try{
+    var sessao = await window.saaAuth.client.auth.getSession();
+    var token = sessao && sessao.data && sessao.data.session ? sessao.data.session.access_token : '';
+    var r = await fetch('/api/checkout-vela-permanente', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+token },
+      body: JSON.stringify({ pedidoId: pedidoId })
+    });
+    var j = await r.json();
+    if(j.ok && j.url){
+      try{ if(window.plausible) window.plausible('vela_permanente_checkout_iniciado'); }catch(_){}
+      window.location.href = j.url;
+    } else {
+      alert('Não consegui abrir o checkout: ' + (j.error || 'erro desconhecido'));
+    }
+  }catch(e){ alert('Erro de rede. Tente em alguns segundos.'); }
 }
 async function carregarPedidos(){
   if(!window.saaAuth || !window._userId) return; // demo
   try{
     var res=await window.saaAuth.client.from('pedidos')
-      .select('id,texto,status,publico,velas_recebidas')
+      .select('id,texto,status,publico,velas_recebidas,vela_permanente_ativa')
       .eq('user_id', window._userId)
       .order('criado_em',{ascending:false});
     if(res.error || !res.data) return;
-    PEDIDOS = res.data.map(function(p){ return {t:p.texto, s:p.status, id:p.id, publico:p.publico, velas:p.velas_recebidas||0}; });
+    PEDIDOS = res.data.map(function(p){ return {t:p.texto, s:p.status, id:p.id, publico:p.publico, velas:p.velas_recebidas||0, velaPermanente:!!p.vela_permanente_ativa}; });
     renderPedidos();
   }catch(e){}
 }
@@ -3920,9 +4114,10 @@ async function carregarCirculo(){
   el.innerHTML = '<p style="text-align:center; color:var(--tinta-suave); padding:20px 0; font-size:13px">Carregando o Círculo…</p>';
   try{
     var r = await window.saaAuth.client.from('pedidos')
-      .select('id,texto,velas_recebidas,publicado_em,user_id')
+      .select('id,texto,velas_recebidas,publicado_em,user_id,vela_permanente_ativa')
       .eq('publico', true)
       .neq('status', 'arquivado')
+      .order('vela_permanente_ativa', { ascending:false })
       .order('publicado_em', { ascending:false })
       .limit(30);
     if(r.error){ throw r.error; }
@@ -3949,10 +4144,14 @@ async function carregarCirculo(){
     el.innerHTML = lista.map(function(p){
       var aceso = !!jaAcesos[p.id];
       var velas = p.velas_recebidas || 0;
-      return '<div class="card" style="padding:16px 18px; position:relative">'
+      var perm = !!p.vela_permanente_ativa;
+      var permStyle = perm ? 'background:linear-gradient(180deg, rgba(246,200,104,.10), rgba(186,117,23,.05)); border:1px solid rgba(186,117,23,.32); box-shadow:0 0 22px rgba(246,200,104,.18);' : '';
+      var permTag = perm ? '<span style="display:inline-flex; align-items:center; gap:4px; font-size:10.5px; background:linear-gradient(180deg,#F6C868,#D89A2C); color:#5A3A06; padding:3px 9px; border-radius:99px; font-weight:600; letter-spacing:.04em; margin-bottom:8px">🔥 Vela permanente acesa</span><br/>' : '';
+      return '<div class="card" style="padding:16px 18px; position:relative; ' + permStyle + '">'
+        + permTag
         + '<p style="margin:0; font-size:14.5px; line-height:1.55; color:var(--tinta)">' + esc(p.texto) + '</p>'
         + '<div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:14px; padding-top:12px; border-top:1px solid var(--linha)">'
-        + '  <span style="font-size:12px; color:var(--tinta-suave); display:flex; align-items:center; gap:6px"><span style="font-size:14px">🕯️</span> ' + velas + (velas === 1 ? ' vela acesa' : ' velas acesas') + '</span>'
+        + '  <span style="font-size:12px; color:var(--tinta-suave); display:flex; align-items:center; gap:6px"><span style="font-size:14px">' + (perm ? '🔥' : '🕯️') + '</span> ' + velas + (velas === 1 ? ' vela acesa' : ' velas acesas') + '</span>'
         + '  <button onclick="acenderVelaPedido(\'' + p.id + '\', this)" '
         + '          ' + (aceso ? 'disabled' : '') + ' '
         + '          style="background:' + (aceso ? 'var(--ouro-bg)' : 'linear-gradient(180deg,#F6C868,#D89A2C)') + '; '
@@ -5124,6 +5323,138 @@ async function calcularCompatibilidade(){
   }catch(e){ erro.textContent='Não consegui calcular agora.'; }
 }
 function resetCompat(){ openCompat(); }
+
+// ── Mapa Cabalístico Premium — tríade angelical ──
+var _mapaCache = null;
+async function abrirMapa(){
+  // Premium-only
+  var ehPremium = window._plano && window._plano !== 'free';
+  if(!ehPremium){ openPaywall('mapa-cabalistico'); return; }
+  if(!window.saaAuth || !window._userId){ alert('Faça login pra ver seu mapa.'); return; }
+
+  document.getElementById('mapa-loading').style.display = 'block';
+  document.getElementById('mapa-resultado').style.display = 'none';
+  document.getElementById('mapa-erro').style.display = 'none';
+  show('s-mapa');
+
+  var nascimento = window._perfil && window._perfil.nascimento;
+  if(!nascimento){
+    document.getElementById('mapa-loading').style.display = 'none';
+    document.getElementById('mapa-erro').style.display = 'block';
+    document.getElementById('mapa-erro').querySelector('p').textContent = 'Não encontrei sua data de nascimento. Refaça o cadastro.';
+    return;
+  }
+  var hora = ''; try{ hora = localStorage.getItem('saa_hora_nascimento') || ''; }catch(_){}
+
+  try{
+    var sessao = await window.saaAuth.client.auth.getSession();
+    var token = sessao && sessao.data && sessao.data.session ? sessao.data.session.access_token : '';
+    var qs = 'nascimento=' + encodeURIComponent(nascimento) + (hora ? '&hora=' + encodeURIComponent(hora) : '');
+    var r = await fetch('/api/mapa-cabalistico?' + qs, { headers:{ 'Authorization':'Bearer '+token } });
+    var j = await r.json();
+    if(!j.ok){
+      document.getElementById('mapa-loading').style.display = 'none';
+      document.getElementById('mapa-erro').style.display = 'block';
+      document.getElementById('mapa-erro').querySelector('p').textContent = j.error || 'Não consegui gerar o mapa agora.';
+      return;
+    }
+    _mapaCache = j;
+    document.getElementById('mapa-tipo').textContent = j.tipo === 'concentrada' ? 'Tríade concentrada' : (j.tipo === 'expansiva' ? 'Tríade expansiva' : 'Tríade focada');
+    document.getElementById('mapa-a1-nome').textContent = j.anjos.nascimento.nome;
+    document.getElementById('mapa-a1-dom').textContent = j.anjos.nascimento.dom;
+    document.getElementById('mapa-a1-coro').textContent = 'Coro dos ' + j.anjos.nascimento.coro;
+    document.getElementById('mapa-a2-nome').textContent = j.anjos.humanidade.nome;
+    document.getElementById('mapa-a2-dom').textContent = j.anjos.humanidade.dom;
+    document.getElementById('mapa-a2-coro').textContent = 'Coro dos ' + j.anjos.humanidade.coro + (j.anjos.humanidade.intervalo ? ' · ' + j.anjos.humanidade.intervalo : '');
+    document.getElementById('mapa-a3-nome').textContent = j.anjos.momento.nome;
+    document.getElementById('mapa-a3-dom').textContent = j.anjos.momento.dom;
+    document.getElementById('mapa-a3-intervalo').textContent = 'Coro dos ' + j.anjos.momento.coro + ' · ' + j.anjos.momento.intervalo;
+    document.getElementById('mapa-leitura').textContent = j.leitura;
+    document.getElementById('mapa-ritual').innerHTML = (j.ritual||[]).map(function(p){ return '<li style="margin-bottom:10px">'+esc(p)+'</li>'; }).join('');
+    document.getElementById('mapa-loading').style.display = 'none';
+    document.getElementById('mapa-resultado').style.display = 'block';
+    chime();
+    try{ if(window.plausible) window.plausible('mapa_cabalistico_aberto', { props:{ tipo:j.tipo } }); }catch(_){}
+  }catch(e){
+    document.getElementById('mapa-loading').style.display = 'none';
+    document.getElementById('mapa-erro').style.display = 'block';
+    document.getElementById('mapa-erro').querySelector('p').textContent = 'Erro de conexão. Tente em alguns segundos.';
+  }
+}
+
+async function compartilharMapa(){
+  if(!_mapaCache) return;
+  var j = _mapaCache;
+  var texto = '✦ Meu Mapa Cabalístico no Sob as Asas:\n• Nascimento: ' + j.anjos.nascimento.nome + '\n• Humanidade: ' + j.anjos.humanidade.nome + '\n• Momento: ' + j.anjos.momento.nome + '\n\nDescubra a sua tríade:';
+  var url = 'https://www.sobasasas.com.br/landing?via=mapa';
+  if(navigator.share){
+    try{ await navigator.share({title:'Mapa Cabalístico — Sob as Asas', text:texto, url:url}); try{ if(window.plausible) window.plausible('mapa_cabalistico_compartilhado'); }catch(_){} return; }catch(_){}
+  }
+  try{ await navigator.clipboard.writeText(texto+' '+url); toast('Texto copiado 📋'); }
+  catch(_){ toast('Compartilhamento não disponível neste navegador'); }
+}
+
+// ── Quiz Reconciliação Angelical (viral) ──
+var _reconciliaResultado = null;
+function openReconciliacao(){
+  document.getElementById('reconcilia-intro').style.display='block';
+  document.getElementById('reconcilia-resultado').style.display='none';
+  document.getElementById('reconcilia-meu').textContent = window._anjo || 'seu anjo';
+  document.getElementById('reconcilia-nome').value='';
+  document.getElementById('reconcilia-dia').value='';
+  document.getElementById('reconcilia-mes').value='';
+  document.getElementById('reconcilia-ano').value='';
+  document.getElementById('reconcilia-erro').textContent='';
+  show('s-reconcilia');
+}
+async function calcularReconciliacao(){
+  var nome=document.getElementById('reconcilia-nome').value.trim();
+  var vinculo=document.getElementById('reconcilia-vinculo').value;
+  var d=+document.getElementById('reconcilia-dia').value;
+  var m=+document.getElementById('reconcilia-mes').value;
+  var y=+document.getElementById('reconcilia-ano').value;
+  var erro=document.getElementById('reconcilia-erro');
+  if(!nome){ erro.textContent='Diga com quem você quer reconciliar.'; return; }
+  if(!_dataValida(d, m, y)){ erro.textContent='Essa data não existe. Confira o dia, mês e ano.'; return; }
+  erro.textContent='';
+  var meuN = window._perfil && window._perfil.anjo_n;
+  if(!meuN && window._anjo){
+    for(var i=0;i<ANJOS.length;i++){ if(ANJOS[i][1]===window._anjo){ meuN=ANJOS[i][0]; break; } }
+  }
+  if(!meuN){ erro.textContent='Não encontrei o seu anjo. Refaça o cadastro.'; return; }
+  var outro = _calcAnjoLocal(d, m);
+  if(!outro){ erro.textContent='Essa pessoa nasceu em uma data dos Anjos da Humanidade — vamos preparar essa leitura especial em breve.'; return; }
+  buzz();
+  try{
+    var r = await fetch('/api/calc-reconciliacao?n1='+meuN+'&n2='+outro.n+'&vinculo='+encodeURIComponent(vinculo));
+    var j = await r.json();
+    if(!j.ok){ erro.textContent='Erro: '+(j.error||'falhou'); return; }
+    _reconciliaResultado = { nome:nome, vinculo:vinculo, outro:outro, j:j };
+    document.getElementById('reconcilia-intro').style.display='none';
+    document.getElementById('reconcilia-resultado').style.display='block';
+    document.getElementById('reconcilia-anjo-nome').textContent = j.anjo_reconciliador.nome;
+    document.getElementById('reconcilia-anjo-dom').textContent = j.anjo_reconciliador.dom;
+    document.getElementById('reconcilia-anjo-num').textContent = 'Anjo nº ' + j.anjo_reconciliador.n + ' entre os 72';
+    document.getElementById('reconcilia-leitura').textContent = j.leitura;
+    document.getElementById('reconcilia-ritual').innerHTML = (j.ritual || []).map(function(p){ return '<li style="margin-bottom:8px">'+esc(p)+'</li>'; }).join('');
+    chime();
+    try{ if(window.plausible) window.plausible('reconciliacao_calculada', { props:{ vinculo:vinculo, anjo:j.anjo_reconciliador.nome } }); }catch(_){}
+  }catch(e){ erro.textContent='Não consegui calcular agora.'; }
+}
+function resetReconciliacao(){ openReconciliacao(); }
+async function compartilharReconciliacao(){
+  if(!_reconciliaResultado) return;
+  var j = _reconciliaResultado.j;
+  var meuAnjo = window._anjo || 'meu anjo';
+  var texto = '🤍 Descobri: o anjo que pode reconciliar meu anjo (' + meuAnjo + ') com o de ' + _reconciliaResultado.nome + ' é ' + j.anjo_reconciliador.nome + ' — ' + j.anjo_reconciliador.dom + '. Descubra o seu também:';
+  var url = 'https://www.sobasasas.com.br/landing?via=reconcilia';
+  if(navigator.share){
+    try{ await navigator.share({title:'Reconciliação angelical — Sob as Asas', text:texto, url:url}); toast('Compartilhado 🤍'); try{ if(window.plausible) window.plausible('reconciliacao_compartilhada'); }catch(_){} return; }
+    catch(e){}
+  }
+  try{ await navigator.clipboard.writeText(texto+' '+url); toast('Texto copiado 📋'); }
+  catch(_){ toast('Compartilhamento não disponível neste navegador'); }
+}
 async function compartilharCompatibilidade(){
   if(!_compatOutro){ return; }
   var titulo = document.getElementById('compat-titulo').textContent;
