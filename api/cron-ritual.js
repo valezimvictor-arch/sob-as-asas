@@ -2,12 +2,16 @@
 // Cron diário: envia o push do ritual personalizado por anjo regente.
 // Agendado no vercel.json. Protegido para rodar só via cron da Vercel.
 //
-// v2: mensagem personalizada por coro do anjo do usuário, com nome
-// do anjo substituído no template (ver _lib/mensagens-anjo.js).
+// v3: combina 3 camadas de personalização:
+//   1. Anjo de nascimento do usuário (mensagem por coro)
+//   2. Anjo da HORA atual (contexto cósmico no momento do envio)
+//   3. Contexto comportamental (último login → "sentiu falta" /
+//      "celebrou retorno" / "primeira vez do dia")
 
 import { supabase } from './_lib/supabase.js';
 import webpush from 'web-push';
 import { escolherMensagem } from './_lib/mensagens-anjo.js';
+import { anjoDaHora } from './_lib/anjos.js';
 
 webpush.setVapidDetails(
   process.env.VAPID_EMAIL || 'mailto:contato@sobasasas.com.br',
@@ -41,25 +45,54 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true, type, enviados: 0, removidos: 0 });
   }
 
-  // Busca os perfis de uma vez (n + nome do anjo)
+  // Busca os perfis de uma vez (n + nome do anjo + última atividade)
   const userIds = [...new Set(subs.map(s => s.user_id).filter(Boolean))];
   const perfisById = {};
   if (userIds.length) {
     const { data: perfis } = await supabase
       .from('users')
-      .select('id, anjo_n, anjo_nome')
+      .select('id, anjo_n, anjo_nome, ultimo_acesso_em')
       .in('id', userIds);
     (perfis || []).forEach(p => { perfisById[p.id] = p; });
   }
 
-  let enviados = 0, removidos = 0, personalizados = 0;
+  // Anjo regente do MOMENTO do envio — mesmo pra todos (é universal)
+  const anjoMomento = anjoDaHora(new Date());
+
+  // Contexto comportamental — quantos dias desde o último acesso
+  function diasDesdeUltimoAcesso(ts) {
+    if (!ts) return null;
+    const ms = Date.now() - new Date(ts).getTime();
+    return Math.floor(ms / 86400000);
+  }
+  // Prefixos contextuais — sutis, devocionais
+  function prefixoBehavior(dias) {
+    if (dias === null) return '';                // primeira vez sem registro
+    if (dias <= 1) return '';                    // recorrente, sem prefixo
+    if (dias === 2) return '';
+    if (dias <= 6) return 'Você voltou. ';
+    if (dias <= 14) return 'Senti sua falta. ';
+    return 'A chama ficou acesa esperando você. ';
+  }
+
+  let enviados = 0, removidos = 0, personalizados = 0, comContexto = 0;
   for (const s of subs) {
     const perfil = perfisById[s.user_id];
     let payload;
     if (perfil && perfil.anjo_n && perfil.anjo_nome) {
-      const body = escolherMensagem(type, perfil.anjo_nome, perfil.anjo_n, dia);
+      let body = escolherMensagem(type, perfil.anjo_nome, perfil.anjo_n, dia);
+      const dias = diasDesdeUltimoAcesso(perfil.ultimo_acesso_em);
+      const prefBeh = prefixoBehavior(dias);
+      if (prefBeh) { body = prefBeh + body; comContexto++; }
+
+      // Anjo da hora atual entra como "sub-linha" — contexto cósmico
+      // do momento exato em que o push chega. Diferente do anjo de
+      // nascimento (que é fixo do usuário): este muda a cada 20 min.
+      const sublineMomento = (anjoMomento.nome && anjoMomento.nome !== perfil.anjo_nome)
+        ? ` (${anjoMomento.nome} rege agora)` : '';
+
       payload = {
-        title: `${tituloPrefix} ${perfil.anjo_nome} está com você`,
+        title: `${tituloPrefix} ${perfil.anjo_nome} está com você${sublineMomento}`,
         body,
         url: '/?action=ritual&utm_source=push&utm_campaign=ritual_diario',
       };
@@ -79,5 +112,5 @@ export default async function handler(req, res) {
     }
   }
 
-  return res.status(200).json({ ok: true, type, enviados, removidos, personalizados });
+  return res.status(200).json({ ok: true, type, enviados, removidos, personalizados, comContexto, anjoMomento: anjoMomento.nome });
 }

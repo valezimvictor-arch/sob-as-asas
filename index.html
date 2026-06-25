@@ -1663,13 +1663,36 @@
     <!-- view: pedidos -->
     <div data-view="pedidos" class="hide">
       <h2 class="serif" style="font-size:26px; margin:0">Livro de pedidos</h2>
-      <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 18px">Escreva sua intenção. Seu anjo escuta.</p>
-      <textarea class="campo" id="novo-pedido" rows="3" placeholder="Hoje eu peço…"></textarea>
-      <label style="display:flex; align-items:center; gap:8px; margin:12px 0; font-size:13px; color:var(--tinta-suave)">
-        <input type="checkbox" id="cand-milagre" /> Quero compartilhar com a Monica (candidato ao Milagre do mês)
-      </label>
-      <button class="btn-ouro" onclick="addPedido()">Registrar pedido</button>
-      <div id="lista-pedidos" style="margin-top:22px; display:flex; flex-direction:column; gap:10px"></div>
+      <p style="color:var(--tinta-suave); font-size:14px; margin:6px 0 14px">Escreva o que pesa no peito. Seu anjo escuta — e quem quiser, acende uma vela junto.</p>
+
+      <!-- Abas: Meus pedidos | Círculo (pedidos públicos da comunidade) -->
+      <div role="tablist" style="display:flex; gap:0; border-bottom:1px solid var(--linha); margin:0 0 18px">
+        <button role="tab" id="aba-meus" class="aba-pedidos on" onclick="abaPedidos('meus')" style="flex:1; background:transparent; border:none; border-bottom:2px solid var(--ouro); color:var(--tinta); padding:10px 12px; font:inherit; font-size:14px; font-weight:600; cursor:pointer">Meus</button>
+        <button role="tab" id="aba-circulo" class="aba-pedidos" onclick="abaPedidos('circulo')" style="flex:1; background:transparent; border:none; border-bottom:2px solid transparent; color:var(--tinta-suave); padding:10px 12px; font:inherit; font-size:14px; font-weight:500; cursor:pointer">Círculo<span id="circulo-novidades" style="display:none; margin-left:6px; background:var(--ouro); color:#fff; font-size:10px; padding:2px 7px; border-radius:99px; vertical-align:middle">novo</span></button>
+      </div>
+
+      <!-- Aba: Meus pedidos -->
+      <div id="aba-conteudo-meus">
+        <textarea class="campo" id="novo-pedido" rows="3" placeholder="Hoje eu peço…"></textarea>
+        <label style="display:flex; align-items:center; gap:8px; margin:12px 0 6px; font-size:13px; color:var(--tinta-suave)">
+          <input type="checkbox" id="cand-milagre" /> Quero compartilhar com a Monica (candidato ao Milagre do mês)
+        </label>
+        <label style="display:flex; align-items:flex-start; gap:8px; margin:6px 0 12px; font-size:13px; color:var(--tinta-suave); line-height:1.5">
+          <input type="checkbox" id="pedido-publico" style="margin-top:3px; flex-shrink:0" />
+          <span>Publicar no <strong style="color:var(--ouro)">Círculo</strong> — outras pessoas podem acender uma vela pelo meu pedido (anônimo, sem identificação).</span>
+        </label>
+        <button class="btn-ouro" onclick="addPedido()">Registrar pedido</button>
+        <div id="lista-pedidos" style="margin-top:22px; display:flex; flex-direction:column; gap:10px"></div>
+      </div>
+
+      <!-- Aba: Círculo (pedidos públicos da comunidade) -->
+      <div id="aba-conteudo-circulo" class="hide">
+        <div style="padding:14px 18px; background:var(--ouro-bg); border-radius:14px; border:1px solid rgba(186,117,23,.18); margin-bottom:18px; text-align:center">
+          <div style="font-size:22px; margin-bottom:6px">🕯️</div>
+          <p style="margin:0; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; color:#5A3A06; line-height:1.55">Acenda uma vela por quem precisa. Cada chama é uma oração — e elas se somam.</p>
+        </div>
+        <div id="lista-circulo" style="display:flex; flex-direction:column; gap:12px"></div>
+      </div>
     </div>
 
     <!-- view: biblioteca -->
@@ -2972,19 +2995,71 @@ function revelar(){
 }
 
 // ── home ──
-// streak "dias sob as asas" (local; conta presença diária)
+// streak "dias sob as asas" — perdoador (não pune ausência).
+// Filosofia: este app é santuário, não Duolingo. Quem perdeu um dia
+// (vida real interrompe a prática) volta sob a chama do anjo, não
+// na "casa 1". O usuário tem 2 dias de perdão por mês — automáticos,
+// silenciosos. Se ultrapassar, a chama continua acesa mas o anjo
+// diz "voltei a guardar você desde aqui" (reset gracioso, não punitivo).
 function registrarPresenca(){
   try{
     var hoje=new Date().toISOString().slice(0,10);
     var last=localStorage.getItem('saa_streak_last');
     var n=parseInt(localStorage.getItem('saa_streak_n')||'0',10);
     if(last===hoje) return n;
-    var ontem=new Date(Date.now()-86400000).toISOString().slice(0,10);
-    n=(last===ontem)? n+1 : 1;
-    localStorage.setItem('saa_streak_last',hoje); localStorage.setItem('saa_streak_n',String(n));
-    // Celebração de marco: 7, 30, 72, 100, 365 dias
+
+    var hojeDt = new Date(); var lastDt = last ? new Date(last) : null;
+    var diasFalta = lastDt ? Math.round((hojeDt - lastDt) / 86400000) - 1 : 0;
+    var mesAtual = hoje.slice(0,7);
+
+    // Lê estado de perdões deste mês
+    var perdoesRaw = localStorage.getItem('saa_streak_perdoes');
+    var perdoes = { mes: mesAtual, usados: 0 };
+    try{ if(perdoesRaw){ var parsed = JSON.parse(perdoesRaw); if(parsed.mes === mesAtual) perdoes = parsed; } }catch(_){}
+
+    var perdoesDisponiveis = Math.max(0, 2 - perdoes.usados);
+    var voltouAposFalta = false;
+    var streakReset = false;
+
+    if(!last || diasFalta <= 0){
+      // Primeiro acesso OU continuidade perfeita (ontem → hoje)
+      n = (lastDt && diasFalta === 0) ? n + 1 : (n || 1);
+    } else if(diasFalta <= perdoesDisponiveis){
+      // Faltou mas tem perdão. Streak preserva, soma o dia de hoje.
+      perdoes.usados += diasFalta;
+      perdoes.mes = mesAtual;
+      localStorage.setItem('saa_streak_perdoes', JSON.stringify(perdoes));
+      n = n + 1;
+      voltouAposFalta = true;
+    } else {
+      // Faltou além do perdão. Reset gracioso — NÃO pra 1, pra 2
+      // (pra preservar a sensação de "voltei", não "perdi tudo").
+      n = 2;
+      streakReset = true;
+    }
+
+    localStorage.setItem('saa_streak_last', hoje);
+    localStorage.setItem('saa_streak_n', String(n));
+
+    // Marcos
     var marcos = { 7:'Primeira semana', 30:'Um mês de presença', 72:'Passou por todos os anjos', 100:'A travessia', 365:'Um ano sob as asas' };
     if(marcos[n]){ setTimeout(function(){ celebrarMarco(n, marcos[n]); }, 1200); }
+
+    // Mensagens da reconciliação — silenciosas, sagradas
+    if(voltouAposFalta){
+      var anjo = window._anjo || 'Seu anjo';
+      setTimeout(function(){
+        toast(anjo + ' manteve sua chama acesa por você. 🕯️');
+        try{ if(window.plausible) window.plausible('streak_perdao_usado', { props:{ dias_falta:diasFalta, perdoes_restantes:Math.max(0,2-perdoes.usados) } }); }catch(_){}
+      }, 1500);
+    } else if(streakReset){
+      var anjo2 = window._anjo || 'Seu anjo';
+      setTimeout(function(){
+        toast(anjo2 + ' guardou seu lugar. Recomeçamos sob a mesma luz. 🕊️');
+        try{ if(window.plausible) window.plausible('streak_reset_gracioso', { props:{ dias_falta:diasFalta } }); }catch(_){}
+      }, 1500);
+    }
+
     return n;
   }catch(e){ return parseInt((localStorage.getItem&&localStorage.getItem('saa_streak_n'))||'1',10)||1; }
 }
@@ -3230,18 +3305,30 @@ function renderPedidos(){
   }
   PEDIDOS.forEach(p=>{
     const ok=p.s==='realizado';
+    const pub = !!p.publico;
+    const velas = p.velas || 0;
+    var meta = ok ? 'Realizado — graças dadas' : 'Em oração';
+    var velasInfo = '';
+    if(pub && velas > 0){
+      velasInfo = ' · <span style="color:var(--ouro); font-weight:500">🕯️ ' + velas + (velas === 1 ? ' vela acesa por você' : ' velas acesas por você') + '</span>';
+    } else if(pub){
+      velasInfo = ' · <span style="color:var(--ouro); font-weight:500; opacity:.7">no Círculo</span>';
+    }
     el.insertAdjacentHTML('beforeend',`<div class="card" style="padding:14px 16px; display:flex; align-items:center; gap:12px">
       <span style="font-size:18px">${ok?'🌟':'🕯️'}</span>
       <div style="flex:1"><p style="margin:0; font-size:15px">${esc(p.t)}</p>
-      <p style="margin:0; font-size:12px; color:${ok?'var(--ouro)':'var(--tinta-suave)'}">${ok?'Realizado — graças dadas':'Em oração'}</p></div></div>`);
+      <p style="margin:0; font-size:12px; color:${ok?'var(--ouro)':'var(--tinta-suave)'}">${meta}${velasInfo}</p></div></div>`);
   });
 }
 async function carregarPedidos(){
   if(!window.saaAuth || !window._userId) return; // demo
   try{
-    var res=await window.saaAuth.client.from('pedidos').select('id,texto,status').order('criado_em',{ascending:false});
+    var res=await window.saaAuth.client.from('pedidos')
+      .select('id,texto,status,publico,velas_recebidas')
+      .eq('user_id', window._userId)
+      .order('criado_em',{ascending:false});
     if(res.error || !res.data) return;
-    PEDIDOS = res.data.map(function(p){ return {t:p.texto, s:p.status, id:p.id}; });
+    PEDIDOS = res.data.map(function(p){ return {t:p.texto, s:p.status, id:p.id, publico:p.publico, velas:p.velas_recebidas||0}; });
     renderPedidos();
   }catch(e){}
 }
@@ -3249,16 +3336,141 @@ async function addPedido(){
   const ta=document.getElementById('novo-pedido'); const t=ta.value.trim();
   if(!t){ toast('Escreva sua intenção primeiro'); return; }
   const cand=document.getElementById('cand-milagre').checked;
+  const pub=document.getElementById('pedido-publico') && document.getElementById('pedido-publico').checked;
   if(window.saaAuth && window._userId){
     try{
-      var res=await window.saaAuth.client.from('pedidos').insert({ user_id:window._userId, texto:t, candidato_milagre:cand }).select('id').single();
-      PEDIDOS.unshift({ t:t, s:'aberto', id:res.data&&res.data.id });
-    }catch(e){ PEDIDOS.unshift({t:t,s:'aberto'}); }
+      var res=await window.saaAuth.client.from('pedidos').insert({ user_id:window._userId, texto:t, candidato_milagre:cand, publico:pub }).select('id').single();
+      PEDIDOS.unshift({ t:t, s:'aberto', id:res.data&&res.data.id, publico:pub, velas:0 });
+    }catch(e){ PEDIDOS.unshift({t:t,s:'aberto',publico:pub,velas:0}); }
   } else {
-    PEDIDOS.unshift({t:t,s:'aberto'});
+    PEDIDOS.unshift({t:t,s:'aberto',publico:pub,velas:0});
   }
-  ta.value=''; document.getElementById('cand-milagre').checked=false;
-  renderPedidos(); buzz(); toast('Pedido registrado 🕊️');
+  ta.value='';
+  document.getElementById('cand-milagre').checked=false;
+  if(document.getElementById('pedido-publico')) document.getElementById('pedido-publico').checked=false;
+  renderPedidos(); buzz();
+  toast(pub ? 'Pedido registrado e publicado no Círculo 🕯️' : 'Pedido registrado 🕊️');
+}
+
+// Abas Meus / Círculo
+function abaPedidos(qual){
+  var meus = document.getElementById('aba-meus');
+  var circ = document.getElementById('aba-circulo');
+  var contMeus = document.getElementById('aba-conteudo-meus');
+  var contCirc = document.getElementById('aba-conteudo-circulo');
+  if(qual === 'circulo'){
+    meus.classList.remove('on'); meus.style.borderBottomColor='transparent'; meus.style.color='var(--tinta-suave)'; meus.style.fontWeight='500';
+    circ.classList.add('on'); circ.style.borderBottomColor='var(--ouro)'; circ.style.color='var(--tinta)'; circ.style.fontWeight='600';
+    contMeus.classList.add('hide'); contCirc.classList.remove('hide');
+    var badge = document.getElementById('circulo-novidades'); if(badge) badge.style.display='none';
+    carregarCirculo();
+  } else {
+    circ.classList.remove('on'); circ.style.borderBottomColor='transparent'; circ.style.color='var(--tinta-suave)'; circ.style.fontWeight='500';
+    meus.classList.add('on'); meus.style.borderBottomColor='var(--ouro)'; meus.style.color='var(--tinta)'; meus.style.fontWeight='600';
+    contCirc.classList.add('hide'); contMeus.classList.remove('hide');
+  }
+  buzz();
+}
+
+// Círculo — pedidos públicos da comunidade (excluindo os do próprio user)
+async function carregarCirculo(){
+  var el = document.getElementById('lista-circulo');
+  if(!el) return;
+  if(!window.saaAuth || !window._userId){
+    el.innerHTML = '<p style="text-align:center; color:var(--tinta-suave); padding:30px 18px; font-family:\'Cormorant Garamond\',serif; font-style:italic; font-size:15px">Entre na sua conta pra ver os pedidos do Círculo e acender velas.</p>';
+    return;
+  }
+  el.innerHTML = '<p style="text-align:center; color:var(--tinta-suave); padding:20px 0; font-size:13px">Carregando o Círculo…</p>';
+  try{
+    var r = await window.saaAuth.client.from('pedidos')
+      .select('id,texto,velas_recebidas,publicado_em,user_id')
+      .eq('publico', true)
+      .neq('status', 'arquivado')
+      .order('publicado_em', { ascending:false })
+      .limit(30);
+    if(r.error){ throw r.error; }
+    var lista = (r.data || []).filter(function(p){ return p.user_id !== window._userId; });
+    if(!lista.length){
+      el.innerHTML = '<div style="text-align:center; padding:36px 18px; color:var(--tinta-suave)">'
+        + '<div style="font-size:30px; opacity:.5">🕊️</div>'
+        + '<p class="serif" style="font-size:16px; color:var(--ouro); margin:12px 0 6px; font-weight:500">O círculo ainda está se formando</p>'
+        + '<p style="margin:0; font-family:\'Cormorant Garamond\',serif; font-style:italic; font-size:14.5px; line-height:1.55">Seja a primeira oração compartilhada — publique um pedido em "Meus" pra abrir o ciclo.</p>'
+        + '</div>';
+      return;
+    }
+    // Verifica quais já tem vela ACESA HOJE pelo user
+    var hoje = new Date().toISOString().slice(0,10);
+    var jaAcesos = {};
+    try{
+      var vr = await window.saaAuth.client.from('velas_pedidos')
+        .select('pedido_id')
+        .eq('acendedor_id', window._userId)
+        .eq('data_local', hoje);
+      (vr.data || []).forEach(function(v){ jaAcesos[v.pedido_id] = true; });
+    }catch(_){}
+
+    el.innerHTML = lista.map(function(p){
+      var aceso = !!jaAcesos[p.id];
+      var velas = p.velas_recebidas || 0;
+      return '<div class="card" style="padding:16px 18px; position:relative">'
+        + '<p style="margin:0; font-size:14.5px; line-height:1.55; color:var(--tinta)">' + esc(p.texto) + '</p>'
+        + '<div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:14px; padding-top:12px; border-top:1px solid var(--linha)">'
+        + '  <span style="font-size:12px; color:var(--tinta-suave); display:flex; align-items:center; gap:6px"><span style="font-size:14px">🕯️</span> ' + velas + (velas === 1 ? ' vela acesa' : ' velas acesas') + '</span>'
+        + '  <button onclick="acenderVelaPedido(\'' + p.id + '\', this)" '
+        + '          ' + (aceso ? 'disabled' : '') + ' '
+        + '          style="background:' + (aceso ? 'var(--ouro-bg)' : 'linear-gradient(180deg,#F6C868,#D89A2C)') + '; '
+        + '                 color:' + (aceso ? 'var(--ouro)' : '#5A3A06') + '; '
+        + '                 border:' + (aceso ? '1px solid var(--linha)' : 'none') + '; '
+        + '                 border-radius:99px; padding:8px 16px; font-size:13px; font-weight:600; cursor:' + (aceso ? 'default' : 'pointer') + '; font-family:inherit; min-height:36px">'
+        + (aceso ? '🕯️ Acesa hoje' : '🕯️ Acender vela')
+        + '  </button>'
+        + '</div>'
+        + '</div>';
+    }).join('');
+  }catch(e){
+    el.innerHTML = '<p style="text-align:center; color:#C0392B; padding:20px 0; font-size:13px">Não consegui carregar o Círculo agora. Tente em alguns segundos.</p>';
+    console.warn('[carregarCirculo]', e);
+  }
+}
+
+async function acenderVelaPedido(pedidoId, btn){
+  if(!window.saaAuth || !window._userId){ toast('Entre na sua conta primeiro'); return; }
+  if(btn){ btn.disabled = true; btn.textContent = 'Acendendo…'; }
+  try{
+    var sessao = await window.saaAuth.client.auth.getSession();
+    var token = sessao && sessao.data && sessao.data.session ? sessao.data.session.access_token : '';
+    var r = await fetch('/api/acender-vela-pedido', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'Authorization': 'Bearer '+token },
+      body: JSON.stringify({ pedidoId: pedidoId })
+    });
+    var j = await r.json();
+    if(!j.ok){
+      if(btn){ btn.disabled = false; btn.textContent = '🕯️ Acender vela'; }
+      toast(j.error || 'Não consegui acender a vela agora.');
+      return;
+    }
+    if(btn){
+      btn.disabled = true;
+      btn.textContent = '🕯️ Acesa hoje';
+      btn.style.background = 'var(--ouro-bg)';
+      btn.style.color = 'var(--ouro)';
+      btn.style.border = '1px solid var(--linha)';
+      btn.style.cursor = 'default';
+      // Atualiza contador irmão
+      var contador = btn.parentNode.querySelector('span');
+      if(contador && j.velas_total != null){
+        var n = j.velas_total;
+        contador.innerHTML = '<span style="font-size:14px">🕯️</span> ' + n + (n === 1 ? ' vela acesa' : ' velas acesas');
+      }
+    }
+    chime(); buzz();
+    toast(j.ja_aceso_hoje ? 'Sua vela já estava acesa por este pedido hoje.' : 'Vela acesa. 🕯️ Sua oração se soma às outras.');
+    try{ if(window.plausible) window.plausible('vela_acendida_pedido'); }catch(_){}
+  }catch(e){
+    if(btn){ btn.disabled = false; btn.textContent = '🕯️ Acender vela'; }
+    toast('Erro de conexão. Tente em alguns segundos.');
+  }
 }
 
 // ── biblioteca: conteúdo da Monica por coleção (demo; substituído pelo Supabase em carregarBiblioteca) ──
@@ -5181,6 +5393,16 @@ async function aoLogar(session){
   window._aoLogarRodando = true;
   window._userId = session.user.id;
   window._email = session.user.email || '';
+  // Registra último acesso (cron-ritual usa pra personalização comportamental).
+  // Best-effort, não bloqueia o login se falhar.
+  try{
+    if(window.saaAuth) {
+      window.saaAuth.client.from('users')
+        .update({ ultimo_acesso_em: new Date().toISOString() })
+        .eq('id', session.user.id)
+        .then(function(){}, function(){});
+    }
+  }catch(_){}
   // Lê o perfil pendente (salvo durante o cadastro). Usa localStorage pra
   // sobreviver à mudança de aba/janela quando o usuário clica no magic link
   // do email. TTL de 60 min — se passou disso, considera abandonado e descarta.

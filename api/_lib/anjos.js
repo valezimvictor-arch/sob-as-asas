@@ -122,3 +122,27 @@ export function anjoRegente(isoDate) {
   if (!mes || !dia) throw new Error('Data inválida para cálculo do anjo regente');
   return INDICE[mes * 100 + dia] || ANJOS_HUMANIDADE;
 }
+
+/**
+ * Retorna o anjo regente de uma hora específica do dia.
+ * Cada um dos 72 anjos rege 20 minutos consecutivos a partir das 00:00.
+ * @param {Date|number} when - Date ou minutos desde 00:00 (se number)
+ * @returns {{n:number, nome:string, atributo:string, coro:string, intervalo:string}}
+ */
+export function anjoDaHora(when) {
+  const d = (when instanceof Date) ? when : new Date();
+  const totalMin = (typeof when === 'number') ? when : (d.getHours() * 60 + d.getMinutes());
+  const slot = Math.floor(totalMin / 20) % 72; // 0..71
+  const n = slot + 1; // 1..72
+  const a = ANJOS.find(x => x[0] === n);
+  const startMin = slot * 20;
+  const endMin = startMin + 20;
+  const fmt = (m) => String(Math.floor(m/60)).padStart(2,'0') + ':' + String(m%60).padStart(2,'0');
+  return {
+    n,
+    nome: a ? a[1] : '',
+    atributo: a ? a[2] : '',
+    coro: coroDe(n),
+    intervalo: fmt(startMin) + '—' + fmt(endMin),
+  };
+}
