@@ -1675,12 +1675,30 @@ function exportarLeadsCSV(){
   var a=document.createElement('a'); a.href=url; a.download='sob-as-asas-leads.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
 }
 
-// Boot: se já tem chave salva → entra direto. Senão mostra tela de login.
-if(KEY){
-  entrar();
-} else {
+// Boot: NÃO basta ter chave no sessionStorage — revalida no servidor antes
+// de revelar o painel. Uma chave stale/inválida não pode expor nem o shell
+// do admin (mesma regra do salvarChave). Enquanto valida, o body fica sem
+// classe (CSS esconde tudo), então não há flash de login nem de painel.
+function _mostrarLogin(){
+  document.body.classList.remove('authed');
   document.body.classList.add('no-auth');
-  setTimeout(function(){ var i=document.getElementById('adminkey'); if(i) i.focus(); }, 200);
+  setTimeout(function(){ var i=document.getElementById('adminkey'); if(i) i.focus(); }, 60);
+}
+if(KEY){
+  fetch('/api/admin-metrics', { headers: { 'x-admin-key': KEY } })
+    .then(function(r){
+      if(r.ok){ entrar(); return; }
+      // Chave inválida/expirada: limpa e cai pro login.
+      KEY = '';
+      try{ sessionStorage.removeItem('saa_admin_key'); }catch(_){}
+      _mostrarLogin();
+    })
+    .catch(function(){
+      // Sem rede no boot: não revela o painel (sem validação não há acesso).
+      _mostrarLogin();
+    });
+} else {
+  _mostrarLogin();
 }
 </script>
 </body>
