@@ -123,36 +123,35 @@ export default async function handler(req, res) {
       return res.status(409).json({ ok: false, error: 'Não consegui vincular este presente à sua conta. Fale com contato@sobasasas.com.br.' });
     }
 
-    // 5) Aplica a cortesia. Conta nova: cria o perfil completo. Conta que já
-    //    existia: só concede o plano, sem sobrescrever nome/nascimento/anjo.
-    if (userId) {
-      if (jaExistia) {
-        await supabase.from('users').update({ plano: 'anual' }).eq('id', userId);
-      } else {
-        await supabase.from('users').upsert({
-          id: userId,
-          email,
-          nome,
-          nome_completo: nome,
-          whatsapp: whatsappLimpo,
-          nascimento,
-          anjo_n: anjo.n,
-          anjo_nome: anjo.nome,
-          plano: 'anual',  // cortesia anual de 1 ano
-          consent_lgpd_em: new Date().toISOString(),
-        }, { onConflict: 'id' });
-      }
-
-      // Cria registro de assinatura "cortesia" com periodo_fim = +1 ano
-      const umAno = new Date(); umAno.setFullYear(umAno.getFullYear() + 1);
-      await supabase.from('assinaturas').upsert({
-        user_id: userId,
-        plano: 'anual',
-        status: 'cortesia',
-        periodo_fim: umAno.toISOString(),
-        atualizado_em: new Date().toISOString(),
-      }, { onConflict: 'user_id' });
+    // 5) Aplica a cortesia (userId garantido pelo early-return acima). Conta
+    //    nova: cria o perfil completo. Conta que já existia: só concede o
+    //    plano, sem sobrescrever nome/nascimento/anjo.
+    if (jaExistia) {
+      await supabase.from('users').update({ plano: 'anual' }).eq('id', userId);
+    } else {
+      await supabase.from('users').upsert({
+        id: userId,
+        email,
+        nome,
+        nome_completo: nome,
+        whatsapp: whatsappLimpo,
+        nascimento,
+        anjo_n: anjo.n,
+        anjo_nome: anjo.nome,
+        plano: 'anual',  // cortesia anual de 1 ano
+        consent_lgpd_em: new Date().toISOString(),
+      }, { onConflict: 'id' });
     }
+
+    // Cria registro de assinatura "cortesia" com periodo_fim = +1 ano
+    const umAno = new Date(); umAno.setFullYear(umAno.getFullYear() + 1);
+    await supabase.from('assinaturas').upsert({
+      user_id: userId,
+      plano: 'anual',
+      status: 'cortesia',
+      periodo_fim: umAno.toISOString(),
+      atualizado_em: new Date().toISOString(),
+    }, { onConflict: 'user_id' });
 
     // 6) Marca o presente como resgatado
     await supabase.from('presentes').update({

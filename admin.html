@@ -717,8 +717,8 @@ function salvarChave(){
     if(erroEl) erroEl.textContent = 'Digite sua chave de acesso.';
     return;
   }
-  // Valida a chave antes de entrar (chama um endpoint admin com a key)
-  fetch('/api/admin-metrics', { headers: { 'x-admin-key': v } })
+  // Valida a chave antes de entrar (endpoint leve, sem puxar o dashboard)
+  fetch('/api/admin-validate', { headers: { 'x-admin-key': v } })
     .then(function(r){
       if(r.ok){
         KEY = v;
@@ -1685,7 +1685,7 @@ function _mostrarLogin(){
   setTimeout(function(){ var i=document.getElementById('adminkey'); if(i) i.focus(); }, 60);
 }
 if(KEY){
-  fetch('/api/admin-metrics', { headers: { 'x-admin-key': KEY } })
+  fetch('/api/admin-validate', { headers: { 'x-admin-key': KEY } })
     .then(function(r){
       if(r.ok){ entrar(); return; }
       // Chave inválida/expirada: limpa e cai pro login.

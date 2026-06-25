@@ -4162,8 +4162,7 @@ async function acenderVelaPedido(pedidoId, btn){
   if(!window.saaAuth || !window._userId){ toast('Entre na sua conta primeiro'); return; }
   if(btn){ btn.disabled = true; btn.textContent = 'Acendendo…'; }
   try{
-    var sessao = await window.saaAuth.client.auth.getSession();
-    var token = sessao && sessao.data && sessao.data.session ? sessao.data.session.access_token : '';
+    var token = await _accessToken();
     var r = await fetch('/api/acender-vela-pedido', {
       method:'POST',
       headers:{ 'Content-Type':'application/json', 'Authorization': 'Bearer '+token },
@@ -4806,6 +4805,15 @@ function shareAnjo(){
 var _mmCache = null; // { mes, ano, anjo_n, titulo, texto, audio_url, duracao_seg }
 var MESES_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
+// Access token da sessão Supabase atual (string vazia se não logado).
+// Centraliza o idiom getSession()->access_token usado nos fetches autenticados.
+async function _accessToken(){
+  try{
+    var s = await window.saaAuth.client.auth.getSession();
+    return (s && s.data && s.data.session) ? s.data.session.access_token : '';
+  }catch(_){ return ''; }
+}
+
 async function carregarMensagemMensal(){
   if(!window.saaAuth) return;
   var n = window._perfil && window._perfil.anjo_n;
@@ -4939,8 +4947,7 @@ function abrirEnvelopeCarta(){
 async function compartilharCarta(){
   var anjo = (window._anjo || 'meu anjo');
   var hoje = new Date();
-  var meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
-  var texto = 'Minha carta de ' + meses[hoje.getMonth()] + ' de ' + anjo + ' chegou no Sob as Asas. 🤍';
+  var texto = 'Minha carta de ' + MESES_PT[hoje.getMonth()].toLowerCase() + ' de ' + anjo + ' chegou no Sob as Asas. 🤍';
   var url = location.origin + '/?ref=carta-' + (window._userId || '').slice(0,8);
   if(navigator.share){
     try{
@@ -5352,8 +5359,7 @@ async function abrirOferta(){
   if(!window.saaAuth || !window._userId){ alert('Faça login pra ofertar.'); return; }
   if(!confirm('Tornar-se Mantenedora do Sob as Asas?\n\nR$ 9,90 por mês. Sua oferta sustenta o trabalho da Monica e do app pra todos.\n\nNada muda nas suas práticas — quem oferta não ganha prioridade espiritual, não brilha mais no Círculo. É puro gesto de apoio.\n\nVamos pro checkout?')) return;
   try{
-    var sessao = await window.saaAuth.client.auth.getSession();
-    var token = sessao && sessao.data && sessao.data.session ? sessao.data.session.access_token : '';
+    var token = await _accessToken();
     var r = await fetch('/api/checkout-oferta', {
       method:'POST',
       headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+token }
@@ -5374,8 +5380,7 @@ async function encerrarOferta(){
   if(!window.saaAuth || !window._userId){ return; }
   if(!confirm('Encerrar sua oferta mensal?\n\nA cobrança para no fim do ciclo atual — você continua Mantenedora até lá, sem nova cobrança.')) return;
   try{
-    var sessao = await window.saaAuth.client.auth.getSession();
-    var token = sessao && sessao.data && sessao.data.session ? sessao.data.session.access_token : '';
+    var token = await _accessToken();
     var r = await fetch('/api/cancel-oferta', {
       method:'POST',
       headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+token }
@@ -5469,8 +5474,7 @@ async function abrirMapa(){
   var hora = ''; try{ hora = localStorage.getItem('saa_hora_nascimento') || ''; }catch(_){}
 
   try{
-    var sessao = await window.saaAuth.client.auth.getSession();
-    var token = sessao && sessao.data && sessao.data.session ? sessao.data.session.access_token : '';
+    var token = await _accessToken();
     var qs = 'nascimento=' + encodeURIComponent(nascimento) + (hora ? '&hora=' + encodeURIComponent(hora) : '');
     var r = await fetch('/api/mapa-cabalistico?' + qs, { headers:{ 'Authorization':'Bearer '+token } });
     var j = await r.json();
@@ -7013,8 +7017,7 @@ async function abrirCartaAnjo(){
   document.getElementById('carta-afirmacao').textContent = a.afirmacao;
   // Data por extenso em português
   var d = new Date();
-  var meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
-  document.getElementById('carta-data').textContent = d.getDate() + ' de ' + meses[d.getMonth()] + ' de ' + d.getFullYear();
+  document.getElementById('carta-data').textContent = d.getDate() + ' de ' + MESES_PT[d.getMonth()].toLowerCase() + ' de ' + d.getFullYear();
   show('s-carta-anjo');
   chime();
 }

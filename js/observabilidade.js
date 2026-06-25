@@ -44,9 +44,12 @@
 
   // ── Error boundary global ───────────────────────────────────────────
   // Captura erros JS não-tratados e exibe a tela de fallback. Threshold:
-  // só mostra após 2 erros em 5s, ou 1 erro "catastrófico" (referência nula
-  // em função do core). Evita ofuscar erros menores que não quebram a UX.
+  // só mostra após 3 erros em 5s, ou 1 erro "catastrófico" (referência nula
+  // em função do core). Ruído conhecido (3rd-party, rede, ResizeObserver) é
+  // ignorado pra não cobrir o app com a tela de erro à toa.
   var _errBuf = [];
+  // Mensagens benignas que NÃO devem contar pro boundary nem mostrar fallback.
+  var _ERROS_BENIGNOS = /ResizeObserver loop|Non-Error promise rejection|Failed to fetch|NetworkError|Load failed|\baborted\b|^Script error\.?$/i;
   function _ehErroCritico(msg){
     if(!msg) return false;
     var m = String(msg).toLowerCase();
@@ -67,10 +70,12 @@
     }catch(_){}
   }
   function _registrarErro(msg, source){
+    if(!msg) return;
+    if(_ERROS_BENIGNOS.test(String(msg))) return; // ruído conhecido — ignora
     var agora = Date.now();
     _errBuf = _errBuf.filter(function(t){ return agora - t < 5000; });
     _errBuf.push(agora);
-    if(_ehErroCritico(msg) || _errBuf.length >= 2){
+    if(_ehErroCritico(msg) || _errBuf.length >= 3){
       _mostrarFallback(msg + (source ? ' · '+source : ''));
     }
   }
