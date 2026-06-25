@@ -38,6 +38,9 @@ create table if not exists public.mantenedores (
 create index if not exists idx_mantenedores_status on public.mantenedores(status) where status = 'ativa';
 
 alter table public.mantenedores enable row level security;
+-- Cliente só LÊ a própria linha. A escrita (status='ativa', subscription_id)
+-- é exclusiva do webhook do Stripe via service-role (que ignora RLS). Com
+-- "for all" o usuário poderia se autoconceder status='ativa' sem pagar.
 drop policy if exists "mantenedores self" on public.mantenedores;
 create policy "mantenedores self" on public.mantenedores
-  for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+  for select using (user_id = auth.uid());

@@ -84,39 +84,40 @@ export default async function handler(req, res) {
       // se admin API falhar (provedor diferente), continua
     }
 
-    // 4) Se já existia, busca o ID e ATUALIZA a senha
+    // 4) Se já existia, localiza o ID — SEM tocar na senha.
+    //    SEGURANÇA: nunca sobrescrever a senha de uma conta preexistente.
+    //    Quem tem o código não é necessariamente o dono do e-mail; resetar a
+    //    senha aqui seria account takeover trivial. A pessoa entra com a senha
+    //    que já usa; o presente apenas adiciona a cortesia anual.
     if (!userId) {
       try {
         const { data: listed } = await supabase.auth.admin.listUsers({ page: 1, perPage: 200 });
         if (listed && listed.users) {
           const found = listed.users.find(u => (u.email || '').toLowerCase() === email.toLowerCase());
-          if (found) {
-            userId = found.id;
-            // Atualiza senha pra senha que ela acabou de criar
-            try {
-              await supabase.auth.admin.updateUserById(userId, { password: senha, email_confirm: true });
-            } catch (e) {
-              console.warn('[resgatar] updateUserById:', e?.message);
-            }
-          }
+          if (found) { userId = found.id; jaExistia = true; }
         }
       } catch (_) {}
     }
 
-    // 5) Upsert perfil + plano cortesia
+    // 5) Aplica a cortesia. Conta nova: cria o perfil completo. Conta que já
+    //    existia: só concede o plano, sem sobrescrever nome/nascimento/anjo.
     if (userId) {
-      await supabase.from('users').upsert({
-        id: userId,
-        email,
-        nome,
-        nome_completo: nome,
-        whatsapp: whatsappLimpo,
-        nascimento,
-        anjo_n: anjo.n,
-        anjo_nome: anjo.nome,
-        plano: 'anual',  // cortesia anual de 1 ano
-        consent_lgpd_em: new Date().toISOString(),
-      }, { onConflict: 'id' });
+      if (jaExistia) {
+        await supabase.from('users').update({ plano: 'anual' }).eq('id', userId);
+      } else {
+        await supabase.from('users').upsert({
+          id: userId,
+          email,
+          nome,
+          nome_completo: nome,
+          whatsapp: whatsappLimpo,
+          nascimento,
+          anjo_n: anjo.n,
+          anjo_nome: anjo.nome,
+          plano: 'anual',  // cortesia anual de 1 ano
+          consent_lgpd_em: new Date().toISOString(),
+        }, { onConflict: 'id' });
+      }
 
       // Cria registro de assinatura "cortesia" com periodo_fim = +1 ano
       const umAno = new Date(); umAno.setFullYear(umAno.getFullYear() + 1);

@@ -105,7 +105,7 @@ h1{font-family:'Playfair Display',serif; font-weight:500; font-size:30px; margin
     <p style="font-size:11px; letter-spacing:.2em; color:var(--ouro); text-transform:uppercase; font-weight:600; margin:14px 0 0">Seu anjo da guarda é</p>
     <p class="anjo-nome" id="ok-anjo-nome">—</p>
     <p style="margin:0 0 18px; font-family:'EB Garamond',serif; font-style:italic; font-size:16px; color:var(--ouro)" id="ok-anjo-num"></p>
-    <p style="margin:0; font-size:14.5px; color:var(--tinta); line-height:1.65">
+    <p id="ok-instrucao" style="margin:0; font-size:14.5px; color:var(--tinta); line-height:1.65">
       Seu santuário está aberto. Sua conta foi criada com o e-mail <strong id="ok-email"></strong>.
       Entre com seu e-mail e a senha que você acabou de criar.
     </p>
@@ -230,6 +230,15 @@ async function resgatar(){
     document.getElementById('ok-anjo-nome').textContent = (j.anjo && j.anjo.nome) || '—';
     document.getElementById('ok-anjo-num').textContent = j.anjo ? ('Anjo nº ' + j.anjo.n + ' entre os 72') : '';
     document.getElementById('ok-email').textContent = j.email || '';
+    // Conta já existia: a senha digitada NÃO foi aplicada — ela entra com a que já usa.
+    if(j.ja_existia){
+      var instr = document.getElementById('ok-instrucao');
+      if(instr){
+        instr.innerHTML = 'Esse e-mail (<strong>' + (j.email || '') + '</strong>) já tinha uma conta no Sob as Asas — '
+          + 'sua cortesia anual foi aplicada a ela. Entre com a senha que você <em>já usava</em> '
+          + '(não a que digitou agora). Esqueceu? Use "recuperar senha" na tela de login.';
+      }
+    }
     try{ if(window.plausible) window.plausible('presente_resgatado'); }catch(_){}
   }catch(e){
     erro.textContent = 'Erro de conexão. Tente em alguns segundos.';

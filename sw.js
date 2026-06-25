@@ -2,7 +2,7 @@
 // Strategy: network-first para HTML (sempre fresco), cache-first para assets.
 // A cada deploy, suba o número da versão (v0.1 → v0.2...) para disparar o
 // banner "Nova versão disponível".
-const CACHE = 'sobasasas-v0.56';
+const CACHE = 'sobasasas-v0.57';
 const ASSETS = ['/manifest.json', '/asa-icon.svg', '/js/geradorTextos.js', '/js/observabilidade.js'];
 // Scripts de terceiros que o app depende em runtime — pré-cacheados de forma
 // best-effort (não bloqueia o install se algum falhar). Garante que recovery /
@@ -42,6 +42,17 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const { request } = e;
   if (request.method !== 'GET') return;
+
+  // NUNCA cachear chamadas de dados/auth: API própria (/api/*) e Supabase.
+  // Respostas autenticadas não podem persistir no CacheStorage (vazam PII num
+  // device compartilhado e sobrevivem ao logout) nem ser reservidas de forma
+  // stale e independente do token. Só assets estáticos entram no cache.
+  let _url;
+  try { _url = new URL(request.url); } catch (_) { _url = null; }
+  if (_url && (_url.pathname.startsWith('/api/') || _url.hostname.endsWith('.supabase.co'))) {
+    return; // deixa o browser ir direto à rede, sem SW no meio
+  }
+
   const isHTML = request.mode === 'navigate' ||
     (request.headers.get('accept') || '').includes('text/html');
 

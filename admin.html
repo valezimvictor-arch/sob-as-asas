@@ -730,17 +730,14 @@ function salvarChave(){
         document.getElementById('adminkey').focus();
         document.getElementById('adminkey').select();
       } else {
-        // Outras falhas: ainda tenta entrar (talvez o endpoint esteja off mas a chave é válida)
-        KEY = v;
-        sessionStorage.setItem('saa_admin_key', KEY);
-        entrar();
+        // Qualquer coisa que não seja 200 = não autenticado. NUNCA entrar
+        // otimisticamente: a UI revelaria o painel com uma chave não validada.
+        if(erroEl) erroEl.textContent = 'Não consegui validar a chave agora (erro '+r.status+'). Tente de novo.';
       }
     })
     .catch(function(){
-      // Sem rede: deixa entrar otimisticamente
-      KEY = v;
-      sessionStorage.setItem('saa_admin_key', KEY);
-      entrar();
+      // Sem rede: não entra (sem validação não há acesso).
+      if(erroEl) erroEl.textContent = 'Sem conexão com o servidor. Verifique a rede e tente de novo.';
     });
 }
 function entrar(){
@@ -1206,7 +1203,7 @@ function renderUsuarios(){
           + '<option value="cortesia">→ Cortesia</option>'
         + '</select>'
         + '<button class="btn-sec" onclick="redefinirPerfil(\''+u.id+'\')">↺ Redefinir perfil</button>'
-        + '<button class="btn-sec" style="color:#C0392B; border-color:rgba(192,57,43,.3)" onclick="excluirUsuario(\''+u.id+'\', \''+esc(nome)+'\')">🗑 Excluir conta</button>'
+        + '<button class="btn-sec" style="color:#C0392B; border-color:rgba(192,57,43,.3)" onclick="excluirUsuario(\''+u.id+'\')">🗑 Excluir conta</button>'
       + '</div>'
     + '</div>';
   }).join('');
@@ -1232,7 +1229,11 @@ async function redefinirPerfil(id){
     carregarUsuarios();
   }catch(e){ alert('Erro: '+e.message); }
 }
-async function excluirUsuario(id, nome){
+async function excluirUsuario(id){
+  // Nome resolvido a partir do cache (não interpolado no HTML) pra não abrir
+  // brecha de XSS via nome de usuário no atributo onclick.
+  var _u = _usuariosCache.find(function(x){return x.id===id;});
+  var nome = _u ? (_u.nome || _u.email || 'essa conta') : 'essa conta';
   if(!confirm('Excluir DEFINITIVAMENTE a conta de "'+nome+'"? Isso apaga e-mail, perfil e histórico. Não dá pra desfazer.')) return;
   if(!confirm('Tem certeza absoluta? Digite OK na próxima.')) return;
   var t = prompt('Digite EXCLUIR para confirmar:');

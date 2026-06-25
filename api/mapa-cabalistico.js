@@ -10,6 +10,10 @@
 
 import { anjoRegente, anjoDaHora } from './_lib/anjos.js';
 import { verifyUser } from './_lib/auth.js';
+import { supabase } from './_lib/supabase.js';
+
+// Oferta NÃO concede premium (reframe ético): só planos pagos/cortesia.
+const PLANOS_PREMIUM = ['trial', 'mensal', 'anual'];
 
 function pretty(coro){
   const m = {
@@ -54,6 +58,12 @@ export default async function handler(req, res){
   // Auth (mapa é premium)
   const userId = await verifyUser(req);
   if(!userId) return res.status(401).json({ ok: false, error: 'Faça login pra ver seu mapa.' });
+
+  // Gate de premium: login sozinho não basta — o Mapa é exclusivo de assinantes.
+  const { data: u } = await supabase.from('users').select('plano').eq('id', userId).maybeSingle();
+  if(!u || !PLANOS_PREMIUM.includes(u.plano)){
+    return res.status(402).json({ ok: false, error: 'O Mapa Cabalístico é exclusivo para assinantes.' });
+  }
 
   const nascimento = String(req.query.nascimento || '');
   const hora = String(req.query.hora || '');

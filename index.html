@@ -4098,14 +4098,13 @@ async function carregarCirculo(){
   }
   el.innerHTML = '<p style="text-align:center; color:var(--tinta-suave); padding:20px 0; font-size:13px">Carregando o Círculo…</p>';
   try{
-    var r = await window.saaAuth.client.from('pedidos')
-      .select('id,texto,velas_recebidas,publicado_em,user_id')
-      .eq('publico', true)
-      .neq('status', 'arquivado')
-      .order('publicado_em', { ascending:false })
-      .limit(30);
+    // Feed anonimizado via RPC security-definer: retorna só colunas públicas
+    // (sem user_id), já excluindo os pedidos do próprio usuário. A leitura
+    // direta de `pedidos` públicos foi removida da RLS pra não vazar a
+    // identidade do autor — ver MIGRACAO_HARDENING.sql.
+    var r = await window.saaAuth.client.rpc('circulo_feed', { lim: 30 });
     if(r.error){ throw r.error; }
-    var lista = (r.data || []).filter(function(p){ return p.user_id !== window._userId; });
+    var lista = (r.data || []);
     if(!lista.length){
       el.innerHTML = '<div style="text-align:center; padding:36px 18px; color:var(--tinta-suave)">'
         + '<div style="font-size:30px; opacity:.5">🕊️</div>'

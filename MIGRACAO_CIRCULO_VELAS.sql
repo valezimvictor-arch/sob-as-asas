@@ -70,9 +70,18 @@ for each row execute function bump_velas_recebidas();
 -- inseridas por qualquer logado, leitura pública (pra contagem).
 alter table public.velas_pedidos enable row level security;
 
+-- Inserir vela exige: ser o próprio acendedor E o pedido-alvo ser público.
+-- Sem o EXISTS, qualquer logado poderia inflar velas_recebidas em pedidos
+-- privados (que nem consegue ler) só conhecendo/adivinhando o UUID.
 drop policy if exists "vela inserir autenticado" on public.velas_pedidos;
 create policy "vela inserir autenticado" on public.velas_pedidos
-  for insert with check (acendedor_id = auth.uid());
+  for insert with check (
+    acendedor_id = auth.uid()
+    and exists (
+      select 1 from public.pedidos p
+      where p.id = pedido_id and p.publico = true
+    )
+  );
 
 drop policy if exists "vela ler autenticado" on public.velas_pedidos;
 create policy "vela ler autenticado" on public.velas_pedidos
@@ -82,7 +91,27 @@ drop policy if exists "vela apagar autor" on public.velas_pedidos;
 create policy "vela apagar autor" on public.velas_pedidos
   for delete using (acendedor_id = auth.uid());
 
--- Pedidos públicos: qualquer um logado pode ler os públicos
+-- Pedidos públicos NÃO são lidos diretamente: a leitura direta da tabela
+-- exporia user_id (e demais colunas), de-anonimizando o Círculo, que é
+-- anunciado como anônimo. A leitura do PRÓPRIO pedido continua coberta pela
+-- policy "self_pedidos" do schema base. O feed anônimo vem da função
+-- security-definer abaixo, que devolve só colunas públicas.
 drop policy if exists "pedidos publicos legiveis" on public.pedidos;
-create policy "pedidos publicos legiveis" on public.pedidos
-  for select using (publico = true or user_id = auth.uid());
+
+create or replace function public.circulo_feed(lim int default 30)
+returns table (id uuid, texto text, velas_recebidas int, publicado_em timestamptz)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select p.id, p.texto, p.velas_recebidas, p.publicado_em
+  from public.pedidos p
+  where p.publico = true
+    and p.status <> 'arquivado'
+    and p.user_id <> auth.uid()
+  order by p.publicado_em desc nulls last
+  limit greatest(1, least(coalesce(lim, 30), 100));
+$$;
+revoke all on function public.circulo_feed(int) from public, anon;
+grant execute on function public.circulo_feed(int) to authenticated;
