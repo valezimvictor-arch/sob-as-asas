@@ -13,7 +13,8 @@ import { verifyUser } from './_lib/auth.js';
 import { supabase } from './_lib/supabase.js';
 
 // Oferta NÃO concede premium (reframe ético): só planos pagos/cortesia.
-const PLANOS_PREMIUM = ['trial', 'mensal', 'anual'];
+// 'cortesia' é setado pela equipe via /admin (tempo-de-graça) — premium real.
+const PLANOS_PREMIUM = ['trial', 'mensal', 'anual', 'cortesia'];
 
 function pretty(coro){
   const m = {

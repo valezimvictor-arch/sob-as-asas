@@ -42,7 +42,7 @@ create policy "vela inserir autenticado" on public.velas_pedidos
     acendedor_id = auth.uid()
     and exists (
       select 1 from public.pedidos p
-      where p.id = pedido_id and p.publico = true
+      where p.id = velas_pedidos.pedido_id and p.publico = true
     )
   );
 
