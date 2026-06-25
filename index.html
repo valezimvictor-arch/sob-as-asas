@@ -88,10 +88,12 @@
      420px com sombra suave nos lados pra continuar parecendo um santuário,
      não um dashboard. Mobile fica inalterado (inset:0). */
   @media (min-width: 720px){
-    body{ background:radial-gradient(circle at 50% 0%, rgba(186,117,23,.10), transparent 60%), #1A140A; }
+    /* Desktop claro como era antes: fundo creme (sem moldura escura). O casulo
+       de 420px continua centralizado, com um halo quente bem suave. */
+    body{ background:radial-gradient(circle at 50% 0%, rgba(186,117,23,.06), transparent 60%), var(--branco); }
     .screen{ left:50%; right:auto; width:420px; transform:translateX(-50%) translateY(12px) scale(.992);
-      background:var(--branco); /* casulo claro — sem isso o #1A140A do body vazava pelo frame transparente */
-      box-shadow:0 0 60px rgba(0,0,0,.35), 0 0 0 1px rgba(186,117,23,.15);
+      background:var(--branco);
+      box-shadow:0 0 60px rgba(124,78,15,.10), 0 0 0 1px rgba(186,117,23,.12);
       background-clip:padding-box; }
     .screen.active{ transform:translateX(-50%) translateY(0) scale(1); }
     /* Overlays full-screen (onboarding, error fallback) precisam centralizar
@@ -2490,16 +2492,12 @@
       <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:14px 0"><span style="color:var(--tinta-suave); font-size:14px">Plano</span><b id="aj-plano" style="font-weight:500">Gratuito</b></div>
     </div>
 
-    <!-- ░░ Oferta dos Mantenedores ░░ -->
-    <p class="label" style="display:block; margin:22px 0 8px">Apoiar o santuário</p>
+    <!-- ░░ Oferta dos Mantenedores — SEM convite/pedido de dinheiro. A seção
+         só aparece pra quem JÁ é mantenedor(a), pra ver o status e cancelar. ░░ -->
+    <div id="aj-mant-secao" style="display:none">
+    <p class="label" style="display:block; margin:22px 0 8px">Sua oferta</p>
     <div class="card" style="padding:18px 20px; background:linear-gradient(180deg, rgba(250,243,228,.65), rgba(246,200,104,.10)); border:1px solid rgba(186,117,23,.18)">
-      <div id="aj-mant-pendente" style="display:block">
-        <p style="margin:0 0 6px; font-size:11px; letter-spacing:.16em; color:var(--ouro); text-transform:uppercase; font-weight:600">Mantenedora</p>
-        <p style="margin:0; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:var(--tinta); line-height:1.55">A chama desta casa precisa de quem a mantém. Se isso faz sentido pra você, ofereça R$ 9,90 por mês — silenciosamente, sem destaque público.</p>
-        <button class="btn-ouro" style="margin-top:14px" onclick="abrirOferta()">Tornar-se Mantenedora</button>
-        <p style="margin:10px 0 0; font-size:11px; color:var(--tinta-suave); line-height:1.55; opacity:.85">Sua oferta sustenta o trabalho da Monica e o app pra todos. Cancele quando quiser. Nada muda nas suas práticas ou no Círculo — quem oferta não brilha mais que ninguém.</p>
-      </div>
-      <div id="aj-mant-ativa" style="display:none">
+      <div id="aj-mant-ativa" style="display:block">
         <div style="display:flex; align-items:flex-start; gap:14px">
           <div style="width:46px; height:46px; border-radius:50%; background:radial-gradient(circle, #F6C868, #BA7517); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; box-shadow:0 0 14px rgba(246,200,104,.42)">🤍</div>
           <div style="flex:1">
@@ -2511,6 +2509,7 @@
         <p id="aj-mant-aviso" style="display:none; margin:12px 0 0; padding:10px 12px; border-radius:10px; background:rgba(186,117,23,.10); border:1px solid rgba(186,117,23,.22); font-size:12px; color:var(--ouro-escuro); line-height:1.5"></p>
         <button class="btn-ghost" style="margin-top:14px; font-size:12.5px; color:var(--tinta-suave); border-color:var(--linha)" onclick="encerrarOferta()">Encerrar oferta</button>
       </div>
+    </div>
     </div>
 
     <p class="label" style="display:block; margin:22px 0 8px">Segurança</p>
@@ -5354,25 +5353,12 @@ async function calcularCompatibilidade(){
 }
 function resetCompat(){ openCompat(); }
 
-// ── Oferta dos Mantenedores — contribuição voluntária R$ 9,90/mês ──
-async function abrirOferta(){
-  if(!window.saaAuth || !window._userId){ alert('Faça login pra ofertar.'); return; }
-  if(!confirm('Tornar-se Mantenedora do Sob as Asas?\n\nR$ 9,90 por mês. Sua oferta sustenta o trabalho da Monica e do app pra todos.\n\nNada muda nas suas práticas — quem oferta não ganha prioridade espiritual, não brilha mais no Círculo. É puro gesto de apoio.\n\nVamos pro checkout?')) return;
-  try{
-    var token = await _accessToken();
-    var r = await fetch('/api/checkout-oferta', {
-      method:'POST',
-      headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+token }
-    });
-    var j = await r.json();
-    if(j.ok && j.url){
-      try{ if(window.plausible) window.plausible('oferta_checkout_iniciado'); }catch(_){}
-      window.location.href = j.url;
-    } else {
-      alert('Não consegui abrir o checkout: ' + (j.error || 'erro desconhecido'));
-    }
-  }catch(e){ alert('Erro de rede. Tente em alguns segundos.'); }
-}
+// ── Oferta dos Mantenedores ──
+// O convite pra ofertar foi REMOVIDO da UI (não queremos dar impressão de
+// pedir dinheiro). O endpoint /api/checkout-oferta e o webhook continuam
+// existindo, mas sem entrada na interface. encerrarOferta()/
+// _carregarStatusOferta() seguem ativos só pra quem JÁ é mantenedor(a)
+// poder ver o status e cancelar.
 
 // (usa o MESES_PT já declarado acima — capitalizado; aplicamos toLowerCase
 //  nos textos da Oferta que pedem minúsculo, p.ex. "desde janeiro")
@@ -5409,14 +5395,14 @@ async function _carregarStatusOferta(){
     var r = await window.saaAuth.client.from('mantenedores')
       .select('status, iniciada_em').eq('user_id', window._userId).maybeSingle();
     var status = r && r.data ? r.data.status : null;
-    var pend = document.getElementById('aj-mant-pendente');
-    var act = document.getElementById('aj-mant-ativa');
+    var secao = document.getElementById('aj-mant-secao');
     var aviso = document.getElementById('aj-mant-aviso');
-    if(!pend || !act) return;
+    if(!secao) return;
 
+    // Sem convite/pedido de dinheiro: a seção SÓ aparece pra quem já é
+    // mantenedor(a) — pra ver o status e poder cancelar.
     if(status === 'ativa' || status === 'pausada'){
-      pend.style.display = 'none';
-      act.style.display = 'block';
+      secao.style.display = 'block';
       var desdeEl = document.getElementById('aj-mant-desde');
       if(desdeEl){
         if(r.data.iniciada_em){
@@ -5442,9 +5428,9 @@ async function _carregarStatusOferta(){
         }
       }
     } else {
-      // pendente / cancelada / sem registro → card de convite
-      pend.style.display = 'block';
-      act.style.display = 'none';
+      // pendente / cancelada / sem registro → esconde a seção inteira
+      // (nada de convite pra ofertar).
+      secao.style.display = 'none';
       if(aviso) aviso.style.display = 'none';
       try{ localStorage.removeItem('saa_oferta_cancelando'); }catch(_){}
     }
