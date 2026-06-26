@@ -884,7 +884,19 @@ async function rodarAgente(slug, btn){
   try{
     var r = await fetch('/api/cron-'+slug, { headers: { 'x-admin-key': KEY } });
     var j = await r.json().catch(function(){ return {}; });
-    if(r.ok && j.ok !== false){
+    // Sentinela: mostra o detalhe dos checks mesmo quando ok:false (1+ endpoint
+    // falhou) — antes caía no genérico "Falhou: HTTP 200", sem dizer qual.
+    if(r.ok && slug==='sentinela' && Array.isArray(j.resultados)){
+      var sOk=j.resultados.filter(function(x){return x.ok;}).length;
+      var sFl=j.resultados.filter(function(x){return !x.ok;});
+      if(sFl.length){
+        msgEl.style.color='#C0392B';
+        msgEl.textContent='⚠ '+sOk+' OK · '+sFl.length+' falha(s): '+sFl.map(function(x){return x.label;}).join(', ')+(j.alertou?' (alerta por email enviado)':'');
+      } else {
+        msgEl.style.color='#1E8449';
+        msgEl.textContent='✓ Todos os '+sOk+' checks passaram';
+      }
+    } else if(r.ok && j.ok !== false){
       msgEl.style.color = '#1E8449';
       var detalhe = '';
       if(slug === 'sentinela'){

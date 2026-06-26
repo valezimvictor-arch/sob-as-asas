@@ -46,7 +46,7 @@ async function checkResgatar() {
   if (!r.ok) throw new Error(`resgatar HTTP ${r.status}`);
 }
 async function checkCalcAnjo() {
-  const r = await fetch(`${APP_URL}/api/calc-anjo?nascimento=1990-01-01`);
+  const r = await fetch(`${APP_URL}/api/calc-anjo?data=1990-01-01`);
   if (!r.ok) throw new Error(`calc-anjo HTTP ${r.status}`);
   const j = await r.json().catch(() => null);
   if (!j || !j.anjo || !j.anjo.nome) throw new Error('calc-anjo payload inválido');

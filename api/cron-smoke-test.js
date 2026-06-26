@@ -17,7 +17,7 @@ const APP_URL = process.env.APP_URL || 'https://www.sobasasas.com.br';
 const ALERT_TO = process.env.SMOKE_ALERT_TO || 'vv@unitedmfo.com.br';
 
 async function checkCalcAnjo() {
-  const r = await fetch(`${APP_URL}/api/calc-anjo?nascimento=1990-01-01`);
+  const r = await fetch(`${APP_URL}/api/calc-anjo?data=1990-01-01`);
   if (!r.ok) throw new Error(`calc-anjo HTTP ${r.status}`);
   const j = await r.json().catch(() => ({}));
   if (!j || !j.anjo) throw new Error('calc-anjo retornou payload inesperado');
