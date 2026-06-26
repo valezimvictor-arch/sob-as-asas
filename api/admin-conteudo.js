@@ -17,7 +17,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     const { data, error } = await supabase
       .from('conteudos')
-      .select('id,titulo,formato,colecao,premium,publicado,data_pub,duracao_seg')
+      .select('id,titulo,formato,colecao,premium,publicado,data_pub,duracao_seg,anjo_n')
       .order('data_pub', { ascending: false, nullsFirst: false })
       .limit(300);
     if (error) return res.status(500).json({ ok: false, error: error.message });
