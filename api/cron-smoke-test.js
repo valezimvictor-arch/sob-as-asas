@@ -46,10 +46,30 @@ async function checkResend() {
   return { ok: true };
 }
 
+// O front carrega o supabase-js do CDN (jsdelivr → unpkg). Se AMBOS caírem, o
+// app inteiro vai pra "modo demo" (sem login/dados) — silenciosamente. Esta
+// checagem garante que pelo menos um CDN serve o script.
+async function checkSupabaseCDN() {
+  const fontes = [
+    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js',
+    'https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.min.js',
+  ];
+  const erros = [];
+  for (const url of fontes) {
+    try {
+      const r = await fetch(url, { redirect: 'follow' });
+      if (r.ok) return { ok: true, detalhe: url.includes('jsdelivr') ? 'jsdelivr' : 'unpkg' };
+      erros.push(`${url.split('/')[2]} HTTP ${r.status}`);
+    } catch (e) { erros.push(`${url.split('/')[2]}: ${e.message}`); }
+  }
+  throw new Error('supabase-js indisponível em TODOS os CDNs — o app cairia em modo demo. ' + erros.join(' | '));
+}
+
 const CHECKS = [
   ['calc-anjo', checkCalcAnjo],
   ['admin-metrics', checkAdminMetrics],
   ['supabase-rpc', checkSupabaseRPC],
+  ['supabase-cdn', checkSupabaseCDN],
   ['resend', checkResend],
 ];
 

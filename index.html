@@ -6097,7 +6097,9 @@ async function entrarComSenha(){
     if(r.error){
       var m = (r.error.message || '').toLowerCase();
       if(m.includes('invalid') || m.includes('credentials')){
-        msg.textContent = 'E-mail ou senha incorretos. Verifique e tente de novo.';
+        // Causa comum: a conta foi criada por LINK por e-mail e nunca teve
+        // senha definida. Em vez de um beco-sem-saída, guia pros 2 caminhos.
+        msg.textContent = 'Não reconheci essa senha. Se você costuma entrar pelo link por e-mail, use "Entrar com código por e-mail" abaixo — ou toque em "Esqueci minha senha" pra definir uma nova.';
       } else if(m.includes('email not confirmed') || m.includes('confirm')){
         msg.textContent = 'Confirme seu e-mail antes de entrar. Verifique sua caixa.';
       } else if(m.includes('rate') || m.includes('many')){
@@ -6523,6 +6525,9 @@ window.saaAuth = null;
       if(tentativa < FONTES.length){ carregar(); return; }
       console.warn('[Sob as Asas] supabase-js não carregou; seguindo em modo demo.');
       try{ if(window.Sentry) window.Sentry.captureMessage('supabase-js falhou em todos CDNs', 'error'); }catch(_){}
+      // Sinal no Plausible (independe do Sentry carregar) — vira um pico
+      // visível no painel se o app começar a cair em modo demo em massa.
+      try{ if(window.plausible) window.plausible('modo_demo_supabase_falhou'); }catch(_){}
       try{ window.dispatchEvent(new Event('saa-supabase-fail')); }catch(_){}
     };
     s.onload=function(){
