@@ -414,47 +414,24 @@
       </div>
     </div>
 
-    <!-- ░░ ROTEIROS MONICA (conteúdos gerais) ░░ -->
+    <!-- ░░ ROTEIROS MONICA (checklist por semana — nome do arquivo + upload) ░░ -->
     <div id="sec-monica" class="hide">
-      <div class="nota">🎙️ <strong>Roteiros gerais da Monica</strong> — mensagens semanais, salmos diários e conteúdos avulsos das coleções (proteção, prosperidade, dormir…). <em>Não</em> inclui os 72 anjos nem os Caminhos — esses têm abas próprias.</div>
-      <div class="card">
-        <div class="row">
-          <div><label class="f">Coleção</label>
-            <select id="rm-colecao">
-              <option value="mensagem_semana">Mensagem da semana</option>
-              <option value="salmo_diario">Salmo Diário</option>
-              <option value="protecao">Proteção</option>
-              <option value="prosperidade">Prosperidade</option>
-              <option value="para_dormir">Para dormir</option>
-              <option value="conhecer_anjo">Conhecer seu anjo</option>
-              <option value="magia_velas">Magia das Velas</option>
-              <option value="novena">Novena dos Anjos</option>
-              <option value="bencao">Bênçãos de 30s</option>
-            </select>
+      <div class="nota">📥 <strong>Roteiro de gravação da Monica</strong> — checklist organizada por semana. Cada linha tem o nome exato do arquivo e o botão de upload. Pegue o arquivo gravado, renomeie como indicado e clique em "Enviar". Status: ✓ enviado · ⏳ pendente.</div>
+
+      <div class="card" style="margin-bottom:18px">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap">
+          <div>
+            <h3 style="font-family:'Playfair Display',serif; font-weight:400; font-size:18px; margin:0">Progresso geral</h3>
+            <p id="roteiro-resumo" style="margin:4px 0 0; font-size:13px; color:var(--suave)">Carregando…</p>
           </div>
-          <div><label class="f">Formato</label>
-            <select id="rm-formato">
-              <option value="audio">Áudio</option>
-              <option value="video">Vídeo</option>
-              <option value="salmo">Salmo</option>
-              <option value="texto">Texto</option>
-            </select>
-          </div>
+          <button class="btn-sec" onclick="carregarRoteiro()">↻ Atualizar</button>
         </div>
-        <label class="f">Título</label>
-        <input type="text" id="rm-titulo" placeholder="Ex.: Mensagem da semana — recomeços" />
-        <div class="row">
-          <div><label class="f">Data (opcional · pode ser futura)</label><input type="date" id="rm-data" /></div>
-          <div style="display:flex; align-items:flex-end"><label style="display:flex; align-items:center; gap:7px; font-size:13px; padding-bottom:6px"><input type="checkbox" id="rm-premium" checked /> Premium</label></div>
-        </div>
-        <label class="f">Áudio (mp3 · m4a · ogg · wav · até 50MB)</label>
-        <input type="file" id="rm-file" accept="audio/*" />
-        <div style="display:flex; align-items:center; gap:12px; margin-top:14px">
-          <button class="btn" id="rm-salvar" onclick="salvarRoteiroMonica()">Enviar conteúdo</button>
-          <span id="rm-msg" style="font-size:13px"></span>
+        <div style="background:#F0E5C7; border-radius:99px; height:8px; margin-top:14px; overflow:hidden">
+          <div id="roteiro-barra" style="height:100%; width:0%; background:linear-gradient(90deg, var(--ouro-claro), var(--ouro)); transition:width .4s"></div>
         </div>
       </div>
-      <div id="rm-lista" style="margin-top:18px"></div>
+
+      <div id="roteiro-blocos"></div>
     </div>
 
     <!-- ░░ ROTEIROS 72 ANJOS (checklist por anjo) ░░ -->
@@ -833,7 +810,7 @@ function aba(qual){
   if(qual==='newsletter') carregarNewsletter();
   if(qual==='usuarios') carregarUsuarios();
   if(qual==='roteiro') carregar72Anjos();
-  if(qual==='monica') carregarRoteirosMonica();
+  if(qual==='monica') carregarRoteiro();
   if(qual==='caminhos') carregarRoteirosCaminhos();
   if(qual==='mensal'){
     var hoje=new Date();
@@ -1014,53 +991,150 @@ async function enviarAudio72(n, input){
   input.value='';
 }
 
-// ── ROTEIROS MONICA (conteúdos gerais) ──────────────────────────────────
-async function carregarRoteirosMonica(){
-  var el=document.getElementById('rm-lista'); el.innerHTML='<p class="vazio">Carregando…</p>';
+// ── ROTEIROS MONICA (checklist por semana — restaurado ao formato original) ──
+var ROTEIRO_DADOS = null;
+var ROTEIRO_CONTEUDOS = []; // o que já foi enviado, vindo da API
+
+async function carregarRoteiro(){
+  var blocosEl = document.getElementById('roteiro-blocos');
+  blocosEl.innerHTML = '<p class="vazio">Carregando roteiro…</p>';
+
+  // 1) Carrega o roteiro estático (lista de arquivos esperados)
+  if(!ROTEIRO_DADOS){
+    try{
+      var r = await fetch('/data/roteiro-monica.json');
+      ROTEIRO_DADOS = await r.json();
+    }catch(e){
+      blocosEl.innerHTML = '<p class="vazio" style="color:#C0392B">Erro ao carregar /data/roteiro-monica.json</p>';
+      return;
+    }
+  }
+
+  // 2) Carrega o que já foi enviado pra cruzar status
   try{
-    var r=await fetch('/api/admin-conteudo',{headers:{'x-admin-key':KEY}});
-    var j=await r.json();
-    var lista=(j.conteudos||[]).filter(function(c){ return c.colecao!=='72_anjos'; });
-    if(!lista.length){ el.innerHTML='<p class="vazio">Nenhum conteúdo geral enviado ainda.</p>'; return; }
-    var grupos={}; lista.forEach(function(c){ var k=c.colecao||'outros'; (grupos[k]=grupos[k]||[]).push(c); });
-    var html='';
-    Object.keys(grupos).forEach(function(k){
-      html+='<p class="label" style="display:block; margin:18px 0 8px">'+esc(COL_LABEL[k]||k)+'</p>';
-      grupos[k].forEach(function(c){
-        var dur=c.duracao_seg?(' · '+Math.round(c.duracao_seg/60)+'min'):'';
-        var pub=c.publicado?'':' · <span style="color:#C0392B">não publicado</span>';
-        html+='<div class="card" style="padding:12px 16px; display:flex; align-items:center; gap:12px; margin-bottom:8px">'
-          +'<div style="flex:1; min-width:0"><p style="margin:0; font-weight:500; font-size:14px; color:var(--tinta)">'+esc(c.titulo)+'</p>'
-          +'<p style="margin:2px 0 0; font-size:12px; color:var(--suave)">'+esc(c.formato||'')+dur+(c.premium?' · premium':' · grátis')+pub+'</p></div>'
-          +'</div>';
-      });
-    });
-    el.innerHTML=html;
-  }catch(e){ el.innerHTML='<p class="vazio" style="color:#C0392B">Erro ao carregar conteúdos.</p>'; }
+    var rc = await fetch('/api/admin-conteudo',{headers:{'x-admin-key':KEY}});
+    if(rc.ok){ var j = await rc.json(); ROTEIRO_CONTEUDOS = j.conteudos || []; }
+  }catch(e){ ROTEIRO_CONTEUDOS = []; }
+
+  renderizarRoteiro();
 }
-async function salvarRoteiroMonica(){
-  var msg=document.getElementById('rm-msg'); var btn=document.getElementById('rm-salvar');
-  var titulo=(document.getElementById('rm-titulo').value||'').trim();
-  if(!titulo){ msg.style.color='#C0392B'; msg.textContent='Informe um título.'; return; }
-  var f=document.getElementById('rm-file').files[0];
-  if(!f){ msg.style.color='#C0392B'; msg.textContent='Selecione um arquivo de áudio.'; return; }
-  if(!_audioValido(f)) return;
-  msg.style.color='var(--ouro)'; msg.textContent='Enviando… (pode levar um tempo)'; btn.disabled=true;
+
+function _roteiroStatusItem(item){
+  // Encontra um conteúdo já enviado que case com o título exato ou nome de arquivo
+  for(var i=0;i<ROTEIRO_CONTEUDOS.length;i++){
+    var c = ROTEIRO_CONTEUDOS[i];
+    if(c.titulo === item.titulo) return c;
+    if(c.media_url && c.media_url.indexOf(item.nome_arquivo) !== -1) return c;
+  }
+  return null;
+}
+
+function renderizarRoteiro(){
+  var html = '';
+  var totalEsperado = 0, totalEnviado = 0;
+
+  for(var b=0; b<ROTEIRO_DADOS.blocos.length; b++){
+    var bloco = ROTEIRO_DADOS.blocos[b];
+    // Os 72 anjos têm aba dedicada agora — pula o bloco auto-gerado aqui.
+    if(bloco.auto_gerado_72) continue;
+    html += '<div class="card" style="margin-bottom:16px; padding:0; overflow:hidden">';
+    html += '<div style="padding:14px 18px; background:var(--ouro-bg); border-bottom:1px solid rgba(186,117,23,.18)">';
+    html += '<h3 style="font-family:\'Playfair Display\',serif; font-weight:500; font-size:17px; margin:0; color:var(--ouro)">'+esc(bloco.rotulo)+'</h3>';
+    if(bloco.descricao) html += '<p style="margin:4px 0 0; font-size:13px; color:var(--suave); line-height:1.5">'+esc(bloco.descricao)+'</p>';
+    html += '</div>';
+
+    for(var s=0; s<bloco.semanas.length; s++){
+      var sem = bloco.semanas[s];
+      html += '<div style="padding:14px 18px; border-bottom:1px solid rgba(186,117,23,.10)">';
+      html += '<p style="margin:0 0 10px; font-size:14px; font-weight:600; color:var(--tinta)">'+esc(sem.rotulo)+'</p>';
+      if(sem.nota) html += '<p style="margin:0 0 12px; font-size:12px; color:var(--suave); font-style:italic; line-height:1.5">'+esc(sem.nota)+'</p>';
+
+      // Itens explícitos (nome do arquivo + upload do lado)
+      if(sem.itens && sem.itens.length){
+        for(var i=0; i<sem.itens.length; i++){
+          var it = sem.itens[i];
+          it._colecao = it.colecao_override || sem.colecao;
+          totalEsperado++;
+          var enviado = _roteiroStatusItem(it);
+          if(enviado) totalEnviado++;
+          html += _roteiroLinhaHTML(it, b, s, i, enviado);
+        }
+      }
+
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+
+  document.getElementById('roteiro-blocos').innerHTML = html;
+  document.getElementById('roteiro-resumo').textContent = totalEnviado + ' de ' + totalEsperado + ' arquivos enviados';
+  var pct = totalEsperado ? Math.round((totalEnviado/totalEsperado)*100) : 0;
+  document.getElementById('roteiro-barra').style.width = pct + '%';
+}
+
+function _roteiroLinhaHTML(it, b, s, i, enviado){
+  var statusChip = enviado
+    ? '<span class="tag" style="background:#E8F5E9; color:#1B5E20; border-color:#A5D6A7">✓ enviado</span>'
+    : '<span class="tag off">⏳ pendente</span>';
+  var inputId = 'rot-file-'+b+'-'+s+'-'+i;
+  var btnLabel = enviado ? 'Substituir' : ('Enviar '+(it.formato==='video'?'vídeo':'áudio'));
+  var btnClass = enviado ? 'btn-sec' : 'btn';
+  var dur = it.duracao_min ? ('~'+it.duracao_min+' min · ') : '';
+
+  return ''
+    + '<div style="display:flex; align-items:center; gap:12px; padding:10px 0; border-top:1px solid rgba(186,117,23,.08); flex-wrap:wrap">'
+    +   '<div style="flex:1; min-width:220px">'
+    +     '<div style="font-weight:500; font-size:14px; color:var(--tinta)">'+esc(it.titulo)+'</div>'
+    +     '<div style="font-size:11.5px; color:var(--suave); margin-top:2px; font-family:Menlo,monospace">'+esc(it.nome_arquivo)+'</div>'
+    +     '<div style="font-size:11px; color:var(--suave); margin-top:2px">'+dur+esc(it.formato==='video'?'Vídeo MP4 (1080p vertical)':'Áudio MP3 192kbps')+'</div>'
+    +   '</div>'
+    +   statusChip
+    +   '<input type="file" id="'+inputId+'" accept="'+(it.formato==='video'?'video/*':'audio/*')+'" style="display:none" '
+    +     'onchange="enviarRoteiroArquivo(this, '+JSON.stringify({nome_arquivo:it.nome_arquivo,titulo:it.titulo,formato:it.formato,colecao:it._colecao,dia_jornada:it.dia_jornada||null,anjo_n:it.anjo_n||null,duracao_min:it.duracao_min||null,sentimentos:it.sentimentos||[],premium:it.premium!==false}).replace(/"/g,'&quot;')+')" />'
+    +   '<button class="'+btnClass+'" style="white-space:nowrap" onclick="document.getElementById(\''+inputId+'\').click()">'+btnLabel+'</button>'
+    + '</div>';
+}
+
+async function enviarRoteiroArquivo(input, meta){
+  if(typeof meta === 'string'){ try{ meta = JSON.parse(meta.replace(/&quot;/g,'"')); }catch(e){ meta={}; } }
+  var f = input.files[0]; if(!f) return;
+
+  // Avisa se o nome do arquivo não confere com o esperado
+  if(f.name !== meta.nome_arquivo){
+    if(!confirm('O arquivo "'+f.name+'" tem nome diferente do esperado ("'+meta.nome_arquivo+'"). Continuar mesmo assim?')){
+      input.value = ''; return;
+    }
+  }
+
+  var btn = input.nextElementSibling;
+  var btnTxtOriginal = btn ? btn.textContent : null;
+  if(btn){ btn.disabled = true; btn.textContent = 'Enviando…'; }
+
   try{
-    var dur=await _audioDur(f);
-    var url=await _subirAudio('monica', 'novo', f);
-    await _commitAudio('monica', 'novo', url, dur, {
-      titulo:titulo,
-      colecao:document.getElementById('rm-colecao').value,
-      formato:document.getElementById('rm-formato').value,
-      premium:document.getElementById('rm-premium').checked,
-      data_pub:document.getElementById('rm-data').value||null
-    });
-    msg.style.color='#1B5E20'; msg.textContent='Enviado ✓';
-    document.getElementById('rm-titulo').value=''; document.getElementById('rm-file').value='';
-    carregarRoteirosMonica();
-  }catch(e){ msg.style.color='#C0392B'; msg.textContent='Erro: '+(e.message||e); }
-  finally{ btn.disabled=false; }
+    var media_url = await subirArquivo(f);
+    var body = {
+      action: 'criar',
+      titulo: meta.titulo,
+      formato: meta.formato,
+      colecao: meta.colecao,
+      media_url: media_url,
+      duracao_seg: meta.duracao_min ? Math.round(meta.duracao_min*60) : null,
+      sentimentos: meta.sentimentos || [],
+      dia_jornada: meta.dia_jornada || null,
+      anjo_n: meta.anjo_n || null,
+      premium: meta.premium !== false,
+      publicado: true,
+      data_pub: null
+    };
+    var r = await fetch('/api/admin-conteudo',{method:'POST',headers:{'Content-Type':'application/json','x-admin-key':KEY},body:JSON.stringify(body)});
+    var j = await r.json();
+    if(!j.ok) throw new Error(j.error||'falha');
+    await carregarRoteiro();
+  }catch(e){
+    alert('Erro ao enviar: '+(e.message||e));
+    if(btn){ btn.disabled = false; btn.textContent = btnTxtOriginal || 'Enviar'; }
+  }
+  input.value = '';
 }
 
 // ── ROTEIROS CAMINHOS (21 áudios) ───────────────────────────────────────
