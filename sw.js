@@ -2,7 +2,7 @@
 // Strategy: network-first para HTML (sempre fresco), cache-first para assets.
 // A cada deploy, suba o número da versão (v0.1 → v0.2...) para disparar o
 // banner "Nova versão disponível".
-const CACHE = 'sobasasas-v0.63';
+const CACHE = 'sobasasas-v0.64';
 const ASSETS = ['/manifest.json', '/asa-icon.svg', '/js/geradorTextos.js', '/js/observabilidade.js'];
 // Scripts de terceiros que o app depende em runtime — pré-cacheados de forma
 // best-effort (não bloqueia o install se algum falhar). Garante que recovery /
@@ -43,28 +43,38 @@ self.addEventListener('fetch', e => {
   const { request } = e;
   if (request.method !== 'GET') return;
 
-  // NUNCA cachear chamadas de dados/auth: API própria (/api/*) e Supabase.
-  // Respostas autenticadas não podem persistir no CacheStorage (vazam PII num
-  // device compartilhado e sobrevivem ao logout) nem ser reservidas de forma
-  // stale e independente do token. Só assets estáticos entram no cache.
   let _url;
-  try { _url = new URL(request.url); } catch (_) { _url = null; }
-  if (_url && (_url.pathname.startsWith('/api/') || _url.hostname.endsWith('.supabase.co'))) {
-    return; // deixa o browser ir direto à rede, sem SW no meio
-  }
+  try { _url = new URL(request.url); } catch (_) { return; }
+
+  // SÓ intercepta same-origin. Requisições cross-origin (CDNs como
+  // jsdelivr/unpkg, Supabase, Stripe, fontes) passam DIRETO pro browser.
+  // Por quê: o SW não consegue ler respostas opacas cross-origin, e um fetch
+  // que falhe aqui virava respondWith(undefined) — foi o que derrubou o
+  // supabase-js do jsdelivr e jogou o app inteiro em "modo demo".
+  if (_url.origin !== self.location.origin) return;
+
+  // API própria: nunca cachear (dados/auth não podem virar cache stale/PII).
+  if (_url.pathname.startsWith('/api/')) return;
 
   const isHTML = request.mode === 'navigate' ||
     (request.headers.get('accept') || '').includes('text/html');
 
   if (isHTML) {
-    e.respondWith(fetch(request).catch(() => caches.match(request)));
+    // network-first; só cai pro cache se a rede falhar E houver cache.
+    e.respondWith(
+      fetch(request).catch(function(){
+        return caches.match(request).then(function(c){ return c || Response.error(); });
+      })
+    );
   } else {
+    // cache-first; se não há cache, vai à rede. Se a rede falhar, NÃO
+    // retornamos undefined (deixa rejeitar = erro de rede nativo).
     e.respondWith(
       caches.match(request).then(cached => cached || fetch(request).then(res => {
         const copy = res.clone();
         caches.open(CACHE).then(c => c.put(request, copy)).catch(() => {});
         return res;
-      }).catch(() => cached))
+      }))
     );
   }
 });
