@@ -494,7 +494,7 @@
     </div>
 
     <!-- Modal: roteiro do dia (Caminhos) -->
-    <div id="cam-modal" class="hide" style="position:fixed; inset:0; z-index:1000; background:rgba(28,22,12,.55); display:flex; align-items:center; justify-content:center; padding:20px" onclick="if(event.target===this)fecharCamModal()">
+    <div id="cam-modal" style="display:none; position:fixed; inset:0; z-index:1000; background:rgba(28,22,12,.55); align-items:center; justify-content:center; padding:20px" onclick="if(event.target===this)fecharCamModal()">
       <div class="card" style="max-width:680px; width:100%; max-height:85vh; overflow-y:auto; position:relative">
         <button class="btn-sec" style="position:sticky; top:0; float:right; margin-left:12px" onclick="fecharCamModal()">Fechar</button>
         <div id="cam-modal-conteudo" style="font-size:14px; line-height:1.7; color:var(--tinta)"></div>
@@ -1117,7 +1117,7 @@ async function enviarAudioCaminho(slug, dia, input){
 // Modal: roteiro do dia (lido de ROTEIROS_CAMINHOS.md)
 async function verRoteiroDia(slug, dia){
   var box=document.getElementById('cam-modal-conteudo');
-  document.getElementById('cam-modal').classList.remove('hide');
+  document.getElementById('cam-modal').style.display='flex';
   box.innerHTML='<p class="vazio">Carregando roteiro…</p>';
   try{
     if(CAM_MD===null){ var r=await fetch('/ROTEIROS_CAMINHOS.md'); CAM_MD = r.ok ? await r.text() : ''; }
@@ -1125,7 +1125,7 @@ async function verRoteiroDia(slug, dia){
     box.innerHTML = sec ? _mdLeve(sec) : '<p class="vazio">Roteiro deste dia ainda não está no ROTEIROS_CAMINHOS.md.</p>';
   }catch(e){ box.innerHTML='<p class="vazio" style="color:#C0392B">Não consegui abrir o roteiro.</p>'; }
 }
-function fecharCamModal(){ document.getElementById('cam-modal').classList.add('hide'); }
+function fecharCamModal(){ document.getElementById('cam-modal').style.display='none'; }
 function _extrairRoteiroDia(md, ord, dia){
   if(!ord || !md) return null;
   var blocos=md.split(/\n##\s/); var alvo=null;
