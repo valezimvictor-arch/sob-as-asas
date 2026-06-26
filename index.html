@@ -1524,7 +1524,7 @@
         <h1 id="home-anjo" class="altar-nome">—</h1>
         <div class="altar-filete"></div>
         <p id="altar-dom" class="altar-dom"><em>—</em></p>
-        <p id="altar-horario" class="altar-horario" style="display:none">rege agora · <b>—</b></p>
+        <p id="altar-horario" class="altar-horario" style="display:none">rege às <b>—</b></p>
       </div>
 
       <!-- Mensagem do dia (auto-gerada pelo GeradorTextos) -->
@@ -3843,7 +3843,7 @@ async function renderizarAltarHome(){
           var elHor = document.getElementById('altar-horario');
           if(elHor){
             elHor.style.display = '';
-            elHor.innerHTML = 'rege agora · <b>'+_escTxt(a.horario)+'</b>';
+            elHor.innerHTML = 'rege às <b>'+_escTxt(a.horario)+'</b>';
           }
         }
         // Mensagem do dia auto-gerada
