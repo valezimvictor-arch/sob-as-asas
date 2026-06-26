@@ -8,6 +8,7 @@
 <meta name="copyright" content="© Monica Buonfiglio · LVSV Ventures Participações Ltda. · Todos os direitos reservados" />
 <meta name="author" content="Monica Buonfiglio" />
 <meta name="rights" content="Conteúdo autoral protegido pela Lei 9.610/98. Reprodução proibida sem autorização." />
+<link rel="icon" href="/asa-icon.svg" type="image/svg+xml" />
 <link rel="manifest" href="/manifest.json" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -97,8 +98,10 @@
       background-clip:padding-box; }
     .screen.active{ transform:translateX(-50%) translateY(0) scale(1); }
     /* Overlays full-screen (onboarding, error fallback) precisam centralizar
-       o conteúdo também — não os deixa colados na borda */
-    #onb-overlay, #err-fallback{ left:50%; right:auto; width:420px; transform:translateX(-50%); }
+       no casulo de 420px. O !important é necessário porque esses overlays têm
+       `inset:0` INLINE (left:0), e estilo inline vence a folha — sem isto o
+       overlay virava uma coluna de 420px colada na ESQUERDA do desktop. */
+    #onb-overlay, #err-fallback{ left:50% !important; right:auto !important; width:420px; transform:translateX(-50%); }
   }
   /* Telas devocionais (reveal + acolhimento) entram com um respiro mais lento */
   #s-reveal, #s-acolhimento{

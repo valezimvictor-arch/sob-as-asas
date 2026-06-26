@@ -56,6 +56,7 @@
     }
   ],
   "rewrites": [
+    { "source": "/favicon.ico", "destination": "/asa-icon.svg" },
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/landing", "destination": "/landing.html" },
     { "source": "/termos", "destination": "/termos.html" },
