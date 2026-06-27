@@ -38,7 +38,8 @@ export default async function handler(req, res) {
     const buf = await rawBody(req);
     event = stripe.webhooks.constructEvent(buf, req.headers['stripe-signature'], process.env.STRIPE_WEBHOOK_SECRET);
   } catch (e) {
-    return res.status(400).send('Webhook Error: ' + e.message);
+    console.error('[stripe-webhook] verificação de assinatura falhou:', e?.message);
+    return res.status(400).send('Webhook signature verification failed');
   }
 
   // ── Idempotência: já processamos este event.id antes? ──

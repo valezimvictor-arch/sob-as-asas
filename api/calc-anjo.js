@@ -23,6 +23,7 @@ export default async function handler(req, res) {
       anjo: { n: anjo.n, nome: anjo.nome, coro: anjo.coro, atributo: anjo.atributo, dias },
     });
   } catch (e) {
-    return res.status(400).json({ ok: false, error: e.message });
+    console.error('[calc-anjo]', e?.message);
+    return res.status(400).json({ ok: false, error: 'Data inválida.' });
   }
 }

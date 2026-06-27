@@ -106,6 +106,6 @@ export default async function handler(req, res){
     });
   } catch (e) {
     console.error('[mapa-cabalistico]', e?.message);
-    return res.status(500).json({ ok: false, error: 'Erro ao gerar mapa: ' + e.message });
+    return res.status(500).json({ ok: false, error: 'Não consegui gerar seu mapa agora.' });
   }
 }

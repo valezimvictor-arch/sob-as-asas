@@ -80,6 +80,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true, url: session.url });
   } catch (e) {
     console.error('[checkout-oferta]', e?.message);
-    return res.status(500).json({ ok: false, error: 'Erro ao criar checkout: ' + e.message });
+    return res.status(500).json({ ok: false, error: 'Não consegui abrir o checkout agora.' });
   }
 }

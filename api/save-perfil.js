@@ -22,7 +22,7 @@ export default async function handler(req, res) {
 
   let anjo;
   try { anjo = anjoRegente(nascimento); }
-  catch (e) { return res.status(400).json({ ok: false, error: e.message }); }
+  catch (e) { console.error('[save-perfil]', e?.message); return res.status(400).json({ ok: false, error: 'Data de nascimento inválida.' }); }
 
   // Sem JWT → onboarding pré-login: devolve só o anjo, não persiste.
   const userId = await verifyUser(req);
