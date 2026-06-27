@@ -7,7 +7,7 @@
 //            customer.subscription.deleted
 //   Copie o "Signing secret" para a env var STRIPE_WEBHOOK_SECRET na Vercel.
 
-import Stripe from 'stripe';
+import { stripe } from './_lib/stripe.js';
 import { supabase } from './_lib/supabase.js';
 import { enviarEmail } from './_lib/resend.js';
 import { emailPresenteHtml } from './_lib/presenteEmail.js';
@@ -20,7 +20,6 @@ function gerarCodigoPresente() {
   return 'PRES-' + r.slice(0, 4) + '-' + r.slice(4, 8);
 }
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Stripe exige o corpo CRU para validar a assinatura → desliga o parser.
 export const config = { api: { bodyParser: false } };

@@ -8,6 +8,7 @@
 // Se não houver, monta um conteúdo padrão a partir do anjo da semana corrente.
 
 import { supabase } from './_lib/supabase.js';
+import { adminKeyValida } from './_lib/adminAuth.js';
 import { enviarEmail } from './_lib/resend.js';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -58,7 +59,7 @@ function montarConteudoDefault() {
 
 export default async function handler(req, res) {
   const isCron = req.headers['x-vercel-cron'] === '1';
-  const isAdmin = req.headers['x-admin-key'] === process.env.ADMIN_KEY;
+  const isAdmin = adminKeyValida(req);
   if (!isCron && !isAdmin) return res.status(401).json({ ok: false });
 
   const isPreview = req.query.preview === '1';

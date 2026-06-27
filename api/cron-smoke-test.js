@@ -11,6 +11,7 @@
 // Sem falhas → 200 vazio (silêncio é ouro).
 
 import { enviarEmail } from './_lib/resend.js';
+import { adminKeyValida } from './_lib/adminAuth.js';
 import { supabase } from './_lib/supabase.js';
 
 const APP_URL = process.env.APP_URL || 'https://www.sobasasas.com.br';
@@ -75,7 +76,7 @@ const CHECKS = [
 
 export default async function handler(req, res) {
   const isCron = req.headers['x-vercel-cron'] === '1';
-  const isAdmin = req.headers['x-admin-key'] === process.env.ADMIN_KEY;
+  const isAdmin = adminKeyValida(req);
   if (!isCron && !isAdmin) return res.status(401).json({ ok: false });
 
   const resultados = [];

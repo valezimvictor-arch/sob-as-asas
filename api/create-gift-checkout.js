@@ -4,9 +4,8 @@
 // na data combinada. O webhook de payment_intent.succeeded notifica equipe
 // pra preparar o email de resgate com link único.
 
-import Stripe from 'stripe';
+import { stripe } from './_lib/stripe.js';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const APP_URL = process.env.APP_URL || 'https://sobasasas.com.br';
 const PRICE_PRESENTE = process.env.STRIPE_PRICE_PRESENTE_ANUAL || process.env.STRIPE_PRICE_ANUAL;
 

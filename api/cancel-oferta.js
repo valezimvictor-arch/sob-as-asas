@@ -5,11 +5,10 @@
 // cobrança. O webhook customer.subscription.* sincroniza o estado quando o
 // ciclo encerra. Idempotente: cancelar uma sub já cancelada retorna ok.
 
-import Stripe from 'stripe';
+import { stripe } from './_lib/stripe.js';
 import { supabase } from './_lib/supabase.js';
 import { verifyUser } from './_lib/auth.js';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();

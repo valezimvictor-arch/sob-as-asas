@@ -16,6 +16,7 @@
 // adicional) — usa direto o Supabase como fonte da verdade.
 
 import { enviarEmail } from './_lib/resend.js';
+import { adminKeyValida } from './_lib/adminAuth.js';
 import { supabase } from './_lib/supabase.js';
 
 const ALERT_TO = process.env.PULSE_TO || process.env.SMOKE_ALERT_TO || 'vv@unitedmfo.com.br';
@@ -50,7 +51,7 @@ function chip(label, valor, deltaPct, cor) {
 
 export default async function handler(req, res) {
   const isCron = req.headers['x-vercel-cron'] === '1';
-  const isAdmin = req.headers['x-admin-key'] === process.env.ADMIN_KEY;
+  const isAdmin = adminKeyValida(req);
   if (!isCron && !isAdmin) return res.status(401).json({ ok: false });
 
   try {

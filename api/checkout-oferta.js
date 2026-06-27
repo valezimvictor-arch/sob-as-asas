@@ -5,11 +5,10 @@
 // prioridade espiritual, não destaca o pedido do pagante.
 // O webhook stripe-webhook.js processa e marca user.oferta_ativa = true.
 
-import Stripe from 'stripe';
+import { stripe } from './_lib/stripe.js';
 import { supabase } from './_lib/supabase.js';
 import { verifyUser } from './_lib/auth.js';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const APP_URL = process.env.APP_URL || 'https://sobasasas.com.br';
 // Mesma env var de antes — pode reaproveitar o price R$ 9,90/mês criado no Stripe
 const PRICE_OFERTA = process.env.STRIPE_PRICE_OFERTA || process.env.STRIPE_PRICE_VELA_PERMANENTE;

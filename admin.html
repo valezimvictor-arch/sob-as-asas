@@ -1691,7 +1691,7 @@ function renderFunil(m){
     + '</p>';
   el.innerHTML = html;
 }
-function esc(s){ return String(s||'').replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
+function esc(s){ return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
 function iniciais(n){ return (n||'?').split(' ').map(function(p){return p[0];}).slice(0,2).join('').toUpperCase(); }
 function val(id){ return (document.getElementById(id).value||'').trim(); }
 

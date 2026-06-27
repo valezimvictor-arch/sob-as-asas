@@ -4456,7 +4456,7 @@ function plSeek(d){ plState.cur=Math.max(0,Math.min(plState.dur,plState.cur+d));
 function closePlayer(){ if(plState.timer){clearInterval(plState.timer); plState.timer=null;} plState.playing=false; harpaStop(); show(window._prevScreen||'s-home'); }
 
 // ── diário de gratidão (demo local; espelha public.gratidao) ──
-function esc(s){ return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 let GRAT=[{t:'Pela saúde da minha família', d:'Ontem'},{t:'Por um dia de paz no trabalho', d:'2 dias atrás'}];
 function openGratidao(){ renderGrat(); carregarGratidao(); show('s-gratidao'); setTimeout(function(){var i=document.getElementById('nova-gratidao'); if(i) i.focus();},450); }
 function renderGrat(){

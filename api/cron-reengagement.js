@@ -12,6 +12,7 @@
 // Mensagens variadas (3 versões alternadas para não ficar repetitivo).
 
 import { supabase } from './_lib/supabase.js';
+import { adminKeyValida } from './_lib/adminAuth.js';
 import webpush from 'web-push';
 
 webpush.setVapidDetails(
@@ -30,7 +31,7 @@ function pickMensagem(i){ return MENSAGENS[i % MENSAGENS.length]; }
 
 export default async function handler(req, res) {
   const isCron = req.headers['x-vercel-cron'] === '1';
-  const isAdmin = req.headers['x-admin-key'] === process.env.ADMIN_KEY;
+  const isAdmin = adminKeyValida(req);
   if (!isCron && !isAdmin) return res.status(401).json({ ok: false });
 
   if (!process.env.VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {

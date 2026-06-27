@@ -9,6 +9,7 @@
 //      "celebrou retorno" / "primeira vez do dia")
 
 import { supabase } from './_lib/supabase.js';
+import { adminKeyValida } from './_lib/adminAuth.js';
 import webpush from 'web-push';
 import { escolherMensagem } from './_lib/mensagens-anjo.js';
 import { anjoDaHora } from './_lib/anjos.js';
@@ -27,7 +28,7 @@ const FALLBACK = {
 
 export default async function handler(req, res) {
   const isCron = req.headers['x-vercel-cron'] === '1';
-  const isAdmin = req.headers['x-admin-key'] === process.env.ADMIN_KEY;
+  const isAdmin = adminKeyValida(req);
   if (!isCron && !isAdmin) return res.status(401).json({ ok: false });
 
   const type = req.query.type === 'evening' ? 'evening' : 'morning';
