@@ -16,7 +16,8 @@ Este diretório é o material de onboarding para quem vai desenvolver na platafo
 | Doc | O que cobre |
 |---|---|
 | [ARQUITETURA.md](./ARQUITETURA.md) | Stack, mapa do repositório, ciclo de uma requisição, ambientes e deploy |
-| [MODELO-DE-DADOS.md](./MODELO-DE-DADOS.md) | Tabelas do Postgres, RLS, migrações, buckets de Storage |
+| [MODELO-DE-DADOS.md](./MODELO-DE-DADOS.md) | Tabelas do Postgres, **diagrama ER**, RLS, migrações, buckets de Storage |
+| [GLOSSARIO.md](./GLOSSARIO.md) | Vocabulário do domínio (anjo regente, Círculo, Caminhos, Oferta…) e técnico |
 | [AUTENTICACAO.md](./AUTENTICACAO.md) | Cadastro, login (senha + código por e-mail), sessão, planos/premium |
 | [FRONTEND.md](./FRONTEND.md) | SPA de arquivo único, todas as telas, navegação, PWA/service worker |
 | [BACKEND.md](./BACKEND.md) | Endpoints serverless, integrações (Stripe/Resend/Storage/Push), agentes cron |

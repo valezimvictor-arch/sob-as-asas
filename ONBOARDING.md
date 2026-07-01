@@ -2,7 +2,7 @@
 
 Guia de entrada para desenvolvedores. App de prática espiritual diária com os 72 anjos da guarda, por **Monica Buonfiglio** (LVSV Ventures).
 
-> 📚 **Documentação completa e detalhada em [`docs/`](./docs/README.md)** — este arquivo é o resumo de entrada. Os fluxogramas estão em [`docs/FLUXOGRAMAS.md`](./docs/FLUXOGRAMAS.md).
+> 📚 **Documentação completa e detalhada em [`docs/`](./docs/README.md)** — este arquivo é o resumo de entrada. Fluxogramas em [`docs/FLUXOGRAMAS.md`](./docs/FLUXOGRAMAS.md), diagrama ER em [`docs/MODELO-DE-DADOS.md`](./docs/MODELO-DE-DADOS.md#diagrama-er), e glossário dos termos em [`docs/GLOSSARIO.md`](./docs/GLOSSARIO.md).
 
 ## Comece por aqui (ordem sugerida)
 1. Este arquivo (visão geral + stack).

@@ -6,6 +6,91 @@ Banco: **Postgres no Supabase**. Toda tabela tem **RLS (Row Level Security) liga
 
 > Fonte canônica do schema: `supabase/schema.sql` + os `MIGRACAO_*.sql`. Auditoria de RLS: `AUDITORIA_RLS.sql`.
 
+## Diagrama ER
+
+Relações principais (FKs). `users.id` = `auth.users.id` (Supabase Auth). Colunas resumidas para leitura — o schema completo está no `.sql`.
+
+```mermaid
+erDiagram
+    users ||--o{ pedidos : "faz"
+    users ||--o{ velas_pedidos : "acende (acendedor_id)"
+    users ||--o{ caminhos_progresso : "progride"
+    users ||--o{ gratidao : "registra"
+    users ||--o{ progresso : "acumula"
+    users ||--o{ comunidade : "posta"
+    users ||--o{ push_subscriptions : "inscreve"
+    users ||--o| assinaturas : "assina"
+    users ||--o| mantenedores : "oferta"
+    users ||--o{ indicacoes : "indica (indicador_id)"
+    users ||--o{ presentes : "resgata (resgatado_por_user_id)"
+    pedidos ||--o{ velas_pedidos : "recebe"
+    caminhos ||--o{ caminhos_dias : "tem 7 dias"
+    caminhos ||--o{ caminhos_progresso : "acompanhado em"
+
+    users {
+        uuid id PK "= auth.users.id"
+        text email
+        text nome
+        date nascimento
+        smallint anjo_n "1..72"
+        text plano "free/trial/mensal/anual/cortesia"
+        bool oferta_ativa
+    }
+    pedidos {
+        uuid id PK
+        uuid user_id FK
+        text texto
+        bool publico "opt-in Círculo"
+        int velas_recebidas "denormalizado"
+    }
+    velas_pedidos {
+        uuid id PK
+        uuid pedido_id FK
+        uuid acendedor_id FK
+        date data_local "UNIQUE(pedido,acendedor,dia)"
+    }
+    caminhos {
+        uuid id PK
+        text slug "acolher-perda / ..."
+        bool publicado
+        bool premium
+    }
+    caminhos_dias {
+        uuid id PK
+        uuid caminho_id FK
+        int dia "1..7"
+        text audio_url
+        int duracao_seg
+    }
+    conteudos {
+        uuid id PK
+        text colecao "72_anjos / salmo_diario / ..."
+        smallint anjo_n
+        text media_url
+        bool premium
+        bool publicado
+    }
+    assinaturas {
+        uuid user_id FK
+        text stripe_subscription_id
+        text status
+        text plano
+    }
+    mantenedores {
+        uuid user_id FK
+        text stripe_subscription_id
+        text status "pendente/ativa/pausada/cancelada"
+    }
+    presentes {
+        uuid id PK
+        text codigo "PRES-XXXX-XXXX"
+        text status
+        text para_email
+    }
+```
+
+> Tabelas **sem FK direta pra users** (globais/operacionais): `conteudos`, `milagres`, `leads`, `stripe_events`, `sentinela_checks`. `conteudos.anjo_n` referencia logicamente um dos 72 anjos (não é FK — os anjos vivem em código, não em tabela).
+
 ## Tabelas
 
 | Tabela | O que guarda | Observações |
