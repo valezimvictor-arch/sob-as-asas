@@ -1572,6 +1572,18 @@
         <span style="color:#D89A2C; font-size:18px">▸</span>
       </button>
 
+      <!-- Ativar lembretes — posição de destaque logo após rituais gratuitos.
+           Retenção D+1 depende de push funcionando; card fica visível até
+           o usuário ativar. -->
+      <button id="home-lembretes" class="card" style="margin-top:14px; padding:14px 16px; display:flex; align-items:center; gap:12px; width:100%; cursor:pointer; background:linear-gradient(90deg, rgba(30,90,153,.06), rgba(55,138,221,.14)); border:1px solid rgba(55,138,221,.32); border-radius:14px; text-align:left" onclick="ativarLembretes()">
+        <div style="width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,#7AAEDD,#1E5A99); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; box-shadow:0 2px 10px rgba(30,90,153,.22)">🔔</div>
+        <div style="flex:1; min-width:0">
+          <p style="margin:0; font-weight:600; color:var(--tinta); font-family:'Manrope', sans-serif">Ativar lembretes diários</p>
+          <p style="margin:2px 0 0; font-size:12px; color:#1E5A99; font-family:'Cormorant Garamond', serif; font-style:italic">Seu anjo te chama todo dia — na hora do ritual</p>
+        </div>
+        <span style="color:#1E5A99; font-size:18px">▸</span>
+      </button>
+
       <p style="margin:14px 0 22px; padding:0 16px; font-size:11px; color:var(--tinta-suave); text-align:center; line-height:1.6; font-style:italic; font-family:'Cormorant Garamond',serif; opacity:.9">"Estes ficam gratuitos pra sempre, com ou sem assinatura.<br>Os anjos não cobram." — Monica</p>
 
       <button class="card" style="margin-top:10px; padding:14px 16px; display:flex; align-items:center; gap:12px; width:100%; cursor:pointer; background:#fff; border:1px solid var(--linha); border-radius:14px; text-align:left" onclick="abrirIndicar()">
@@ -1789,16 +1801,6 @@
         <span style="color:var(--tinta-suave)">›</span>
       </div>
 
-      <!-- lembretes (mantido) -->
-      <div id="home-lembretes" class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="ativarLembretes()">
-        <div style="width:42px;height:42px;border-radius:12px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🔔</div>
-        <div style="flex:1">
-          <p style="margin:0; font-weight:600">Lembretes diários</p>
-          <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">Seu anjo te chama na hora do ritual</p>
-        </div>
-        <span style="color:var(--tinta-suave)">›</span>
-      </div>
-
       <!-- 1e. MENSAGEM MENSAL DO SEU ANJO -->
       <div id="home-mm-card" class="card" style="display:none; margin-top:10px; padding:16px; align-items:center; gap:14px; cursor:pointer; background:linear-gradient(90deg, rgba(186,117,23,.05), rgba(239,159,39,.14)); border-color:rgba(186,117,23,.18)" onclick="openMensagemMensal()">
         <div style="width:46px;height:46px;border-radius:12px;background:rgba(239,159,39,.18);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">📜</div>
@@ -1833,45 +1835,58 @@
         <span style="color:var(--ouro); font-size:20px">›</span>
       </div>
 
-      <!-- 7a. COMPATIBILIDADE ANGELICAL -->
-      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="openCompat()">
-        <div style="width:42px;height:42px;border-radius:12px;background:#F6E1B0;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🪽</div>
-        <div style="flex:1">
-          <p style="margin:0; font-weight:600">Compatibilidade angelical</p>
-          <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">Veja como o seu anjo se relaciona com o de alguém querido</p>
+      <!-- ░░ EXPLORAR MAIS — features secundárias colapsadas por padrão.
+           Filosofia: dia 1 tem que ser simples. Quem quer explorar, clica
+           e abre. Reduz sobrecarga visual sem esconder nada. -->
+      <button id="home-explorar-toggle" onclick="toggleExplorar()" class="card" style="margin-top:22px; padding:14px 16px; display:flex; align-items:center; gap:12px; width:100%; cursor:pointer; background:transparent; border:1px dashed var(--linha); border-radius:14px; text-align:left; color:var(--tinta-suave)">
+        <div style="width:38px; height:38px; border-radius:50%; background:var(--ouro-bg); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0">✦</div>
+        <div style="flex:1; min-width:0">
+          <p style="margin:0; font-weight:600; color:var(--tinta); font-family:'Manrope', sans-serif; font-size:14.5px">Explorar mais práticas</p>
+          <p id="home-explorar-sub" style="margin:2px 0 0; font-size:12px; color:var(--tinta-suave); font-family:'Cormorant Garamond', serif; font-style:italic">Compatibilidade · Reconciliação · Calendário · Loja</p>
         </div>
-        <span style="color:var(--tinta-suave)">›</span>
-      </div>
+        <span id="home-explorar-arrow" style="color:var(--ouro); font-size:18px; transition:transform .3s ease">▾</span>
+      </button>
 
-      <!-- 7a-b. RECONCILIAÇÃO ANGELICAL (viral) -->
-      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="openReconciliacao()">
-        <div style="width:42px;height:42px;border-radius:12px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🤍</div>
-        <div style="flex:1">
-          <p style="margin:0; font-weight:600">Reconciliação angelical</p>
-          <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">Que anjo reconcilia você com alguém difícil? Sogra, ex, chefe, irmã…</p>
+      <div id="home-explorar" style="display:none; margin-top:14px">
+        <!-- 7a. COMPATIBILIDADE ANGELICAL -->
+        <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="openCompat()">
+          <div style="width:42px;height:42px;border-radius:12px;background:#F6E1B0;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🪽</div>
+          <div style="flex:1">
+            <p style="margin:0; font-weight:600">Compatibilidade angelical</p>
+            <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">Veja como o seu anjo se relaciona com o de alguém querido</p>
+          </div>
+          <span style="color:var(--tinta-suave)">›</span>
         </div>
-        <span style="color:var(--tinta-suave)">›</span>
-      </div>
 
-      <!-- 7b. CALENDÁRIO ANGELICAL -->
-      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="openCalendario()">
-        <div style="width:42px;height:42px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📅</div>
-        <div style="flex:1">
-          <p style="margin:0; font-weight:600">Calendário Angelical</p>
-          <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">As datas em que os anjos se aproximam mais</p>
+        <!-- 7a-b. RECONCILIAÇÃO ANGELICAL (viral) -->
+        <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="openReconciliacao()">
+          <div style="width:42px;height:42px;border-radius:12px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🤍</div>
+          <div style="flex:1">
+            <p style="margin:0; font-weight:600">Reconciliação angelical</p>
+            <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">Que anjo reconcilia você com alguém difícil? Sogra, ex, chefe, irmã…</p>
+          </div>
+          <span style="color:var(--tinta-suave)">›</span>
         </div>
-        <span style="color:var(--tinta-suave)">›</span>
-      </div>
 
-      <!-- 8. LOJA -->
-      <p class="label" style="display:block; margin:26px 0 10px">Loja da Monica</p>
-      <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px" onclick="openLoja()">
-        <div style="width:42px;height:42px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:20px">🛍️</div>
-        <div style="flex:1">
-          <p style="margin:0; font-weight:600">Presentes e experiências</p>
-          <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave)">Curso de Angelologia · viagens · presentear</p>
+        <!-- 7b. CALENDÁRIO ANGELICAL -->
+        <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="openCalendario()">
+          <div style="width:42px;height:42px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📅</div>
+          <div style="flex:1">
+            <p style="margin:0; font-weight:600">Calendário Angelical</p>
+            <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">As datas em que os anjos se aproximam mais</p>
+          </div>
+          <span style="color:var(--tinta-suave)">›</span>
         </div>
-        <span style="color:var(--tinta-suave)">›</span>
+
+        <!-- 8. LOJA -->
+        <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px" onclick="openLoja()">
+          <div style="width:42px;height:42px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:20px">🛍️</div>
+          <div style="flex:1">
+            <p style="margin:0; font-weight:600">Loja da Monica</p>
+            <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave)">Cursos · consultas · livros · presentes</p>
+          </div>
+          <span style="color:var(--tinta-suave)">›</span>
+        </div>
       </div>
 
       <!-- 9. RODAPÉ -->
@@ -3939,6 +3954,7 @@ function initHome(){
     typeof carregarPedidos==='function'    ? Promise.resolve().then(carregarPedidos).catch(function(e){console.warn('[initHome] pedidos:',e);})    : null,
     typeof carregarHome==='function'       ? Promise.resolve().then(carregarHome).catch(function(e){console.warn('[initHome] home:',e);})          : null,
     typeof _atualizarHomeCaminho==='function' ? Promise.resolve().then(_atualizarHomeCaminho).catch(function(e){console.warn('[initHome] caminho:',e);}) : null,
+    typeof _atualizarLembretesCard==='function' ? Promise.resolve().then(_atualizarLembretesCard).catch(function(e){console.warn('[initHome] lembretes:',e);}) : null,
   ]).catch(function(e){ console.warn('[initHome] erro geral:',e); });
 }
 
@@ -7195,6 +7211,36 @@ async function denunciar(id){
     }
   }catch(e){}
   toast('Denúncia recebida. Obrigado por cuidar da comunidade. 🙏');
+}
+
+// ── Home: toggle "Explorar mais" (mantém home simples por padrão) ──
+function toggleExplorar(){
+  var el = document.getElementById('home-explorar');
+  var arrow = document.getElementById('home-explorar-arrow');
+  var sub = document.getElementById('home-explorar-sub');
+  if(!el) return;
+  var aberto = el.style.display !== 'none';
+  if(aberto){
+    el.style.display = 'none';
+    if(arrow) arrow.style.transform = 'rotate(0deg)';
+    if(sub) sub.textContent = 'Compatibilidade · Reconciliação · Calendário · Loja';
+  } else {
+    el.style.display = 'block';
+    if(arrow) arrow.style.transform = 'rotate(180deg)';
+    if(sub) sub.textContent = 'Toque de novo pra ocultar';
+    buzz();
+  }
+  try{ if(window.plausible) window.plausible('home_explorar_' + (aberto ? 'fechou' : 'abriu')); }catch(_){}
+}
+
+// Esconde o card de Lembretes se o usuário já ativou (persiste entre sessões).
+// Chamado no boot da home. Sem isso, quem já ativou vê "Ativar lembretes" pra sempre.
+function _atualizarLembretesCard(){
+  try{
+    var on = localStorage.getItem('saa_push_on') === '1';
+    var el = document.getElementById('home-lembretes');
+    if(el && on) el.style.display = 'none';
+  }catch(_){}
 }
 
 // ── Lembretes diários (push) ──
