@@ -4,7 +4,26 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Sob as Asas — Anjos da Guarda</title>
+<meta name="description" content="Descubra seu anjo da guarda entre os 72 anjos cabalísticos e viva uma prática diária de proteção, ao lado de Monica Buonfiglio — a maior angelóloga do Brasil." />
 <meta name="theme-color" content="#FBFAF7" />
+
+<!-- Open Graph — preview ao compartilhar no WhatsApp/Instagram/Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="pt_BR" />
+<meta property="og:site_name" content="Sob as Asas" />
+<meta property="og:title" content="Sob as Asas — descubra seu anjo da guarda" />
+<meta property="og:description" content="Seu anjo entre os 72, revelado pela data de nascimento. Prática diária com Monica Buonfiglio. Grátis pra começar." />
+<meta property="og:image" content="https://www.sobasasas.com.br/assets/og-image.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Monica Buonfiglio — Sob as Asas" />
+<meta property="og:url" content="https://www.sobasasas.com.br" />
+
+<!-- Twitter/X card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Sob as Asas — descubra seu anjo da guarda" />
+<meta name="twitter:description" content="Seu anjo entre os 72, revelado pela data de nascimento. Prática diária com Monica Buonfiglio." />
+<meta name="twitter:image" content="https://www.sobasasas.com.br/assets/og-image.jpg" />
 <meta name="copyright" content="© Monica Buonfiglio · LVSV Ventures Participações Ltda. · Todos os direitos reservados" />
 <meta name="author" content="Monica Buonfiglio" />
 <meta name="rights" content="Conteúdo autoral protegido pela Lei 9.610/98. Reprodução proibida sem autorização." />
@@ -2907,16 +2926,6 @@ function anjoDaHora(dataHora){
   var n = Math.floor(totalMin / 20) + 1;
   return Math.max(1, Math.min(72, n));
 }
-// Calcula o anjo da humanidade no momento de nascimento (a partir de "HH:MM").
-function anjoDaHumanidadeNascimento(horaStr){
-  if(!horaStr) return null;
-  var m = String(horaStr).match(/^(\d{1,2}):(\d{2})$/);
-  if(!m) return null;
-  var hh = Math.min(23, Math.max(0, parseInt(m[1],10)));
-  var mm = Math.min(59, Math.max(0, parseInt(m[2],10)));
-  var d = new Date(); d.setHours(hh, mm, 0, 0);
-  return anjoDaHora(d);
-}
 // Atualiza o card do home com o anjo da hora atual.
 async function atualizarAnjoHora(){
   var card = document.getElementById('home-anjo-hora'); if(!card) return;
@@ -2987,30 +2996,6 @@ async function solicitarTempoDeGraca(){
     if(btn){ btn.disabled = false; btn.textContent = 'Solicitar 30 dias de cortesia'; }
     toast('Não conseguimos enviar agora. Tente em alguns segundos.');
   }
-}
-
-async function calcularAnjoHumanidade(){
-  var hora = (document.getElementById('ahn-input').value || '').trim();
-  if(!/^\d{2}:\d{2}$/.test(hora)){
-    toast('Digite a hora no formato HH:MM (ex: 14:30)');
-    return;
-  }
-  var n = anjoDaHumanidadeNascimento(hora);
-  if(!n){ toast('Hora inválida'); return; }
-  var dados = await carregarAnjosRicos();
-  var a = dados && dados[String(n)];
-  if(!a){ toast('Não consegui carregar os dados. Tente em alguns segundos.'); return; }
-
-  document.getElementById('ahn-meu-nome').textContent = a.nome;
-  document.getElementById('ahn-meu-dom').textContent = a.dom_principal || '';
-  document.getElementById('ahn-meu-coro').textContent = 'Coro dos ' + (a.coro || '');
-  document.getElementById('ahn-meu-faixa').textContent = 'Regia o intervalo ' + a.horario + ' quando você chegou';
-  document.getElementById('ahn-form').style.display = 'none';
-  document.getElementById('ahn-resultado').style.display = 'block';
-  buzz(); chime();
-  // Persiste no perfil do usuário pra próximas aberturas
-  try{ localStorage.setItem('saa_hora_nascimento', hora); }catch(_){}
-  try{ if(window.plausible) window.plausible('anjo_humanidade_calculado', { props: { coro: a.coro || '' } }); }catch(_){}
 }
 
 // ── navegação entre telas ──
