@@ -6,7 +6,6 @@
     "padrao_video": "MP4 H.264 1080p vertical (9:16)",
     "naming": "Use exatamente o nome_arquivo de cada item ao salvar antes do upload."
   },
-
   "blocos": [
     {
       "id": "bloco1",
@@ -19,13 +18,62 @@
           "colecao": "conhecer_anjo",
           "nota": "Áudios universais — servem para qualquer um dos 72 anjos. O app contextualiza qual é o do usuário.",
           "itens": [
-            { "nome_arquivo": "jornada-d1-nome.mp3",      "titulo": "Dia 1 — O nome do seu anjo",         "formato": "audio", "duracao_min": 2,  "dia_jornada": 1, "premium": false },
-            { "nome_arquivo": "jornada-d2-coro.mp3",      "titulo": "Dia 2 — O coro a que ele pertence", "formato": "audio", "duracao_min": 2,  "dia_jornada": 2, "premium": false },
-            { "nome_arquivo": "jornada-d3-salmo.mp3",     "titulo": "Dia 3 — O salmo que ele rege",       "formato": "audio", "duracao_min": 2,  "dia_jornada": 3, "premium": false },
-            { "nome_arquivo": "jornada-d4-dom.mp3",       "titulo": "Dia 4 — O dom principal",           "formato": "audio", "duracao_min": 2,  "dia_jornada": 4, "premium": false },
-            { "nome_arquivo": "jornada-d5-quando.mp3",    "titulo": "Dia 5 — Quando invocá-lo",          "formato": "audio", "duracao_min": 2,  "dia_jornada": 5, "premium": false },
-            { "nome_arquivo": "jornada-d6-oracao.mp3",    "titulo": "Dia 6 — A oração de chamamento",     "formato": "audio", "duracao_min": 2,  "dia_jornada": 6, "premium": false },
-            { "nome_arquivo": "jornada-d7-afirmacao.mp3", "titulo": "Dia 7 — A afirmação para sua vida",  "formato": "audio", "duracao_min": 2,  "dia_jornada": 7, "premium": false }
+            {
+              "nome_arquivo": "jornada-d1-nome.mp3",
+              "titulo": "Dia 1 — O nome do seu anjo",
+              "formato": "audio",
+              "duracao_min": 2,
+              "dia_jornada": 1,
+              "premium": false
+            },
+            {
+              "nome_arquivo": "jornada-d2-coro.mp3",
+              "titulo": "Dia 2 — O coro a que ele pertence",
+              "formato": "audio",
+              "duracao_min": 2,
+              "dia_jornada": 2,
+              "premium": false
+            },
+            {
+              "nome_arquivo": "jornada-d3-salmo.mp3",
+              "titulo": "Dia 3 — O salmo que ele rege",
+              "formato": "audio",
+              "duracao_min": 2,
+              "dia_jornada": 3,
+              "premium": false
+            },
+            {
+              "nome_arquivo": "jornada-d4-dom.mp3",
+              "titulo": "Dia 4 — O dom principal",
+              "formato": "audio",
+              "duracao_min": 2,
+              "dia_jornada": 4,
+              "premium": false
+            },
+            {
+              "nome_arquivo": "jornada-d5-quando.mp3",
+              "titulo": "Dia 5 — Quando invocá-lo",
+              "formato": "audio",
+              "duracao_min": 2,
+              "dia_jornada": 5,
+              "premium": false
+            },
+            {
+              "nome_arquivo": "jornada-d6-oracao.mp3",
+              "titulo": "Dia 6 — A oração de chamamento",
+              "formato": "audio",
+              "duracao_min": 2,
+              "dia_jornada": 6,
+              "premium": false
+            },
+            {
+              "nome_arquivo": "jornada-d7-afirmacao.mp3",
+              "titulo": "Dia 7 — A afirmação para sua vida",
+              "formato": "audio",
+              "duracao_min": 2,
+              "dia_jornada": 7,
+              "premium": false
+            }
           ]
         },
         {
@@ -33,13 +81,70 @@
           "rotulo": "Semana 2 — Magia das Velas (7 áudios curtos)",
           "colecao": "magia_velas",
           "itens": [
-            { "nome_arquivo": "velas-01-branca-paz.mp3",          "titulo": "Vela Branca — Paz",            "formato": "audio", "duracao_min": 1.5, "sentimentos": ["protecao"] },
-            { "nome_arquivo": "velas-02-verde-saude.mp3",         "titulo": "Vela Verde — Saúde",           "formato": "audio", "duracao_min": 1.5, "sentimentos": ["cura"] },
-            { "nome_arquivo": "velas-03-amarela-prosperidade.mp3","titulo": "Vela Amarela — Prosperidade",   "formato": "audio", "duracao_min": 1.5, "sentimentos": ["prosperidade"] },
-            { "nome_arquivo": "velas-04-azul-trabalho.mp3",       "titulo": "Vela Azul — Trabalho",          "formato": "audio", "duracao_min": 1.5, "sentimentos": ["foco"] },
-            { "nome_arquivo": "velas-05-rosa-amor.mp3",           "titulo": "Vela Rosa — Amor",              "formato": "audio", "duracao_min": 1.5, "sentimentos": ["reconciliacao"] },
-            { "nome_arquivo": "velas-06-vermelha-emergencia.mp3", "titulo": "Vela Vermelha — Emergência",    "formato": "audio", "duracao_min": 1.5, "sentimentos": ["protecao","ansiedade"] },
-            { "nome_arquivo": "velas-07-lilas-transmutacao.mp3",  "titulo": "Vela Lilás — Transmutação",     "formato": "audio", "duracao_min": 1.5, "sentimentos": ["cura"] }
+            {
+              "nome_arquivo": "velas-01-branca-paz.mp3",
+              "titulo": "Vela Branca — Paz",
+              "formato": "audio",
+              "duracao_min": 1.5,
+              "sentimentos": [
+                "protecao"
+              ]
+            },
+            {
+              "nome_arquivo": "velas-02-verde-saude.mp3",
+              "titulo": "Vela Verde — Saúde",
+              "formato": "audio",
+              "duracao_min": 1.5,
+              "sentimentos": [
+                "cura"
+              ]
+            },
+            {
+              "nome_arquivo": "velas-03-amarela-prosperidade.mp3",
+              "titulo": "Vela Amarela — Prosperidade",
+              "formato": "audio",
+              "duracao_min": 1.5,
+              "sentimentos": [
+                "prosperidade"
+              ]
+            },
+            {
+              "nome_arquivo": "velas-04-azul-trabalho.mp3",
+              "titulo": "Vela Azul — Trabalho",
+              "formato": "audio",
+              "duracao_min": 1.5,
+              "sentimentos": [
+                "foco"
+              ]
+            },
+            {
+              "nome_arquivo": "velas-05-rosa-amor.mp3",
+              "titulo": "Vela Rosa — Amor",
+              "formato": "audio",
+              "duracao_min": 1.5,
+              "sentimentos": [
+                "reconciliacao"
+              ]
+            },
+            {
+              "nome_arquivo": "velas-06-vermelha-emergencia.mp3",
+              "titulo": "Vela Vermelha — Emergência",
+              "formato": "audio",
+              "duracao_min": 1.5,
+              "sentimentos": [
+                "protecao",
+                "ansiedade"
+              ]
+            },
+            {
+              "nome_arquivo": "velas-07-lilas-transmutacao.mp3",
+              "titulo": "Vela Lilás — Transmutação",
+              "formato": "audio",
+              "duracao_min": 1.5,
+              "sentimentos": [
+                "cura"
+              ]
+            }
           ]
         },
         {
@@ -47,15 +152,60 @@
           "rotulo": "Semana 3 — Novena dos Anjos (9 áudios)",
           "colecao": "novena",
           "itens": [
-            { "nome_arquivo": "novena-d1-acolhimento.mp3",   "titulo": "Novena · Dia 1 — Acolhimento",   "formato": "audio", "duracao_min": 3 },
-            { "nome_arquivo": "novena-d2-gratidao.mp3",      "titulo": "Novena · Dia 2 — Gratidão",      "formato": "audio", "duracao_min": 3 },
-            { "nome_arquivo": "novena-d3-perdao.mp3",        "titulo": "Novena · Dia 3 — Perdão",        "formato": "audio", "duracao_min": 3 },
-            { "nome_arquivo": "novena-d4-coragem.mp3",       "titulo": "Novena · Dia 4 — Coragem",       "formato": "audio", "duracao_min": 3 },
-            { "nome_arquivo": "novena-d5-cura.mp3",          "titulo": "Novena · Dia 5 — Cura",          "formato": "audio", "duracao_min": 3 },
-            { "nome_arquivo": "novena-d6-prosperidade.mp3",  "titulo": "Novena · Dia 6 — Prosperidade",  "formato": "audio", "duracao_min": 3 },
-            { "nome_arquivo": "novena-d7-protecao.mp3",      "titulo": "Novena · Dia 7 — Proteção",      "formato": "audio", "duracao_min": 3 },
-            { "nome_arquivo": "novena-d8-proposito.mp3",     "titulo": "Novena · Dia 8 — Propósito",     "formato": "audio", "duracao_min": 3 },
-            { "nome_arquivo": "novena-d9-entrega.mp3",       "titulo": "Novena · Dia 9 — Entrega",       "formato": "audio", "duracao_min": 3 }
+            {
+              "nome_arquivo": "novena-d1-acolhimento.mp3",
+              "titulo": "Novena · Dia 1 — Acolhimento",
+              "formato": "audio",
+              "duracao_min": 3
+            },
+            {
+              "nome_arquivo": "novena-d2-gratidao.mp3",
+              "titulo": "Novena · Dia 2 — Gratidão",
+              "formato": "audio",
+              "duracao_min": 3
+            },
+            {
+              "nome_arquivo": "novena-d3-perdao.mp3",
+              "titulo": "Novena · Dia 3 — Perdão",
+              "formato": "audio",
+              "duracao_min": 3
+            },
+            {
+              "nome_arquivo": "novena-d4-coragem.mp3",
+              "titulo": "Novena · Dia 4 — Coragem",
+              "formato": "audio",
+              "duracao_min": 3
+            },
+            {
+              "nome_arquivo": "novena-d5-cura.mp3",
+              "titulo": "Novena · Dia 5 — Cura",
+              "formato": "audio",
+              "duracao_min": 3
+            },
+            {
+              "nome_arquivo": "novena-d6-prosperidade.mp3",
+              "titulo": "Novena · Dia 6 — Prosperidade",
+              "formato": "audio",
+              "duracao_min": 3
+            },
+            {
+              "nome_arquivo": "novena-d7-protecao.mp3",
+              "titulo": "Novena · Dia 7 — Proteção",
+              "formato": "audio",
+              "duracao_min": 3
+            },
+            {
+              "nome_arquivo": "novena-d8-proposito.mp3",
+              "titulo": "Novena · Dia 8 — Propósito",
+              "formato": "audio",
+              "duracao_min": 3
+            },
+            {
+              "nome_arquivo": "novena-d9-entrega.mp3",
+              "titulo": "Novena · Dia 9 — Entrega",
+              "formato": "audio",
+              "duracao_min": 3
+            }
           ]
         },
         {
@@ -63,19 +213,402 @@
           "rotulo": "Semana 4 — Boas-vindas + Salmos do Dia iniciais (1 vídeo + 7 áudios)",
           "colecao": "salmo_diario",
           "itens": [
-            { "nome_arquivo": "boas-vindas-monica.mp4", "titulo": "Vídeo de boas-vindas (welcome do app)", "formato": "video", "colecao_override": "mensagem_semana", "duracao_min": 2 },
-            { "nome_arquivo": "salmo-23.mp3",  "titulo": "Salmo 23 — O Senhor é o meu pastor",      "formato": "audio", "duracao_min": 3 },
-            { "nome_arquivo": "salmo-91.mp3",  "titulo": "Salmo 91 — Habitação do Altíssimo",        "formato": "audio", "duracao_min": 4 },
-            { "nome_arquivo": "salmo-1.mp3",   "titulo": "Salmo 1 — Bem-aventurado o homem",          "formato": "audio", "duracao_min": 2.5 },
-            { "nome_arquivo": "salmo-51.mp3",  "titulo": "Salmo 51 — Tem misericórdia de mim",        "formato": "audio", "duracao_min": 4 },
-            { "nome_arquivo": "salmo-121.mp3", "titulo": "Salmo 121 — Levanto os meus olhos",         "formato": "audio", "duracao_min": 2.5 },
-            { "nome_arquivo": "salmo-27.mp3",  "titulo": "Salmo 27 — O Senhor é minha luz",           "formato": "audio", "duracao_min": 3.5 },
-            { "nome_arquivo": "salmo-139.mp3", "titulo": "Salmo 139 — Senhor, tu me sondaste",        "formato": "audio", "duracao_min": 4 }
+            {
+              "nome_arquivo": "boas-vindas-monica.mp4",
+              "titulo": "Vídeo de boas-vindas (welcome do app)",
+              "formato": "video",
+              "colecao_override": "mensagem_semana",
+              "duracao_min": 2
+            },
+            {
+              "nome_arquivo": "salmo-23.mp3",
+              "titulo": "Salmo 23 — O Senhor é o meu pastor",
+              "formato": "audio",
+              "duracao_min": 3
+            },
+            {
+              "nome_arquivo": "salmo-91.mp3",
+              "titulo": "Salmo 91 — Habitação do Altíssimo",
+              "formato": "audio",
+              "duracao_min": 4
+            },
+            {
+              "nome_arquivo": "salmo-1.mp3",
+              "titulo": "Salmo 1 — Bem-aventurado o homem",
+              "formato": "audio",
+              "duracao_min": 2.5
+            },
+            {
+              "nome_arquivo": "salmo-51.mp3",
+              "titulo": "Salmo 51 — Tem misericórdia de mim",
+              "formato": "audio",
+              "duracao_min": 4
+            },
+            {
+              "nome_arquivo": "salmo-121.mp3",
+              "titulo": "Salmo 121 — Levanto os meus olhos",
+              "formato": "audio",
+              "duracao_min": 2.5
+            },
+            {
+              "nome_arquivo": "salmo-27.mp3",
+              "titulo": "Salmo 27 — O Senhor é minha luz",
+              "formato": "audio",
+              "duracao_min": 3.5
+            },
+            {
+              "nome_arquivo": "salmo-139.mp3",
+              "titulo": "Salmo 139 — Senhor, tu me sondaste",
+              "formato": "audio",
+              "duracao_min": 4
+            }
           ]
         }
       ]
     },
-
+    {
+      "id": "bloco_semanais",
+      "rotulo": "📮 Mensagens Semanais — 24 (semestre completo)",
+      "descricao": "Uma carta da Monica por semana, ~3-4 min. Roteiro completo em ROTEIROS_MENSAGENS_SEMANAIS.pdf. Sobe uma por vez; o app publica conforme a data_pub programada.",
+      "semanas": [
+        {
+          "n": 1,
+          "rotulo": "Semana 1 — O direito à pausa",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-01-o-direito-a-pausa.mp3",
+              "titulo": "Semana 1 · O direito à pausa",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "rotulo": "Semana 2 — Nomear o que pesa",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-02-nomear-o-que-pesa.mp3",
+              "titulo": "Semana 2 · Nomear o que pesa",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "rotulo": "Semana 3 — O silêncio como oração",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-03-o-silencio-como-oracao.mp3",
+              "titulo": "Semana 3 · O silêncio como oração",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "rotulo": "Semana 4 — Presença antes de resposta",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-04-presenca-antes-de-resposta.mp3",
+              "titulo": "Semana 4 · Presença antes de resposta",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "rotulo": "Semana 5 — Três respirações fazem tudo diferente",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-05-tres-respiracoes-fazem-tudo-diferente.mp3",
+              "titulo": "Semana 5 · Três respirações fazem tudo diferente",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "rotulo": "Semana 6 — O que a pressa esconde",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-06-o-que-a-pressa-esconde.mp3",
+              "titulo": "Semana 6 · O que a pressa esconde",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "rotulo": "Semana 7 — Você é mais que sua ansiedade",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-07-voce-e-mais-que-sua-ansiedade.mp3",
+              "titulo": "Semana 7 · Você é mais que sua ansiedade",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "rotulo": "Semana 8 — Fé pra quem tem dúvida",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-08-fe-pra-quem-tem-duvida.mp3",
+              "titulo": "Semana 8 · Fé pra quem tem dúvida",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "rotulo": "Semana 9 — Perdão em três camadas",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-09-perdao-em-tres-camadas.mp3",
+              "titulo": "Semana 9 · Perdão em três camadas",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 10,
+          "rotulo": "Semana 10 — Quando pedir, quando esperar, quando agir",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-10-quando-pedir-quando-esperar-quando-agir.mp3",
+              "titulo": "Semana 10 · Quando pedir, quando esperar, quando agir",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 11,
+          "rotulo": "Semana 11 — Discernimento não é julgamento",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-11-discernimento-nao-e-julgamento.mp3",
+              "titulo": "Semana 11 · Discernimento não é julgamento",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 12,
+          "rotulo": "Semana 12 — O peso das palavras que você diz sobre você",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-12-o-peso-das-palavras-que-voce-diz-sobre-v.mp3",
+              "titulo": "Semana 12 · O peso das palavras que você diz sobre você",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 13,
+          "rotulo": "Semana 13 — Dor não é castigo. Alegria não é vergonha.",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-13-dor-nao-e-castigo-alegria-nao-e-vergonha.mp3",
+              "titulo": "Semana 13 · Dor não é castigo. Alegria não é vergonha.",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 14,
+          "rotulo": "Semana 14 — A diferença entre disciplina e rigor",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-14-a-diferenca-entre-disciplina-e-rigor.mp3",
+              "titulo": "Semana 14 · A diferença entre disciplina e rigor",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 15,
+          "rotulo": "Semana 15 — Confiar sem ingenuidade",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-15-confiar-sem-ingenuidade.mp3",
+              "titulo": "Semana 15 · Confiar sem ingenuidade",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 16,
+          "rotulo": "Semana 16 — Escutar o corpo como oráculo",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-16-escutar-o-corpo-como-oraculo.mp3",
+              "titulo": "Semana 16 · Escutar o corpo como oráculo",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 17,
+          "rotulo": "Semana 17 — O anjo que você esquece de chamar",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-17-o-anjo-que-voce-esquece-de-chamar.mp3",
+              "titulo": "Semana 17 · O anjo que você esquece de chamar",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 18,
+          "rotulo": "Semana 18 — Gratidão antes da chegada",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-18-gratidao-antes-da-chegada.mp3",
+              "titulo": "Semana 18 · Gratidão antes da chegada",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 19,
+          "rotulo": "Semana 19 — Sua história como bênção",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-19-sua-historia-como-bencao.mp3",
+              "titulo": "Semana 19 · Sua história como bênção",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 20,
+          "rotulo": "Semana 20 — Herança espiritual",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-20-heranca-espiritual.mp3",
+              "titulo": "Semana 20 · Herança espiritual",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 21,
+          "rotulo": "Semana 21 — Perdoar Deus",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-21-perdoar-deus.mp3",
+              "titulo": "Semana 21 · Perdoar Deus",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 22,
+          "rotulo": "Semana 22 — Você não precisa saber orar",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-22-voce-nao-precisa-saber-orar.mp3",
+              "titulo": "Semana 22 · Você não precisa saber orar",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 23,
+          "rotulo": "Semana 23 — Amor como forma de fé",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-23-amor-como-forma-de-fe.mp3",
+              "titulo": "Semana 23 · Amor como forma de fé",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        },
+        {
+          "n": 24,
+          "rotulo": "Semana 24 — Você é oração andando",
+          "colecao": "mensagem_semana",
+          "itens": [
+            {
+              "nome_arquivo": "semanal-24-voce-e-oracao-andando.mp3",
+              "titulo": "Semana 24 · Você é oração andando",
+              "formato": "audio",
+              "duracao_min": 4,
+              "premium": false
+            }
+          ]
+        }
+      ]
+    },
     {
       "id": "bloco2",
       "rotulo": "🌙 Bloco 2 — Importante (semanas 5-10)",
@@ -86,8 +619,24 @@
           "rotulo": "Semana 5 — Para Dormir (parte 1) · 2 áudios longos",
           "colecao": "para_dormir",
           "itens": [
-            { "nome_arquivo": "dormir-01-anjo-da-noite.mp3", "titulo": "Para Dormir 1 — O anjo da noite", "formato": "audio", "duracao_min": 18, "sentimentos": ["sono"] },
-            { "nome_arquivo": "dormir-02-perdao.mp3",        "titulo": "Para Dormir 2 — Perdão antes de dormir", "formato": "audio", "duracao_min": 15, "sentimentos": ["sono"] }
+            {
+              "nome_arquivo": "dormir-01-anjo-da-noite.mp3",
+              "titulo": "Para Dormir 1 — O anjo da noite",
+              "formato": "audio",
+              "duracao_min": 18,
+              "sentimentos": [
+                "sono"
+              ]
+            },
+            {
+              "nome_arquivo": "dormir-02-perdao.mp3",
+              "titulo": "Para Dormir 2 — Perdão antes de dormir",
+              "formato": "audio",
+              "duracao_min": 15,
+              "sentimentos": [
+                "sono"
+              ]
+            }
           ]
         },
         {
@@ -95,9 +644,34 @@
           "rotulo": "Semana 6 — Para Dormir (parte 2) · 3 áudios longos",
           "colecao": "para_dormir",
           "itens": [
-            { "nome_arquivo": "dormir-03-salmo-91-sussurrado.mp3", "titulo": "Para Dormir 3 — Salmo 91 sussurrado", "formato": "audio", "duracao_min": 12, "sentimentos": ["sono"] },
-            { "nome_arquivo": "dormir-04-noites-dificeis.mp3",     "titulo": "Para Dormir 4 — Para noites difíceis", "formato": "audio", "duracao_min": 20, "sentimentos": ["sono","ansiedade"] },
-            { "nome_arquivo": "dormir-05-bencao-final.mp3",        "titulo": "Para Dormir 5 — Bênção final do dia", "formato": "audio", "duracao_min": 22, "sentimentos": ["sono"] }
+            {
+              "nome_arquivo": "dormir-03-salmo-91-sussurrado.mp3",
+              "titulo": "Para Dormir 3 — Salmo 91 sussurrado",
+              "formato": "audio",
+              "duracao_min": 12,
+              "sentimentos": [
+                "sono"
+              ]
+            },
+            {
+              "nome_arquivo": "dormir-04-noites-dificeis.mp3",
+              "titulo": "Para Dormir 4 — Para noites difíceis",
+              "formato": "audio",
+              "duracao_min": 20,
+              "sentimentos": [
+                "sono",
+                "ansiedade"
+              ]
+            },
+            {
+              "nome_arquivo": "dormir-05-bencao-final.mp3",
+              "titulo": "Para Dormir 5 — Bênção final do dia",
+              "formato": "audio",
+              "duracao_min": 22,
+              "sentimentos": [
+                "sono"
+              ]
+            }
           ]
         },
         {
@@ -105,13 +679,48 @@
           "rotulo": "Semana 7 — Mais Salmos do Dia (parte 1) · 7 áudios",
           "colecao": "salmo_diario",
           "itens": [
-            { "nome_arquivo": "salmo-100.mp3", "titulo": "Salmo 100 — Celebrai com júbilo",  "formato": "audio", "duracao_min": 2 },
-            { "nome_arquivo": "salmo-130.mp3", "titulo": "Salmo 130 — Das profundezas",       "formato": "audio", "duracao_min": 2.5 },
-            { "nome_arquivo": "salmo-137.mp3", "titulo": "Salmo 137 — Junto aos rios da Babilônia", "formato": "audio", "duracao_min": 3 },
-            { "nome_arquivo": "salmo-19.mp3",  "titulo": "Salmo 19 — Os céus declaram",       "formato": "audio", "duracao_min": 3 },
-            { "nome_arquivo": "salmo-42.mp3",  "titulo": "Salmo 42 — Como suspira a corça",   "formato": "audio", "duracao_min": 3.5 },
-            { "nome_arquivo": "salmo-46.mp3",  "titulo": "Salmo 46 — Deus é o nosso refúgio", "formato": "audio", "duracao_min": 3 },
-            { "nome_arquivo": "salmo-84.mp3",  "titulo": "Salmo 84 — Quão amáveis tuas moradas", "formato": "audio", "duracao_min": 3 }
+            {
+              "nome_arquivo": "salmo-100.mp3",
+              "titulo": "Salmo 100 — Celebrai com júbilo",
+              "formato": "audio",
+              "duracao_min": 2
+            },
+            {
+              "nome_arquivo": "salmo-130.mp3",
+              "titulo": "Salmo 130 — Das profundezas",
+              "formato": "audio",
+              "duracao_min": 2.5
+            },
+            {
+              "nome_arquivo": "salmo-137.mp3",
+              "titulo": "Salmo 137 — Junto aos rios da Babilônia",
+              "formato": "audio",
+              "duracao_min": 3
+            },
+            {
+              "nome_arquivo": "salmo-19.mp3",
+              "titulo": "Salmo 19 — Os céus declaram",
+              "formato": "audio",
+              "duracao_min": 3
+            },
+            {
+              "nome_arquivo": "salmo-42.mp3",
+              "titulo": "Salmo 42 — Como suspira a corça",
+              "formato": "audio",
+              "duracao_min": 3.5
+            },
+            {
+              "nome_arquivo": "salmo-46.mp3",
+              "titulo": "Salmo 46 — Deus é o nosso refúgio",
+              "formato": "audio",
+              "duracao_min": 3
+            },
+            {
+              "nome_arquivo": "salmo-84.mp3",
+              "titulo": "Salmo 84 — Quão amáveis tuas moradas",
+              "formato": "audio",
+              "duracao_min": 3
+            }
           ]
         },
         {
@@ -119,13 +728,48 @@
           "rotulo": "Semana 8 — Mais Salmos do Dia (parte 2) · 7 áudios",
           "colecao": "salmo_diario",
           "itens": [
-            { "nome_arquivo": "salmo-90.mp3",  "titulo": "Salmo 90 — Senhor, tu tens sido o refúgio", "formato": "audio", "duracao_min": 3.5 },
-            { "nome_arquivo": "salmo-95.mp3",  "titulo": "Salmo 95 — Vinde, cantemos",          "formato": "audio", "duracao_min": 3 },
-            { "nome_arquivo": "salmo-103.mp3", "titulo": "Salmo 103 — Bendize, ó minha alma",   "formato": "audio", "duracao_min": 4 },
-            { "nome_arquivo": "salmo-116.mp3", "titulo": "Salmo 116 — Amo o Senhor",            "formato": "audio", "duracao_min": 3 },
-            { "nome_arquivo": "salmo-121b.mp3","titulo": "Salmo 121 (versão noturna)",          "formato": "audio", "duracao_min": 2.5 },
-            { "nome_arquivo": "salmo-145.mp3", "titulo": "Salmo 145 — Eu te exaltarei",         "formato": "audio", "duracao_min": 3.5 },
-            { "nome_arquivo": "salmo-150.mp3", "titulo": "Salmo 150 — Louvai a Deus",           "formato": "audio", "duracao_min": 2 }
+            {
+              "nome_arquivo": "salmo-90.mp3",
+              "titulo": "Salmo 90 — Senhor, tu tens sido o refúgio",
+              "formato": "audio",
+              "duracao_min": 3.5
+            },
+            {
+              "nome_arquivo": "salmo-95.mp3",
+              "titulo": "Salmo 95 — Vinde, cantemos",
+              "formato": "audio",
+              "duracao_min": 3
+            },
+            {
+              "nome_arquivo": "salmo-103.mp3",
+              "titulo": "Salmo 103 — Bendize, ó minha alma",
+              "formato": "audio",
+              "duracao_min": 4
+            },
+            {
+              "nome_arquivo": "salmo-116.mp3",
+              "titulo": "Salmo 116 — Amo o Senhor",
+              "formato": "audio",
+              "duracao_min": 3
+            },
+            {
+              "nome_arquivo": "salmo-121b.mp3",
+              "titulo": "Salmo 121 (versão noturna)",
+              "formato": "audio",
+              "duracao_min": 2.5
+            },
+            {
+              "nome_arquivo": "salmo-145.mp3",
+              "titulo": "Salmo 145 — Eu te exaltarei",
+              "formato": "audio",
+              "duracao_min": 3.5
+            },
+            {
+              "nome_arquivo": "salmo-150.mp3",
+              "titulo": "Salmo 150 — Louvai a Deus",
+              "formato": "audio",
+              "duracao_min": 2
+            }
           ]
         },
         {
@@ -133,10 +777,30 @@
           "rotulo": "Semana 9 — Mensagens da Semana · 4 vídeos",
           "colecao": "mensagem_semana",
           "itens": [
-            { "nome_arquivo": "msg-semana-01-sorteio.mp4",      "titulo": "Anjos não atendem por sorteio",          "formato": "video", "duracao_min": 4 },
-            { "nome_arquivo": "msg-semana-02-anjo-perto.mp4",   "titulo": "Como saber qual anjo está perto agora",   "formato": "video", "duracao_min": 4 },
-            { "nome_arquivo": "msg-semana-03-rezar-estar.mp4",  "titulo": "A diferença entre rezar e estar com o anjo", "formato": "video", "duracao_min": 4 },
-            { "nome_arquivo": "msg-semana-04-cartas.mp4",       "titulo": "Por que escrever cartas para o seu anjo",  "formato": "video", "duracao_min": 4 }
+            {
+              "nome_arquivo": "msg-semana-01-sorteio.mp4",
+              "titulo": "Anjos não atendem por sorteio",
+              "formato": "video",
+              "duracao_min": 4
+            },
+            {
+              "nome_arquivo": "msg-semana-02-anjo-perto.mp4",
+              "titulo": "Como saber qual anjo está perto agora",
+              "formato": "video",
+              "duracao_min": 4
+            },
+            {
+              "nome_arquivo": "msg-semana-03-rezar-estar.mp4",
+              "titulo": "A diferença entre rezar e estar com o anjo",
+              "formato": "video",
+              "duracao_min": 4
+            },
+            {
+              "nome_arquivo": "msg-semana-04-cartas.mp4",
+              "titulo": "Por que escrever cartas para o seu anjo",
+              "formato": "video",
+              "duracao_min": 4
+            }
           ]
         },
         {
@@ -144,12 +808,16 @@
           "rotulo": "Semana 10 — 1º Milagre do Mês · 1 vídeo",
           "colecao": "mensagem_semana",
           "itens": [
-            { "nome_arquivo": "milagre-mes-001.mp4", "titulo": "Milagre do Mês — 1ª edição", "formato": "video", "duracao_min": 5 }
+            {
+              "nome_arquivo": "milagre-mes-001.mp4",
+              "titulo": "Milagre do Mês — 1ª edição",
+              "formato": "video",
+              "duracao_min": 5
+            }
           ]
         }
       ]
     },
-
     {
       "id": "bloco3",
       "rotulo": "📿 Bloco 3 — Catálogo dos 72 anjos (semanas 11+)",
