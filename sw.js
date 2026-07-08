@@ -2,7 +2,7 @@
 // Strategy: network-first para HTML (sempre fresco), cache-first para assets.
 // A cada deploy, suba o número da versão (v0.1 → v0.2...) para disparar o
 // banner "Nova versão disponível".
-const CACHE = 'sobasasas-v0.63';
+const CACHE = 'sobasasas-v0.64';
 const ASSETS = ['/manifest.json', '/asa-icon.svg', '/js/geradorTextos.js', '/js/observabilidade.js'];
 // Scripts de terceiros que o app depende em runtime — pré-cacheados de forma
 // best-effort (não bloqueia o install se algum falhar). Garante que recovery /
@@ -55,6 +55,14 @@ self.addEventListener('fetch', e => {
 
   // API própria: nunca cachear (dados/auth não podem virar cache stale/PII).
   if (_url.pathname.startsWith('/api/')) return;
+
+  // Dados dinâmicos (/data/*.json) — network-first: o conteúdo muda
+  // (roteiros, arcanos, etc) e cache-first mostrava versão velha até
+  // hard-refresh. Vai à rede; só cai no cache se estiver offline.
+  if (_url.pathname.startsWith('/data/')) {
+    e.respondWith(fetch(request).catch(() => caches.match(request)));
+    return;
+  }
 
   const isHTML = request.mode === 'navigate' ||
     (request.headers.get('accept') || '').includes('text/html');
