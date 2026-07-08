@@ -2,7 +2,7 @@
 // Strategy: network-first para HTML (sempre fresco), cache-first para assets.
 // A cada deploy, suba o número da versão (v0.1 → v0.2...) para disparar o
 // banner "Nova versão disponível".
-const CACHE = 'sobasasas-v0.62';
+const CACHE = 'sobasasas-v0.63';
 const ASSETS = ['/manifest.json', '/asa-icon.svg', '/js/geradorTextos.js', '/js/observabilidade.js'];
 // Scripts de terceiros que o app depende em runtime — pré-cacheados de forma
 // best-effort (não bloqueia o install se algum falhar). Garante que recovery /

@@ -1132,6 +1132,59 @@
   </div>
 </section>
 
+<!-- ░░ ORÁCULO — Carta do Dia (22 Arcanos Maiores do Tarô dos Anjos) ░░ -->
+<section id="s-oraculo" class="screen" style="background:linear-gradient(180deg, #0F0C08 0%, #1A140A 55%, #0F0C08 100%); color:#FAF3E4">
+  <div class="luzes" id="oraculo-luzes"></div>
+  <div style="flex:1; overflow-y:auto; position:relative; z-index:1" class="pad">
+    <button onclick="show('s-home')" style="background:none;border:none;color:#D89A2C;font-size:14px;align-self:flex-start;margin-bottom:10px; font-family:inherit; cursor:pointer">← voltar</button>
+
+    <div style="text-align:center; margin-top:4px">
+      <p style="margin:0; font-size:11px; letter-spacing:.22em; color:#D89A2C; text-transform:uppercase; font-weight:600">Tarô dos Anjos · Monica Buonfiglio</p>
+      <h2 class="serif" style="font-size:28px; margin:12px 0 4px; font-weight:400; color:#FAF3E4">Sua carta de hoje</h2>
+      <p id="oraculo-data" class="serif-soft" style="font-style:italic; font-size:15px; color:#A88E5B; margin:0">—</p>
+    </div>
+
+    <!-- Estado: VERSO (antes de tirar) -->
+    <div id="oraculo-verso" style="display:block; text-align:center; margin-top:34px">
+      <button onclick="tirarCartaOraculo()" style="border:none; background:transparent; cursor:pointer; padding:0; display:inline-block" aria-label="Tirar a carta do dia">
+        <div style="width:200px; height:320px; margin:0 auto; border-radius:18px; background:linear-gradient(160deg, #2A1E0C 0%, #4A3410 45%, #2A1E0C 100%); border:2px solid rgba(246,200,104,.35); box-shadow:0 20px 60px rgba(0,0,0,.5), inset 0 0 40px rgba(246,200,104,.08); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; animation:respira-sigilo 6s ease-in-out infinite">
+          <!-- Sigilo dourado no verso -->
+          <svg viewBox="0 0 100 100" style="width:120px; height:120px; opacity:.85">
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#D89A2C" stroke-width="1"/>
+            <circle cx="50" cy="50" r="30" fill="none" stroke="#F6C868" stroke-width=".5" stroke-dasharray="1 3"/>
+            <g transform="translate(50,50)">
+              <polygon points="0,-22 19,11 -19,11" fill="none" stroke="#F6C868" stroke-width="1" opacity=".7"/>
+              <polygon points="0,22 19,-11 -19,-11" fill="none" stroke="#F6C868" stroke-width="1" opacity=".7"/>
+              <circle r="10" fill="none" stroke="#D89A2C" stroke-width="1"/>
+              <text x="0" y="5" text-anchor="middle" font-family="Playfair Display, serif" font-size="16" fill="#F6C868">✦</text>
+            </g>
+          </svg>
+        </div>
+      </button>
+      <p style="margin:22px auto 0; max-width:300px; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:#D89A2C; line-height:1.55">Respire fundo, pense no seu dia, e toque a carta quando o coração pedir.</p>
+    </div>
+
+    <!-- Estado: FRENTE (carta revelada) -->
+    <div id="oraculo-frente" style="display:none; text-align:center; margin-top:24px">
+      <div style="width:220px; margin:0 auto; border-radius:18px; background:linear-gradient(160deg, #FBF2DA 0%, #F5E4B8 100%); border:2px solid rgba(246,200,104,.55); box-shadow:0 20px 60px rgba(0,0,0,.5); padding:24px 18px; position:relative">
+        <p id="oraculo-num" style="margin:0; font-size:12px; letter-spacing:.14em; color:#9A7420; font-weight:600">—</p>
+        <div id="oraculo-emoji" style="font-size:64px; line-height:1; margin:14px 0">✦</div>
+        <h3 id="oraculo-nome" class="serif" style="margin:0; font-size:26px; color:#3F2A0A; font-weight:500; line-height:1.15">—</h3>
+        <div style="width:40px; height:1px; background:rgba(154,116,32,.4); margin:14px auto"></div>
+        <p id="oraculo-significado" style="margin:0; font-size:13.5px; color:#6B4E1A; line-height:1.5; font-style:italic; font-family:'Cormorant Garamond',serif">—</p>
+      </div>
+
+      <div class="card" style="margin-top:22px; padding:20px 22px; background:rgba(15,12,8,.5); border:1px solid rgba(186,117,23,.28); text-align:left">
+        <p style="margin:0 0 10px; font-size:10.5px; letter-spacing:.18em; color:#D89A2C; text-transform:uppercase; font-weight:600">A mensagem de hoje</p>
+        <p id="oraculo-mensagem" class="serif-soft" style="margin:0; font-size:17px; color:#FAF3E4; line-height:1.7; font-style:italic">—</p>
+      </div>
+
+      <button class="btn-ouro" style="margin-top:22px" onclick="compartilharOraculo()">Compartilhar minha carta 🤍</button>
+      <p style="margin:18px 0 0; font-size:12px; color:#A88E5B; line-height:1.55; font-family:'Cormorant Garamond',serif; font-style:italic">A carta é a mesma o dia inteiro. Amanhã, um novo arcano se revela.</p>
+    </div>
+  </div>
+</section>
+
 <!-- ░░ QUIZ RECONCILIAÇÃO — viral (inverso da compatibilidade) ░░ -->
 <section id="s-reconcilia" class="screen">
   <div style="flex:1; overflow-y:auto" class="pad">
@@ -1558,6 +1611,17 @@
         <p style="margin:0 0 6px; font-size:10.5px; letter-spacing:.18em; color:var(--ouro); text-transform:uppercase; font-weight:600">Mensagem de hoje</p>
         <p id="home-msg-dia-texto" class="serif" style="margin:0; font-size:16px; line-height:1.55; color:var(--tinta); font-family:'Cormorant Garamond','EB Garamond',Georgia,serif; font-style:italic">—</p>
       </div>
+
+      <!-- Oráculo · Carta do Dia — hook de retenção diária (22 Arcanos, gratuito) -->
+      <button id="home-oraculo-btn" class="card" style="margin-top:14px; padding:16px; display:flex; align-items:center; gap:14px; width:100%; cursor:pointer; background:linear-gradient(90deg, rgba(15,12,8,.96), rgba(74,52,16,.9)); border:1px solid rgba(246,200,104,.35); border-radius:14px; text-align:left; color:#FAF3E4" onclick="abrirOraculo()">
+        <div style="width:46px; height:46px; border-radius:12px; background:radial-gradient(circle, rgba(246,200,104,.5), rgba(186,117,23,.15)); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; box-shadow:0 0 18px rgba(246,200,104,.35)">🔮</div>
+        <div style="flex:1; min-width:0">
+          <p style="margin:0; font-size:10.5px; letter-spacing:.16em; color:#D89A2C; text-transform:uppercase; font-weight:600">Tarô dos Anjos</p>
+          <p style="margin:2px 0 0; font-weight:600; color:#FAF3E4">Sua carta de hoje</p>
+          <p id="home-oraculo-sub" style="margin:2px 0 0; font-size:12px; color:#D89A2C; font-family:'Cormorant Garamond', serif; font-style:italic">Um arcano se revela — toque pra descobrir</p>
+        </div>
+        <span style="color:#D89A2C; font-size:18px">▸</span>
+      </button>
 
       <!-- Anjo da Hora (humanidade) — universal, atualiza a cada 20 min, GRATUITO pra todos -->
       <button id="home-anjo-hora" class="card" style="margin-top:14px; padding:14px 16px; display:flex; align-items:center; gap:12px; width:100%; cursor:pointer; background:#fff; border:1px solid var(--linha); border-radius:14px; text-align:left" onclick="abrirAnjoHora()">
@@ -3940,6 +4004,7 @@ function initHome(){
     typeof carregarHome==='function'       ? Promise.resolve().then(carregarHome).catch(function(e){console.warn('[initHome] home:',e);})          : null,
     typeof _atualizarHomeCaminho==='function' ? Promise.resolve().then(_atualizarHomeCaminho).catch(function(e){console.warn('[initHome] caminho:',e);}) : null,
     typeof _atualizarLembretesCard==='function' ? Promise.resolve().then(_atualizarLembretesCard).catch(function(e){console.warn('[initHome] lembretes:',e);}) : null,
+    typeof _atualizarHomeOraculo==='function' ? Promise.resolve().then(_atualizarHomeOraculo).catch(function(e){console.warn('[initHome] oraculo:',e);}) : null,
   ]).catch(function(e){ console.warn('[initHome] erro geral:',e); });
 }
 
@@ -4957,6 +5022,116 @@ async function compartilharCarta(){
   } else {
     try{ await navigator.clipboard.writeText(texto + ' ' + url); toast('Texto copiado pro compartilhamento 📋'); }catch(_){ toast('Compartilhamento não disponível neste navegador'); }
   }
+}
+
+// ── Oráculo — Carta do Dia (22 Arcanos Maiores do Tarô dos Anjos) ──────
+// Mecânica: a carta é sorteada UMA vez por dia e fica estável (recarregar
+// não re-embaralha). Guardada em localStorage por data. Gratuita — é o
+// hook de retenção diária. Dados em /data/taro-arcanos.json.
+var _taroCartas = null;
+
+async function _carregarTaro(){
+  if(_taroCartas) return _taroCartas;
+  try{
+    var r = await fetch('/data/taro-arcanos.json');
+    var j = await r.json();
+    _taroCartas = (j && j.cartas) || [];
+  }catch(e){ console.warn('[oraculo] falha ao carregar cartas:', e); _taroCartas = []; }
+  return _taroCartas;
+}
+
+function _oraculoHojeChave(){
+  return 'saa_oraculo_' + new Date().toISOString().slice(0,10);
+}
+
+// Atualiza o subtítulo do card na home: se já tirou hoje, mostra o nome
+// da carta; senão, convida a tirar. Chamado no initHome.
+async function _atualizarHomeOraculo(){
+  var sub = document.getElementById('home-oraculo-sub');
+  if(!sub) return;
+  var salva = null;
+  try{ salva = JSON.parse(localStorage.getItem(_oraculoHojeChave()) || 'null'); }catch(_){}
+  if(salva && salva.n != null){
+    var cartas = await _carregarTaro();
+    var c = cartas.find(function(x){ return x.n === salva.n; });
+    if(c) sub.textContent = 'Hoje: ' + c.nome + ' — toque pra reler';
+  } else {
+    sub.textContent = 'Um arcano se revela — toque pra descobrir';
+  }
+}
+
+async function abrirOraculo(){
+  show('s-oraculo');
+  var dataEl = document.getElementById('oraculo-data');
+  if(dataEl){
+    var d = new Date();
+    var dias = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+    dataEl.textContent = dias[d.getDay()] + ', ' + d.getDate() + ' de ' + MESES_PT[d.getMonth()].toLowerCase();
+  }
+  // Já tirou hoje? Mostra a carta salva direto (estabilidade).
+  var salva = null;
+  try{ salva = JSON.parse(localStorage.getItem(_oraculoHojeChave()) || 'null'); }catch(_){}
+  if(salva && salva.n != null){
+    await _renderCartaOraculo(salva.n, false);
+  } else {
+    // Estado verso — espera o toque
+    document.getElementById('oraculo-verso').style.display = 'block';
+    document.getElementById('oraculo-frente').style.display = 'none';
+  }
+  try{ if(!document.getElementById('oraculo-luzes').children.length) spawnLuzes('oraculo-luzes', 16); }catch(_){}
+}
+
+async function tirarCartaOraculo(){
+  var cartas = await _carregarTaro();
+  if(!cartas.length){ toast('Não consegui abrir o baralho agora. Tente em instantes.'); return; }
+  // Sorteio real (só na primeira vez do dia) — depois fica salvo e estável.
+  var escolhida = cartas[Math.floor(Math.random() * cartas.length)];
+  try{ localStorage.setItem(_oraculoHojeChave(), JSON.stringify({ n: escolhida.n, em: new Date().toISOString() })); }catch(_){}
+  buzz(); chime();
+  await _renderCartaOraculo(escolhida.n, true);
+  try{ if(window.plausible) window.plausible('oraculo_carta_tirada', { props: { carta: escolhida.nome } }); }catch(_){}
+}
+
+async function _renderCartaOraculo(n, animar){
+  var cartas = await _carregarTaro();
+  var c = cartas.find(function(x){ return x.n === n; });
+  if(!c){ return; }
+  var romanos = ['0','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI'];
+  document.getElementById('oraculo-num').textContent = 'Arcano ' + (romanos[c.n] || c.n);
+  document.getElementById('oraculo-emoji').textContent = c.emoji || '✦';
+  document.getElementById('oraculo-nome').textContent = c.nome;
+  document.getElementById('oraculo-significado').textContent = c.significado || '';
+  document.getElementById('oraculo-mensagem').textContent = c.mensagem || '';
+
+  var verso = document.getElementById('oraculo-verso');
+  var frente = document.getElementById('oraculo-frente');
+  verso.style.display = 'none';
+  frente.style.display = 'block';
+  if(animar){
+    frente.style.opacity = '0';
+    frente.style.transform = 'translateY(16px) scale(.96)';
+    frente.style.transition = 'opacity .6s ease, transform .6s cubic-bezier(.34,1.06,.42,1)';
+    requestAnimationFrame(function(){
+      frente.style.opacity = '1';
+      frente.style.transform = 'translateY(0) scale(1)';
+    });
+  }
+}
+
+async function compartilharOraculo(){
+  var salva = null;
+  try{ salva = JSON.parse(localStorage.getItem(_oraculoHojeChave()) || 'null'); }catch(_){}
+  if(!salva){ return; }
+  var cartas = await _carregarTaro();
+  var c = cartas.find(function(x){ return x.n === salva.n; });
+  if(!c){ return; }
+  var texto = '🔮 Minha carta de hoje no Tarô dos Anjos: ' + c.nome + ' — ' + c.significado + '\n\nDescubra a sua:';
+  var url = 'https://www.sobasasas.com.br/landing?via=oraculo';
+  if(navigator.share){
+    try{ await navigator.share({ title: 'Tarô dos Anjos — Sob as Asas', text: texto, url: url }); try{ if(window.plausible) window.plausible('oraculo_compartilhado', { props:{ carta:c.nome } }); }catch(_){} return; }catch(_){}
+  }
+  try{ await navigator.clipboard.writeText(texto + ' ' + url); toast('Carta copiada 📋'); }
+  catch(_){ toast('Compartilhamento não disponível neste navegador'); }
 }
 
 // ── Mood check-in diário ──
