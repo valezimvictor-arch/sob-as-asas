@@ -7452,6 +7452,14 @@ function offerTrial(dias){
 var LOJA=[
   // Cursos
   {cat:'cursos', t:'Curso de Angelologia', d:'Aprofunde-se nos 72 anjos, com a Monica', ic:'🎓', url:'https://cursosmagiadosanjos.com.br/aluno/curso/vitrine.php?idE=298&idC=1527'},
+  {cat:'cursos', t:'Tarô dos Anjos', d:'Aprenda a ler as cartas dos anjos, com a Monica', ic:'🔮', url:'https://cursosmagiadosanjos.com.br/aluno/curso/vitrine.php?idE=298&idC=1561'},
+  {cat:'cursos', t:'Numerologia Cabalística', d:'Os números como caminho da alma', ic:'🔢', url:'https://cursosmagiadosanjos.com.br/aluno/curso/vitrine.php?idE=298&idC=1562'},
+  {cat:'cursos', t:'Runas', d:'A sabedoria ancestral dos símbolos nórdicos', ic:'ᚱ', url:'https://cursosmagiadosanjos.com.br/aluno/curso/vitrine.php?idE=298&idC=1593'},
+  {cat:'cursos', t:'Jogo de Búzios', d:'O oráculo afro-brasileiro, com a Monica', ic:'🐚', url:'https://cursosmagiadosanjos.com.br/aluno/curso/vitrine.php?idE=298&idC=1660'},
+
+  // Viagens
+  {cat:'viagens', t:'Israel — Terra Santa', d:'Uma jornada espiritual guiada pela Monica', ic:'🕍', url:'https://www.magiadosanjos.com.br/'},
+  {cat:'viagens', t:'Caminho dos Anjos', d:'Peregrinação sagrada com a Monica', ic:'🛤️', url:'https://www.magiadosanjos.com.br/'},
 
   // Livros
   {cat:'livros', t:'Livro: Maria', d:'A história da Mãe vista pela Monica', ic:'📖', url:'https://www.magiadosanjos.com.br/pagina-de-produto/c%C3%B3pia-de-maria'},
@@ -7468,8 +7476,9 @@ var LOJA=[
 ];
 var LOJA_CATS = {
   cursos:    { label:'Cursos com a Monica',   ordem:1 },
-  livros:    { label:'Livros da Monica',      ordem:2 },
-  consultas: { label:'Consultas pessoais com a Monica', ordem:3 },
+  viagens:   { label:'Viagens espirituais',   ordem:2 },
+  livros:    { label:'Livros da Monica',      ordem:3 },
+  consultas: { label:'Consultas pessoais com a Monica', ordem:4 },
 };
 function openLoja(){ renderLoja(); show('s-loja'); }
 function abrirProduto(p){ if(p.url){ try{ window.open(p.url,'_blank'); }catch(e){ location.href=p.url; } } else { toast('Esgotado por enquanto 🕊️'); } }
@@ -7535,7 +7544,7 @@ function renderLoja(){
   });
   el.innerHTML = ordem.map(function(c){
     var cat = LOJA_CATS[c] || { label:c };
-    var rotuloBadge = c==='cursos' ? 'Ver curso ↗' : (c==='livros' ? 'Comprar ↗' : 'Agendar ↗');
+    var rotuloBadge = c==='cursos' ? 'Ver curso ↗' : (c==='livros' ? 'Comprar ↗' : (c==='viagens' ? 'Saiba mais ↗' : 'Agendar ↗'));
     var itens = grupos[c].map(function(p){
       var badge = p.url
         ? '<span style="font-size:11px; background:#F6C868; color:#5A3A06; padding:3px 9px; border-radius:8px; white-space:nowrap">'+rotuloBadge+'</span>'
