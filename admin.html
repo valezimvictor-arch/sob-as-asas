@@ -738,11 +738,11 @@
 
     <!-- ░░ LEADS ░░ -->
     <div id="sec-leads" class="hide">
-      <div class="nota">📩 Pessoas que demonstraram interesse: viagens (Israel, Caminhos de São Miguel) e cadastros da landing. Os dados (nome / telefone) vêm no próprio campo origem quando foi via formulário do app.</div>
+      <div class="nota">📩 Pessoas que demonstraram interesse: viagens (Israel, Caminho dos Anjos) e cadastros da landing. Os dados (nome / telefone) vêm no próprio campo origem quando foi via formulário do app.</div>
       <div style="display:flex; gap:8px; flex-wrap:wrap; margin:0 0 12px">
         <button class="btn-sec" onclick="filtroLeads('todos')" id="fl-todos">Todos</button>
         <button class="btn-sec" onclick="filtroLeads('exp_israel')" id="fl-israel">Israel</button>
-        <button class="btn-sec" onclick="filtroLeads('exp_saomiguel')" id="fl-saomiguel">São Miguel</button>
+        <button class="btn-sec" onclick="filtroLeads('exp_saomiguel')" id="fl-saomiguel">Caminho dos Anjos</button>
         <button class="btn-sec" onclick="filtroLeads('landing')" id="fl-landing">Landing</button>
         <button class="btn-sec" onclick="exportarLeadsCSV()" style="margin-left:auto">⬇ Exportar CSV</button>
       </div>
@@ -1813,7 +1813,7 @@ function parseOrigem(o){
 }
 function rotuloOrigem(tag){
   if(tag==='exp_israel') return 'Israel';
-  if(tag==='exp_saomiguel') return 'Caminhos de São Miguel';
+  if(tag==='exp_saomiguel') return 'Caminho dos Anjos';
   if(tag==='landing') return 'Landing';
   return tag;
 }
