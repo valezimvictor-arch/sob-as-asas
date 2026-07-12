@@ -7617,7 +7617,35 @@ window.addEventListener('saa-profile-ready', function(){
   var homeAtiva = document.querySelector('#s-home.active');
   if(homeAtiva && typeof initHome === 'function') initHome();
 });
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js').catch(()=>{}); }
+// Service Worker com AUTO-UPDATE. Sem isto, uma versão antiga do SW podia
+// grudar e servir HTML velho (usuário via features somindo/desatualizadas
+// até limpar cache na mão). Agora: checa update a cada carga, ativa a nova
+// versão assim que instala e recarrega UMA vez pra aplicar — sem loop.
+if('serviceWorker' in navigator){
+  var _saaRecarregou = false;
+  navigator.serviceWorker.addEventListener('controllerchange', function(){
+    if(_saaRecarregou) return;
+    _saaRecarregou = true;
+    location.reload();
+  });
+  navigator.serviceWorker.register('/sw.js').then(function(reg){
+    // Se já tem um SW esperando (nova versão pronta), ativa na hora.
+    if(reg.waiting){ try{ reg.waiting.postMessage({ type:'SKIP_WAITING' }); }catch(_){} }
+    // Quando uma nova versão for encontrada, ativa assim que instalar.
+    reg.addEventListener('updatefound', function(){
+      var nw = reg.installing;
+      if(!nw) return;
+      nw.addEventListener('statechange', function(){
+        // Só pula a espera se JÁ havia um controller (é update, não 1ª instalação).
+        if(nw.state === 'installed' && navigator.serviceWorker.controller){
+          try{ nw.postMessage({ type:'SKIP_WAITING' }); }catch(_){}
+        }
+      });
+    });
+    // Checa por atualização a cada abertura.
+    try{ reg.update(); }catch(_){}
+  }).catch(function(){});
+}
 </script>
 </body>
 </html>
