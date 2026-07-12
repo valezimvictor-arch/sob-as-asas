@@ -1925,7 +1925,7 @@
         <div style="width:38px; height:38px; border-radius:50%; background:var(--ouro-bg); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0">✦</div>
         <div style="flex:1; min-width:0">
           <p style="margin:0; font-weight:600; color:var(--tinta); font-family:'Manrope', sans-serif; font-size:14.5px">Explorar mais práticas</p>
-          <p id="home-explorar-sub" style="margin:2px 0 0; font-size:12px; color:var(--tinta-suave); font-family:'Cormorant Garamond', serif; font-style:italic">Compatibilidade · Reconciliação · Calendário · Loja</p>
+          <p id="home-explorar-sub" style="margin:2px 0 0; font-size:12px; color:var(--tinta-suave); font-family:'Cormorant Garamond', serif; font-style:italic">Compatibilidade · Reconciliação · Viagens · Loja</p>
         </div>
         <span id="home-explorar-arrow" style="color:var(--ouro); font-size:18px; transition:transform .3s ease">▾</span>
       </button>
@@ -1961,12 +1961,22 @@
           <span style="color:var(--tinta-suave)">›</span>
         </div>
 
+        <!-- 7c. VIAGENS ESPIRITUAIS — abre a Loja (viagens ficam no topo dela) -->
+        <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px; margin-bottom:10px" onclick="openLoja()">
+          <div style="width:42px;height:42px;border-radius:12px;background:var(--celeste-bg);display:flex;align-items:center;justify-content:center;font-size:20px">✈️</div>
+          <div style="flex:1">
+            <p style="margin:0; font-weight:600">Viagens com a Monica</p>
+            <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave); line-height:1.4">Israel · Caminhos de São Miguel — deixe seu interesse</p>
+          </div>
+          <span style="color:var(--tinta-suave)">›</span>
+        </div>
+
         <!-- 8. LOJA -->
         <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px" onclick="openLoja()">
           <div style="width:42px;height:42px;border-radius:12px;background:var(--ouro-bg);display:flex;align-items:center;justify-content:center;font-size:20px">🛍️</div>
           <div style="flex:1">
             <p style="margin:0; font-weight:600">Loja da Monica</p>
-            <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave)">Cursos · consultas · livros · presentes</p>
+            <p style="margin:2px 0 0; font-size:13px; color:var(--tinta-suave)">Cursos · viagens · consultas · livros</p>
           </div>
           <span style="color:var(--tinta-suave)">›</span>
         </div>
@@ -7383,7 +7393,7 @@ function toggleExplorar(){
   if(aberto){
     el.style.display = 'none';
     if(arrow) arrow.style.transform = 'rotate(0deg)';
-    if(sub) sub.textContent = 'Compatibilidade · Reconciliação · Calendário · Loja';
+    if(sub) sub.textContent = 'Compatibilidade · Reconciliação · Viagens · Loja';
   } else {
     el.style.display = 'block';
     if(arrow) arrow.style.transform = 'rotate(180deg)';
@@ -7457,10 +7467,6 @@ var LOJA=[
   {cat:'cursos', t:'Runas', d:'A sabedoria ancestral dos símbolos nórdicos', ic:'ᚱ', url:'https://cursosmagiadosanjos.com.br/aluno/curso/vitrine.php?idE=298&idC=1593'},
   {cat:'cursos', t:'Jogo de Búzios', d:'O oráculo afro-brasileiro, com a Monica', ic:'🐚', url:'https://cursosmagiadosanjos.com.br/aluno/curso/vitrine.php?idE=298&idC=1660'},
 
-  // Viagens
-  {cat:'viagens', t:'Israel — Terra Santa', d:'Uma jornada espiritual guiada pela Monica', ic:'🕍', url:'https://www.magiadosanjos.com.br/'},
-  {cat:'viagens', t:'Caminho dos Anjos', d:'Peregrinação sagrada com a Monica', ic:'🛤️', url:'https://www.magiadosanjos.com.br/'},
-
   // Livros
   {cat:'livros', t:'Livro: Maria', d:'A história da Mãe vista pela Monica', ic:'📖', url:'https://www.magiadosanjos.com.br/pagina-de-produto/c%C3%B3pia-de-maria'},
   {cat:'livros', t:'Livro: Jesus', d:'A trajetória de Jesus pela Monica', ic:'📖', url:'https://www.magiadosanjos.com.br/pagina-de-produto/c%C3%B3pia-de-jesus'},
@@ -7476,9 +7482,8 @@ var LOJA=[
 ];
 var LOJA_CATS = {
   cursos:    { label:'Cursos com a Monica',   ordem:1 },
-  viagens:   { label:'Viagens espirituais',   ordem:2 },
-  livros:    { label:'Livros da Monica',      ordem:3 },
-  consultas: { label:'Consultas pessoais com a Monica', ordem:4 },
+  livros:    { label:'Livros da Monica',      ordem:2 },
+  consultas: { label:'Consultas pessoais com a Monica', ordem:3 },
 };
 function openLoja(){ renderLoja(); show('s-loja'); }
 function abrirProduto(p){ if(p.url){ try{ window.open(p.url,'_blank'); }catch(e){ location.href=p.url; } } else { toast('Esgotado por enquanto 🕊️'); } }
@@ -7544,7 +7549,7 @@ function renderLoja(){
   });
   el.innerHTML = ordem.map(function(c){
     var cat = LOJA_CATS[c] || { label:c };
-    var rotuloBadge = c==='cursos' ? 'Ver curso ↗' : (c==='livros' ? 'Comprar ↗' : (c==='viagens' ? 'Saiba mais ↗' : 'Agendar ↗'));
+    var rotuloBadge = c==='cursos' ? 'Ver curso ↗' : (c==='livros' ? 'Comprar ↗' : 'Agendar ↗');
     var itens = grupos[c].map(function(p){
       var badge = p.url
         ? '<span style="font-size:11px; background:#F6C868; color:#5A3A06; padding:3px 9px; border-radius:8px; white-space:nowrap">'+rotuloBadge+'</span>'
