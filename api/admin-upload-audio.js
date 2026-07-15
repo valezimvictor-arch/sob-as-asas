@@ -120,7 +120,7 @@ export default async function handler(req, res) {
       if (error) return res.status(500).json({ ok: false, error: error.message });
       // Sem isso, um (caminho, dia) não-semeado dava update em 0 linhas e
       // retornava ok:true sem persistir o áudio. Falha explícita é melhor.
-      if (!upd || !upd.length) return res.status(404).json({ ok: false, error: 'Dia do caminho não encontrado — rode MIGRACAO_CAMINHOS.sql.' });
+      if (!upd || !upd.length) return res.status(404).json({ ok: false, error: 'Dia do caminho não encontrado — rode sql/MIGRACAO_CAMINHOS.sql.' });
       return res.status(200).json({ ok: true });
     }
 

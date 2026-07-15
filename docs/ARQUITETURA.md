@@ -62,7 +62,10 @@ sob-as-asas/
 │   ├── admin-*.js           #   endpoints do painel admin (auth: x-admin-key)
 │   └── cron-*.js            #   agentes agendados (ver BACKEND.md)
 │
-├── *.sql                   # Migrações (rodadas À MÃO no SQL Editor do Supabase)
+├── sql/                    # Migrações + auditorias (rodadas À MÃO no SQL Editor do Supabase)
+│   ├── MIGRACAO_*.sql       #   deltas de features/segurança
+│   ├── AUDITORIA_RLS.sql    #   auditoria de políticas RLS
+│   └── README.md
 ├── supabase/
 │   ├── schema.sql           # Schema base canônico (tabelas + RLS)
 │   └── seed.sql             # Dados iniciais
@@ -144,7 +147,7 @@ Vercel Cron (vercel.json) → GET /api/cron-*  (header x-vercel-cron: 1)
 
 ### Migrações de banco
 
-**Não há framework de migração.** Os arquivos `MIGRACAO_*.sql` (raiz) são rodados **manualmente no SQL Editor do Supabase**, em ordem. São idempotentes (`if not exists`, `drop policy if exists`, etc.).
+**Não há framework de migração.** Os arquivos `sql/MIGRACAO_*.sql` são rodados **manualmente no SQL Editor do Supabase**, em ordem. São idempotentes (`if not exists`, `drop policy if exists`, etc.). Ver `sql/README.md`.
 
 - `supabase/schema.sql` = schema base canônico.
 - `MIGRACAO_*.sql` = features adicionadas depois (cada uma é um delta).
@@ -153,3 +156,31 @@ Vercel Cron (vercel.json) → GET /api/cron-*  (header x-vercel-cron: 1)
 ## Mobile (Capacitor)
 
 O mesmo front roda como app iOS/Android via Capacitor. `npm run build` (`scripts/build.mjs`) gera `www/` e `npx cap sync` empacota. Não é necessário para desenvolver o web — só para gerar os apps de loja.
+
+## Postura de segurança (hardening jul/2026)
+
+Um sprint auditado adversarialmente consolidou as correções abaixo. O **detalhe e o "porquê"** de cada armadilha vivem em [CONVENCOES.md](./CONVENCOES.md) e [MODELO-DE-DADOS.md](./MODELO-DE-DADOS.md); aqui fica a lista de referência rápida:
+
+1. **Resgate de presente** nunca chama `updateUserById({password})` em conta existente (era account-takeover trivial via código de presente). Conta existente só recebe o plano.
+2. **Service worker** não cacheia respostas autenticadas — `/api/*` e `*.supabase.co` passam direto (PII em CacheStorage sobreviveria ao logout).
+3. **XSS no admin:** nomes de usuário fora de `onclick`; `esc()` escapa aspas.
+4. **Streak** compara datas em UTC-midnight (bug de fuso queimava o perdão diário).
+5. **Círculo anônimo no banco**, não só no front (função security-definer `circulo_feed()`).
+6. **GRANTs por coluna em `users`** — cliente não escreve `plano`/`oferta_*`.
+7. **Checkout de oferta** com dedupe duplo (banco + Stripe como fonte de verdade).
+
+Headers em `vercel.json`: CSP estrita, HSTS preload, X-Frame-Options DENY. Secrets só em env vars da Vercel. E-mail: DMARC hoje em `quarantine` (migrar pra `reject`).
+
+## Dívidas técnicas conhecidas (deliberadas, com gatilho de revisão)
+
+Não são acidentes — são escolhas conscientes de um protótipo iterando rápido. Cada uma tem um **gatilho** que sinaliza quando revisitar. (Complementa a lista de [CONVENCOES.md § Dívidas técnicas](./CONVENCOES.md#dívidas-técnicas-conhecidas-oportunidades).)
+
+| Dívida | Racional atual | Revisar quando |
+|---|---|---|
+| `index.html` monolítico (~7,4k linhas) | Velocidade de iteração solo; sem build | >2 devs no front, ou LCP 3G >4s medido |
+| Sem testes automatizados | Superfície mudando diariamente | Primeiro usuário pagante real → smoke de streak-math + RLS do Círculo |
+| Sem staging (push = prod) | Volume de tráfego ~0 | Primeiros usuários ativos → preview deployments da Vercel |
+| Migrações manuais no SQL Editor | Simplicidade | Existir um segundo ambiente (staging) |
+| `listUsers` paginado no resgate (fallback O(n)) | Caminho raro (conta no Auth sem linha em `users`) | Base >5k usuários |
+| Tela `s-mapa` + `/api/mapa-cabalistico` sem entrada na home | Feature construída, despriorizada; código documentado | Decisão de produto |
+| Áudios premium em bucket público (URL obscura) | Padrão do mercado (Calm/Insight Timer); signed URLs = complexidade | Vazamento real observado |

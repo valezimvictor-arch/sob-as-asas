@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Documentação de referência (leia antes de mexer)
 
-- **`ARCHITECTURE.md`** — estado real do código: stack, mapa do frontend, os ~37 endpoints, modelo de dados + decisões de RLS, service worker, postura de segurança, dívidas técnicas deliberadas e convenções. **É a fonte de verdade; se divergir do código, o código vence e o arquivo deve ser corrigido.**
+- **`docs/ARQUITETURA.md`** (+ os irmãos em `docs/`: `BACKEND.md`, `FRONTEND.md`, `MODELO-DE-DADOS.md`, `CONVENCOES.md`, `AUTENTICACAO.md`, `ADMIN.md`) — estado real do código: stack, mapa do frontend, os ~37 endpoints, modelo de dados + decisões de RLS, service worker, postura de segurança, dívidas técnicas deliberadas e convenções. **É a fonte de verdade; se divergir do código, o código vence e o arquivo deve ser corrigido.**
 - **`CONTEXTO_PROJETO.md`** — o "porquê": produto, modelo de negócio, posicionamento jurídico do Milagre do Mês, escopo.
 - **`DEPLOY.md`** — Vercel, env vars, DNS, e-mail (Resend/Zoho, SPF/DMARC), observabilidade.
 - **`SUPABASE_SETUP.md`** — setup do banco.
@@ -23,7 +23,7 @@ npm run sync:android        # build + npx cap sync android
 ```
 
 - **Deploy**: push na `main` → Vercel (sem staging). `vercel.json` define crons, headers/CSP e rewrites.
-- **Não há testes automatizados** (decisão pré-lançamento — ver §7 do `ARCHITECTURE.md`). Não invente um comando de teste.
+- **Não há testes automatizados** (decisão pré-lançamento — ver `docs/ARQUITETURA.md` § Dívidas técnicas). Não invente um comando de teste.
 - **Servir localmente**: qualquer servidor estático na raiz (o `config.js` guarda URL + anon key do Supabase para o front). Redirect URLs do Supabase Auth incluem `http://localhost:8910`.
 
 ## Regras críticas (quebrar isto causa bug em produção ou brecha de segurança)
@@ -33,7 +33,7 @@ npm run sync:android        # build + npx cap sync android
 - **Colunas `plano`/`oferta_*` de `users` só são graváveis via service-role** (grants por coluna). Cliente não se autoconcede plano. Idem `mantenedores` (escrita só do webhook).
 - **Nunca sobrescrever credenciais de conta preexistente** no resgate de presente (era account-takeover) — conta existente só recebe o plano, nunca `updateUserById({password})`.
 - **`/api/*` e `*.supabase.co` nunca passam pelo service worker** (PII em CacheStorage sobreviveria ao logout).
-- **Toda migração nova**: arquivo `MIGRACAO_<TEMA>.sql` na raiz, **idempotente** (`if not exists` / `drop ... if exists` + `create`), com comentário de propósito no topo. Rodadas manualmente no SQL Editor do Supabase. Alguns objetos são redefinidos em mais de um arquivo (hardening) — os cabeçalhos marcam os espelhos ("ANTI-DRIFT").
+- **Toda migração nova**: arquivo `MIGRACAO_<TEMA>.sql` em `sql/`, **idempotente** (`if not exists` / `drop ... if exists` + `create`), com comentário de propósito no topo. Rodadas manualmente no SQL Editor do Supabase. Alguns objetos são redefinidos em mais de um arquivo (hardening) — os cabeçalhos marcam os espelhos ("ANTI-DRIFT").
 - **Segredos só em env vars da Vercel** — nada de `sk_live_`/`whsec_` no repo ou no chat.
 
 ## Convenções

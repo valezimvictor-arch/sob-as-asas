@@ -57,7 +57,7 @@ export default async function handler(req, res) {
     }
   } catch (e) {
     // Se a tabela ainda não existe, segue (não bloqueia o webhook).
-    // Pra ativar idempotência: rodar MIGRACAO_STRIPE_EVENTS.sql no Supabase.
+    // Pra ativar idempotência: rodar sql/MIGRACAO_STRIPE_EVENTS.sql no Supabase.
   }
 
   try {

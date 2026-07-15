@@ -86,9 +86,15 @@ As 12 páginas HTML de impressão dos roteiros da Monica. Nada no app referencia
 
 - `ROTEIROS_CAMINHOS.md` — `admin.html:1209` faz `fetch('/ROTEIROS_CAMINHOS.md')`. A Vercel só publica o que está no git; sair quebraria o admin em produção. **Fica rastreado na raiz.** Ver "Trabalho futuro".
 
-### Grupo C — Documentação de engenharia → FICA no repo
+### Grupo C — Documentação de engenharia → FICA no repo (com 1 consolidação)
 
-`CLAUDE.md` (obrigatório na raiz), `ARCHITECTURE.md`, `CONTEXTO_PROJETO.md`, `DEPLOY.md`, `SUPABASE_SETUP.md`, `ONBOARDING.md`. (Duplicação com a pasta `docs/` fica anotada como dívida, fora do escopo.)
+Ficam na raiz: `CLAUDE.md` (obrigatório na raiz), `CONTEXTO_PROJETO.md`, `DEPLOY.md`, `SUPABASE_SETUP.md`, `ONBOARDING.md`.
+
+**Consolidação do `ARCHITECTURE.md`:** o `ARCHITECTURE.md` da raiz é mais rico que o `docs/ARQUITETURA.md` e tem conteúdo que este não cobre (§6 postura de segurança/hardening, §7 dívidas técnicas com gatilhos, decisões de RLS não-óbvias). Decisão: **fundir esse conteúdo único no `docs/ARQUITETURA.md`**, depois **mover o `ARCHITECTURE.md` da raiz pra pasta externa** e reapontar as referências no `CLAUDE.md`. Assim o `docs/` vira a fonte única e mais rica, sem perda de conhecimento. Restante da duplicação `docs/` ↔ raiz (outros arquivos) segue como dívida futura.
+
+### Scripts geradores (`scripts/`) → FICAM no repo
+
+Decisão: os geradores de material editorial (`gerar-roteiros-72-anjos.cjs`, `gerar-pdf-roteiros.cjs`, `gerar-pdf-semanais.cjs`, `gerar-pdf-caminhos.cjs`) **ficam** — são código e leem `data/` (que fica no repo). `build.mjs` e `gerar-paginas-anjos.cjs` (geram o produto) obviamente ficam. **Caveat conhecido:** rodar os geradores recria os roteiros/PDFs na raiz; isso só ocorre sob demanda, durante produção de conteúdo. O estado commitado do repo fica limpo. (Os `.md` de entrada de alguns geradores agora vivem na pasta externa — ajustar os caminhos é trabalho futuro se/quando forem rodados de novo.)
 
 ### Grupo D — SQL → MOVER pra `sql/` DENTRO do repo
 
@@ -111,45 +117,53 @@ Ficam: `supabase/schema.sql`, `supabase/seed.sql`.
 2. `git mv` dos 16 `MIGRACAO_*.sql` + `AUDITORIA_RLS.sql` pra `sql/`.
 3. Adicionar `sql/README.md` curto: migrações idempotentes, rodadas manualmente no SQL Editor, ordem, espelhos ANTI-DRIFT.
 
-### Fase 3 — Ajustar documentação e referências órfãs
+### Fase 3 — Consolidar e mover o ARCHITECTURE.md
+1. Ler `docs/ARQUITETURA.md`, `docs/MODELO-DE-DADOS.md`, `docs/CONVENCOES.md` pra ver o que já está coberto.
+2. Fundir no `docs/ARQUITETURA.md` o conteúdo único do `ARCHITECTURE.md` da raiz **que ainda não exista** nos irmãos: §6 (postura de segurança/hardening — as 7 correções), §7 (dívidas técnicas + gatilhos de revisão), decisões de RLS não-óbvias (`circulo_feed`, grants por coluna, `velas_pedidos`). Já atualizando os caminhos de migração pra `sql/`.
+3. Mover `ARCHITECTURE.md` da raiz pra pasta externa.
+4. `CLAUDE.md` — reapontar as 2 referências (linha 9 "fonte de verdade" e linha 26 "§7") pra `docs/ARQUITETURA.md`.
+
+### Fase 4 — Ajustar documentação e referências órfãs
 1. `robots.txt` — remover `Disallow: /interno/` (a pasta não existe mais no repo).
 2. `CLAUDE.md` — regra "toda migração nova na raiz" → `sql/`.
-3. `ARCHITECTURE.md` — §4 e §8 ("arquivos `MIGRACAO_*.sql` na raiz"; "fonte de verdade: `supabase/schema.sql` + migrações") → atualizar pra `sql/`.
-4. Menções textuais em mensagens de erro (opcional, baixo valor):
+3. Menções textuais em mensagens de erro (opcional, baixo valor):
    - `api/admin-upload-audio.js:123`, `api/stripe-webhook.js:60` — "rode MIGRACAO_X.sql" → "rode sql/MIGRACAO_X.sql". OK atualizar (backend, sem impacto de cache).
    - `admin.html:1186` — idem (admin não tem regra de SW).
    - `index.html:4179` — comentário `// ver MIGRACAO_HARDENING.sql`. ⚠️ **Editar `index.html` obriga bump de `CACHE` no `sw.js`** (regra crítica). Por ser só um comentário e o nome do arquivo continuar igual (achável por busca), a recomendação é **NÃO editar** o `index.html`.
 
-### Fase 4 — Verificação
-1. `git status` coerente: Grupo A/A2 como deleções; SQL como renames pra `sql/`.
+### Fase 5 — Verificação
+1. `git status` coerente: Grupo A/A2 + `ARCHITECTURE.md` como deleções; SQL como renames pra `sql/`; `docs/ARQUITETURA.md` e `CLAUDE.md` modificados.
 2. Confirmar `ROTEIROS_CAMINHOS.md` ainda rastreado na raiz.
 3. Confirmar arquivos presentes em `C:\Users\PedroAlmeida\Desktop\arquivos sob as asas\`.
-4. Servir localmente → abrir admin → aba Caminhos → "Ver roteiro do dia": o `fetch('/ROTEIROS_CAMINHOS.md')` ainda funciona.
-5. `grep` de sanidade: nenhum caminho quebrado pros SQL movidos em código servido.
-6. Commit em PT explicando o porquê (higiene pré-migração).
+4. `grep` por `ARCHITECTURE.md` no repo → zero referências órfãs (só o spec pode citar historicamente).
+5. Servir localmente → abrir admin → aba Caminhos → "Ver roteiro do dia": o `fetch('/ROTEIROS_CAMINHOS.md')` ainda funciona.
+6. `grep` de sanidade: nenhum caminho quebrado pros SQL movidos em código servido.
+7. Commit em PT explicando o porquê (higiene pré-migração).
 
 ---
 
 ## Trabalho futuro (registrado, fora deste cleanup)
 
 - **Mover `ROTEIROS_CAMINHOS.md` pra fora + refatorar o admin** pra não depender do arquivo em runtime (ex.: mover o conteúdo do roteiro do dia pro banco, ou embutir no admin). Vira mini-projeto à parte, com seu próprio spec.
-- Consolidar a documentação duplicada (`docs/` vs raiz).
+- Consolidar o **restante** da documentação duplicada `docs/` ↔ raiz (fora o `ARCHITECTURE.md`, já resolvido aqui).
 
 ## Riscos e mitigações
 
 | Risco | Mitigação |
 |---|---|
-| Mover pra fora um arquivo que o app busca em runtime | Inventário feito: só `ROTEIROS_CAMINHOS.md` é buscado (fica). Fase 4 valida o admin. |
-| Quebrar a convenção de migrações documentada | Fase 3 atualiza `CLAUDE.md` + `ARCHITECTURE.md` junto com o move. |
-| `Disallow: /interno/` órfão no robots.txt | Fase 3 remove a linha. |
+| Mover pra fora um arquivo que o app busca em runtime | Inventário feito: só `ROTEIROS_CAMINHOS.md` é buscado (fica). Fase 5 valida o admin. |
+| Perder o conteúdo único do `ARCHITECTURE.md` (§6/§7/RLS) | Fase 3 funde no `docs/ARQUITETURA.md` **antes** de mover. |
+| Referências órfãs ao `ARCHITECTURE.md` no `CLAUDE.md` | Fase 3.4 reaponta pra `docs/ARQUITETURA.md`; Fase 5.4 confirma com grep. |
+| Quebrar a convenção de migrações documentada | Fases 3 e 4 atualizam `CLAUDE.md` + `docs/ARQUITETURA.md` junto com o move do SQL. |
+| `Disallow: /interno/` órfão no robots.txt | Fase 4 remove a linha. |
 | Editar `index.html` sem bump de cache | Decisão explícita de NÃO editar o comentário no `index.html`. |
 | Perder material movido | Nada se perde: vai pra pasta externa preservada; histórico git guarda as versões. |
 
 ## Critério de pronto
 
-- Raiz sem os arquivos do Grupo A e sem os 17 SQL soltos; sem a pasta `interno/`.
+- Raiz sem os arquivos do Grupo A, sem os 17 SQL soltos, sem a pasta `interno/` e sem o `ARCHITECTURE.md`.
 - Material não-software presente em `C:\Users\PedroAlmeida\Desktop\arquivos sob as asas\`.
 - `sql/` com as migrações + README.
-- `CLAUDE.md`, `ARCHITECTURE.md`, `robots.txt` coerentes.
+- `docs/ARQUITETURA.md` enriquecido com §6/§7/RLS; `CLAUDE.md` e `robots.txt` coerentes; zero referência órfã a `ARCHITECTURE.md`.
 - Admin funcional (roteiro do dia carrega).
 - Nada no comportamento do app mudou.

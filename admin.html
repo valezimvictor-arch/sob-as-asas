@@ -1183,7 +1183,7 @@ async function carregarRoteirosCaminhos(){
       });
       html+='</div>';
     });
-    el.innerHTML=html || '<p class="vazio">Nenhum caminho cadastrado. Rode MIGRACAO_CAMINHOS.sql.</p>';
+    el.innerHTML=html || '<p class="vazio">Nenhum caminho cadastrado. Rode sql/MIGRACAO_CAMINHOS.sql.</p>';
     document.getElementById('caminhos-resumo').textContent=enviados+' de '+total+' áudios enviados';
     document.getElementById('caminhos-barra').style.width=(total?Math.round(enviados/total*100):0)+'%';
   }catch(e){ el.innerHTML='<p class="vazio" style="color:#C0392B">Erro: '+esc(e.message||'falha')+'</p>'; }
